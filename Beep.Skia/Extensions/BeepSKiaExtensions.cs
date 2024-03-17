@@ -1,5 +1,5 @@
 ﻿
-using BeepEnterprize.Vis.Module;
+using Beep.Vis.Module;
 using TheTechIdea;
 using TheTechIdea.Beep;
 using TheTechIdea.Beep.Addin;
