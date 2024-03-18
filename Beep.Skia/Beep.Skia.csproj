@@ -28,10 +28,10 @@
 		<Copy SourceFiles="$(TargetDir)$(PackageId).dll" DestinationFolder="$(ProjectDir)..\..\outputDLL\$(PackageId)\$(TargetFramework)" SkipUnchangedFiles="false" />
 	</Target>
   <ItemGroup>
-    <PackageReference Include="SkiaSharp" Version="2.88.6" />
+    <PackageReference Include="SkiaSharp" Version="2.88.7" />
     <PackageReference Include="SkiaSharp.Extended" Version="1.60.0" />
     <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
-    <PackageReference Include="SkiaSharp.Views.Desktop.Common" Version="2.88.6" />
+    <PackageReference Include="SkiaSharp.Views.Desktop.Common" Version="2.88.7" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
     <PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="1.0.124" />
     <PackageReference Include="TheTechIdea.Beep.Vis.Modules" Version="1.0.90" />
