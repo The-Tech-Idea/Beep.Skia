@@ -33,7 +33,7 @@
     <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
     <PackageReference Include="SkiaSharp.Views.Desktop.Common" Version="2.88.8" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
-    <PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="1.0.143" />
+    <PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="1.0.144" />
     <PackageReference Include="TheTechIdea.Beep.Vis.Modules" Version="1.0.107" />
   </ItemGroup>
   <ItemGroup>
