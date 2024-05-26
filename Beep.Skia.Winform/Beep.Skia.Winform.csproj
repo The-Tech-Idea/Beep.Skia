@@ -32,7 +32,7 @@
 		<PackageReference Include="SkiaSharp.Views.Desktop.Common" Version="2.88.8" />
 		<PackageReference Include="SkiaSharp.Views.WindowsForms" Version="2.88.8" />
 		<PackageReference Include="TheTechIdea.Beep.DataManagementEngine" Version="1.0.479" />
-		<PackageReference Include="TheTechIdea.Beep.Vis.Modules" Version="1.0.109" />
+		<PackageReference Include="TheTechIdea.Beep.Vis.Modules" Version="1.0.110" />
 	</ItemGroup>
 	
   <ItemGroup>
