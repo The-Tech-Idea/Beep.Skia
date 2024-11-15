@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>Latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -27,8 +27,8 @@
 		<Copy SourceFiles="$(TargetDir)$(PackageId).dll" DestinationFolder="$(ProjectDir)..\..\outputDLL\$(PackageId)\$(TargetFramework)" SkipUnchangedFiles="false" />
 	</Target>
   <ItemGroup>
-    <PackageReference Include="TheTechIdea.Beep.AssemblyLoader" Version="1.0.26" />
-    <PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="1.0.119" />
+    <PackageReference Include="TheTechIdea.Beep.AssemblyLoader" Version="2.0.1" />
+    <PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>

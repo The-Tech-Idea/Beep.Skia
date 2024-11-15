@@ -1,7 +1,12 @@
 ﻿using Beep.Skia;
 using System.Reflection;
-using TheTechIdea.Tools;
-using TheTechIdea.Util;
+using TheTechIdea.Beep.Addin;
+using TheTechIdea.Beep.ConfigUtil;
+using TheTechIdea.Beep.Editor;
+using TheTechIdea.Beep.Tools;
+using TheTechIdea.Beep.Utilities;
+using TheTechIdea.Beep.Vis;
+using TheTechIdea.Beep.Vis.Modules;
 
 namespace AppExtensionsLoader
 {

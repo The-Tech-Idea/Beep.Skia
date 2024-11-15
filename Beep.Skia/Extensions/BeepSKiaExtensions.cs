@@ -1,10 +1,12 @@
 ﻿
-using Beep.Vis.Module;
-using TheTechIdea;
-using TheTechIdea.Beep;
+
 using TheTechIdea.Beep.Addin;
+using TheTechIdea.Beep.ConfigUtil;
+using TheTechIdea.Beep.Editor;
+using TheTechIdea.Beep.Utilities;
 using TheTechIdea.Beep.Vis;
-using TheTechIdea.Util;
+using TheTechIdea.Beep.Vis.Modules;
+
 
 namespace Beep.Skia
 {

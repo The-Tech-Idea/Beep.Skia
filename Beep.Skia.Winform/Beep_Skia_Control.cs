@@ -1,13 +1,17 @@
-﻿using Beep.Vis.Module;
+﻿
 using SkiaSharp;
-using System.Xml.Linq;
-using TheTechIdea;
-using TheTechIdea.Beep;
+
 using TheTechIdea.Beep.DataBase;
 using TheTechIdea.Beep.Vis;
-using TheTechIdea.Logger;
-using TheTechIdea.Util;
 using SkiaSharp.Views.Desktop;
+using TheTechIdea.Beep.Addin;
+using TheTechIdea.Beep.ConfigUtil;
+using TheTechIdea.Beep.Editor;
+using TheTechIdea.Beep.Utilities;
+
+using TheTechIdea.Beep.Vis.Modules;
+using TheTechIdea.Beep.Logger;
+
 
 namespace Beep.Skia.Winform
 {

@@ -1,16 +1,10 @@
-﻿using Beep.Vis.Module;
- 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using TheTechIdea;
+﻿using TheTechIdea.Beep.Addin;
+using TheTechIdea.Beep.ConfigUtil;
+using TheTechIdea.Beep.Editor;
+using TheTechIdea.Beep.Vis;
+using TheTechIdea.Beep.Vis.Modules;
 using TheTechIdea.Beep;
 using TheTechIdea.Beep.Vis;
-using TheTechIdea.Util;
 
 
 
