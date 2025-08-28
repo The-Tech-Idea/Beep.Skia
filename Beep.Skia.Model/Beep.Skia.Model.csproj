@@ -1,8 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<LangVersion>Latest</LangVersion>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>Latest</LangVersion>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -10,7 +8,6 @@
 		<Company>The Tech Idea</Company>
 		<Copyright>2022</Copyright>
 		<PackageProjectUrl>https://github.com/The-Tech-Idea/</PackageProjectUrl>
-		<PackageIcon>SimpleODM.png</PackageIcon>
 		<RepositoryUrl>https://github.com/The-Tech-Idea/</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
@@ -21,7 +18,7 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="SkiaSharp" Version="2.88.9" />
+	  <PackageReference Include="SkiaSharp" Version="3.119.0" />
 	</ItemGroup>
 	<Target Name="CopyPackage" AfterTargets="Pack">
 		<Copy SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="..\..\..\LocalNugetFiles" />

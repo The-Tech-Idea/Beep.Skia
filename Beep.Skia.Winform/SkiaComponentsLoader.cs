@@ -19,7 +19,7 @@ namespace Beep.Skia.Winform
         public void LoadComponents()
         {
             Components = new List<AssemblyClassDefinition>();
-            foreach (AssemblyClassDefinition definition in DMEEditor.ConfigEditor.AppComponents.Where(p => p.componentType == "ISkiaWorkFlowComponent" && p.classProperties.ObjectType != null && p.classProperties.Hidden == false).ToList()) //&& p.classProperties.ObjectType.Equals(libraryname, StringComparison.InvariantCultureIgnoreCase)
+            foreach (AssemblyClassDefinition definition in DMEEditor.ConfigEditor.AppComponents.Where(p => p.componentType == "SkiaComponent" && p.classProperties.ObjectType != null && p.classProperties.Hidden == false).ToList()) //&& p.classProperties.ObjectType.Equals(libraryname, StringComparison.InvariantCultureIgnoreCase)
             {
 
                 Components.Add(definition);
@@ -52,10 +52,10 @@ namespace Beep.Skia.Winform
                 //controlLibrary.Controls.Add(pc);
             }
         }  
-        public ISkiaWorkFlowComponent CreateAComponent(AssemblyClassDefinition definition)
+        public SkiaComponent CreateAComponent(AssemblyClassDefinition definition)
         {
            
-            return  (ISkiaWorkFlowComponent)DMEEditor.assemblyHandler.CreateInstanceFromString(definition.dllname, definition.PackageName, null);
+            return  (SkiaComponent)DMEEditor.assemblyHandler.CreateInstanceFromString(definition.dllname, definition.PackageName, null);
         }
 }
 }

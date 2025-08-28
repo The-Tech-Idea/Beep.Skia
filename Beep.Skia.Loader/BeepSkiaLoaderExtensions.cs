@@ -98,10 +98,10 @@ namespace AppExtensionsLoader
                         // Get IBranch Definitions
                         //-------------------------------------------------------
                        
-                        if (type.ImplementedInterfaces.Contains(typeof(ISkiaWorkFlowComponent)))
+                        if (type.ImplementedInterfaces.Contains(typeof(SkiaComponent)))
                         {
 
-                            Loader.ConfigEditor.AppComponents.Add(Loader.GetAssemblyClassDefinition(type, "ISkiaWorkFlowComponent"));
+                            Loader.ConfigEditor.AppComponents.Add(Loader.GetAssemblyClassDefinition(type, "SkiaComponent"));
                         }
                        
 

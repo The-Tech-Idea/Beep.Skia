@@ -13,21 +13,33 @@ using TheTechIdea.Beep.Vis.Modules;
 using TheTechIdea.Beep.Logger;
 
 
+#nullable enable
+
 namespace Beep.Skia.Winform
 {
     [AddinAttribute(Caption = "Skia Editor", Name = "Beep_Skia_Control", misc = "AI", addinType = AddinType.Control)]
-    public partial class Beep_Skia_Control : UserControl, IDM_Addin
+    public partial class Beep_Skia_Control : UserControl
     {
         public Beep_Skia_Control()
         {
             InitializeComponent();
             _drawingManager = new DrawingManager();
-            ISkiaWorkFlowComponent c1 = new SkiaWorkFlowComponents( 10,10,"Circle", ComponentShape.Circle) ;
-            ISkiaWorkFlowComponent c2 = new SkiaWorkFlowComponents(40, 40, "box", ComponentShape.Square);
+            SkiaComponent c1 = new Beep.Skia.Components.Button("Circle Component") { X = 10, Y = 10 };
+            SkiaComponent c2 = new Beep.Skia.Components.Button("Box Component") { X = 40, Y = 40 };
+
+            // Create an SVG component (you can replace this with your SVG file path or content)
+            SkiaComponent svgComponent = new Beep.Skia.Components.SvgImage(@"<svg width='50' height='50' xmlns='http://www.w3.org/2000/svg'><circle cx='25' cy='25' r='20' fill='blue' stroke='black' stroke-width='2'/></svg>")
+            {
+                X = 100,
+                Y = 10,
+                Width = 60,
+                Height = 60,
+                Name = "Sample SVG"
+            };
 
             _drawingManager.AddComponent(c1);
             _drawingManager.AddComponent(c2);
-            _drawingManager.ConnectComponents(c1, c2);
+            _drawingManager.AddComponent(svgComponent);
             // Subscribe to the events for handling mouse input
             skControl1.MouseMove += SkControl1_MouseMove;
             skControl1.MouseDown += SkControl1_MouseDown;
@@ -43,30 +55,27 @@ namespace Beep.Skia.Winform
 
       
 
-        public string ParentName { get; set; }
-        public string AddinName { get; set; } = "Skia Editor";
         public string Description { get; set; } = "Skia Editor";
         public string ObjectName { get; set; }
         public string ObjectType { get; set; } = "UserControl";
-        public bool DefaultCreate { get; set; }
-        public string DllPath { get; set; }
-        public string DllName { get; set; }
-        public string NameSpace { get; set; }
         public IErrorsInfo ErrorObject { get; set; }
         public IDMLogger Logger { get; set; }
         public IDMEEditor DMEEditor { get; set; }
-        public EntityStructure EntityStructure { get; set; }
-        public string EntityName { get; set; }
         public IPassedArgs Passedarg { get; set; }
 
-        IVisManager visManager;
-        BeepSKiaExtensions beepSKiaExtensions;
+        //IVisManager visManager;
+        //BeepSKiaExtensions beepSKiaExtensions;
         IBranch RootAppBranch;
         IBranch branch;
         private DrawingManager _drawingManager;
         public void Run(IPassedArgs pPassedarg)
         {
             throw new NotImplementedException();
+        }
+
+        public void Run(params object[] args)
+        {
+            // Execute with parameters
         }
 
         public void SetConfig(IDMEEditor pbl, IDMLogger plogger, IUtil putil, string[] args, IPassedArgs e, IErrorsInfo per)
@@ -76,7 +85,7 @@ namespace Beep.Skia.Winform
             ErrorObject = per;
             DMEEditor = pbl;
 
-            visManager = (IVisManager)e.Objects.Where(c => c.Name == "VISUTIL").FirstOrDefault().obj;
+            //visManager = (IVisManager)e.Objects.Where(c => c.Name == "VISUTIL").FirstOrDefault().obj;
 
             if (e.Objects.Where(c => c.Name == "Branch").Any())
             {
@@ -88,7 +97,7 @@ namespace Beep.Skia.Winform
             }
             skControl1.PaintSurface += SkControl1_PaintSurface;
             _drawingManager.DrawSurface += _drawingManager_DrawSurface;
-            beepSKiaExtensions = new BeepSKiaExtensions(DMEEditor, visManager, (ITree)visManager.Tree);
+            //beepSKiaExtensions = new BeepSKiaExtensions(DMEEditor, visManager, (ITree)visManager.Tree);
 
         }
 

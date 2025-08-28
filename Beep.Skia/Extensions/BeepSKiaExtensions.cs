@@ -7,7 +7,6 @@ using TheTechIdea.Beep.Utilities;
 using TheTechIdea.Beep.Vis;
 using TheTechIdea.Beep.Vis.Modules;
 
-
 namespace Beep.Skia
 {
     [AddinAttribute(Caption = "Skia", Name = "SkiaFunctions", ObjectType = "Beep", menu = "Beep", misc = "IFunctionExtension", addinType = AddinType.Class,iconimage ="workflow.ico",order =1)]
@@ -15,17 +14,14 @@ namespace Beep.Skia
     {
         public IDMEEditor DMEEditor { get ; set ; }
         public IPassedArgs Passedargs { get; set; }
-     
-        private FunctionandExtensionsHelpers ExtensionsHelpers;
 
-       
-        public BeepSKiaExtensions(IDMEEditor pdMEEditor, IVisManager pvisManager, ITree ptreeControl)
+        public BeepSKiaExtensions(IDMEEditor pdMEEditor, object pvisManager, object ptreeControl)
         {
             DMEEditor = pdMEEditor;
-           
-            ExtensionsHelpers = new FunctionandExtensionsHelpers(DMEEditor, pvisManager, ptreeControl);
+
+            // ExtensionsHelpers = new FunctionandExtensionsHelpers(DMEEditor, (IVisManager)pvisManager, (ITree)ptreeControl);
         }
-      
+
         [CommandAttribute(Caption = "Skia View", Name = "skiaview", Click = true, iconimage = "scenario.ico", ObjectType = "Beep", PointType = EnumPointType.Global)]
         public IErrorsInfo dataconnection(IPassedArgs Passedarguments)
         {
@@ -33,8 +29,8 @@ namespace Beep.Skia
             try
             {
                
-                ExtensionsHelpers.GetValues(Passedarguments);
-                ExtensionsHelpers.Vismanager.ShowPage("Beep_Skia_Control", (PassedArgs)DMEEditor.Passedarguments);
+                // ExtensionsHelpers.GetValues(Passedarguments);
+                // ExtensionsHelpers.Vismanager.ShowPage("Beep_Skia_Control", (PassedArgs)DMEEditor.Passedarguments);
                 // DMEEditor.AddLogMessage("Success", $"Open Data Connection", DateTime.Now, 0, null, Errors.Ok);
             }
             catch (Exception ex)
