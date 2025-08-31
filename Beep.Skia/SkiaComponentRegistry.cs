@@ -453,6 +453,69 @@ namespace Beep.Skia
         }
 
         /// <summary>
+        /// Scans the currently loaded AppDomain assemblies for types that inherit from SkiaComponent
+        /// and registers them into the component registry.
+        /// </summary>
+        /// <param name="includeSystemAssemblies">If true, will not skip assemblies with common system prefixes.</param>
+        /// <returns>List of AssemblyClassDefinition objects that were discovered and registered.</returns>
+        public static List<AssemblyClassDefinition> DiscoverAndRegisterDomainComponents(bool includeSystemAssemblies = false)
+        {
+            var results = new List<AssemblyClassDefinition>();
+
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var asm in assemblies)
+            {
+                try
+                {
+                    var asmName = asm?.GetName()?.Name ?? string.Empty;
+                    if (!includeSystemAssemblies)
+                    {
+                        if (string.IsNullOrEmpty(asmName))
+                            continue;
+                        // skip well-known system assemblies for performance
+                        if (asmName.StartsWith("System", StringComparison.OrdinalIgnoreCase)
+                            || asmName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase)
+                            || asmName.StartsWith("netstandard", StringComparison.OrdinalIgnoreCase)
+                            || asmName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+                    }
+
+                    Type[] types = null;
+                    try { types = asm.GetTypes(); } catch { try { types = asm.GetExportedTypes(); } catch { types = null; } }
+                    if (types == null) continue;
+
+                    foreach (var t in types)
+                    {
+                        try
+                        {
+                            if (t == null) continue;
+                            if (typeof(SkiaComponent).IsAssignableFrom(t) && !t.IsAbstract)
+                            {
+                                var def = new AssemblyClassDefinition();
+                                // populate minimal fields used elsewhere
+                                def.type = t;
+                                def.className = t.Name;
+                                def.dllname = asm.GetName().Name;
+                                def.AssemblyName = asm.FullName;
+                                def.componentType = "SkiaComponent";
+                                def.GuidID = Guid.NewGuid().ToString();
+
+                                AddComponent(def);
+                                results.Add(def);
+                            }
+                        }
+                        catch { /* ignore individual type failures */ }
+                    }
+                }
+                catch { /* ignore assembly scan failures */ }
+            }
+
+            return results;
+        }
+
+        /// <summary>
         /// Creates a detailed component instance with full metadata initialization.
         /// </summary>
         /// <param name="componentDefinition">The component definition to instantiate.</param>

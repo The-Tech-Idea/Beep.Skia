@@ -14,6 +14,8 @@ namespace Beep.Skia
         private readonly List<SkiaComponent> _components;
         private readonly List<SkiaComponent> _componentsToAdd;
         private readonly List<SkiaComponent> _componentsToRemove;
+    // The component that has captured the pointer after a successful mouse down
+    private SkiaComponent _capturedComponent;
         private bool _isDisposed;
         private SKCanvas _canvas;
         private DrawingContext _drawingContext;
@@ -233,6 +235,8 @@ namespace Beep.Skia
             {
                 if (component.ContainsPoint(point) && component.HandleMouseDown(point, _interactionContext))
                 {
+                    // capture the pointer so move/up continue to be delivered to this component
+                    _capturedComponent = component;
                     return true;
                 }
             }
@@ -253,6 +257,20 @@ namespace Beep.Skia
 
             _interactionContext.MousePosition = point;
             _interactionContext.Modifiers = modifiers;
+
+            // If a component captured the pointer on MouseDown, forward moves to it regardless of containment
+            if (_capturedComponent != null)
+            {
+                try
+                {
+                    if (_capturedComponent.IsVisible && _capturedComponent.IsEnabled)
+                    {
+                        if (_capturedComponent.HandleMouseMove(point, _interactionContext))
+                            return true;
+                    }
+                }
+                catch { }
+            }
 
             // Process in reverse order for proper hit testing
             foreach (var component in _components
@@ -283,6 +301,29 @@ namespace Beep.Skia
             _interactionContext.MousePosition = point;
             _interactionContext.MouseButton = button;
             _interactionContext.Modifiers = modifiers;
+
+            // If a component captured the pointer on MouseDown, forward the up to it regardless of containment
+            if (_capturedComponent != null)
+            {
+                try
+                {
+                    if (_capturedComponent.IsVisible && _capturedComponent.IsEnabled)
+                    {
+                        if (_capturedComponent.HandleMouseUp(point, _interactionContext))
+                        {
+                            // release capture after mouse up
+                            _capturedComponent = null;
+                            return true;
+                        }
+                    }
+                }
+                catch { }
+                finally
+                {
+                    // ensure capture is released even on exceptions
+                    _capturedComponent = null;
+                }
+            }
 
             // Process in reverse order for proper hit testing
             foreach (var component in _components

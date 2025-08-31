@@ -15,8 +15,14 @@ namespace Beep.Skia
         {
             if (component == null)
                 throw new ArgumentNullException(nameof(component), "Component cannot be null.");
-
             _components.Add(component);
+            // Log the component being added for debugging drop/creation coordinate issues
+            try
+            {
+                var msg = $"[DrawingManager.AddComponent] Added: Type={component.GetType().FullName} Name={component.Name} X={component.X},Y={component.Y},W={component.Width},H={component.Height}";
+                try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { }
+            }
+            catch { }
             _historyManager.ExecuteAction(new AddComponentAction(this, component));
             DrawSurface?.Invoke(this, null);
         }
@@ -114,6 +120,31 @@ namespace Beep.Skia
 
             DrawSurface?.Invoke(this, null);
         }
+
+        /// <summary>
+        /// Removes all components and connection lines from the drawing manager.
+        /// This is a safe public API intended for demos and tools.
+        /// </summary>
+        public void ClearComponents()
+        {
+            // Remove all lines
+            _lines.Clear();
+
+            // Remove all components
+            _components.Clear();
+
+            // Clear selection
+            try { _selectionManager?.ClearSelection(); } catch { }
+
+            // Notify renderers
+            DrawSurface?.Invoke(this, null);
+        }
+
+        /// <summary>
+        /// Returns a snapshot of current components.
+        /// </summary>
+        /// <returns>Read-only list of components.</returns>
+        public IReadOnlyList<SkiaComponent> GetComponents() => _components.AsReadOnly();
 
         /// <summary>
         /// Snaps an offset to the grid.

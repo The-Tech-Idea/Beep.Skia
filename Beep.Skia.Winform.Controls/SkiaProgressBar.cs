@@ -6,7 +6,7 @@ namespace Beep.Skia.Winform.Controls
 {
     [ToolboxItem(true)]
     [DesignTimeVisible(true)]
-    [Description("Design-time wrapper that creates a Skia ProgressBar component on the Skia host")]
+    [Description("Skia ProgressBar wrapper (minimal)")]
     [DisplayName("Skia ProgressBar")]
     public class SkiaProgressBar : SkiaControl
     {
@@ -15,8 +15,8 @@ namespace Beep.Skia.Winform.Controls
         public SkiaProgressBar()
         {
             _pb = CreateSkiaComponent<SkiaProgressBarComponent>();
-            _pb.Width = 120;
-            _pb.Height = 8;
+            _pb.Width = 200;
+            _pb.Height = 16;
             SkiaComponent = _pb;
         }
     }

@@ -1,5 +1,7 @@
 using SkiaSharp;
 using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace Beep.Skia
 {
@@ -120,12 +122,81 @@ namespace Beep.Skia
         /// <param name="canvas">The canvas to draw on.</param>
         public void DrawAll(SKCanvas canvas)
         {
-            // Save the canvas state
             canvas.Save();
 
-            // Apply zoom and pan transformations
-            canvas.Translate(_drawingManager.PanOffset);
+            // Ensure components have up-to-date Bounds and state before drawing.
+            var preContext = new DrawingContext
+            {
+                PanOffset = _drawingManager.PanOffset,
+                Zoom = _drawingManager.Zoom,
+                Bounds = new SKRect(0, 0, canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height)
+            };
+
+            foreach (var comp in _drawingManager.Components.ToList())
+            {
+                try
+                {
+                    // Log before and after calling Update to determine if Update is executed or throws
+                        try
+                        {
+                            var updateLog = Path.Combine(Path.GetTempPath(), "beepskia_update.log");
+                            File.AppendAllText(updateLog, $"[Rendering.PreUpdate] {DateTime.UtcNow:o} Calling Update on {comp.GetType().FullName} State={comp.State}\\n");
+                            var logPath = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
+                            File.AppendAllText(logPath, $"[Rendering.PreUpdate] Calling Update on {comp.GetType().FullName}\\n");
+                        }
+                        catch { }
+
+                        comp.Update(preContext);
+
+                        try
+                        {
+                            var updateLog = Path.Combine(Path.GetTempPath(), "beepskia_update.log");
+                            File.AppendAllText(updateLog, $"[Rendering.PostUpdate] {DateTime.UtcNow:o} Completed Update on {comp.GetType().FullName} State={comp.State}\\n");
+                            var logPath = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
+                            File.AppendAllText(logPath, $"[Rendering.PostUpdate] Completed Update on {comp.GetType().FullName}\\n");
+                        }
+                        catch { }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[Rendering] Pre-update error for {comp?.GetType().Name}: {ex.Message}");
+                }
+            }
+
+            canvas.Translate(_drawingManager.PanOffset.X, _drawingManager.PanOffset.Y);
             canvas.Scale(_drawingManager.Zoom);
+
+            // Diagnostic logging: report transform and component bounds (helpful to debug invisible palette)
+            try
+            {
+                var header = $"[Rendering] PanOffset={_drawingManager.PanOffset}, Zoom={_drawingManager.Zoom}, Components={_drawingManager.Components.Count}";
+                Debug.WriteLine(header);
+                Console.WriteLine(header);
+                try
+                {
+                    var logPath = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
+                    File.AppendAllText(logPath, header + Environment.NewLine);
+                }
+                catch { }
+
+                foreach (var c in _drawingManager.Components)
+                {
+                    try
+                    {
+                        var line = $"[Rendering] Component: Type={c.GetType().FullName}, X={c.X}, Y={c.Y}, W={c.Width}, H={c.Height}, Bounds={c.Bounds}";
+                        Debug.WriteLine(line);
+                        Console.WriteLine(line);
+                        try
+                        {
+                            var logPath = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
+                            File.AppendAllText(logPath, line + Environment.NewLine);
+                        }
+                        catch { }
+                    }
+                    catch { }
+                }
+            }
+            catch { }
 
             // Draw grid if enabled
             DrawGrid(canvas);

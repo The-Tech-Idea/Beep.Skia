@@ -22,6 +22,8 @@ namespace Beep.Skia
         private SKRect _selectionRect;
         private IConnectionPoint _sourcePoint;
         private IConnectionLine _currentLine;
+    // Component that has consumed the current mouse interaction (child components can handle their own drag)
+    private SkiaComponent _componentHandlingMouse;
 
         /// <summary>
         /// Gets a value indicating whether a component is being dragged.
@@ -86,6 +88,32 @@ namespace Beep.Skia
         {
             // Convert screen point to canvas point
             var canvasPoint = ScreenToCanvas(point);
+
+            // Give the top-most component a chance to handle the mouse down first
+            var topComponent = GetComponentAt(canvasPoint);
+            if (topComponent != null)
+            {
+                var ctx = new InteractionContext
+                {
+                    MousePosition = canvasPoint,
+                    Modifiers = (int)modifiers,
+                    Bounds = topComponent.Bounds
+                };
+
+                try
+                {
+                    if (topComponent.HandleMouseDown(canvasPoint, ctx))
+                    {
+                        // Component handled the interaction; remember it and return
+                        _componentHandlingMouse = topComponent;
+                        return;
+                    }
+                }
+                catch
+                {
+                    // swallow component exceptions to keep interaction robust
+                }
+            }
 
             // Check for line manipulation first
             var line = GetLineAt(canvasPoint);
@@ -169,6 +197,15 @@ namespace Beep.Skia
         {
             var canvasPoint = ScreenToCanvas(point);
 
+            // If a component consumed the mouse interaction, forward the up and clear
+            if (_componentHandlingMouse != null)
+            {
+                var ctx = new InteractionContext { MousePosition = canvasPoint, Modifiers = (int)modifiers };
+                try { _componentHandlingMouse.HandleMouseUp(canvasPoint, ctx); } catch { }
+                _componentHandlingMouse = null;
+                return;
+            }
+
             if (_isDraggingLine && _draggingLine != null)
             {
                 _isDraggingLine = false;
@@ -227,6 +264,14 @@ namespace Beep.Skia
         {
             var canvasPoint = ScreenToCanvas(point);
             _mousePosition = canvasPoint;
+
+            // If a component consumed the mouse interaction, forward the move
+            if (_componentHandlingMouse != null)
+            {
+                var ctx = new InteractionContext { MousePosition = canvasPoint, Modifiers = (int)modifiers };
+                try { _componentHandlingMouse.HandleMouseMove(canvasPoint, ctx); } catch { }
+                return;
+            }
 
             if (_isDraggingLine && _draggingLine != null)
             {

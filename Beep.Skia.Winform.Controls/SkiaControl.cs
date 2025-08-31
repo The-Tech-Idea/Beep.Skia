@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel;
+using System.ComponentModel.Design;
+using System.Windows.Forms.Design;
 using System.Windows.Forms;
 using Beep.Skia;
 
@@ -8,6 +10,7 @@ namespace Beep.Skia.Winform.Controls
     // Minimal WinForms wrapper base for Beep.Skia components.
     // Purpose: allow WinForms wrappers to create and hold a Skia component
     // without pulling in a large host implementation. Keep it small and safe.
+    [Designer(typeof(SkiaControlDesigner))]
     public class SkiaControl : UserControl
     {
         // Underlying Skia component instance (may be null in designer)
