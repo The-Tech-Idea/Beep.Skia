@@ -88,6 +88,11 @@ namespace Beep.Skia
         public object Theme { get; set; }
 
         /// <summary>
+        /// Gets or sets the visible bounds for clipping and optimization.
+        /// </summary>
+        public SKRect Bounds { get; set; } = SKRect.Empty;
+
+        /// <summary>
         /// Gets or sets additional context data.
         /// </summary>
         public Dictionary<string, object> Data { get; set; } = new Dictionary<string, object>();
@@ -112,6 +117,11 @@ namespace Beep.Skia
         /// Gets or sets modifier keys that were pressed during the interaction.
         /// </summary>
         public int Modifiers { get; set; }
+
+        /// <summary>
+        /// Gets or sets the visible bounds for interaction checking.
+        /// </summary>
+        public SKRect Bounds { get; set; } = SKRect.Empty;
 
         /// <summary>
         /// Gets or sets additional context data.

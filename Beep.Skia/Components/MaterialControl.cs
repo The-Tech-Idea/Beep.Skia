@@ -172,7 +172,7 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Invalidates the visual representation of the control.
         /// </summary>
-        protected virtual void InvalidateVisual()
+        public virtual void InvalidateVisual()
         {
             // In a real implementation, this would trigger a redraw
             // For now, we'll just mark the component as needing update

@@ -57,4 +57,25 @@ namespace Beep.Skia
         /// </summary>
         Out
     }
+
+    /// <summary>
+    /// Specifies the border style of a group box.
+    /// </summary>
+    public enum GroupBoxBorderStyle
+    {
+        /// <summary>
+        /// No border.
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// A standard border.
+        /// </summary>
+        Standard,
+
+        /// <summary>
+        /// An etched border.
+        /// </summary>
+        Etched
+    }
 }

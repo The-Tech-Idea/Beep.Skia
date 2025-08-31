@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beep.Skia.Loader", "Beep.Sk
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beep.Skia.Model", "Beep.Skia.Model\Beep.Skia.Model.csproj", "{3CA324AE-7052-4D95-9733-6027A3D338F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beep.Skia.Winform", "Beep.Skia.Winform\Beep.Skia.Winform.csproj", "{CFD86CFA-6D0F-4465-9244-0058FB745472}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beep.Skia.Winform.Controls", "Beep.Skia.Winform.Controls\Beep.Skia.Winform.Controls.csproj", "{EF50D50C-5EFF-F9E8-EE06-D70C5599194D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{3CA324AE-7052-4D95-9733-6027A3D338F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CA324AE-7052-4D95-9733-6027A3D338F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CA324AE-7052-4D95-9733-6027A3D338F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CFD86CFA-6D0F-4465-9244-0058FB745472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CFD86CFA-6D0F-4465-9244-0058FB745472}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CFD86CFA-6D0F-4465-9244-0058FB745472}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CFD86CFA-6D0F-4465-9244-0058FB745472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF50D50C-5EFF-F9E8-EE06-D70C5599194D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF50D50C-5EFF-F9E8-EE06-D70C5599194D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF50D50C-5EFF-F9E8-EE06-D70C5599194D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF50D50C-5EFF-F9E8-EE06-D70C5599194D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

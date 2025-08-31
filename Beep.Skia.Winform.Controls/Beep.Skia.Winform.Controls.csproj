@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0-windows</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Authors>The Tech Idea</Authors>
+		<Company>The Tech Idea</Company>
+		<Copyright>2025</Copyright>
+		<PackageProjectUrl>https://github.com/The-Tech-Idea/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/The-Tech-Idea/Beep.Skia</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Description>Windows Forms controls for Beep.Skia components - Design-time toolbox support</Description>
+		<PackageTags>skia, windows-forms, controls, design-time, toolbox</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" Version="3.119.0" />
+		<PackageReference Include="SkiaSharp.Views.WindowsForms" Version="3.119.0" />
+		<PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="2.0.79" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Beep.Skia\Beep.Skia.csproj" />
+		<ProjectReference Include="..\Beep.Skia.Model\Beep.Skia.Model.csproj" />
+	</ItemGroup>
+
+	<Target Name="CopyPackage" AfterTargets="Pack">
+		<Copy SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="..\..\..\LocalNugetFiles" />
+	</Target>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Copy SourceFiles="$(TargetDir)$(PackageId).dll" DestinationFolder="$(ProjectDir)..\..\outputDLL\$(PackageId)\$(TargetFramework)" SkipUnchangedFiles="false" />
+	</Target>
+</Project>
