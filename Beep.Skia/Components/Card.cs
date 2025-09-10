@@ -312,7 +312,8 @@ namespace Beep.Skia.Components
         /// </summary>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            var cardBounds = new SKRect(0, 0, Width, Height);
+            // Absolute coordinate rectangle
+            var cardBounds = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw card shadow/elevation
             DrawCardShadow(canvas, cardBounds);

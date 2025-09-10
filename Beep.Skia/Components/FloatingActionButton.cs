@@ -212,8 +212,9 @@ namespace Beep.Skia.Components
         protected override void DrawContent(SKCanvas canvas, DrawingContext drawingContext)
         {
             float radius = _size / 2;
-            float centerX = _isExtended ? radius + _extendedPadding : radius;
-            float centerY = radius;
+            // Absolute centers
+            float centerX = X + (_isExtended ? radius + _extendedPadding : radius);
+            float centerY = Y + radius;
 
             // Draw shadow/elevation
             using (var shadowPaint = new SKPaint
@@ -234,8 +235,8 @@ namespace Beep.Skia.Components
             {
                 if (_isExtended)
                 {
-                    // Draw extended FAB (rounded rectangle)
-                    var rect = new SKRect(_extendedPadding, 0, Width - _extendedPadding, Height);
+                    // Draw extended FAB (rounded rectangle) in absolute space
+                    var rect = new SKRect(X + _extendedPadding, Y, X + Width - _extendedPadding, Y + Height);
                     canvas.DrawRoundRect(rect, radius, radius, backgroundPaint);
                 }
                 else
@@ -257,7 +258,7 @@ namespace Beep.Skia.Components
                 {
                     if (_isExtended)
                     {
-                        var rect = new SKRect(_extendedPadding, 0, Width - _extendedPadding, Height);
+                        var rect = new SKRect(X + _extendedPadding, Y, X + Width - _extendedPadding, Y + Height);
                         canvas.DrawRoundRect(rect, radius, radius, statePaint);
                     }
                     else
@@ -267,38 +268,32 @@ namespace Beep.Skia.Components
                 }
             }
 
-            // Draw icon
+            // Draw icon (modern SKFont API)
             if (!string.IsNullOrEmpty(_icon))
             {
-                using (var textPaint = new SKPaint
-                {
-                    Color = _iconColor,
-                    TextSize = _iconSize,
-                    TextAlign = SKTextAlign.Center,
-                    Typeface = SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal)
-                })
+                using (var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), _iconSize))
+                using (var textPaint = new SKPaint { Color = _iconColor, IsAntialias = true })
                 {
                     float textX = centerX;
                     float textY = centerY + _iconSize / 3;
-                    canvas.DrawText(_icon, textX, textY, textPaint);
+                    canvas.DrawText(_icon, textX, textY, SKTextAlign.Center, font, textPaint);
                 }
             }
 
             // Draw extended text
             if (_isExtended && !string.IsNullOrEmpty(_extendedText))
             {
-                using (var textPaint = new SKPaint
+                using (var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), 16))
+                using (var textPaint = new SKPaint { Color = _iconColor, IsAntialias = true })
                 {
-                    Color = _iconColor,
-                    TextSize = 16,
-                    Typeface = SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal)
-                })
-                {
-                    var textBounds = new SKRect();
-                    textPaint.MeasureText(_extendedText, ref textBounds);
+                    // Measure text using font
+                    // MeasureText overload with string returns advance; approximate vertical positioning
+                    float advance = font.MeasureText(_extendedText);
                     float textX = centerX + radius + 16;
-                    float textY = centerY + textBounds.Height / 3;
-                    canvas.DrawText(_extendedText, textX, textY, textPaint);
+                    // Approx baseline adjustment using font metrics
+                    var metrics = font.Metrics;
+                    float textY = centerY + (metrics.CapHeight / 2);
+                    canvas.DrawText(_extendedText, textX, textY, SKTextAlign.Left, font, textPaint);
                 }
             }
         }
@@ -312,14 +307,14 @@ namespace Beep.Skia.Components
         {
             if (_isExtended)
             {
-                // Rectangular bounds for extended FAB
-                return point.X >= 0 && point.X <= Width && point.Y >= 0 && point.Y <= Height;
+                // Rectangular bounds for extended FAB (absolute)
+                return point.X >= X && point.X <= X + Width && point.Y >= Y && point.Y <= Y + Height;
             }
             else
             {
-                // Circular bounds for regular FAB
-                float centerX = _size / 2;
-                float centerY = _size / 2;
+                // Circular bounds for regular FAB (absolute center)
+                float centerX = X + _size / 2;
+                float centerY = Y + _size / 2;
                 float radius = _size / 2;
                 float distance = (float)Math.Sqrt(Math.Pow(point.X - centerX, 2) + Math.Pow(point.Y - centerY, 2));
                 return distance <= radius;

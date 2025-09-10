@@ -640,6 +640,9 @@ namespace Beep.Skia.Components
             // Draw time dialog if open
             if (_isOpen && _timeDialog != null)
             {
+                // Reposition dialog relative to current absolute control location
+                _timeDialog.X = X;
+                _timeDialog.Y = Y + Height + 8;
                 _timeDialog.Draw(canvas, context);
             }
         }

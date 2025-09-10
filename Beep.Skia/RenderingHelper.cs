@@ -201,10 +201,18 @@ namespace Beep.Skia
             // Draw grid if enabled
             DrawGrid(canvas);
 
+            // Create a single, correct context to be passed to all components
+            var drawingContext = new DrawingContext
+            {
+                PanOffset = _drawingManager.PanOffset,
+                Zoom = _drawingManager.Zoom,
+                Bounds = canvas.DeviceClipBounds
+            };
+
             // Draw components
             foreach (var component in _drawingManager.Components)
             {
-                component.Draw(canvas);
+                component.Draw(canvas, drawingContext);
             }
 
             // Draw connection lines

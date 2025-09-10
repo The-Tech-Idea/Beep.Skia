@@ -188,29 +188,28 @@ namespace Beep.Skia.Components
                     }
                 }
 
-                // Draw item text
+                // Draw item text (modern SKFont baseline centering)
                 if (!string.IsNullOrEmpty(item.Text))
                 {
-                    using (var font = new SKFont())
+                    using (var font = new SKFont(SKTypeface.Default, 14))
                     {
-                        font.Size = 14;
-                        font.Typeface = SKTypeface.Default;
-
                         var textColor = item.IsEnabled ? item.TextColor : MaterialDesignColors.OnSurfaceVariant;
-
-                        using (var textPaint = new SKPaint(font)
+                        using (var textPaint = new SKPaint
                         {
                             Color = textColor,
                             IsAntialias = true
                         })
                         {
-                            var textBounds = new SKRect();
-                            textPaint.MeasureText(item.Text, ref textBounds);
+                            // Measure width for horizontal centering
+                            float textWidth = font.MeasureText(item.Text);
+                            float textX = currentX + (item.Width - textWidth) / 2f; // centered width
 
-                            float textX = currentX + (item.Width - textBounds.Width) / 2;
-                            float textY = Y + Height / 2 + textBounds.Height / 2;
+                            // Vertical centering using cap height for a visually balanced baseline
+                            var metrics = font.Metrics; // ascent negative, descent positive
+                            float capHeight = metrics.CapHeight; // positive
+                            float baseline = Y + (Height + capHeight) / 2f; // center cap height visually
 
-                            canvas.DrawText(item.Text, textX, textY, textPaint);
+                            canvas.DrawText(item.Text, textX, baseline, SKTextAlign.Left, font, textPaint);
                         }
                     }
                 }

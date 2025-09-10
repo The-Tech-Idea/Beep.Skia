@@ -454,7 +454,7 @@ namespace Beep.Skia.Components
         {
             UpdateCursorBlink();
 
-            var textBoxRect = new SKRect(0, 0, Width, Height);
+            var textBoxRect = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw background
             DrawBackground(canvas, textBoxRect);
@@ -553,17 +553,10 @@ namespace Beep.Skia.Components
         /// </summary>
         private void DrawLabel(SKCanvas canvas)
         {
-            using (var labelPaint = new SKPaint
-            {
-                Color = _hasFocus || !string.IsNullOrEmpty(_text) ? LabelColor : PlaceholderColor,
-                TextSize = 12,
-                IsAntialias = true,
-                Typeface = SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal)
-            })
-            {
-                float labelY = -8;
-                canvas.DrawText(_label, 0, labelY, labelPaint);
-            }
+            using var font = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), 12);
+            using var paint = new SKPaint { Color = _hasFocus || !string.IsNullOrEmpty(_text) ? LabelColor : PlaceholderColor, IsAntialias = true };
+            float baseline = Y - 8; // Preserve original positioning logic
+            canvas.DrawText(_label, X, baseline, SKTextAlign.Left, font, paint);
         }
 
         /// <summary>
@@ -572,8 +565,8 @@ namespace Beep.Skia.Components
         private float DrawLeadingIcon(SKCanvas canvas)
         {
             float iconSize = 20;
-            float iconX = 12;
-            float iconY = (Height - iconSize) / 2;
+            float iconX = X + 12;
+            float iconY = Y + (Height - iconSize) / 2;
 
             DrawSvgIcon(canvas, _leadingIcon, iconX, iconY, iconSize, iconSize, PlaceholderColor);
             return iconSize + 24; // Icon size + padding
@@ -585,8 +578,8 @@ namespace Beep.Skia.Components
         private float DrawTrailingIcon(SKCanvas canvas)
         {
             float iconSize = 20;
-            float iconX = Width - iconSize - 12;
-            float iconY = (Height - iconSize) / 2;
+            float iconX = X + Width - iconSize - 12;
+            float iconY = Y + (Height - iconSize) / 2;
 
             DrawSvgIcon(canvas, _trailingIcon, iconX, iconY, iconSize, iconSize, PlaceholderColor);
             return iconSize + 24; // Icon size + padding
@@ -599,26 +592,16 @@ namespace Beep.Skia.Components
         {
             string displayText = GetDisplayText();
             bool isPlaceholder = string.IsNullOrEmpty(displayText);
-
-            using (var textPaint = new SKPaint
+            using var font = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), _fontSize);
+            using var paint = new SKPaint { Color = isPlaceholder ? PlaceholderColor : TextColor, IsAntialias = true };
+            string textToDraw = isPlaceholder ? _placeholder : displayText;
+            float textX = X + leadingOffset + 16;
+            var metrics = font.Metrics;
+            float baseline = Y + Height / 2 + metrics.CapHeight / 2f;
+            float maxTextWidth = Width - leadingOffset - trailingOffset - 32;
+            if (maxTextWidth > 0)
             {
-                Color = isPlaceholder ? PlaceholderColor : TextColor,
-                TextSize = _fontSize,
-                IsAntialias = true,
-                Typeface = SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal)
-            })
-            {
-                string textToDraw = isPlaceholder ? _placeholder : displayText;
-                float textX = leadingOffset + 16;
-                float textY = Height / 2 + _fontSize / 3;
-
-                // Handle text alignment and clipping
-                float maxTextWidth = Width - leadingOffset - trailingOffset - 32;
-                if (maxTextWidth > 0)
-                {
-                    // Simple text clipping for now
-                    canvas.DrawText(textToDraw, textX, textY, textPaint);
-                }
+                canvas.DrawText(textToDraw, textX, baseline, SKTextAlign.Left, font, paint);
             }
         }
 
@@ -628,34 +611,19 @@ namespace Beep.Skia.Components
         private void DrawCursor(SKCanvas canvas, float leadingOffset)
         {
             if (_cursorPosition < 0 || _cursorPosition > _text.Length) return;
-
-            using (var cursorPaint = new SKPaint
+            using var cursorPaint = new SKPaint { Color = TextColor, StrokeWidth = 1, Style = SKPaintStyle.Stroke };
+            using var font = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), _fontSize);
+            string textBeforeCursor = GetDisplayText().Substring(0, _cursorPosition);
+            float cursorX = leadingOffset + 16;
+            if (!string.IsNullOrEmpty(textBeforeCursor))
             {
-                Color = TextColor,
-                StrokeWidth = 1,
-                Style = SKPaintStyle.Stroke
-            })
-            {
-                string textBeforeCursor = GetDisplayText().Substring(0, _cursorPosition);
-                float cursorX = leadingOffset + 16;
-
-                if (!string.IsNullOrEmpty(textBeforeCursor))
-                {
-                    using (var measurePaint = new SKPaint
-                    {
-                        TextSize = _fontSize,
-                        Typeface = SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal)
-                    })
-                    {
-                        cursorX += measurePaint.MeasureText(textBeforeCursor);
-                    }
-                }
-
-                float cursorY1 = Height / 2 - _fontSize / 2;
-                float cursorY2 = Height / 2 + _fontSize / 2;
-
-                canvas.DrawLine(cursorX, cursorY1, cursorX, cursorY2, cursorPaint);
+                cursorX += font.MeasureText(textBeforeCursor);
             }
+            var metrics = font.Metrics;
+            float midY = Y + Height / 2f;
+            float cursorY1 = midY - metrics.CapHeight / 2f;
+            float cursorY2 = midY + metrics.CapHeight / 2f;
+            canvas.DrawLine(cursorX, cursorY1, cursorX, cursorY2, cursorPaint);
         }
 
         /// <summary>
@@ -663,17 +631,10 @@ namespace Beep.Skia.Components
         /// </summary>
         private void DrawErrorMessage(SKCanvas canvas)
         {
-            using (var errorPaint = new SKPaint
-            {
-                Color = MaterialControl.MaterialColors.Error,
-                TextSize = 12,
-                IsAntialias = true,
-                Typeface = SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal)
-            })
-            {
-                float errorY = Height + 20;
-                canvas.DrawText(_errorMessage, 0, errorY, errorPaint);
-            }
+            using var font = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), 12);
+            using var paint = new SKPaint { Color = MaterialControl.MaterialColors.Error, IsAntialias = true };
+            float baseline = Y + Height + 20;
+            canvas.DrawText(_errorMessage, X, baseline, SKTextAlign.Left, font, paint);
         }
 
         /// <summary>

@@ -93,28 +93,49 @@ namespace Beep.Skia.Sample.WinForms
                     palette.ItemDropped += (sender, args) =>
                     {
                         var item = args.Item;
-                        var point = args.DropPoint;
-                        // Temporary diagnostic logging to confirm drop handling
+                        var point = args.DropPoint; // canvas coordinates
                         System.Diagnostics.Trace.WriteLine($"Palette.ItemDropped: {item?.Name} at SKPoint({point.X},{point.Y})");
                         Console.WriteLine($"Palette.ItemDropped: {item?.Name} at SKPoint({point.X},{point.Y})");
+                        try
+                        {
+                            var dbg = skiaHostControl1?.DrawingManager;
+                            if (dbg != null)
+                            {
+                                var msg = $"[PaletteDrop] PanOffset={dbg.PanOffset} Zoom={dbg.Zoom} RawDrop=({point.X},{point.Y})";
+                                Console.WriteLine(msg);
+                                try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { }
+                            }
+                        }
+                        catch { }
 
-                        // Create a descriptor positioned at the drop point
                         try
                         {
                             var w = 120f;
                             var h = 36f;
-                            // center the new component on the drop point
+                            bool center = false;
+                            try { center = skiaHostControl1.CenterOnDrop; } catch { }
+                            float x = center ? point.X - w / 2f : point.X;
+                            float y = center ? point.Y - h / 2f : point.Y;
+                            x = Math.Max(0f, x);
+                            y = Math.Max(0f, y);
+
                             var desc = new Beep.Skia.Winform.Controls.SkiaComponentDescriptor
                             {
                                 ComponentType = item.ComponentType,
-                                X = Math.Max(0f, point.X - w / 2f),
-                                Y = Math.Max(0f, point.Y - h / 2f),
+                                X = x,
+                                Y = y,
                                 Width = w,
                                 Height = h,
                                 Name = "skia" + DateTime.Now.Ticks.ToString("x")
                             };
+                            try
+                            {
+                                var placementMsg = $"[PaletteDrop] DescriptorPlacement Type={item.ComponentType} W={w} H={h} X={x} Y={y} CenterOnDrop={center}";
+                                Console.WriteLine(placementMsg);
+                                try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, placementMsg + Environment.NewLine); } catch { }
+                            }
+                            catch { }
                             var created = skiaHostControl1.CreateAndAddComponentFromDescriptor(desc);
-                            // Log the created component position to verify placement
                             try
                             {
                                 if (created != null)
@@ -158,13 +179,17 @@ namespace Beep.Skia.Sample.WinForms
         {
             var type = typeof(Beep.Skia.Components.Button);
             var name = "btn" + DateTime.Now.Ticks.ToString("x");
-            skiaHostControl1.CreateAndAddComponent(type, 40, 40, 120, 36, name);
+            Console.WriteLine($"[TEST] About to create Button at X=100, Y=150");
+            var created = skiaHostControl1.CreateAndAddComponent(type, 100, 150, 120, 36, name);
+            Console.WriteLine($"[TEST] Button created: X={created?.X}, Y={created?.Y}");
         }
 
         private void AddSkiaLabel()
         {
             var type = typeof(Beep.Skia.Components.Label);
-            var comp = skiaHostControl1.CreateAndAddComponent(type, 160, 80, 140, 32, "lbl" + DateTime.Now.Ticks.ToString("x"));
+            Console.WriteLine($"[TEST] About to create Label at X=200, Y=250");
+            var comp = skiaHostControl1.CreateAndAddComponent(type, 200, 250, 140, 32, "lbl" + DateTime.Now.Ticks.ToString("x"));
+            Console.WriteLine($"[TEST] Label created: X={comp?.X}, Y={comp?.Y}");
             // Apply a few properties if the component supports them
             try { if (comp is Beep.Skia.Components.Label l) l.Text = "Hello Skia"; } catch { }
         }

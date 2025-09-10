@@ -102,8 +102,8 @@ namespace Beep.Skia.Components
         /// </summary>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            float centerX = Width / 2;
-            float centerY = Height / 2;
+            float centerX = X + Width / 2;
+            float centerY = Y + Height / 2;
             float radius = Math.Min(Width, Height) / 2 - _thickness;
 
             using (var paint = new SKPaint())

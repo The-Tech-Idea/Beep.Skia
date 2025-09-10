@@ -15,12 +15,26 @@ namespace Beep.Skia
         {
             if (component == null)
                 throw new ArgumentNullException(nameof(component), "Component cannot be null.");
+            try
+            {
+                var preListPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log");
+                var snapshot = string.Join(",", _components.Select(c => c.Name + "@" + c.X + "," + c.Y));
+                System.IO.File.AppendAllText(preListPath, $"[AddComponent.Pre] Count={_components.Count} Existing=[{snapshot}]\n");
+            }
+            catch { }
             _components.Add(component);
             // Log the component being added for debugging drop/creation coordinate issues
             try
             {
                 var msg = $"[DrawingManager.AddComponent] Added: Type={component.GetType().FullName} Name={component.Name} X={component.X},Y={component.Y},W={component.Width},H={component.Height}";
                 try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { }
+            }
+            catch { }
+            try
+            {
+                var postListPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log");
+                var snapshot2 = string.Join(",", _components.Select(c => c.Name + "@" + c.X + "," + c.Y));
+                System.IO.File.AppendAllText(postListPath, $"[AddComponent.Post] Count={_components.Count} Existing=[{snapshot2}]\n");
             }
             catch { }
             _historyManager.ExecuteAction(new AddComponentAction(this, component));

@@ -452,7 +452,7 @@ namespace Beep.Skia.Components
         /// <param name="context">The drawing context.</param>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            var bounds = new SKRect(0, 0, Width, Height);
+            var bounds = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw background
             using (var backgroundPaint = new SKPaint())
@@ -476,10 +476,10 @@ namespace Beep.Skia.Components
             {
                 var item = _items[i];
                 var segmentBounds = new SKRect(
-                    i * segmentWidth,
-                    0,
-                    (i + 1) * segmentWidth,
-                    Height
+                    X + i * segmentWidth,
+                    Y,
+                    X + (i + 1) * segmentWidth,
+                    Y + Height
                 );
 
                 DrawSegment(canvas, item, segmentBounds, i == 0, i == _items.Count - 1);
@@ -487,7 +487,7 @@ namespace Beep.Skia.Components
                 // Draw divider (except for the last segment)
                 if (_showDividers && i < _items.Count - 1)
                 {
-                    DrawDivider(canvas, (i + 1) * segmentWidth);
+                    DrawDivider(canvas, X + (i + 1) * segmentWidth);
                 }
             }
         }
@@ -570,24 +570,13 @@ namespace Beep.Skia.Components
         {
             if (string.IsNullOrEmpty(item.Text))
                 return;
+            using var font = new SKFont(SKTypeface.Default, 14);
+            using var paint = new SKPaint { Color = item.IsSelected ? _selectedTextColor : _unselectedTextColor, IsAntialias = true };
 
-            using (var textPaint = new SKPaint())
-            {
-                textPaint.Color = item.IsSelected ? _selectedTextColor : _unselectedTextColor;
-                textPaint.TextSize = 14;
-                textPaint.IsAntialias = true;
-                textPaint.TextAlign = SKTextAlign.Center;
-
-                // Measure text
-                var textBounds = new SKRect();
-                textPaint.MeasureText(item.Text, ref textBounds);
-
-                // Calculate text position
-                float textY = bounds.MidY - textBounds.MidY;
-
-                // Draw text
-                canvas.DrawText(item.Text, bounds.MidX, textY, textPaint);
-            }
+            // Center text vertically using cap height
+            var metrics = font.Metrics;
+            float baseline = bounds.MidY + metrics.CapHeight / 2f;
+            canvas.DrawText(item.Text, bounds.MidX, baseline, SKTextAlign.Center, font, paint);
         }
 
         /// <summary>

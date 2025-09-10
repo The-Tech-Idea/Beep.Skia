@@ -491,7 +491,7 @@ namespace Beep.Skia.Components
         /// </summary>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            var bounds = new SKRect(0, 0, Width, Height);
+            var bounds = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw the main dropdown field
             DrawDropdownField(canvas, bounds);
@@ -597,18 +597,11 @@ namespace Beep.Skia.Components
         {
             if (string.IsNullOrEmpty(_label))
                 return;
-
-            float labelY = bounds.Top - 8;
             float labelX = bounds.Left;
-
-            using (var paint = new SKPaint())
-            {
-                paint.Color = LabelColor;
-                paint.TextSize = _fontSize * 0.75f; // Smaller font for label
-                paint.IsAntialias = true;
-
-                canvas.DrawText(_label, labelX, labelY, paint);
-            }
+            using var font = new SKFont(SKTypeface.Default, _fontSize * 0.75f);
+            using var paint = new SKPaint { Color = LabelColor, IsAntialias = true };
+            float baseline = bounds.Top - 8; // keep layout
+            canvas.DrawText(_label, labelX, baseline, SKTextAlign.Left, font, paint);
         }
 
         /// <summary>
@@ -633,14 +626,11 @@ namespace Beep.Skia.Components
             }
 
             // Draw text
-            using (var paint = new SKPaint())
-            {
-                paint.Color = textColor;
-                paint.TextSize = _fontSize;
-                paint.IsAntialias = true;
-
-                canvas.DrawText(displayText, contentX, textY, paint);
-            }
+            using var font = new SKFont(SKTypeface.Default, _fontSize);
+            using var paint = new SKPaint { Color = textColor, IsAntialias = true };
+            // Replace previous baseline formula with cap-height centering
+            float baseline = bounds.Top + (bounds.Height + font.Metrics.CapHeight) / 2f;
+            canvas.DrawText(displayText, contentX, baseline, SKTextAlign.Left, font, paint);
         }
 
         /// <summary>
@@ -650,18 +640,10 @@ namespace Beep.Skia.Components
         {
             if (string.IsNullOrEmpty(_errorMessage))
                 return;
-
-            float errorY = bounds.Bottom + 20;
-            float errorX = bounds.Left;
-
-            using (var paint = new SKPaint())
-            {
-                paint.Color = MaterialColors.Error;
-                paint.TextSize = _fontSize * 0.75f;
-                paint.IsAntialias = true;
-
-                canvas.DrawText(_errorMessage, errorX, errorY, paint);
-            }
+            using var font = new SKFont(SKTypeface.Default, _fontSize * 0.75f);
+            using var paint = new SKPaint { Color = MaterialColors.Error, IsAntialias = true };
+            float baseline = bounds.Bottom + 20;
+            canvas.DrawText(_errorMessage, bounds.Left, baseline, SKTextAlign.Left, font, paint);
         }
 
         /// <summary>
@@ -725,10 +707,10 @@ namespace Beep.Skia.Components
                     }
 
                     // Draw item text
-                    paint.Color = MaterialColors.OnSurface;
-                    float textY = currentY + (itemHeight + _fontSize) / 2;
-
-                    canvas.DrawText(item.Text, contentX, textY, paint);
+                    using var itemFont = new SKFont(SKTypeface.Default, _fontSize);
+                    using var itemPaint = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
+                    float baseline = currentY + (itemHeight + itemFont.Metrics.CapHeight) / 2f;
+                    canvas.DrawText(item.Text, contentX, baseline, SKTextAlign.Left, itemFont, itemPaint);
 
                     currentY += itemHeight;
                 }

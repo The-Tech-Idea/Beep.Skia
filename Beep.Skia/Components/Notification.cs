@@ -118,13 +118,13 @@ namespace Beep.Skia.Components
             {
                 paint.Color = backgroundColor;
                 paint.Style = SKPaintStyle.Fill;
-                canvas.DrawRoundRect(0, 0, Width, Height, 8, 8, paint);
+                canvas.DrawRoundRect(new SKRect(X, Y, X + Width, Y + Height), 8, 8, paint);
 
                 // Draw border
                 paint.Color = GetBorderColor();
                 paint.Style = SKPaintStyle.Stroke;
                 paint.StrokeWidth = 1;
-                canvas.DrawRoundRect(0, 0, Width, Height, 8, 8, paint);
+                canvas.DrawRoundRect(new SKRect(X, Y, X + Width, Y + Height), 8, 8, paint);
             }
 
             // Draw icon based on type

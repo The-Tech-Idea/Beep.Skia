@@ -518,17 +518,13 @@ namespace Beep.Skia.Components
 
         private void DrawLabel(SKCanvas canvas)
         {
-            using (var labelPaint = new SKPaint())
-            {
-                labelPaint.Color = MaterialDesignColors.OnSurface;
-                labelPaint.TextSize = 14f;
-                labelPaint.IsAntialias = true;
+            using var font = new SKFont(SKTypeface.Default, 14f);
+            using var paint = new SKPaint { Color = MaterialDesignColors.OnSurface, IsAntialias = true };
 
-                float labelX = 0;
-                float labelY = Height / 2 - TrackHeight / 2 - 8;
-
-                canvas.DrawText(_label, labelX, labelY, labelPaint);
-            }
+            float labelX = 0;
+            // Existing logic positions baseline above the track; keep same baseline position.
+            float labelBaseline = Height / 2 - TrackHeight / 2 - 8;
+            canvas.DrawText(_label, labelX, labelBaseline, SKTextAlign.Left, font, paint);
         }
 
         private void DrawValueLabel(SKCanvas canvas)
@@ -539,17 +535,12 @@ namespace Beep.Skia.Components
                 valueText += $" - {string.Format(_valueLabelFormat, _secondaryValue)}";
             }
 
-            using (var valuePaint = new SKPaint())
-            {
-                valuePaint.Color = MaterialDesignColors.OnSurfaceVariant;
-                valuePaint.TextSize = 12f;
-                valuePaint.IsAntialias = true;
-
-                float valueX = Width - valuePaint.MeasureText(valueText);
-                float valueY = Height / 2 - TrackHeight / 2 - 8;
-
-                canvas.DrawText(valueText, valueX, valueY, valuePaint);
-            }
+            using var font = new SKFont(SKTypeface.Default, 12f);
+            using var paint = new SKPaint { Color = MaterialDesignColors.OnSurfaceVariant, IsAntialias = true };
+            float valueWidth = font.MeasureText(valueText);
+            float valueX = Width - valueWidth;
+            float valueBaseline = Height / 2 - TrackHeight / 2 - 8;
+            canvas.DrawText(valueText, valueX, valueBaseline, SKTextAlign.Left, font, paint);
         }
 
         private float ValueToPosition(double value)
@@ -644,7 +635,7 @@ namespace Beep.Skia.Components
 
             // Update hover state
             bool wasHovered = _isHovered;
-            _isHovered = new SKRect(0, 0, Width, Height).Contains(point);
+            _isHovered = new SKRect(X, Y, X + Width, Y + Height).Contains(point);
 
             if (wasHovered != _isHovered)
             {

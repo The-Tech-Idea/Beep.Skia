@@ -19,7 +19,7 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Gets the list of cascading menu items.
         /// </summary>
-        public IReadOnlyList<CascadingMenuItem> Items => _items.AsReadOnly();
+    public new IReadOnlyList<CascadingMenuItem> Items => _items.AsReadOnly();
 
         /// <summary>
         /// Gets or sets the delay before showing submenus (in milliseconds).
@@ -93,7 +93,7 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Clears all cascading menu items.
         /// </summary>
-        public void ClearItems()
+    public new void ClearItems()
         {
             HideSubmenu();
 
@@ -358,7 +358,7 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Gets or sets whether the item is selected.
         /// </summary>
-        public bool IsSelected
+    public new bool IsSelected
         {
             get => _isSelected;
             set
@@ -376,7 +376,7 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Occurs when the menu item is clicked.
         /// </summary>
-        public event EventHandler Clicked;
+    public new event EventHandler Clicked;
 
         /// <summary>
         /// Initializes a new instance of the CascadingMenuItem class.
@@ -417,63 +417,67 @@ namespace Beep.Skia.Components
             var bounds = Bounds;
 
             // Draw background based on state
-            using (var paint = new SKPaint())
+            using (var bgPaint = new SKPaint())
             {
-                paint.IsAntialias = true;
+                bgPaint.IsAntialias = true;
 
                 if (IsSelected || IsHovered)
                 {
-                    paint.Color = IsSelected ? MaterialColors.OnSurface.WithAlpha(12) :
+                    bgPaint.Color = IsSelected ? MaterialColors.OnSurface.WithAlpha(12) :
                                                MaterialColors.OnSurface.WithAlpha(8);
-                    paint.Style = SKPaintStyle.Fill;
-                    canvas.DrawRect(bounds, paint);
+                    bgPaint.Style = SKPaintStyle.Fill;
+                    canvas.DrawRect(bounds, bgPaint);
                 }
             }
 
-            // Draw content
-            using (var paint = new SKPaint())
+            // Draw content (modern text rendering)
+            float leftPadding = 12f;
+            float rightPadding = 32f;
+
+            using var iconFont = new SKFont(SKTypeface.Default, 16f);
+            using var textFont = new SKFont(SKTypeface.Default, 14f);
+            using var shortcutFont = new SKFont(SKTypeface.Default, 12f);
+            using var arrowFont = new SKFont(SKTypeface.Default, 12f);
+
+            float baseline = bounds.Top + (bounds.Height + textFont.Metrics.CapHeight) / 2f;
+
+            float cursorX = bounds.Left + leftPadding;
+
+            using var paint = new SKPaint { IsAntialias = true };
+
+            // Icon
+            if (!string.IsNullOrEmpty(Icon))
             {
-                paint.IsAntialias = true;
-                paint.TextSize = 14f;
+                paint.Color = MaterialColors.OnSurfaceVariant;
+                float iconBaseline = bounds.Top + (bounds.Height + iconFont.Metrics.CapHeight) / 2f;
+                canvas.DrawText(Icon, cursorX, iconBaseline, SKTextAlign.Left, iconFont, paint);
+                cursorX += iconFont.MeasureText(Icon) + 8f;
+            }
 
-                float leftPadding = 12f;
-                float rightPadding = 32f; // Space for submenu arrow
-                float contentY = bounds.Top + bounds.Height / 2 + 5;
+            // Text
+            paint.Color = MaterialColors.OnSurface;
+            canvas.DrawText(Text, cursorX, baseline, SKTextAlign.Left, textFont, paint);
+            float textWidth = textFont.MeasureText(Text);
 
-                // Draw icon if present
-                float textX = bounds.Left + leftPadding;
-                if (!string.IsNullOrEmpty(Icon))
-                {
-                    paint.Color = MaterialColors.OnSurfaceVariant;
-                    paint.TextSize = 16f;
-                    canvas.DrawText(Icon, textX, contentY, paint);
-                    textX += 24f; // Move text position after icon
-                }
+            // Shortcut
+            float arrowWidth = HasSubmenu ? arrowFont.MeasureText("▶") + 8f : 0f;
+            float shortcutWidth = 0f;
+            if (!string.IsNullOrEmpty(Shortcut))
+            {
+                shortcutWidth = shortcutFont.MeasureText(Shortcut);
+                paint.Color = MaterialColors.OnSurfaceVariant;
+                float shortcutBaseline = bounds.Top + (bounds.Height + shortcutFont.Metrics.CapHeight) / 2f;
+                float shortcutX = bounds.Right - rightPadding - arrowWidth - shortcutWidth;
+                canvas.DrawText(Shortcut, shortcutX, shortcutBaseline, SKTextAlign.Left, shortcutFont, paint);
+            }
 
-                // Draw text
-                paint.Color = MaterialColors.OnSurface;
-                paint.TextSize = 14f;
-                canvas.DrawText(Text, textX, contentY, paint);
-
-                // Draw shortcut if present
-                if (!string.IsNullOrEmpty(Shortcut))
-                {
-                    paint.Color = MaterialColors.OnSurfaceVariant;
-                    paint.TextSize = 12f;
-                    var shortcutBounds = new SKRect();
-                    paint.MeasureText(Shortcut, ref shortcutBounds);
-                    float shortcutX = bounds.Right - rightPadding - shortcutBounds.Width;
-                    canvas.DrawText(Shortcut, shortcutX, contentY, paint);
-                }
-
-                // Draw submenu indicator
-                if (HasSubmenu)
-                {
-                    paint.Color = MaterialColors.OnSurfaceVariant;
-                    paint.TextSize = 12f;
-                    float arrowX = bounds.Right - 20;
-                    canvas.DrawText("▶", arrowX, contentY, paint);
-                }
+            // Arrow
+            if (HasSubmenu)
+            {
+                paint.Color = MaterialColors.OnSurfaceVariant;
+                float arrowBaseline = bounds.Top + (bounds.Height + arrowFont.Metrics.CapHeight) / 2f;
+                float arrowX = bounds.Right - 20 - arrowFont.MeasureText("▶") / 2f; // maintain original spacing feel
+                canvas.DrawText("▶", arrowX, arrowBaseline, SKTextAlign.Left, arrowFont, paint);
             }
         }
 

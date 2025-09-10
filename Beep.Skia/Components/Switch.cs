@@ -267,7 +267,7 @@ namespace Beep.Skia.Components
         {
             base.OnMouseDown(point, context);
 
-            if (new SKRect(0, 0, Width, Height).Contains(point))
+            if (new SKRect(X, Y, X + Width, Y + Height).Contains(point))
             {
                 _isPressed = true;
                 RefreshVisual();
@@ -281,7 +281,7 @@ namespace Beep.Skia.Components
         {
             base.OnMouseUp(point, context);
 
-            if (_isPressed && new SKRect(0, 0, Width, Height).Contains(point))
+            if (_isPressed && new SKRect(X, Y, X + Width, Y + Height).Contains(point))
             {
                 // Toggle the switch state
                 IsChecked = !_isChecked;
@@ -298,7 +298,7 @@ namespace Beep.Skia.Components
 
             // Update hover state
             bool wasHovered = _isHovered;
-            _isHovered = new SKRect(0, 0, Width, Height).Contains(point);
+            _isHovered = new SKRect(X, Y, X + Width, Y + Height).Contains(point);
 
             if (wasHovered != _isHovered)
             {

@@ -262,18 +262,40 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Draws the label's content.
         /// </summary>
+        /// <summary>
+        /// Draws the label's content including title and error messages.
+        /// </summary>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            if (string.IsNullOrEmpty(Text))
-                return;
+            // Draw title if present (absolute coordinates)
+            if (!string.IsNullOrEmpty(Title))
+            {
+                using var titleFont = new SKFont(SKTypeface.Default, 12);
+                using var titlePaint = new SKPaint { Color = MaterialControl.MaterialColors.OnSurface, IsAntialias = true };
+                var baseline = Y - 4; // retain layout intent
+                canvas.DrawText(Title, X, baseline, SKTextAlign.Left, titleFont, titlePaint);
+            }
 
-            // Calculate content area (accounting for padding)
+            // If no main text, optionally draw error message and exit
+            if (string.IsNullOrEmpty(Text))
+            {
+                if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    using var errorFont = new SKFont(SKTypeface.Default, 12);
+                    using var errorPaint = new SKPaint { Color = MaterialControl.MaterialColors.Error, IsAntialias = true };
+                    var baseline = Y + Height + 16;
+                    canvas.DrawText(ErrorMessage, X, baseline, SKTextAlign.Left, errorFont, errorPaint);
+                }
+                return;
+            }
+
+            // Content area in absolute coordinates
             var padding = 8;
             var contentBounds = new SKRect(
-                padding,
-                padding,
-                Width - padding,
-                Height - padding);
+                X + padding,
+                Y + padding,
+                X + Width - padding,
+                Y + Height - padding);
 
             // Calculate positions for icons and text
             var hasLeadingIcon = !string.IsNullOrEmpty(LeadingIcon);
@@ -341,7 +363,6 @@ namespace Beep.Skia.Components
 
                         // Center vertically
                         var textY = contentBounds.Top + (contentBounds.Height + textBounds.Height) / 2;
-
                         canvas.DrawText(Text, currentX, textY, SKTextAlign.Left, font, paint);
                         currentX += textBounds.Width + 4;
                     }
@@ -359,44 +380,13 @@ namespace Beep.Skia.Components
 
                 DrawSvgIcon(canvas, iconRect, TrailingIcon);
             }
-        }
 
-        /// <summary>
-        /// Draws the complete label including title and error message.
-        /// </summary>
-        public override void Draw(SKCanvas canvas, DrawingContext context)
-        {
-            // Draw title if present
-            if (!string.IsNullOrEmpty(Title))
-            {
-                using (var titlePaint = new SKPaint
-                {
-                    Color = MaterialControl.MaterialColors.OnSurface,
-                    TextSize = 12,
-                    IsAntialias = true
-                })
-                {
-                    var titleY = Y - 4; // Small gap above the label
-                    canvas.DrawText(Title, X, titleY, titlePaint);
-                }
-            }
-
-            // Draw the label content (this will call DrawContent)
-            base.Draw(canvas, context);
-
-            // Draw error message if present
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
-                using (var errorPaint = new SKPaint
-                {
-                    Color = MaterialControl.MaterialColors.Error,
-                    TextSize = 12,
-                    IsAntialias = true
-                })
-                {
-                    var errorY = Y + Height + 16; // Below the label
-                    canvas.DrawText(ErrorMessage, X, errorY, errorPaint);
-                }
+                using var errorFont = new SKFont(SKTypeface.Default, 12);
+                using var errorPaint = new SKPaint { Color = MaterialControl.MaterialColors.Error, IsAntialias = true };
+                var baseline = Y + Height + 16;
+                canvas.DrawText(ErrorMessage, X, baseline, SKTextAlign.Left, errorFont, errorPaint);
             }
         }
 

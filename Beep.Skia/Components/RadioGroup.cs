@@ -211,7 +211,7 @@ namespace Beep.Skia.Components
             {
                 paint.Color = MaterialColors.Surface;
                 paint.Style = SKPaintStyle.Fill;
-                canvas.DrawRect(0, 0, Width, Height, paint);
+                canvas.DrawRect(new SKRect(X, Y, X + Width, Y + Height), paint);
 
                 // Draw border if needed
                 if (_borderStyle != BorderStyle.None)
@@ -219,7 +219,7 @@ namespace Beep.Skia.Components
                     paint.Color = MaterialColors.OnSurfaceVariant;
                     paint.Style = SKPaintStyle.Stroke;
                     paint.StrokeWidth = 1;
-                    canvas.DrawRect(0, 0, Width, Height, paint);
+                    canvas.DrawRect(new SKRect(X, Y, X + Width, Y + Height), paint);
                 }
             }
 

@@ -130,13 +130,13 @@ namespace Beep.Skia.Components
             {
                 paint.Color = MaterialColors.Surface;
                 paint.Style = SKPaintStyle.Fill;
-                canvas.DrawRect(0, 0, Width, Height, paint);
+                canvas.DrawRect(X, Y, X + Width, Y + Height, paint);
 
                 // Draw border
                 paint.Color = MaterialColors.OnSurfaceVariant;
                 paint.Style = SKPaintStyle.Stroke;
                 paint.StrokeWidth = 1;
-                canvas.DrawRect(0, 0, Width, Height, paint);
+                canvas.DrawRect(X, Y, X + Width, Y + Height, paint);
             }
 
             // Draw text

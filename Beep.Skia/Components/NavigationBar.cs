@@ -236,25 +236,23 @@ namespace Beep.Skia.Components
 
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            // Draw background
+            // Absolute background rectangle
+            var bgRect = new SKRect(X, Y, X + Width, Y + Height);
             using (var paint = new SKPaint())
             {
                 paint.Color = BackgroundColor;
                 paint.Style = SKPaintStyle.Fill;
-                canvas.DrawRect(Bounds, paint);
+                canvas.DrawRect(bgRect, paint);
             }
 
             if (_items.Count == 0) return;
 
-            // Calculate item width
             float itemWidth = Width / _items.Count;
-
-            // Draw navigation items
             for (int i = 0; i < _items.Count; i++)
             {
                 var item = _items[i];
-                float x = i * itemWidth;
-                var itemBounds = new SKRect(x, Bounds.Top, x + itemWidth, Bounds.Bottom);
+                float x = X + i * itemWidth;
+                var itemBounds = new SKRect(x, Y, x + itemWidth, Y + Height);
                 item.Draw(canvas, itemBounds);
             }
         }
@@ -263,15 +261,13 @@ namespace Beep.Skia.Components
         {
             base.OnMouseDown(point, context);
 
-            if (context.MouseButton == 0 && _items.Count > 0) // Left button
+            if (context.MouseButton == 0 && _items.Count > 0)
             {
                 float itemWidth = Width / _items.Count;
-
                 for (int i = 0; i < _items.Count; i++)
                 {
-                    float x = i * itemWidth;
-                    var itemBounds = new SKRect(x, Bounds.Top, x + itemWidth, Bounds.Bottom);
-
+                    float x = X + i * itemWidth;
+                    var itemBounds = new SKRect(x, Y, x + itemWidth, Y + Height);
                     if (itemBounds.Contains(point))
                     {
                         SelectedItem = _items[i];
@@ -442,23 +438,22 @@ namespace Beep.Skia.Components
 
                 // Draw icon
                 paint.Color = IsSelected ? _navigationBar.ActiveColor : _navigationBar.InactiveColor;
-                paint.TextSize = _navigationBar.IconSize;
                 paint.IsAntialias = true;
-                paint.TextAlign = SKTextAlign.Center;
-
-                // For demo purposes, we'll draw a simple symbol if no actual icon is provided
                 string displayIcon = string.IsNullOrEmpty(_icon) ? "●" : _icon;
-                canvas.DrawText(displayIcon, centerX, iconY, paint);
+                using (var iconFont = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), _navigationBar.IconSize))
+                {
+                    canvas.DrawText(displayIcon, centerX, iconY, SKTextAlign.Center, iconFont, paint);
+                }
 
                 // Draw label if enabled
                 if (_navigationBar.ShowLabels && !string.IsNullOrEmpty(_label))
                 {
                     paint.Color = IsSelected ? _navigationBar.ActiveColor : _navigationBar.InactiveColor;
-                    paint.TextSize = _navigationBar.LabelFontSize;
-                    paint.TextAlign = SKTextAlign.Center;
-                    paint.Typeface = SKTypeface.FromFamilyName(null, IsSelected ? SKFontStyle.Bold : SKFontStyle.Normal);
-
-                    canvas.DrawText(_label, centerX, labelY, paint);
+                    var style = IsSelected ? SKFontStyle.Bold : SKFontStyle.Normal;
+                    using (var labelFont = new SKFont(SKTypeface.FromFamilyName(null, style), _navigationBar.LabelFontSize))
+                    {
+                        canvas.DrawText(_label, centerX, labelY, SKTextAlign.Center, labelFont, paint);
+                    }
                 }
 
                 // Draw badge if present
@@ -477,9 +472,10 @@ namespace Beep.Skia.Components
                     if (!string.IsNullOrEmpty(BadgeText))
                     {
                         paint.Color = MaterialDesignColors.OnError;
-                        paint.TextSize = 10f;
-                        paint.TextAlign = SKTextAlign.Center;
-                        canvas.DrawText(BadgeText, badgeX, badgeY + 3, paint);
+                        using (var badgeFont = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Bold), 10f))
+                        {
+                            canvas.DrawText(BadgeText, badgeX, badgeY + 3, SKTextAlign.Center, badgeFont, paint);
+                        }
                     }
                 }
 

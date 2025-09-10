@@ -4,416 +4,128 @@ using System.Collections.Generic;
 
 namespace Beep.Skia.Components
 {
-    /// <summary>
-    /// A Material Design 3.0 Menu component that displays a list of selectable items.
-    /// </summary>
+    /// <summary>Material Design menu rendered with absolute coordinates (X,Y).</summary>
     public class Menu : MaterialControl
     {
-        private List<MenuItem> _items = new List<MenuItem>();
-        private MenuItem _selectedItem;
-        private float _itemHeight = 48; // Material Design 3.0 standard menu item height
-        private float _menuWidth = 200;
-        private float _cornerRadius = 4;
+        private readonly List<MenuItem> _items = new();
+        private MenuItem _selected;
+        private float _itemHeight = 48f; // MD3 spec default
+        private float _menuWidth = 200f;
+        private float _cornerRadius = 4f;
         private SKColor _surfaceColor = MaterialColors.SurfaceContainerHigh;
-        private SKColor _onSurfaceColor = MaterialColors.OnSurface;
-        private float _elevation = 3;
-        private bool _isVisible = false;
+        private bool _visible;
         private SKPoint _anchorPoint;
         private MenuPosition _position = MenuPosition.BottomLeft;
 
-        /// <summary>
-        /// Material Design 3.0 menu positioning options.
-        /// </summary>
-        public enum MenuPosition
-        {
-            TopLeft,
-            TopRight,
-            BottomLeft,
-            BottomRight,
-            Center
-        }
+        public enum MenuPosition { TopLeft, TopRight, BottomLeft, BottomRight, Center }
 
-        /// <summary>
-        /// Gets or sets the menu items.
-        /// </summary>
-        public List<MenuItem> Items
-        {
-            get => _items;
-            set
-            {
-                _items = value ?? new List<MenuItem>();
-                UpdateMenuSize();
-                InvalidateVisual();
-            }
-        }
+        public IList<MenuItem> Items => _items;
+        public event EventHandler<MenuItem> ItemClicked;
+        public event EventHandler Opened;
+        public event EventHandler Closed;
 
-        /// <summary>
-        /// Gets or sets the selected menu item.
-        /// </summary>
         public MenuItem SelectedItem
         {
-            get => _selectedItem;
+            get => _selected;
             set
             {
-                if (_selectedItem != value)
-                {
-                    if (_selectedItem != null)
-                        _selectedItem.IsSelected = false;
-
-                    _selectedItem = value;
-
-                    if (_selectedItem != null)
-                        _selectedItem.IsSelected = true;
-
-                    InvalidateVisual();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the menu width.
-        /// </summary>
-        public float MenuWidth
-        {
-            get => _menuWidth;
-            set
-            {
-                if (_menuWidth != value)
-                {
-                    _menuWidth = value;
-                    UpdateMenuSize();
-                    InvalidateVisual();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the menu position relative to anchor point.
-        /// </summary>
-        public MenuPosition Position
-        {
-            get => _position;
-            set
-            {
-                if (_position != value)
-                {
-                    _position = value;
-                    UpdatePosition();
-                    InvalidateVisual();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the anchor point for menu positioning.
-        /// </summary>
-        public SKPoint AnchorPoint
-        {
-            get => _anchorPoint;
-            set
-            {
-                _anchorPoint = value;
-                UpdatePosition();
+                if (_selected == value) return;
+                if (_selected != null) _selected.IsSelected = false;
+                _selected = value;
+                if (_selected != null) _selected.IsSelected = true;
                 InvalidateVisual();
             }
         }
 
-        /// <summary>
-        /// Gets or sets whether the menu is visible.
-        /// </summary>
-        public bool IsVisible
-        {
-            get => _isVisible;
-            set
-            {
-                if (_isVisible != value)
-                {
-                    _isVisible = value;
-                    if (_isVisible)
-                    {
-                        UpdatePosition();
-                        // BringToFront(); // TODO: Implement BringToFront method
-                    }
-                    InvalidateVisual();
-                }
-            }
-        }
+        public float MenuWidth { get => _menuWidth; set { if (Math.Abs(_menuWidth - value) > 0.1f) { _menuWidth = value; RecalcSize(); } } }
+        public MenuPosition Position { get => _position; set { if (_position != value) { _position = value; UpdatePosition(); } } }
+        public SKPoint AnchorPoint { get => _anchorPoint; set { _anchorPoint = value; UpdatePosition(); } }
+        public bool Visible { get => _visible; set { if (_visible == value) return; _visible = value; if (_visible) Opened?.Invoke(this, EventArgs.Empty); else Closed?.Invoke(this, EventArgs.Empty); InvalidateVisual(); } }
 
-        /// <summary>
-        /// Occurs when a menu item is clicked.
-        /// </summary>
-        public event EventHandler<MenuItem> ItemClicked;
+        public Menu() { Visible = false; RecalcSize(); }
 
-        /// <summary>
-        /// Occurs when the menu is opened.
-        /// </summary>
-        public event EventHandler MenuOpened;
+        private void RecalcSize() { Width = _menuWidth; Height = _items.Count * _itemHeight; }
+        public void AddItem(MenuItem item) { if (item == null || _items.Contains(item)) return; _items.Add(item); item.ParentMenu = this; RecalcSize(); InvalidateVisual(); }
+        public void RemoveItem(MenuItem item) { if (item == null) return; if (_items.Remove(item)) { if (_selected == item) _selected = null; item.ParentMenu = null; RecalcSize(); InvalidateVisual(); } }
+        public void ClearItems() { foreach (var i in _items) i.ParentMenu = null; _items.Clear(); _selected = null; RecalcSize(); InvalidateVisual(); }
+        public void Show(SKPoint anchor) { AnchorPoint = anchor; Visible = true; }
+        public void Hide() { Visible = false; }
 
-        /// <summary>
-        /// Occurs when the menu is closed.
-        /// </summary>
-        public event EventHandler MenuClosed;
-
-        /// <summary>
-        /// Initializes a new instance of the Menu class.
-        /// </summary>
-        public Menu()
-        {
-            IsVisible = false;
-            UpdateMenuSize();
-        }
-
-        /// <summary>
-        /// Adds a menu item to the menu.
-        /// </summary>
-        /// <param name="item">The menu item to add.</param>
-        public void AddItem(MenuItem item)
-        {
-            if (item != null && !_items.Contains(item))
-            {
-                _items.Add(item);
-                item.ParentMenu = this;
-                UpdateMenuSize();
-                InvalidateVisual();
-            }
-        }
-
-        /// <summary>
-        /// Removes a menu item from the menu.
-        /// </summary>
-        /// <param name="item">The menu item to remove.</param>
-        public void RemoveItem(MenuItem item)
-        {
-            if (item != null && _items.Contains(item))
-            {
-                _items.Remove(item);
-                item.ParentMenu = null;
-                if (_selectedItem == item)
-                    _selectedItem = null;
-                UpdateMenuSize();
-                InvalidateVisual();
-            }
-        }
-
-        /// <summary>
-        /// Clears all menu items.
-        /// </summary>
-        public void ClearItems()
-        {
-            foreach (var item in _items)
-            {
-                item.ParentMenu = null;
-            }
-            _items.Clear();
-            _selectedItem = null;
-            UpdateMenuSize();
-            InvalidateVisual();
-        }
-
-        /// <summary>
-        /// Shows the menu at the specified position.
-        /// </summary>
-        /// <param name="anchorPoint">The anchor point for positioning.</param>
-        public void Show(SKPoint anchorPoint)
-        {
-            AnchorPoint = anchorPoint;
-            IsVisible = true;
-            MenuOpened?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Hides the menu.
-        /// </summary>
-        public void Hide()
-        {
-            IsVisible = false;
-            MenuClosed?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void UpdateMenuSize()
-        {
-            Height = _items.Count * _itemHeight;
-            Width = _menuWidth;
-        }
+    // Backwards-compatibility method for legacy MenuItem setters expecting ParentMenu?.Invalidate()
+    public void Invalidate() => InvalidateVisual();
 
         private void UpdatePosition()
         {
-            if (!_isVisible) return;
-
-            float menuX = _anchorPoint.X;
-            float menuY = _anchorPoint.Y;
-
+            if (!Visible) return;
+            float mx = _anchorPoint.X, my = _anchorPoint.Y;
             switch (_position)
             {
-                case MenuPosition.TopLeft:
-                    menuX = _anchorPoint.X;
-                    menuY = _anchorPoint.Y - Height;
-                    break;
-                case MenuPosition.TopRight:
-                    menuX = _anchorPoint.X - Width;
-                    menuY = _anchorPoint.Y - Height;
-                    break;
-                case MenuPosition.BottomLeft:
-                    menuX = _anchorPoint.X;
-                    menuY = _anchorPoint.Y;
-                    break;
-                case MenuPosition.BottomRight:
-                    menuX = _anchorPoint.X - Width;
-                    menuY = _anchorPoint.Y;
-                    break;
-                case MenuPosition.Center:
-                    menuX = _anchorPoint.X - Width / 2;
-                    menuY = _anchorPoint.Y - Height / 2;
-                    break;
+                case MenuPosition.TopLeft: mx = _anchorPoint.X; my = _anchorPoint.Y - Height; break;
+                case MenuPosition.TopRight: mx = _anchorPoint.X - Width; my = _anchorPoint.Y - Height; break;
+                case MenuPosition.BottomLeft: mx = _anchorPoint.X; my = _anchorPoint.Y; break;
+                case MenuPosition.BottomRight: mx = _anchorPoint.X - Width; my = _anchorPoint.Y; break;
+                case MenuPosition.Center: mx = _anchorPoint.X - Width / 2f; my = _anchorPoint.Y - Height / 2f; break;
             }
-
-            // Ensure menu stays within bounds
-            if (menuX < 0) menuX = 0;
-            if (menuY < 0) menuY = 0;
-            float parentWidth = Parent?.Width ?? 0;
-            float parentHeight = Parent?.Height ?? 0;
-            if (menuX + Width > parentWidth && parentWidth > 0) menuX = parentWidth - Width;
-            if (menuY + Height > parentHeight && parentHeight > 0) menuY = parentHeight - Height;
-
-            X = menuX;
-            Y = menuY;
+            if (mx < 0) mx = 0; if (my < 0) my = 0; X = mx; Y = my;
         }
 
-        /// <summary>
-        /// Draws the menu on the specified canvas.
-        /// </summary>
-        /// <param name="canvas">The canvas to draw on.</param>
-        /// <param name="drawingContext">The drawing context.</param>
-        protected override void DrawContent(SKCanvas canvas, DrawingContext drawingContext)
+        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            if (!_isVisible) return;
+            if (!Visible) return;
+            var rect = new SKRect(X, Y, X + Width, Y + Height);
+            using (var bg = new SKPaint { Color = _surfaceColor, Style = SKPaintStyle.Fill, IsAntialias = true })
+                canvas.DrawRoundRect(rect, _cornerRadius, _cornerRadius, bg);
+            using (var sh = new SKPaint { Color = new SKColor(0, 0, 0, 30), IsAntialias = true })
+                canvas.DrawRoundRect(new SKRect(rect.Left + 2, rect.Top + 2, rect.Right + 2, rect.Bottom + 2), _cornerRadius, _cornerRadius, sh);
 
-            // Draw menu background with elevation
-            using (var backgroundPaint = new SKPaint
-            {
-                Color = _surfaceColor,
-                Style = SKPaintStyle.Fill
-            })
-            {
-                var menuRect = new SKRect(0, 0, Width, Height);
-                canvas.DrawRoundRect(menuRect, _cornerRadius, _cornerRadius, backgroundPaint);
-            }
-
-            // Draw elevation shadow
-            using (var shadowPaint = new SKPaint
-            {
-                Color = new SKColor(0, 0, 0, 30),
-                Style = SKPaintStyle.Fill
-            })
-            {
-                var shadowRect = new SKRect(2, 2, Width + 2, Height + 2);
-                canvas.DrawRoundRect(shadowRect, _cornerRadius, _cornerRadius, shadowPaint);
-            }
-
-            // Draw menu items
-            float currentY = 0;
+            float yCursor = Y;
             foreach (var item in _items)
             {
-                item.Draw(canvas, new SKRect(0, currentY, Width, currentY + _itemHeight), drawingContext);
-                currentY += _itemHeight;
-
-                // Draw separator line if needed
-                if (item.ShowSeparator && currentY < Height)
+                var itemRect = new SKRect(X, yCursor, X + Width, yCursor + _itemHeight);
+                item.Draw(canvas, itemRect, context);
+                yCursor += _itemHeight;
+                if (item.ShowSeparator && yCursor < Y + Height)
                 {
-                    using (var separatorPaint = new SKPaint
-                    {
-                        Color = MaterialColors.OutlineVariant,
-                        Style = SKPaintStyle.Fill
-                    })
-                    {
-                        canvas.DrawLine(16, currentY - 0.5f, Width - 16, currentY - 0.5f, separatorPaint);
-                    }
+                    using var sep = new SKPaint { Color = MaterialColors.OutlineVariant, StrokeWidth = 1, Style = SKPaintStyle.Stroke };
+                    canvas.DrawLine(X + 16, yCursor - 0.5f, X + Width - 16, yCursor - 0.5f, sep);
                 }
             }
         }
 
-        /// <summary>
-        /// Determines whether the specified point is contained within the menu.
-        /// </summary>
-        /// <param name="point">The point to test.</param>
-        /// <returns>True if the point is contained within the menu.</returns>
-        public override bool ContainsPoint(SKPoint point)
-        {
-            if (!_isVisible) return false;
-            return point.X >= X && point.X <= X + Width && point.Y >= Y && point.Y <= Y + Height;
-        }
-
-        /// <summary>
-        /// Handles mouse down events.
-        /// </summary>
-        /// <param name="point">The mouse position.</param>
-        /// <param name="context">The interaction context.</param>
-        /// <returns>True if the event was handled.</returns>
+        public override bool ContainsPoint(SKPoint point) => Visible && point.X >= X && point.X <= X + Width && point.Y >= Y && point.Y <= Y + Height;
         protected override bool OnMouseDown(SKPoint point, InteractionContext context)
         {
-            if (!IsVisible || !ContainsPoint(point)) return false;
-
-            // Convert to local coordinates
-            SKPoint localPoint = new SKPoint(point.X - X, point.Y - Y);
-
-            // Find which item was clicked
-            int itemIndex = (int)(localPoint.Y / _itemHeight);
-            if (itemIndex >= 0 && itemIndex < _items.Count)
+            if (!ContainsPoint(point)) return false;
+            int idx = (int)((point.Y - Y) / _itemHeight);
+            if (idx >= 0 && idx < _items.Count)
             {
-                var clickedItem = _items[itemIndex];
-                if (clickedItem.IsEnabled)
+                var it = _items[idx];
+                if (it.IsEnabled)
                 {
-                    SelectedItem = clickedItem;
-                    ItemClicked?.Invoke(this, clickedItem);
-                    clickedItem.OnClick();
+                    SelectedItem = it;
+                    ItemClicked?.Invoke(this, it);
+                    it.OnClick();
                     return true;
                 }
             }
-
             return base.OnMouseDown(point, context);
         }
-
-        /// <summary>
-        /// Handles mouse move events for hover effects.
-        /// </summary>
-        /// <param name="point">The mouse position.</param>
-        /// <param name="context">The interaction context.</param>
-        /// <returns>True if the event was handled.</returns>
         protected override bool OnMouseMove(SKPoint point, InteractionContext context)
         {
-            if (!IsVisible || !ContainsPoint(point)) return false;
-
-            // Convert to local coordinates
-            SKPoint localPoint = new SKPoint(point.X - X, point.Y - Y);
-
-            // Update hover state
-            int itemIndex = (int)(localPoint.Y / _itemHeight);
-            if (itemIndex >= 0 && itemIndex < _items.Count)
+            if (!ContainsPoint(point)) return false;
+            int idx = (int)((point.Y - Y) / _itemHeight);
+            if (idx >= 0 && idx < _items.Count)
             {
-                var hoveredItem = _items[itemIndex];
-                if (hoveredItem.IsEnabled)
+                var it = _items[idx];
+                if (it.IsEnabled)
                 {
-                    // Clear previous hover states
-                    foreach (var item in _items)
-                    {
-                        if (item != hoveredItem)
-                            item.IsHovered = false;
-                    }
-                    hoveredItem.IsHovered = true;
+                    foreach (var o in _items) if (o != it) o.IsHovered = false;
+                    it.IsHovered = true;
                     InvalidateVisual();
                     return true;
                 }
             }
-
             return base.OnMouseMove(point, context);
-        }
-
-        /// <summary>
-        /// Invalidates the menu visual and triggers a redraw.
-        /// </summary>
-        public void Invalidate()
-        {
-            InvalidateVisual();
         }
     }
 }

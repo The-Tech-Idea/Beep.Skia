@@ -182,15 +182,13 @@ namespace Beep.Skia.Components
             _textPaint = new SKPaint
             {
                 Color = _onSurfaceColor,
-                IsAntialias = true,
-                TextSize = 16f
+                IsAntialias = true
             };
 
             _placeholderPaint = new SKPaint
             {
                 Color = _onSurfaceVariantColor,
-                IsAntialias = true,
-                TextSize = 16f
+                IsAntialias = true
             };
 
             _backgroundPaint = new SKPaint
@@ -281,7 +279,7 @@ namespace Beep.Skia.Components
 
         private void DrawSearchBar(SKCanvas canvas, DrawingContext context)
         {
-            var bounds = new SKRect(0, 0, Width, _searchBarHeight);
+            var bounds = new SKRect(X, Y, X + Width, Y + _searchBarHeight);
 
             // Calculate state layer opacity
             float stateOpacity = 0f;
@@ -325,7 +323,7 @@ namespace Beep.Skia.Components
 
         private void DrawSearchView(SKCanvas canvas, DrawingContext context)
         {
-            var bounds = new SKRect(0, 0, Width, _searchViewHeight);
+            var bounds = new SKRect(X, Y, X + Width, Y + _searchViewHeight);
 
             // Draw scrim
             var scrimPaint = new SKPaint
@@ -494,18 +492,12 @@ namespace Beep.Skia.Components
                 canvas.DrawCircle(iconX + iconSize / 2f, iconY + iconSize / 2f, iconSize / 2f, iconPaint);
             }
 
-            // Draw text
-            var textPaint = new SKPaint
-            {
-                Color = isSelected ? MaterialDesignColors.OnSecondaryContainer : _onSurfaceColor,
-                IsAntialias = true,
-                TextSize = 16f
-            };
-
+            // Draw text using SKFont metrics
+            using var textPaint = new SKPaint { Color = isSelected ? MaterialDesignColors.OnSecondaryContainer : _onSurfaceColor, IsAntialias = true };
+            var metrics = _font.Metrics;
             var textX = suggestionBounds.Left + (string.IsNullOrEmpty(suggestion.Icon) ? 16f : 56f);
-            var textY = suggestionBounds.Top + height / 2f + 6f;
-
-            canvas.DrawText(suggestion.Text, textX, textY, _font, textPaint);
+            float baseline = suggestionBounds.Top + height / 2f + metrics.CapHeight / 2f;
+            canvas.DrawText(suggestion.Text, textX, baseline, SKTextAlign.Left, _font, textPaint);
         }
 
         private SKColor BlendColors(SKColor baseColor, SKColor overlayColor)
@@ -554,7 +546,7 @@ namespace Beep.Skia.Components
             base.OnMouseMove(point, context);
 
             var wasHovered = _isHovered;
-            _isHovered = new SKRect(0, 0, Width, _isActive ? _searchViewHeight : _searchBarHeight).Contains(point);
+            _isHovered = new SKRect(X, Y, X + Width, Y + (_isActive ? _searchViewHeight : _searchBarHeight)).Contains(point);
 
             if (wasHovered != _isHovered)
             {
@@ -567,7 +559,7 @@ namespace Beep.Skia.Components
         private void HandleSearchViewInteraction(SKPoint point)
         {
             // Handle back button
-            if (point.Y >= 16 && point.Y <= 88 && point.X >= 16 && point.X <= 64)
+            if (point.Y >= Y + 16 && point.Y <= Y + 88 && point.X >= X + 16 && point.X <= X + 64)
             {
                 IsActive = false;
                 return;
@@ -576,7 +568,7 @@ namespace Beep.Skia.Components
             // Handle clear button
             if (!string.IsNullOrEmpty(_text))
             {
-                var clearBounds = new SKRect(Width - 64, 16, Width - 16, 88);
+                var clearBounds = new SKRect(X + Width - 64, Y + 16, X + Width - 16, Y + 88);
                 if (clearBounds.Contains(point))
                 {
                     ClearText();
@@ -586,11 +578,11 @@ namespace Beep.Skia.Components
 
             // Handle suggestion selection
             var suggestionHeight = 48f;
-            var startY = 96f;
+            var startY = Y + 96f;
 
             for (int i = 0; i < _suggestions.Count; i++)
             {
-                var suggestionBounds = new SKRect(16, startY + i * suggestionHeight, Width - 16, startY + (i + 1) * suggestionHeight);
+                var suggestionBounds = new SKRect(X + 16, startY + i * suggestionHeight, X + Width - 16, startY + (i + 1) * suggestionHeight);
                 if (suggestionBounds.Contains(point))
                 {
                     _selectedSuggestionIndex = i;

@@ -323,56 +323,38 @@ namespace Beep.Skia.Components
             float currentX = bounds.Left + 16; // Left padding
             float centerY = bounds.MidY;
 
-            // Draw icon if present
+            // Draw icon if present (modern font usage)
             if (!string.IsNullOrEmpty(_icon) &&
                 (_itemType == MenuItemType.WithIcon || _itemType == MenuItemType.WithIconAndShortcut))
             {
-                using (var iconPaint = new SKPaint
-                {
-                    Color = IsEnabled ? _iconColor : MaterialDesignColors.OnSurfaceVariant.WithAlpha(100),
-                    TextSize = _iconSize,
-                    TextAlign = SKTextAlign.Left,
-                    Typeface = SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal)
-                })
-                {
-                    float iconY = centerY + _iconSize / 3;
-                    canvas.DrawText(_icon, currentX, iconY, iconPaint);
-                }
+                using var iconFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), _iconSize);
+                using var iconPaint = new SKPaint { Color = IsEnabled ? _iconColor : MaterialDesignColors.OnSurfaceVariant.WithAlpha(100), IsAntialias = true };
+                var metrics = iconFont.Metrics;
+                float baseline = centerY + metrics.CapHeight / 2f;
+                canvas.DrawText(_icon, currentX, baseline, SKTextAlign.Left, iconFont, iconPaint);
                 currentX += _iconSize + 12; // Icon width + spacing
             }
 
-            // Draw text
+            // Draw text (SKFont)
             if (!string.IsNullOrEmpty(_text))
             {
-                using (var textPaint = new SKPaint
-                {
-                    Color = IsEnabled ? _textColor : MaterialDesignColors.OnSurfaceVariant.WithAlpha(100),
-                    TextSize = 14,
-                    TextAlign = SKTextAlign.Left,
-                    Typeface = SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal)
-                })
-                {
-                    float textY = centerY + 5; // Approximate text baseline
-                    canvas.DrawText(_text, currentX, textY, textPaint);
-                }
+                using var textFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), 14);
+                using var textPaint = new SKPaint { Color = IsEnabled ? _textColor : MaterialDesignColors.OnSurfaceVariant.WithAlpha(100), IsAntialias = true };
+                var metrics = textFont.Metrics;
+                float baseline = centerY + metrics.CapHeight / 2f;
+                canvas.DrawText(_text, currentX, baseline, SKTextAlign.Left, textFont, textPaint);
             }
 
-            // Draw shortcut if present
+            // Draw shortcut if present (SKFont)
             if (!string.IsNullOrEmpty(_shortcut) &&
                 (_itemType == MenuItemType.WithShortcut || _itemType == MenuItemType.WithIconAndShortcut))
             {
-                using (var shortcutPaint = new SKPaint
-                {
-                    Color = IsEnabled ? MaterialDesignColors.OnSurfaceVariant : MaterialDesignColors.OnSurfaceVariant.WithAlpha(100),
-                    TextSize = 12,
-                    TextAlign = SKTextAlign.Right,
-                    Typeface = SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal)
-                })
-                {
-                    float shortcutY = centerY + 4;
-                    float shortcutX = bounds.Right - 16; // Right padding
-                    canvas.DrawText(_shortcut, shortcutX, shortcutY, shortcutPaint);
-                }
+                using var shortcutFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), 12);
+                using var shortcutPaint = new SKPaint { Color = IsEnabled ? MaterialDesignColors.OnSurfaceVariant : MaterialDesignColors.OnSurfaceVariant.WithAlpha(100), IsAntialias = true };
+                var metrics = shortcutFont.Metrics;
+                float baseline = centerY + metrics.CapHeight / 2f;
+                float shortcutX = bounds.Right - 16; // Right padding
+                canvas.DrawText(_shortcut, shortcutX, baseline, SKTextAlign.Right, shortcutFont, shortcutPaint);
             }
         }
 

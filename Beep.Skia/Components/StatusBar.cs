@@ -127,22 +127,16 @@ namespace Beep.Skia.Components
             if (!context.Bounds.IntersectsWith(Bounds))
                 return;
 
-            // Draw background
+            // Draw background (absolute rect)
             using (var backgroundPaint = new SKPaint { Color = _backgroundColor })
             {
-                canvas.DrawRect(X, Y, Width, Height, backgroundPaint);
+                canvas.DrawRect(new SKRect(X, Y, X + Width, Y + Height), backgroundPaint);
             }
 
             // Draw border
             if (_showBorder && _borderWidth > 0)
             {
-                using (var borderPaint = new SKPaint
-                {
-                    Color = _borderColor,
-                    Style = SKPaintStyle.Stroke,
-                    StrokeWidth = _borderWidth,
-                    IsAntialias = true
-                })
+                using (var borderPaint = new SKPaint { Color = _borderColor, Style = SKPaintStyle.Stroke, StrokeWidth = _borderWidth, IsAntialias = true })
                 {
                     canvas.DrawLine(X, Y, X + Width, Y, borderPaint);
                 }
@@ -177,25 +171,14 @@ namespace Beep.Skia.Components
                 // Draw item text
                 if (!string.IsNullOrEmpty(item.Text))
                 {
-                    using (var font = new SKFont())
+                    using (var font = new SKFont(SKTypeface.Default, 12))
+                    using (var textPaint = new SKPaint { Color = item.TextColor, IsAntialias = true })
                     {
-                        font.Size = 12;
-                        font.Typeface = SKTypeface.Default;
-
-                        using (var textPaint = new SKPaint(font)
-                        {
-                            Color = item.TextColor,
-                            IsAntialias = true
-                        })
-                        {
-                            var textBounds = new SKRect();
-                            textPaint.MeasureText(item.Text, ref textBounds);
-
-                            float textX = GetTextX(item, currentX, textBounds.Width);
-                            float textY = Y + Height / 2 + textBounds.Height / 2;
-
-                            canvas.DrawText(item.Text, textX, textY, textPaint);
-                        }
+                        float textWidth = font.MeasureText(item.Text);
+                        float textX = GetTextX(item, currentX, textWidth);
+                        var metrics = font.Metrics;
+                        float baseline = Y + (Height / 2) + (metrics.CapHeight / 2);
+                        canvas.DrawText(item.Text, textX, baseline, SKTextAlign.Left, font, textPaint);
                     }
                 }
 

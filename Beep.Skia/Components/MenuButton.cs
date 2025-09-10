@@ -272,116 +272,105 @@ namespace Beep.Skia.Components
 
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            // Draw button background
+            // Absolute bounds
+            var buttonRect = new SKRect(X, Y, X + Width, Y + Height);
+
             using (var paint = new SKPaint())
             {
                 paint.IsAntialias = true;
 
-                // Determine background color based on state
                 SKColor backgroundColor = ButtonColor;
-                if (_isPressed)
-                {
-                    backgroundColor = PressedColor;
-                }
-                else if (_isHovered)
-                {
-                    backgroundColor = HoverColor;
-                }
+                if (_isPressed) backgroundColor = PressedColor; else if (_isHovered) backgroundColor = HoverColor;
 
-                // Draw background
                 if (Variant == ButtonVariant.Outlined)
                 {
                     paint.Color = backgroundColor;
                     paint.Style = SKPaintStyle.Fill;
-                    canvas.DrawRoundRect(Bounds, CornerRadius, CornerRadius, paint);
-
-                    // Draw outline
+                    canvas.DrawRoundRect(buttonRect, CornerRadius, CornerRadius, paint);
                     paint.Color = MaterialColors.Outline;
                     paint.Style = SKPaintStyle.Stroke;
                     paint.StrokeWidth = 1f;
-                    canvas.DrawRoundRect(Bounds, CornerRadius, CornerRadius, paint);
+                    canvas.DrawRoundRect(buttonRect, CornerRadius, CornerRadius, paint);
                 }
                 else
                 {
                     paint.Color = backgroundColor;
                     paint.Style = SKPaintStyle.Fill;
-                    canvas.DrawRoundRect(Bounds, CornerRadius, CornerRadius, paint);
+                    canvas.DrawRoundRect(buttonRect, CornerRadius, CornerRadius, paint);
                 }
 
-                // Draw shadow for elevated variant
                 if (Variant == ButtonVariant.Elevated)
                 {
-                    DrawElevationShadow(canvas, Bounds);
+                    DrawElevationShadow(canvas, buttonRect);
                 }
             }
 
-            // Draw content
-            DrawButtonContent(canvas, Bounds);
+            DrawButtonContent(canvas, new SKRect(X, Y, X + Width, Y + Height));
         }
 
         private void DrawButtonContent(SKCanvas canvas, SKRect bounds)
         {
-            using (var paint = new SKPaint())
+            // Determine text color
+            SKColor textColor;
+            switch (Variant)
             {
-                paint.IsAntialias = true;
-                paint.TextAlign = SKTextAlign.Center;
-
-                // Determine text color
-                SKColor textColor;
-                switch (Variant)
-                {
-                    case ButtonVariant.Filled:
-                        textColor = MaterialColors.OnPrimary;
-                        break;
-                    case ButtonVariant.Outlined:
-                    case ButtonVariant.Text:
-                    case ButtonVariant.Elevated:
-                    case ButtonVariant.Tonal:
-                        textColor = _isPressed ? MaterialColors.Primary :
-                                   _isHovered ? MaterialColors.Primary : MaterialColors.OnSurface;
-                        break;
-                    default:
-                        textColor = MaterialColors.OnSurface;
-                        break;
-                }
-
-                paint.Color = textColor;
-
-                float contentY = bounds.Top + bounds.Height / 2;
-                float leftPadding = 12f;
-                float rightPadding = 24f; // Extra space for dropdown arrow
-
-                // Draw icon if present
-                float textX = bounds.Left + bounds.Width / 2;
-                if (!string.IsNullOrEmpty(Icon))
-                {
-                    paint.TextSize = 16f;
-                    var iconBounds = new SKRect();
-                    paint.MeasureText(Icon, ref iconBounds);
-
-                    float iconX = bounds.Left + leftPadding + iconBounds.Width / 2;
-                    canvas.DrawText(Icon, iconX, contentY + iconBounds.Height / 2, paint);
-
-                    // Adjust text position
-                    textX += iconBounds.Width / 2 + 4;
-                }
-
-                // Draw text
-                if (!string.IsNullOrEmpty(Text))
-                {
-                    paint.TextSize = 14f;
-                    var textBounds = new SKRect();
-                    paint.MeasureText(Text, ref textBounds);
-
-                    canvas.DrawText(Text, textX, contentY + textBounds.Height / 2, paint);
-                }
-
-                // Draw dropdown arrow
-                paint.TextSize = 12f;
-                paint.Color = textColor.WithAlpha(179); // 70% opacity
-                float arrowX = bounds.Right - rightPadding + 6;
-                canvas.DrawText("▼", arrowX, contentY + 4, paint);
+                case ButtonVariant.Filled:
+                    textColor = MaterialColors.OnPrimary; break;
+                case ButtonVariant.Outlined:
+                case ButtonVariant.Text:
+                case ButtonVariant.Elevated:
+                case ButtonVariant.Tonal:
+                    textColor = _isPressed ? MaterialColors.Primary : _isHovered ? MaterialColors.Primary : MaterialColors.OnSurface; break;
+                default:
+                    textColor = MaterialColors.OnSurface; break;
             }
+
+            float leftPadding = 12f;
+
+            // Fonts
+            using var iconFont = new SKFont(SKTypeface.Default, 16f);
+            using var textFont = new SKFont(SKTypeface.Default, 14f);
+            using var arrowFont = new SKFont(SKTypeface.Default, 12f);
+            var textMetrics = textFont.Metrics;
+            float capHeight = textMetrics.CapHeight; // positive
+            float baseline = bounds.Top + (bounds.Height + capHeight) / 2f;
+
+            // Paint reused
+            using var paint = new SKPaint { IsAntialias = true, Color = textColor };
+
+            float cursorX = bounds.Left + leftPadding;
+
+            // Icon
+            if (!string.IsNullOrEmpty(Icon))
+            {
+                var iconMetrics = iconFont.Metrics;
+                float iconBaseline = bounds.Top + (bounds.Height + iconMetrics.CapHeight) / 2f;
+                canvas.DrawText(Icon, cursorX, iconBaseline, SKTextAlign.Left, iconFont, paint);
+                float iconAdvance = iconFont.MeasureText(Icon) + 8f;
+                cursorX += iconAdvance;
+            }
+
+            // Compute remaining width for centering text/arrow cluster
+            float arrowWidth = arrowFont.MeasureText("▼");
+            float textWidth = !string.IsNullOrEmpty(Text) ? textFont.MeasureText(Text) : 0f;
+            float clusterWidth = textWidth + 8f + arrowWidth; // 8 padding between text and arrow
+            float clusterStart = bounds.Left + (bounds.Width - clusterWidth) / 2f;
+
+            // If we had an icon drawn at left, ensure cluster doesn't overlap icon; simple clamp
+            if (clusterStart < cursorX) clusterStart = cursorX;
+
+            float textX = clusterStart;
+            if (!string.IsNullOrEmpty(Text))
+            {
+                canvas.DrawText(Text, textX, baseline, SKTextAlign.Left, textFont, paint);
+                textX += textWidth + 8f;
+            }
+
+            // Arrow
+            paint.Color = textColor.WithAlpha(179);
+            var arrowMetrics = arrowFont.Metrics;
+            float arrowBaseline = bounds.Top + (bounds.Height + arrowMetrics.CapHeight) / 2f;
+            canvas.DrawText("▼", textX, arrowBaseline, SKTextAlign.Left, arrowFont, paint);
         }
 
         protected override void OnMouseEnter()

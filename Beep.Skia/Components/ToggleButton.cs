@@ -243,29 +243,16 @@ namespace Beep.Skia.Components
                 }
             }
 
-            // Draw text
+            // Draw text (modern SKFont metrics)
             if (!string.IsNullOrEmpty(_text))
             {
-                using (var font = new SKFont())
-                {
-                    font.Size = 14;
-                    font.Typeface = SKTypeface.Default;
-
-                    using (var textPaint = new SKPaint(font)
-                    {
-                        Color = textColor,
-                        IsAntialias = true
-                    })
-                    {
-                        var textBounds = new SKRect();
-                        textPaint.MeasureText(_text, ref textBounds);
-
-                        float textX = GetTextX(textBounds.Width);
-                        float textY = Y + Height / 2 + textBounds.Height / 2;
-
-                        canvas.DrawText(_text, textX, textY, textPaint);
-                    }
-                }
+                using var font = new SKFont(SKTypeface.Default, 14);
+                using var paint = new SKPaint { Color = textColor, IsAntialias = true };
+                var metrics = font.Metrics;
+                var textWidth = font.MeasureText(_text);
+                float textX = GetTextX(textWidth);
+                float baseline = Y + (Height + metrics.CapHeight) / 2f; // cap-height vertical centering
+                canvas.DrawText(_text, textX, baseline, SKTextAlign.Left, font, paint);
             }
         }
 

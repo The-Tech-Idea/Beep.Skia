@@ -308,7 +308,7 @@ namespace Beep.Skia.Components
                     Style = SKPaintStyle.Fill
                 })
                 {
-                    canvas.DrawRect(0, 0, Width, Height, overlayPaint);
+                    canvas.DrawRect(new SKRect(X, Y, X + Width, Y + Height), overlayPaint);
                 }
             }
 
@@ -378,55 +378,40 @@ namespace Beep.Skia.Components
                 // Draw icon
                 if (!string.IsNullOrEmpty(item.Icon))
                 {
-                    using (var textPaint = new SKPaint
-                    {
-                        Color = MaterialColors.OnSecondaryContainer,
-                        TextSize = 20,
-                        TextAlign = SKTextAlign.Center,
-                        Typeface = SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal)
-                    })
-                    {
-                        float textX = itemX + itemSize / 2;
-                        float textY = itemY + itemSize / 2 + textPaint.TextSize / 3;
-                        canvas.DrawText(item.Icon, textX, textY, textPaint);
-                    }
+                    using var iconFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), 20);
+                    using var iconPaint = new SKPaint { Color = MaterialColors.OnSecondaryContainer, IsAntialias = true };
+                    var iconMetrics = iconFont.Metrics;
+                    float iconBaseline = itemY + itemSize / 2 + iconMetrics.CapHeight / 2f;
+                    float iconCenterX = itemX + itemSize / 2;
+                    canvas.DrawText(item.Icon, iconCenterX, iconBaseline, SKTextAlign.Center, iconFont, iconPaint);
                 }
 
                 // Draw label if provided
                 if (!string.IsNullOrEmpty(item.Label) && progress > 0.5f)
                 {
-                    using (var labelPaint = new SKPaint
-                    {
-                        Color = MaterialColors.OnSurface,
-                        TextSize = 14,
-                        Typeface = SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal)
-                    })
-                    {
-                        float labelX = itemX - 8; // Position label to the left
-                        float labelY = itemY + itemSize / 2 + labelPaint.TextSize / 3;
+                    using var labelFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), 14);
+                    using var labelPaint = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
+                    float labelX = itemX - 8; // anchor reference
+                    var metrics = labelFont.Metrics;
+                    float labelBaseline = itemY + itemSize / 2 + metrics.CapHeight / 2f;
+                    float textWidth = labelFont.MeasureText(item.Label);
 
-                        // Draw label background
-                        var labelBounds = new SKRect();
-                        labelPaint.MeasureText(item.Label, ref labelBounds);
+                    // Background rect (padding 12 horizontal, 6 vertical similar to original geometry)
+                    float paddingX = 12f;
+                    float paddingY = 6f;
+                    float bgRight = labelX - 8;
+                    float bgLeft = bgRight - textWidth - paddingX * 2;
+                    float bgCenterY = itemY + itemSize / 2;
+                    float bgHeight = metrics.CapHeight + paddingY * 2;
+                    float bgTop = bgCenterY - bgHeight / 2f;
+                    float bgBottom = bgCenterY + bgHeight / 2f;
 
-                        using (var bgPaint = new SKPaint
-                        {
-                            Color = MaterialColors.Surface,
-                            Style = SKPaintStyle.Fill
-                        })
-                        {
-                            var bgRect = new SKRect(
-                                labelX - labelBounds.Width - 16,
-                                labelY - labelBounds.Height,
-                                labelX - 8,
-                                labelY + 4
-                            );
-                            canvas.DrawRoundRect(bgRect, 4, 4, bgPaint);
-                        }
+                    using var bgPaint = new SKPaint { Color = MaterialColors.Surface, Style = SKPaintStyle.Fill, IsAntialias = true };
+                    canvas.DrawRoundRect(new SKRect(bgLeft, bgTop, bgRight, bgBottom), 4, 4, bgPaint);
 
-                        // Draw label text
-                        canvas.DrawText(item.Label, labelX - labelBounds.Width - 12, labelY, labelPaint);
-                    }
+                    // Text (right-aligned inside background)
+                    float textX = bgRight - paddingX - textWidth;
+                    canvas.DrawText(item.Label, textX, labelBaseline, SKTextAlign.Left, labelFont, labelPaint);
                 }
             }
         }

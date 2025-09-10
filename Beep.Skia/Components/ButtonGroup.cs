@@ -479,33 +479,18 @@ namespace Beep.Skia.Components
         /// <param name="context">The drawing context.</param>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            // Draw group background if not transparent
+            // Absolute coordinate model: background uses this group's X,Y
             if (_groupBackgroundColor != SKColor.Empty)
             {
-                using (var backgroundPaint = new SKPaint())
-                {
-                    backgroundPaint.Color = _groupBackgroundColor;
-                    backgroundPaint.IsAntialias = true;
-
-                    var backgroundRect = new SKRect(0, 0, Width, Height);
-                    canvas.DrawRoundRect(backgroundRect, _cornerRadius, _cornerRadius, backgroundPaint);
-                }
+                using var backgroundPaint = new SKPaint { Color = _groupBackgroundColor, IsAntialias = true };
+                var backgroundRect = new SKRect(X, Y, X + Width, Y + Height);
+                canvas.DrawRoundRect(backgroundRect, _cornerRadius, _cornerRadius, backgroundPaint);
             }
 
-            // Draw buttons
+            // Draw each button at its absolute position (button.X/Y already absolute)
             foreach (var button in _buttons)
             {
-                // Save the current canvas state
-                canvas.Save();
-
-                // Translate to button position
-                canvas.Translate(button.X, button.Y);
-
-                // Draw the button
                 button.Draw(canvas, context);
-
-                // Restore canvas state
-                canvas.Restore();
             }
         }
 

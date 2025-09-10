@@ -351,12 +351,8 @@ namespace Beep.Skia.Components
             if (!context.Bounds.IntersectsWith(Bounds))
                 return;
 
-            var paint = new SKPaint
-            {
-                IsAntialias = true,
-                TextSize = 12,
-                Typeface = SKTypeface.Default
-            };
+            using var font = new SKFont(SKTypeface.Default, 12f);
+            using var paint = new SKPaint { IsAntialias = true, Color = MaterialDesignColors.OnSurface };
 
             float currentY = Y;
 
@@ -382,7 +378,7 @@ namespace Beep.Skia.Components
             paint.Dispose();
         }
 
-        private void DrawHeader(SKCanvas canvas, DrawingContext context, SKPaint paint, float y)
+    private void DrawHeader(SKCanvas canvas, DrawingContext context, SKPaint paint, float y)
         {
             float currentX = X;
 
@@ -395,10 +391,10 @@ namespace Beep.Skia.Components
             // Draw column headers
             foreach (var column in _columns.Where(c => c.IsVisible))
             {
-                // Draw header text
+                // Draw header text (variant color)
                 paint.Color = MaterialDesignColors.OnSurfaceVariant;
                 var textRect = new SKRect(currentX, y, currentX + column.Width, y + _headerHeight);
-                DrawTextAligned(canvas, column.Header, textRect, paint, column.TextAlignment);
+                DrawTextAligned(canvas, column.Header, textRect, paint, column.TextAlignment, 12f);
 
                 // Draw vertical grid line
                 if (_showGridLines)
@@ -452,7 +448,7 @@ namespace Beep.Skia.Components
                 // Draw cell text
                 paint.Color = MaterialDesignColors.OnSurface;
                 var textRect = new SKRect(currentX, y, currentX + column.Width, y + _rowHeight);
-                DrawTextAligned(canvas, cellText, textRect, paint, column.TextAlignment);
+                DrawTextAligned(canvas, cellText, textRect, paint, column.TextAlignment, 12f);
 
                 // Draw vertical grid line
                 if (_showGridLines)
@@ -486,32 +482,30 @@ namespace Beep.Skia.Components
             }
         }
 
-        private void DrawTextAligned(SKCanvas canvas, string text, SKRect rect, SKPaint paint, TextAlignment alignment)
+    private void DrawTextAligned(SKCanvas canvas, string text, SKRect rect, SKPaint paint, TextAlignment alignment, float fontSize)
         {
             if (string.IsNullOrEmpty(text))
                 return;
-
-            var textBounds = new SKRect();
-            paint.MeasureText(text, ref textBounds);
-
-            float x = rect.Left;
-            float y = rect.MidY + textBounds.Height / 2;
-
+        using var font = new SKFont(SKTypeface.Default, fontSize);
+        var metrics = font.Metrics; // ascent negative, cap height positive
+        float capHeight = metrics.CapHeight;
+        float x = rect.Left;
+        float baseline = rect.Top + (rect.Height + capHeight) / 2f; // center cap height
+        float textWidth = font.MeasureText(text);
             switch (alignment)
             {
                 case TextAlignment.Center:
-                    x = rect.MidX - textBounds.Width / 2;
+            x = rect.MidX - textWidth / 2f;
                     break;
                 case TextAlignment.Right:
-                    x = rect.Right - textBounds.Width;
+            x = rect.Right - textWidth;
                     break;
                 case TextAlignment.Left:
                 default:
                     x = rect.Left;
                     break;
             }
-
-            canvas.DrawText(text, x, y, paint);
+        canvas.DrawText(text, x, baseline, SKTextAlign.Left, font, paint);
         }
 
         /// <summary>

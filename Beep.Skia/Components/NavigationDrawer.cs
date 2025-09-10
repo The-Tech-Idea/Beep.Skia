@@ -362,7 +362,7 @@ namespace Beep.Skia.Components
             if (!IsOpen) return;
 
             // Calculate drawer bounds based on position
-            SKRect drawerBounds = CalculateDrawerBounds(Bounds);
+            SKRect drawerBounds = CalculateDrawerBounds(new SKRect(X, Y, X + Width, Y + Height));
 
             // Draw scrim for modal drawer
             if (DrawerType == DrawerType.Modal)
@@ -663,76 +663,60 @@ namespace Beep.Skia.Components
         {
             using (var paint = new SKPaint())
             {
-                // Draw background based on state
+                // Background
                 if (IsSelected)
-                {
                     paint.Color = _navigationDrawer?.SelectedItemColor ?? MaterialDesignColors.SecondaryContainer;
-                }
                 else if (IsHovered)
-                {
                     paint.Color = MaterialDesignColors.OnSurface.WithAlpha(8);
-                }
                 else
-                {
                     paint.Color = SKColors.Transparent;
-                }
-
                 paint.Style = SKPaintStyle.Fill;
                 canvas.DrawRect(bounds, paint);
 
-                // Draw icon
+                // Icon
                 if (!string.IsNullOrEmpty(Icon))
                 {
                     paint.Color = IsSelected ?
                         MaterialDesignColors.OnSecondaryContainer :
                         _navigationDrawer?.UnselectedItemColor ?? MaterialDesignColors.OnSurfaceVariant;
-                    paint.TextSize = 24f;
                     paint.IsAntialias = true;
-
-                    float iconX = bounds.Left + 16;
-                    float iconY = bounds.Top + (bounds.Height + 12) / 2; // Approximate text height
-
-                    canvas.DrawText(Icon, iconX, iconY, paint);
+                    using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), 24f))
+                    {
+                        float iconX = bounds.Left + 16;
+                        float iconY = bounds.Top + (bounds.Height + 12) / 2;
+                        canvas.DrawText(Icon, iconX, iconY, SKTextAlign.Left, font, paint);
+                    }
                 }
 
-                // Draw label
+                // Label
                 if (!string.IsNullOrEmpty(Label))
                 {
                     paint.Color = IsSelected ?
                         MaterialDesignColors.OnSecondaryContainer :
                         _navigationDrawer?.UnselectedItemColor ?? MaterialDesignColors.OnSurface;
-                    paint.TextSize = 16f;
                     paint.IsAntialias = true;
-
-                    float labelX = bounds.Left + 72; // Icon width + padding
-                    float labelY = bounds.Top + (bounds.Height + 6) / 2; // Approximate text height
-
-                    canvas.DrawText(Label, labelX, labelY, paint);
+                    using (var font = new SKFont(SKTypeface.FromFamilyName(null, IsSelected ? SKFontStyle.Bold : SKFontStyle.Normal), 16f))
+                    {
+                        float labelX = bounds.Left + 72;
+                        float labelY = bounds.Top + (bounds.Height + 6) / 2;
+                        canvas.DrawText(Label, labelX, labelY, SKTextAlign.Left, font, paint);
+                    }
                 }
 
-                // Draw badge
+                // Badge
                 if (!string.IsNullOrEmpty(Badge))
                 {
-                    // Draw badge background
-                    var badgePaint = new SKPaint();
-                    badgePaint.Color = MaterialDesignColors.Error;
-                    badgePaint.Style = SKPaintStyle.Fill;
-
-                    float badgeRadius = 8;
+                    float badgeRadius = 8f;
                     float badgeX = bounds.Right - 24;
                     float badgeY = bounds.Top + 16;
-
-                    canvas.DrawCircle(badgeX, badgeY, badgeRadius, badgePaint);
-
-                    // Draw badge text
-                    badgePaint.Color = MaterialDesignColors.OnError;
-                    badgePaint.TextSize = 12f;
-                    badgePaint.TextAlign = SKTextAlign.Center;
-
-                    var textBounds = new SKRect();
-                    badgePaint.MeasureText(Badge, ref textBounds);
-
-                    canvas.DrawText(Badge, badgeX, badgeY + 4, badgePaint); // Approximate vertical centering
+                    paint.Color = MaterialDesignColors.Error;
+                    paint.Style = SKPaintStyle.Fill;
+                    canvas.DrawCircle(badgeX, badgeY, badgeRadius, paint);
+                    paint.Color = MaterialDesignColors.OnError;
+                    using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Bold), 12f))
+                    {
+                        canvas.DrawText(Badge, badgeX, badgeY + 4, SKTextAlign.Center, font, paint);
+                    }
                 }
             }
         }
@@ -743,11 +727,6 @@ namespace Beep.Skia.Components
     /// </summary>
     public class NavigationDrawerDivider : NavigationDrawerBaseItem
     {
-        /// <summary>
-        /// Draws the navigation drawer divider.
-        /// </summary>
-        /// <param name="canvas">The canvas to draw on.</param>
-        /// <param name="bounds">The bounds to draw within.</param>
         public override void Draw(SKCanvas canvas, SKRect bounds)
         {
             using (var paint = new SKPaint())
@@ -755,8 +734,7 @@ namespace Beep.Skia.Components
                 paint.Color = MaterialDesignColors.OutlineVariant;
                 paint.StrokeWidth = 1;
                 paint.Style = SKPaintStyle.Stroke;
-
-                float centerY = bounds.Top + bounds.Height / 2;
+                float centerY = bounds.MidY;
                 canvas.DrawLine(bounds.Left, centerY, bounds.Right, centerY, paint);
             }
         }
@@ -871,39 +849,39 @@ namespace Beep.Skia.Components
                 if (!string.IsNullOrEmpty(AvatarIcon))
                 {
                     paint.Color = TitleColor;
-                    paint.TextSize = 40f;
                     paint.IsAntialias = true;
-
-                    float avatarX = bounds.Left + 16;
-                    float avatarY = bounds.Top + 80; // Center vertically in header
-
-                    canvas.DrawText(AvatarIcon, avatarX, avatarY, paint);
+                    using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), 40f))
+                    {
+                        float avatarX = bounds.Left + 16;
+                        float avatarY = bounds.Top + 80;
+                        canvas.DrawText(AvatarIcon, avatarX, avatarY, SKTextAlign.Left, font, paint);
+                    }
                 }
 
                 // Draw title
                 if (!string.IsNullOrEmpty(Title))
                 {
                     paint.Color = TitleColor;
-                    paint.TextSize = 20f;
                     paint.IsAntialias = true;
-
-                    float titleX = bounds.Left + 16 + (string.IsNullOrEmpty(AvatarIcon) ? 0 : 56);
-                    float titleY = bounds.Top + 60;
-
-                    canvas.DrawText(Title, titleX, titleY, paint);
+                    using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), 20f))
+                    {
+                        float titleX = bounds.Left + 16 + (string.IsNullOrEmpty(AvatarIcon) ? 0 : 56);
+                        float titleY = bounds.Top + 60;
+                        canvas.DrawText(Title, titleX, titleY, SKTextAlign.Left, font, paint);
+                    }
                 }
 
                 // Draw subtitle
                 if (!string.IsNullOrEmpty(Subtitle))
                 {
                     paint.Color = SubtitleColor;
-                    paint.TextSize = 14f;
                     paint.IsAntialias = true;
-
-                    float subtitleX = bounds.Left + 16 + (string.IsNullOrEmpty(AvatarIcon) ? 0 : 56);
-                    float subtitleY = bounds.Top + 90;
-
-                    canvas.DrawText(Subtitle, subtitleX, subtitleY, paint);
+                    using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), 14f))
+                    {
+                        float subtitleX = bounds.Left + 16 + (string.IsNullOrEmpty(AvatarIcon) ? 0 : 56);
+                        float subtitleY = bounds.Top + 90;
+                        canvas.DrawText(Subtitle, subtitleX, subtitleY, SKTextAlign.Left, font, paint);
+                    }
                 }
             }
         }

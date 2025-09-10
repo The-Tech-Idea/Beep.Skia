@@ -182,7 +182,12 @@ namespace Beep.Skia.Components
         /// </summary>
         private void DrawLinearProgress(SKCanvas canvas)
         {
-            var trackRect = new SKRect(0, Height / 2 - StrokeWidth / 2, Width, Height / 2 + StrokeWidth / 2);
+            // Absolute coordinates: anchor track to (X,Y)
+            var trackRect = new SKRect(
+                X,
+                Y + Height / 2 - StrokeWidth / 2,
+                X + Width,
+                Y + Height / 2 + StrokeWidth / 2);
 
             // Draw track
             using (var trackPaint = new SKPaint
@@ -280,8 +285,9 @@ namespace Beep.Skia.Components
         /// </summary>
         private void DrawCircularProgress(SKCanvas canvas)
         {
-            float centerX = Width / 2;
-            float centerY = Height / 2;
+            // Absolute center point
+            float centerX = X + Width / 2;
+            float centerY = Y + Height / 2;
             float radius = Math.Min(Width, Height) / 2 - StrokeWidth / 2;
 
             // Draw track

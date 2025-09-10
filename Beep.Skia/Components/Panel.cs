@@ -197,10 +197,22 @@ namespace Beep.Skia.Components
 
         /// <summary>
         /// Draws the panel's content.
+        /// <summary>
+        /// Draws the panel's content including title.
         /// </summary>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            var panelRect = new SKRect(0, 0, Width, Height);
+            // Draw title if present (BEFORE panel content, following Checkbox pattern)
+            if (!string.IsNullOrEmpty(Title))
+            {
+                using var titleFont = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), 12);
+                using var titlePaint = new SKPaint { Color = MaterialControl.MaterialColors.OnSurface, IsAntialias = true };
+                float baseline = Y - 8; // maintain previous visual offset
+                canvas.DrawText(Title, X, baseline, SKTextAlign.Left, titleFont, titlePaint);
+            }
+
+            // Draw the panel itself (absolute coordinates like Checkbox)
+            var panelRect = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw elevation shadow
             DrawElevationShadow(canvas, panelRect);
@@ -251,40 +263,6 @@ namespace Beep.Skia.Components
 
             // Draw state layer
             DrawStateLayer(canvas, panelRect, MaterialControl.MaterialColors.OnSurface);
-        }
-
-        /// <summary>
-        /// Draws the panel and its title if set.
-        /// </summary>
-        public override void Draw(SKCanvas canvas, DrawingContext context)
-        {
-            // Draw title if set
-            if (!string.IsNullOrEmpty(Title))
-            {
-                DrawTitle(canvas, context);
-            }
-
-            // Draw the panel content
-            base.Draw(canvas, context);
-        }
-
-        /// <summary>
-        /// Draws the title text above the panel.
-        /// </summary>
-        private void DrawTitle(SKCanvas canvas, DrawingContext context)
-        {
-            using (var titlePaint = new SKPaint
-            {
-                Color = MaterialControl.MaterialColors.OnSurface,
-                TextSize = 12, // Small title text
-                IsAntialias = true,
-                Typeface = SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal)
-            })
-            {
-                // Position title at top left, slightly above the panel
-                float titleY = -8; // Position above the panel
-                canvas.DrawText(Title, 0, titleY, titlePaint);
-            }
         }
 
         /// <summary>

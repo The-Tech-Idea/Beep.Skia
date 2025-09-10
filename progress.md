@@ -119,5 +119,57 @@
 2. Set up unit testing framework
 3. Add performance benchmarks
 4. Fix duplicate ConnectionEventArgs definition (existing issue)
-5. Consider additional features or improvements</content>
-<parameter name="filePath">c:\Users\f_ald\source\repos\The-Tech-Idea\Beep.Skia\progress.md
+5. Consider additional features or improvements
+
+---
+
+## Location Normalization Progress (Absolute Coordinates)
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Checkbox | DONE | Baseline |
+| Button | DONE | |
+| ButtonGroup | DONE | |
+| Card | DONE | |
+| SvgImage | DONE | |
+| Menu | DONE | Invalidate shim added |
+| MenuItem | DONE | Uses ParentMenu.Invalidate() |
+| MenuButton | DONE | Absolute coords & modern text API |
+| MenuBar | DONE | Absolute coords & modern text API |
+| CascadingMenu | DONE | Absolute coords & modern text API |
+| ContextMenu | DONE | Absolute coords (inherits Menu) |
+| Palette / ComponentPalette | DONE | |
+| List | DONE | |
+| Dropdown | DONE | |
+| SegmentedButtons | DONE | |
+| SplitButton | DONE | |
+| Slider | DONE | Track uses local math (ok) |
+| Switch | DONE | |
+| TextBox | DONE | |
+| TextArea | DONE | |
+| Search | DONE | |
+| FabMenu | DONE | |
+| Notification | DONE | |
+| RadioGroup | DONE | |
+| CheckBoxGroup | DONE | |
+| Panel | DONE | |
+| ProgressBar | DONE | Linear & circular absolute |
+| Spinner | DONE | Absolute center offsets |
+| Tabs | DONE | Absolute positions & modern text API |
+| NavigationBar | DONE | Absolute coords & modern text API |
+| NavigationDrawer | DONE | Absolute coords & modern text API |
+| NavigationItem | PENDING | |
+| StatusBar | DONE | Absolute coords & modern text API |
+| StatusBarItem | DONE | Via parent rendering |
+| ToolBar | DONE | Absolute coords & modern text API |
+| ToolBarItem | DONE | Via parent toolbar rendering |
+| ToggleButton | DONE | Already absolute |
+| FloatingActionButton | DONE | Absolute center & hit test |
+| ColorPicker | DONE | Absolute coords already | 
+| DatePicker | DONE | Dialog reposition each draw |
+| TimePicker | DONE | Dialog reposition each draw |
+| DataGrid | DONE | Absolute coords & modern text API |
+| DataGridColumn | DONE | Column metadata only |
+
+### Immediate Next Conversion Batch
+Tabs, NavigationBar, NavigationDrawer, NavigationItem (start navigation suite)

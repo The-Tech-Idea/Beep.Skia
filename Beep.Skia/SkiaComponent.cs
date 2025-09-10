@@ -82,6 +82,19 @@ namespace Beep.Skia
         /// </summary>
         public string Name { get; set; }
 
+    /// <summary>
+    /// Globally unique identifier for this component instance. Assigned at construction.
+    /// </summary>
+    [System.ComponentModel.Browsable(false)]
+    public Guid Id { get; } = Guid.NewGuid();
+
+    /// <summary>
+    /// Indicates whether this component should be shown in an editor palette/toolbox.
+    /// Editors can use this flag to hide infrastructure or internal components.
+    /// Defaults to true.
+    /// </summary>
+    public virtual bool ShowInPalette { get; set; } = true;
+
         /// <summary>
         /// Gets or sets custom data associated with this component.
         /// </summary>
@@ -311,31 +324,23 @@ namespace Beep.Skia
 
             State = ComponentState.Rendering;
 
-            // Save canvas state
+            // Save canvas state (no translation; components draw with absolute X,Y like Checkbox pattern)
             var canvasState = canvas.Save();
-
             try
             {
-                // Apply transformations
-                ApplyTransformations(canvas, context);
-
-                // Apply opacity
+                // Apply opacity using absolute bounds when needed
                 if (Opacity < 1.0f)
                 {
+                    var absBounds = new SKRect(X, Y, X + Width, Y + Height);
                     using var paint = new SKPaint { Color = SKColors.White.WithAlpha((byte)(Opacity * 255)) };
-                    canvas.DrawRect(Bounds, paint);
-                    canvas.SaveLayer(Bounds, paint);
+                    canvas.SaveLayer(absBounds, paint);
                 }
 
-                // Draw component content
                 DrawContent(canvas, context);
-
-                // Draw children
                 DrawChildren(canvas, context);
             }
             finally
             {
-                // Restore canvas state
                 canvas.RestoreToCount(canvasState);
             }
 
@@ -349,17 +354,9 @@ namespace Beep.Skia
         /// <param name="context">The drawing context.</param>
         protected virtual void ApplyTransformations(SKCanvas canvas, DrawingContext context)
         {
-            // Apply zoom
-            if (context.Zoom != 1.0f)
-            {
-                canvas.Scale(context.Zoom, context.Zoom);
-            }
-
-            // Apply pan offset
-            if (context.PanOffset != SKPoint.Empty)
-            {
-                canvas.Translate(context.PanOffset.X, context.PanOffset.Y);
-            }
+            // This method is now empty.
+            // Global transformations (pan/zoom) are handled once in RenderingHelper.
+            // Local transformations (position) are handled in this component's Draw method.
         }
 
         /// <summary>
@@ -651,14 +648,52 @@ namespace Beep.Skia
         /// </summary>
         public virtual List<IConnectionPoint> OutConnectionPoints { get; } = new List<IConnectionPoint>();
 
+    // --- Connection tracking (component-level) ---
+    private readonly HashSet<IDrawableComponent> _outgoingConnections = new HashSet<IDrawableComponent>();
+    private readonly HashSet<IDrawableComponent> _incomingConnections = new HashSet<IDrawableComponent>();
+
+    /// <summary>
+    /// Components this component has outgoing connections to.
+    /// </summary>
+    public IReadOnlyCollection<IDrawableComponent> OutgoingConnections => _outgoingConnections;
+
+    /// <summary>
+    /// Components that connect into this component.
+    /// </summary>
+    public IReadOnlyCollection<IDrawableComponent> IncomingConnections => _incomingConnections;
+
+    /// <summary>
+    /// Raised when a connection (outgoing or incoming) is added for this component.
+    /// </summary>
+    public event EventHandler<ConnectionChangedEventArgs> ConnectionAdded;
+
+    /// <summary>
+    /// Raised when a connection (outgoing or incoming) is removed for this component.
+    /// </summary>
+    public event EventHandler<ConnectionChangedEventArgs> ConnectionRemoved;
+
         /// <summary>
         /// Connects this component to another component.
         /// </summary>
         /// <param name="other">The component to connect to.</param>
         public virtual void ConnectTo(IDrawableComponent other)
         {
-            // Default implementation - override in derived classes for specific connection logic
-            OnConnected(other);
+            if (other == null || other == (IDrawableComponent)this)
+                return;
+
+            // Prevent duplicate
+            if (_outgoingConnections.Add(other))
+            {
+                if (other is SkiaComponent otherComp)
+                {
+                    otherComp._incomingConnections.Add(this);
+                    otherComp.ConnectionAdded?.Invoke(otherComp, new ConnectionChangedEventArgs(this, otherComp, ConnectionDirection.Incoming));
+                    otherComp.OnConnected(this); // notify target of new incoming connection
+                }
+
+                ConnectionAdded?.Invoke(this, new ConnectionChangedEventArgs(this, other, ConnectionDirection.Outgoing));
+                OnConnected(other);
+            }
         }
 
         /// <summary>
@@ -667,8 +702,21 @@ namespace Beep.Skia
         /// <param name="other">The component to disconnect from.</param>
         public virtual void DisconnectFrom(IDrawableComponent other)
         {
-            // Default implementation - override in derived classes for specific disconnection logic
-            OnDisconnected(other);
+            if (other == null)
+                return;
+
+            if (_outgoingConnections.Remove(other))
+            {
+                if (other is SkiaComponent otherComp)
+                {
+                    otherComp._incomingConnections.Remove(this);
+                    otherComp.ConnectionRemoved?.Invoke(otherComp, new ConnectionChangedEventArgs(this, otherComp, ConnectionDirection.Incoming));
+                    otherComp.OnDisconnected(this);
+                }
+
+                ConnectionRemoved?.Invoke(this, new ConnectionChangedEventArgs(this, other, ConnectionDirection.Outgoing));
+                OnDisconnected(other);
+            }
         }
 
         /// <summary>
@@ -678,8 +726,8 @@ namespace Beep.Skia
         /// <returns>true if connected; otherwise, false.</returns>
         public virtual bool IsConnectedTo(IDrawableComponent other)
         {
-            // Default implementation - override in derived classes for specific connection checking
-            return false;
+            if (other == null) return false;
+            return _outgoingConnections.Contains(other) || _incomingConnections.Contains(other);
         }
 
         /// <summary>
@@ -718,6 +766,23 @@ namespace Beep.Skia
                 if (disposing)
                 {
                     State = ComponentState.Disposing;
+
+                    // Break all outgoing connections
+                    foreach (var target in _outgoingConnections.ToList())
+                    {
+                        DisconnectFrom(target);
+                    }
+                    _outgoingConnections.Clear();
+
+                    // Inform sources (incoming) that this component is going away
+                    foreach (var source in _incomingConnections.ToList())
+                    {
+                        if (source is SkiaComponent sc)
+                        {
+                            sc.DisconnectFrom(this);
+                        }
+                    }
+                    _incomingConnections.Clear();
 
                     // Dispose children
                     foreach (var child in Children.ToList())
@@ -784,6 +849,55 @@ namespace Beep.Skia
         {
             OldState = oldState;
             NewState = newState;
+        }
+    }
+
+    /// <summary>
+    /// Direction of a connection relative to the component raising the event.
+    /// </summary>
+    public enum ConnectionDirection
+    {
+        /// <summary>
+        /// The component initiated the connection to another component.
+        /// </summary>
+        Outgoing,
+        /// <summary>
+        /// Another component initiated the connection into this component.
+        /// </summary>
+        Incoming
+    }
+
+    /// <summary>
+    /// Event arguments for connection added/removed events.
+    /// </summary>
+    public class ConnectionChangedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// The source component (connector / initiator).
+        /// </summary>
+        public IDrawableComponent Source { get; }
+
+        /// <summary>
+        /// The target component (connected / receiver).
+        /// </summary>
+        public IDrawableComponent Target { get; }
+
+        /// <summary>
+        /// Direction relative to the component firing the event.
+        /// </summary>
+        public ConnectionDirection Direction { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectionChangedEventArgs"/> class.
+        /// </summary>
+        /// <param name="source">Source component.</param>
+        /// <param name="target">Target component.</param>
+        /// <param name="direction">Direction relative to event sender.</param>
+        public ConnectionChangedEventArgs(IDrawableComponent source, IDrawableComponent target, ConnectionDirection direction)
+        {
+            Source = source;
+            Target = target;
+            Direction = direction;
         }
     }
 }

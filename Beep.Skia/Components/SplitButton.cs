@@ -410,21 +410,21 @@ namespace Beep.Skia.Components
         /// <param name="context">The drawing context.</param>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            var bounds = new SKRect(0, 0, Width, Height);
+            var bounds = new SKRect(X, Y, X + Width, Y + Height);
 
             // Calculate button dimensions
             float dropdownButtonWidth = 48; // Fixed width for dropdown button
             float primaryButtonWidth = Width - dropdownButtonWidth - _separatorWidth;
 
             // Draw primary button
-            var primaryBounds = new SKRect(0, 0, primaryButtonWidth, Height);
+            var primaryBounds = new SKRect(X, Y, X + primaryButtonWidth, Y + Height);
             DrawPrimaryButton(canvas, primaryBounds);
 
             // Draw separator
-            DrawSeparator(canvas, primaryButtonWidth);
+            DrawSeparator(canvas, X + primaryButtonWidth);
 
             // Draw dropdown button
-            var dropdownBounds = new SKRect(primaryButtonWidth + _separatorWidth, 0, Width, Height);
+            var dropdownBounds = new SKRect(X + primaryButtonWidth + _separatorWidth, Y, X + Width, Y + Height);
             DrawDropdownButton(canvas, dropdownBounds);
 
             // Draw dropdown menu if open
@@ -549,23 +549,11 @@ namespace Beep.Skia.Components
             if (string.IsNullOrEmpty(text))
                 return;
 
-            using (var paint = new SKPaint())
-            {
-                paint.Color = color;
-                paint.TextSize = 14;
-                paint.IsAntialias = true;
-                paint.TextAlign = SKTextAlign.Center;
-
-                // Measure text
-                var textBounds = new SKRect();
-                paint.MeasureText(text, ref textBounds);
-
-                // Calculate text position
-                float textY = bounds.MidY - textBounds.MidY;
-
-                // Draw text
-                canvas.DrawText(text, bounds.MidX, textY, paint);
-            }
+            using var font = new SKFont(SKTypeface.Default, 14);
+            using var paint = new SKPaint { Color = color, IsAntialias = true };
+            var metrics = font.Metrics;
+            float baseline = bounds.MidY + metrics.CapHeight / 2f;
+            canvas.DrawText(text, bounds.MidX, baseline, SKTextAlign.Center, font, paint);
         }
 
         /// <summary>
@@ -629,27 +617,21 @@ namespace Beep.Skia.Components
             // Draw background if selected
             if (_selectedItem == item)
             {
-                using (var paint = new SKPaint())
+                using (var bgPaint = new SKPaint())
                 {
-                    paint.Color = MaterialColors.SecondaryContainer;
-                    paint.IsAntialias = true;
-                    canvas.DrawRect(bounds, paint);
+                    bgPaint.Color = MaterialColors.SecondaryContainer;
+                    bgPaint.IsAntialias = true;
+                    canvas.DrawRect(bounds, bgPaint);
                 }
             }
 
-            // Draw text
-            using (var paint = new SKPaint())
-            {
-                paint.Color = item.IsEnabled ? MaterialColors.OnSurface : MaterialColors.OnSurfaceVariant;
-                paint.TextSize = 14;
-                paint.IsAntialias = true;
-                paint.TextAlign = SKTextAlign.Left;
-
-                float textX = bounds.Left + 16;
-                float textY = bounds.MidY - paint.TextSize / 2 + paint.TextSize / 3;
-
-                canvas.DrawText(item.Text, textX, textY, paint);
-            }
+            // Draw text (SKFont)
+            using var font = new SKFont(SKTypeface.Default, 14);
+            using var paint = new SKPaint { Color = item.IsEnabled ? MaterialColors.OnSurface : MaterialColors.OnSurfaceVariant, IsAntialias = true };
+            var metrics = font.Metrics;
+            float baseline = bounds.MidY + metrics.CapHeight / 2f;
+            float textX = bounds.Left + 16;
+            canvas.DrawText(item.Text, textX, baseline, SKTextAlign.Left, font, paint);
         }
 
         /// <summary>

@@ -19,7 +19,7 @@
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" Version="3.119.0" />
 		<PackageReference Include="SkiaSharp.Views.WindowsForms" Version="3.119.0" />
-		<PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="2.0.79" />
+		<PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="2.0.83" />
 	</ItemGroup>
 
 	<ItemGroup>

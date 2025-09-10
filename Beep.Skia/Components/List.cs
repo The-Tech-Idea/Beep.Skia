@@ -353,14 +353,14 @@ namespace Beep.Skia.Components
         /// </summary>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            var bounds = new SKRect(0, 0, Width, Height);
+            var bounds = new SKRect(X, Y, X + Width, Y + Height);
 
-            float currentY = 0;
+            float currentY = Y;
             int itemIndex = 0;
 
             foreach (var item in _items)
             {
-                var itemBounds = new SKRect(0, currentY, Width, currentY + _itemHeight);
+                var itemBounds = new SKRect(X, currentY, X + Width, currentY + _itemHeight);
 
                 // Draw the list item
                 DrawListItem(canvas, item, itemBounds, itemIndex);
@@ -379,7 +379,7 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Draws a single list item.
         /// </summary>
-        private void DrawListItem(SKCanvas canvas, ListItem item, SKRect bounds, int index)
+    private void DrawListItem(SKCanvas canvas, ListItem item, SKRect bounds, int index)
         {
             // Draw selection background if item is selected
             if (_allowSelection && item == _selectedItem)
@@ -395,7 +395,7 @@ namespace Beep.Skia.Components
             // Draw state layer for hover/press states
             DrawStateLayer(canvas, bounds, MaterialColors.OnSurface);
 
-            float contentX = 16; // Left padding
+            float contentX = bounds.Left + 16; // Left padding (absolute)
             float contentWidth = bounds.Width - 32; // Total width minus padding
 
             // Draw leading icon
@@ -458,48 +458,35 @@ namespace Beep.Skia.Components
         private void DrawItemText(SKCanvas canvas, ListItem item, SKRect bounds, float startX, float availableWidth)
         {
             float currentY = bounds.Top;
-            SKColor textColor = item.IsEnabled ? MaterialColors.OnSurface : MaterialColors.OnSurface;
-
-            using (var paint = new SKPaint())
+            // Primary
+            if (!string.IsNullOrEmpty(item.PrimaryText))
             {
-                paint.IsAntialias = true;
-                paint.Color = textColor;
+                using var primaryFont = new SKFont(SKTypeface.Default, _fontSize);
+                using var primaryPaint = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
+                float textY = _listType == ListType.SingleLine
+                    ? bounds.Top + (bounds.Height + primaryFont.Metrics.CapHeight) / 2f
+                    : bounds.Top + 20 + primaryFont.Metrics.CapHeight / 2f; // keep original top offset style
+                canvas.DrawText(item.PrimaryText, startX, textY, SKTextAlign.Left, primaryFont, primaryPaint);
+                currentY = textY + 4; // baseline + spacing
+            }
 
-                // Primary text
-                if (!string.IsNullOrEmpty(item.PrimaryText))
-                {
-                    paint.TextSize = _fontSize;
-                    paint.Typeface = SKTypeface.FromFamilyName(null, SKFontStyleWeight.Normal, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
+            // Secondary
+            if (!string.IsNullOrEmpty(item.SecondaryText) && (_listType == ListType.TwoLine || _listType == ListType.ThreeLine))
+            {
+                using var secondaryFont = new SKFont(SKTypeface.Default, _fontSize * 0.875f);
+                using var secondaryPaint = new SKPaint { Color = MaterialColors.OnSurfaceVariant, IsAntialias = true };
+                float baseline = currentY + 12 + secondaryFont.Metrics.CapHeight / 2f; // mimic old +16 total offset (12 + cap/2 approx)
+                canvas.DrawText(item.SecondaryText, startX, baseline, SKTextAlign.Left, secondaryFont, secondaryPaint);
+                currentY = baseline + 4;
+            }
 
-                    float textY = currentY + (_listType == ListType.SingleLine ?
-                        (bounds.Height + _fontSize) / 2 :
-                        bounds.Top + 20);
-
-                    canvas.DrawText(item.PrimaryText, startX, textY, paint);
-                    currentY += _fontSize + 4;
-                }
-
-                // Secondary text (for two-line and three-line lists)
-                if (!string.IsNullOrEmpty(item.SecondaryText) &&
-                    (_listType == ListType.TwoLine || _listType == ListType.ThreeLine))
-                {
-                    paint.TextSize = _fontSize * 0.875f; // Slightly smaller
-                    paint.Color = MaterialColors.OnSurfaceVariant;
-
-                    float textY = currentY + 16;
-                    canvas.DrawText(item.SecondaryText, startX, textY, paint);
-                    currentY += _fontSize * 0.875f + 4;
-                }
-
-                // Tertiary text (for three-line lists only)
-                if (!string.IsNullOrEmpty(item.TertiaryText) && _listType == ListType.ThreeLine)
-                {
-                    paint.TextSize = _fontSize * 0.75f; // Even smaller
-                    paint.Color = MaterialColors.OnSurfaceVariant;
-
-                    float textY = currentY + 12;
-                    canvas.DrawText(item.TertiaryText, startX, textY, paint);
-                }
+            // Tertiary
+            if (!string.IsNullOrEmpty(item.TertiaryText) && _listType == ListType.ThreeLine)
+            {
+                using var tertiaryFont = new SKFont(SKTypeface.Default, _fontSize * 0.75f);
+                using var tertiaryPaint = new SKPaint { Color = MaterialColors.OnSurfaceVariant, IsAntialias = true };
+                float baseline = currentY + 12 + tertiaryFont.Metrics.CapHeight / 2f;
+                canvas.DrawText(item.TertiaryText, startX, baseline, SKTextAlign.Left, tertiaryFont, tertiaryPaint);
             }
         }
 

@@ -234,11 +234,23 @@ namespace Beep.Skia.Components
         }
 
         /// <summary>
-        /// Draws the button's content.
+        /// Draws the button's content including title and error messages.
         /// </summary>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            var buttonBounds = new SKRect(0, 0, Width, Height);
+            // Draw title (absolute coordinates) using modern SKFont API
+            if (!string.IsNullOrEmpty(Title))
+            {
+                using var titleFont = new SKFont(SKTypeface.Default, 12);
+                using var titlePaint = new SKPaint { Color = MaterialControl.MaterialColors.OnSurface, IsAntialias = true };
+                var m = titleFont.Metrics;
+                // Position baseline so visual text sits ~4px above button top
+                var titleBaseline = Y - 4; // keep existing layout intent
+                canvas.DrawText(Title, X, titleBaseline, SKTextAlign.Left, titleFont, titlePaint);
+            }
+
+            // Draw the button itself using absolute bounds
+            var buttonBounds = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw elevation shadow
             DrawElevationShadow(canvas, buttonBounds);
@@ -306,12 +318,8 @@ namespace Beep.Skia.Components
             if (hasLeadingIcon) totalContentWidth += iconSize + 8;
             if (hasText)
             {
-                using (var textPaint = new SKPaint { TextSize = 14, IsAntialias = true })
-                {
-                    var textBounds = new SKRect();
-                    textPaint.MeasureText(Text, ref textBounds);
-                    totalContentWidth += textBounds.Width;
-                }
+                using var measureFont = new SKFont(SKTypeface.Default, 14);
+                totalContentWidth += measureFont.MeasureText(Text);
             }
             if (hasTrailingIcon) totalContentWidth += iconSize + 8;
             if (hasLeadingIcon && hasText) totalContentWidth += 8;
@@ -337,20 +345,13 @@ namespace Beep.Skia.Components
             // Draw text
             if (hasText)
             {
-                using (var textPaint = new SKPaint
-                {
-                    Color = TextColor,
-                    TextSize = 14, // Material Design 3.0 label large
-                    IsAntialias = true
-                })
-                {
-                    var textBounds = new SKRect();
-                    textPaint.MeasureText(Text, ref textBounds);
-
-                    var textY = contentBounds.Top + (contentBounds.Height + textBounds.Height) / 2;
-                    canvas.DrawText(Text, currentX, textY, textPaint);
-                    currentX += textBounds.Width + 8;
-                }
+                using var font = new SKFont(SKTypeface.Default, 14);
+                using var paint = new SKPaint { Color = TextColor, IsAntialias = true };
+                var metrics = font.Metrics;
+                var textWidth = font.MeasureText(Text);
+                var baseline = contentBounds.Top + (contentBounds.Height + metrics.CapHeight) / 2f;
+                canvas.DrawText(Text, currentX, baseline, SKTextAlign.Left, font, paint);
+                currentX += textWidth + 8;
             }
 
             // Draw trailing icon
@@ -364,52 +365,14 @@ namespace Beep.Skia.Components
 
                 DrawSvgIcon(canvas, iconRect, TrailingIcon);
             }
-        }
 
-        /// <summary>
-        /// Draws the complete button including title and error message.
-        /// </summary>
-        public override void Draw(SKCanvas canvas, DrawingContext context)
-        {
-            // Calculate total height needed for title and error message
-            var titleHeight = !string.IsNullOrEmpty(Title) ? 20f : 0f;
-            var errorHeight = !string.IsNullOrEmpty(ErrorMessage) ? 16f : 0f;
-            var totalHeight = Height + titleHeight + errorHeight;
-
-            // Save the original bounds
-            var originalBounds = Bounds;
-
-            // Draw title if present
-            if (!string.IsNullOrEmpty(Title))
-            {
-                using (var titlePaint = new SKPaint
-                {
-                    Color = MaterialControl.MaterialColors.OnSurface,
-                    TextSize = 12,
-                    IsAntialias = true
-                })
-                {
-                    var titleY = Y - 4; // Small gap above the button
-                    canvas.DrawText(Title, X, titleY, titlePaint);
-                }
-            }
-
-            // Draw the button content (this will call DrawContent)
-            base.Draw(canvas, context);
-
-            // Draw error message if present
+            // Draw error message if present (AFTER button content, following Checkbox pattern)
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
-                using (var errorPaint = new SKPaint
-                {
-                    Color = MaterialControl.MaterialColors.Error,
-                    TextSize = 12,
-                    IsAntialias = true
-                })
-                {
-                    var errorY = Y + Height + 20; // Below the button
-                    canvas.DrawText(ErrorMessage, X, errorY, errorPaint);
-                }
+                using var errorFont = new SKFont(SKTypeface.Default, 12);
+                using var errorPaint = new SKPaint { Color = MaterialControl.MaterialColors.Error, IsAntialias = true };
+                var baseline = Y + Height + 20; // maintain previous spacing intent
+                canvas.DrawText(ErrorMessage, X, baseline, SKTextAlign.Left, errorFont, errorPaint);
             }
         }
 

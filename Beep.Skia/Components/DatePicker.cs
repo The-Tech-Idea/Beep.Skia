@@ -614,6 +614,9 @@ namespace Beep.Skia.Components
             // Draw calendar dialog if open
             if (_isOpen && _calendarDialog != null)
             {
+                // Ensure dialog is positioned relative to current absolute location
+                _calendarDialog.X = X;
+                _calendarDialog.Y = Y + Height + 8;
                 _calendarDialog.Draw(canvas, context);
             }
         }

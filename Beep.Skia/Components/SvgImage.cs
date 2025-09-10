@@ -40,7 +40,7 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Gets or sets whether the SVG should maintain its aspect ratio when scaled.
         /// </summary>
-        public bool MaintainAspectRatio { get; set; } = true;
+    public new bool MaintainAspectRatio { get; set; } = true;
 
         /// <summary>
         /// Gets or sets the scaling mode for the SVG.
@@ -195,22 +195,9 @@ namespace Beep.Skia.Components
             // Calculate the destination rectangle based on scale mode
             SKRect destRect = CalculateDestinationRect();
 
-            // Save the current canvas state
-            canvas.Save();
-
-            // Apply transformations if needed
-            if (context.Zoom != 1.0f || context.PanOffset.X != 0 || context.PanOffset.Y != 0)
-            {
-                canvas.Scale(context.Zoom, context.Zoom);
-                canvas.Translate(context.PanOffset.X / context.Zoom, context.PanOffset.Y / context.Zoom);
-            }
-
-            // Draw the SVG picture
+            // Absolute coordinate model: destRect already in canvas coordinates
             var matrix = SKMatrix.CreateTranslation(destRect.Left, destRect.Top);
             canvas.DrawPicture(_cachedPicture, in matrix);
-
-            // Restore the canvas state
-            canvas.Restore();
         }
 
         /// <summary>

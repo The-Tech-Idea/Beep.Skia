@@ -272,11 +272,10 @@ namespace Beep.Skia.Components
             // Measure text width
             if (!string.IsNullOrEmpty(tabItem.Text))
             {
-                using (var paint = new SKPaint())
+                float size = _variant == TabVariant.Primary ? 14 : 13;
+                using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), size))
                 {
-                    paint.TextSize = _variant == TabVariant.Primary ? 14 : 13;
-                    paint.Typeface = SKTypeface.FromFamilyName(null, SKFontStyle.Normal);
-                    textWidth = paint.MeasureText(tabItem.Text);
+                    textWidth = font.MeasureText(tabItem.Text);
                 }
             }
 
@@ -312,16 +311,18 @@ namespace Beep.Skia.Components
             _maxScrollOffset = Math.Max(0, totalWidth - Width);
             _scrollOffset = Math.Max(0, Math.Min(_scrollOffset, _maxScrollOffset));
 
-            // Draw tab items
+            // Draw tab items (absolute X offset)
             float currentX = -_scrollOffset;
             for (int i = 0; i < _tabs.Count; i++)
             {
                 var tabItem = _tabs[i];
                 float tabWidth = CalculateTabWidth(i);
 
-                if (currentX + tabWidth > 0 && currentX < Width) // Only draw visible tabs
+                // Absolute positions
+                float absX = X + currentX;
+                if (absX + tabWidth > X && absX < X + Width) // Only draw visible tabs
                 {
-                    DrawTabItem(canvas, tabItem, currentX, tabWidth, i == _selectedIndex);
+                    DrawTabItem(canvas, tabItem, absX, tabWidth, i == _selectedIndex);
                 }
 
                 currentX += tabWidth + 8f; // Move to next tab position
@@ -334,7 +335,7 @@ namespace Beep.Skia.Components
         private void DrawTabItem(SKCanvas canvas, TabItem tabItem, float x, float width, bool isSelected)
         {
             float tabHeight = _variant == TabVariant.Primary ? 48 : 40;
-            var tabRect = new SKRect(x, 0, x + width, tabHeight);
+            var tabRect = new SKRect(x, Y, x + width, Y + tabHeight);
 
             // Draw tab content
             DrawTabContent(canvas, tabItem, tabRect, isSelected);
@@ -358,7 +359,7 @@ namespace Beep.Skia.Components
 
         private void DrawTabContent(SKCanvas canvas, TabItem tabItem, SKRect tabRect, bool isSelected)
         {
-            float centerY = tabRect.Height / 2;
+            float centerY = tabRect.MidY; // absolute center Y
             float currentX = tabRect.Left;
 
             // Add horizontal padding
@@ -391,17 +392,17 @@ namespace Beep.Skia.Components
             // Draw text
             if (!string.IsNullOrEmpty(tabItem.Text))
             {
-                using (var textPaint = new SKPaint())
-                {
-                    textPaint.IsAntialias = true;
-                    textPaint.TextSize = _variant == TabVariant.Primary ? 14 : 13;
-                    textPaint.Typeface = SKTypeface.FromFamilyName(null, SKFontStyle.Normal);
-                    textPaint.Color = isSelected ?
+                float size = _variant == TabVariant.Primary ? 14 : 13;
+                using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), size))
+                using (var textPaint = new SKPaint { IsAntialias = true, Color = isSelected ?
                         (_variant == TabVariant.Primary ? MaterialColors.OnPrimary : MaterialColors.OnSurface) :
-                        MaterialColors.OnSurfaceVariant;
-
-                    float textY = centerY + textPaint.TextSize / 3; // Baseline adjustment
-                    canvas.DrawText(tabItem.Text, currentX, textY, textPaint);
+                        MaterialColors.OnSurfaceVariant })
+                {
+                    // Baseline using font metrics
+                    var metrics = font.Metrics;
+                    float baselineAdjust = metrics.CapHeight / 2; // approximate centering
+                    float textY = centerY + baselineAdjust / 2;
+                    canvas.DrawText(tabItem.Text, currentX, textY, SKTextAlign.Left, font, textPaint);
                 }
             }
         }
@@ -411,7 +412,7 @@ namespace Beep.Skia.Components
             if (_tabs.Count == 0) return;
 
             float indicatorHeight = _variant == TabVariant.Primary ? 3f : 2f;
-            float indicatorY = _variant == TabVariant.Primary ? Height - indicatorHeight : Height - indicatorHeight;
+        float indicatorY = Y + (_variant == TabVariant.Primary ? Height - indicatorHeight : Height - indicatorHeight);
 
             using (var indicatorPaint = new SKPaint())
             {
@@ -422,9 +423,9 @@ namespace Beep.Skia.Components
                 indicatorPaint.Style = SKPaintStyle.Fill;
 
                 var indicatorRect = new SKRect(
-                    _indicatorPosition,
+                    X + _indicatorPosition,
                     indicatorY,
-                    _indicatorPosition + _indicatorWidth,
+                    X + _indicatorPosition + _indicatorWidth,
                     indicatorY + indicatorHeight
                 );
 
@@ -453,7 +454,7 @@ namespace Beep.Skia.Components
             for (int i = 0; i < _tabs.Count; i++)
             {
                 float tabWidth = CalculateTabWidth(i);
-                var tabRect = new SKRect(currentX, 0, currentX + tabWidth, Height);
+                var tabRect = new SKRect(X + currentX, Y, X + currentX + tabWidth, Y + Height);
 
                 if (tabRect.Contains(point))
                 {
@@ -482,7 +483,7 @@ namespace Beep.Skia.Components
                 for (int i = 0; i < _tabs.Count; i++)
                 {
                     float tabWidth = CalculateTabWidth(i);
-                    var tabRect = new SKRect(currentX, 0, currentX + tabWidth, Height);
+                    var tabRect = new SKRect(X + currentX, Y, X + currentX + tabWidth, Y + Height);
 
                     if (tabRect.Contains(point))
                     {

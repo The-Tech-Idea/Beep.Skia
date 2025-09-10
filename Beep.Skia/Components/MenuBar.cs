@@ -229,21 +229,19 @@ namespace Beep.Skia.Components
 
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            // Draw background
-            using (var paint = new SKPaint())
+            // Use absolute rect
+            var rect = new SKRect(X, Y, X + Width, Y + Height);
+            using (var paint = new SKPaint { Color = BackgroundColor, Style = SKPaintStyle.Fill })
             {
-                paint.Color = BackgroundColor;
-                paint.Style = SKPaintStyle.Fill;
-                canvas.DrawRect(Bounds, paint);
+                canvas.DrawRect(rect, paint);
             }
 
-            // Draw menu items
-            float x = Bounds.Left;
+            float currentX = rect.Left;
             foreach (var item in _items)
             {
-                var itemBounds = new SKRect(x, Bounds.Top, x + item.Width, Bounds.Bottom);
+                var itemBounds = new SKRect(currentX, rect.Top, currentX + item.Width, rect.Bottom);
                 item.Draw(canvas, itemBounds);
-                x += item.Width + ItemSpacing;
+                currentX += item.Width + ItemSpacing;
             }
         }
 
@@ -300,16 +298,15 @@ namespace Beep.Skia.Components
 
         private SKRect GetItemBounds(MenuBarItem item)
         {
-            float x = 0;
+            float xOffset = X; // start at absolute X
             foreach (var currentItem in _items)
             {
                 if (currentItem == item)
                 {
-                    return new SKRect(x, 0, x + item.Width, Height);
+                    return new SKRect(xOffset, Y, xOffset + item.Width, Y + Height);
                 }
-                x += currentItem.Width + ItemSpacing;
+                xOffset += currentItem.Width + ItemSpacing;
             }
-
             return SKRect.Empty;
         }
 
@@ -485,45 +482,38 @@ namespace Beep.Skia.Components
         /// <param name="bounds">The bounds to draw within.</param>
         public void Draw(SKCanvas canvas, SKRect bounds)
         {
-            using (var paint = new SKPaint())
+            // Background
+            using var bgPaint = new SKPaint { Style = SKPaintStyle.Fill, IsAntialias = true };
+            if (IsActive)
+                bgPaint.Color = _menuBar?.ItemActiveColor ?? MaterialDesignColors.OnSurface.WithAlpha(8);
+            else if (IsHovered)
+                bgPaint.Color = _menuBar?.ItemHoverColor ?? MaterialDesignColors.OnSurface.WithAlpha(12);
+            else
+                bgPaint.Color = SKColors.Transparent;
+            canvas.DrawRect(bounds, bgPaint);
+
+            // Fonts
+            using var textFont = new SKFont(SKTypeface.Default, 14f);
+            using var arrowFont = new SKFont(SKTypeface.Default, 10f);
+            var metrics = textFont.Metrics; // ascent negative, cap height positive
+            float capHeight = metrics.CapHeight;
+            float baseline = bounds.Top + (bounds.Height + capHeight) / 2f;
+
+            // Text
+            using var textPaint = new SKPaint { Color = MaterialDesignColors.OnSurface, IsAntialias = true };
+            float textWidth = textFont.MeasureText(_text ?? "");
+            float textX = bounds.Left + (bounds.Width - textWidth) / 2f;
+            canvas.DrawText(_text, textX, baseline, SKTextAlign.Left, textFont, textPaint);
+
+            // Arrow indicator
+            if (_submenu != null)
             {
-                // Draw background based on state
-                if (IsActive)
-                {
-                    paint.Color = _menuBar?.ItemActiveColor ?? MaterialDesignColors.OnSurface.WithAlpha(8);
-                }
-                else if (IsHovered)
-                {
-                    paint.Color = _menuBar?.ItemHoverColor ?? MaterialDesignColors.OnSurface.WithAlpha(12);
-                }
-                else
-                {
-                    paint.Color = SKColors.Transparent;
-                }
-
-                paint.Style = SKPaintStyle.Fill;
-                canvas.DrawRect(bounds, paint);
-
-                // Draw text
-                paint.Color = MaterialDesignColors.OnSurface;
-                paint.TextSize = 14f;
-                paint.IsAntialias = true;
-
-                var textBounds = new SKRect();
-                paint.MeasureText(_text, ref textBounds);
-
-                float textX = bounds.Left + (bounds.Width - textBounds.Width) / 2;
-                float textY = bounds.Top + (bounds.Height + textBounds.Height) / 2;
-
-                canvas.DrawText(_text, textX, textY, paint);
-
-                // Draw submenu indicator if submenu exists
-                if (_submenu != null)
-                {
-                    paint.Color = MaterialDesignColors.OnSurfaceVariant;
-                    paint.TextSize = 10f;
-                    canvas.DrawText("▼", bounds.Right - 15, textY, paint);
-                }
+                using var arrowPaint = new SKPaint { Color = MaterialDesignColors.OnSurfaceVariant, IsAntialias = true };
+                float arrowWidth = arrowFont.MeasureText("▼");
+                float arrowX = bounds.Right - 15 - arrowWidth / 2f; // keep similar spacing
+                var arrowMetrics = arrowFont.Metrics;
+                float arrowBaseline = bounds.Top + (bounds.Height + arrowMetrics.CapHeight) / 2f;
+                canvas.DrawText("▼", arrowX, arrowBaseline, SKTextAlign.Left, arrowFont, arrowPaint);
             }
         }
     }
