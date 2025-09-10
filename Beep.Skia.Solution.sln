@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beep.Ski.Quantitative", "Be
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beep.Skia.Business", "Beep.Skia.Business\Beep.Skia.Business.csproj", "{9C9C2825-9A33-4E80-949E-D1B346D001EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beep.Skia.Network", "Beep.Skia.Network\Beep.Skia.Network.csproj", "{B488676E-E960-4A43-947B-4CF1F9F5CA8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{9C9C2825-9A33-4E80-949E-D1B346D001EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C9C2825-9A33-4E80-949E-D1B346D001EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C9C2825-9A33-4E80-949E-D1B346D001EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B488676E-E960-4A43-947B-4CF1F9F5CA8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B488676E-E960-4A43-947B-4CF1F9F5CA8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B488676E-E960-4A43-947B-4CF1F9F5CA8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B488676E-E960-4A43-947B-4CF1F9F5CA8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
