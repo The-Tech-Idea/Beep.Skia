@@ -7,7 +7,7 @@ using TheTechIdea.Beep.Tools;
 using TheTechIdea.Beep.Utilities;
 using TheTechIdea.Beep.Vis;
 using TheTechIdea.Beep.Vis.Modules;
-
+using Beep.Skia.Model;
 namespace AppExtensionsLoader
 {
     public class BeepSkiaLoaderExtensions : ILoaderExtention

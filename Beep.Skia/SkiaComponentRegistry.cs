@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using TheTechIdea.Beep.ConfigUtil;
 using TheTechIdea.Beep.Addin;
-
+using Beep.Skia.Model;
 namespace Beep.Skia
 {
     /// <summary>
@@ -462,57 +462,120 @@ namespace Beep.Skia
         {
             var results = new List<AssemblyClassDefinition>();
 
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var asm in assemblies)
+            // Gather assemblies: currently loaded + recursively load referenced + probe base dir DLLs
+            var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var toProcess = new Queue<Assembly>();
+
+            // Seed with currently loaded assemblies
+            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
             {
-                try
+                if (asm == null) continue;
+                var name = asm.GetName()?.Name;
+                if (string.IsNullOrEmpty(name)) continue;
+                if (!includeSystemAssemblies && IsSystemAssemblyName(name)) continue;
+                if (visited.Add(asm.FullName)) toProcess.Enqueue(asm);
+            }
+
+            // Probe base directory for additional DLLs (plugins not yet loaded)
+            try
+            {
+                var baseDir = AppContext.BaseDirectory;
+                if (!string.IsNullOrWhiteSpace(baseDir) && System.IO.Directory.Exists(baseDir))
                 {
-                    var asmName = asm?.GetName()?.Name ?? string.Empty;
-                    if (!includeSystemAssemblies)
-                    {
-                        if (string.IsNullOrEmpty(asmName))
-                            continue;
-                        // skip well-known system assemblies for performance
-                        if (asmName.StartsWith("System", StringComparison.OrdinalIgnoreCase)
-                            || asmName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase)
-                            || asmName.StartsWith("netstandard", StringComparison.OrdinalIgnoreCase)
-                            || asmName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase))
-                        {
-                            continue;
-                        }
-                    }
-
-                    Type[] types = null;
-                    try { types = asm.GetTypes(); } catch { try { types = asm.GetExportedTypes(); } catch { types = null; } }
-                    if (types == null) continue;
-
-                    foreach (var t in types)
+                    foreach (var dll in System.IO.Directory.EnumerateFiles(baseDir, "*.dll"))
                     {
                         try
                         {
-                            if (t == null) continue;
-                            if (typeof(SkiaComponent).IsAssignableFrom(t) && !t.IsAbstract)
-                            {
-                                var def = new AssemblyClassDefinition();
-                                // populate minimal fields used elsewhere
-                                def.type = t;
-                                def.className = t.Name;
-                                def.dllname = asm.GetName().Name;
-                                def.AssemblyName = asm.FullName;
-                                def.componentType = "SkiaComponent";
-                                def.GuidID = Guid.NewGuid().ToString();
-
-                                AddComponent(def);
-                                results.Add(def);
-                            }
+                            var an = AssemblyName.GetAssemblyName(dll);
+                            if (an == null) continue;
+                            if (!includeSystemAssemblies && IsSystemAssemblyName(an.Name)) continue;
+                            // Skip if already loaded
+                            var already = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => string.Equals(a.GetName()?.Name, an.Name, StringComparison.OrdinalIgnoreCase));
+                            var asm = already ?? Assembly.Load(an);
+                            if (asm != null && visited.Add(asm.FullName)) toProcess.Enqueue(asm);
                         }
-                        catch { /* ignore individual type failures */ }
+                        catch { }
                     }
                 }
-                catch { /* ignore assembly scan failures */ }
+            }
+            catch { }
+
+            // BFS: process assembly, then its references
+            while (toProcess.Count > 0)
+            {
+                var asm = toProcess.Dequeue();
+                try
+                {
+                    var asmName = asm?.GetName()?.Name ?? string.Empty;
+                    if (!includeSystemAssemblies && IsSystemAssemblyName(asmName)) continue;
+
+                    // enumerate types
+                    Type[] types = null;
+                    try { types = asm.GetTypes(); } catch { try { types = asm.GetExportedTypes(); } catch { types = null; } }
+                    if (types != null)
+                    {
+                        foreach (var t in types)
+                        {
+                            try
+                            {
+                                if (t == null) continue;
+                                if (typeof(SkiaComponent).IsAssignableFrom(t) && !t.IsAbstract)
+                                {
+                                    var def = new AssemblyClassDefinition
+                                    {
+                                        type = t,
+                                        className = t.Name,
+                                        dllname = asm.GetName().Name,
+                                        AssemblyName = asm.FullName,
+                                        componentType = "SkiaComponent",
+                                        GuidID = Guid.NewGuid().ToString()
+                                    };
+                                    AddComponent(def);
+                                    results.Add(def);
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+
+                    // enqueue referenced assemblies
+                    try
+                    {
+                        foreach (var ra in asm.GetReferencedAssemblies())
+                        {
+                            try
+                            {
+                                if (ra == null) continue;
+                                if (!includeSystemAssemblies && IsSystemAssemblyName(ra.Name)) continue;
+                                // Try find already loaded; else load
+                                var loaded = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => string.Equals(a.GetName()?.Name, ra.Name, StringComparison.OrdinalIgnoreCase));
+                                var refAsm = loaded ?? Assembly.Load(ra);
+                                if (refAsm != null && visited.Add(refAsm.FullName))
+                                {
+                                    toProcess.Enqueue(refAsm);
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                    catch { }
+                }
+                catch { }
             }
 
-            return results;
+            return results.DistinctBy(r => (r.className, r.dllname)).ToList();
+        }
+
+        private static bool IsSystemAssemblyName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return true;
+            return name.StartsWith("System", StringComparison.OrdinalIgnoreCase)
+                || name.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase)
+                || name.StartsWith("netstandard", StringComparison.OrdinalIgnoreCase)
+                || name.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("WindowsBase", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("PresentationCore", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("PresentationFramework", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

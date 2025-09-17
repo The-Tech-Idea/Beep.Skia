@@ -1,5 +1,5 @@
 ﻿
-namespace Beep.Skia
+namespace Beep.Skia.Model
 {
     /// <summary>
     /// Provides event arguments for point-related events, such as mouse interactions.

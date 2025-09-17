@@ -1,6 +1,6 @@
 using SkiaSharp;
 using System;
-
+using Beep.Skia.Model;
 namespace Beep.Skia
 {
     /// <summary>
@@ -133,6 +133,24 @@ namespace Beep.Skia
             var component = GetComponentAt(canvasPoint);
             if (component != null)
             {
+                // Respect static components: do not start drag/resize on IsStatic
+                if (component is SkiaComponent scStatic && scStatic.IsStatic)
+                {
+                    // Still allow selection toggling, but do not initiate drag/resize
+                    if (modifiers.HasFlag(SKKeyModifiers.Control))
+                    {
+                        if (_drawingManager.SelectionManager.IsSelected(component))
+                            _drawingManager.SelectionManager.RemoveFromSelection(component);
+                        else
+                            _drawingManager.SelectionManager.SelectComponent(component, true);
+                    }
+                    else if (!_drawingManager.SelectionManager.IsSelected(component))
+                    {
+                        _drawingManager.SelectionManager.ClearSelection();
+                        _drawingManager.SelectionManager.SelectComponent(component);
+                    }
+                    return;
+                }
                 // Check if clicking on a resize handle
                 var handle = GetResizeHandleAt(component, canvasPoint);
                 if (handle != null)
@@ -280,6 +298,11 @@ namespace Beep.Skia
             }
             else if (_isDragging && _draggingComponent != null)
             {
+                // If the captured component is static, cancel movement updates
+                if (_draggingComponent.IsStatic)
+                {
+                    return;
+                }
                 var newPosition = canvasPoint - _draggingOffset;
                 if (_drawingManager.SnapToGrid)
                 {

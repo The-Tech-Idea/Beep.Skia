@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Beep.Skia
+namespace Beep.Skia.Model
 {
     /// <summary>
     /// Represents the different states a component can be in during its lifecycle.
@@ -174,6 +174,12 @@ namespace Beep.Skia
         /// Gets or sets a value indicating whether this component is enabled for interaction.
         /// </summary>
         bool IsEnabled { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating that this component is static (non-movable) on the canvas.
+    /// When true, user drag operations should not move the component.
+    /// </summary>
+    bool IsStatic { get; set; }
 
         /// <summary>
         /// Draws this component on the specified Skia canvas.

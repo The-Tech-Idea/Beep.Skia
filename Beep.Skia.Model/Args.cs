@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beep.Skia
+namespace Beep.Skia.Model
 {
     /// <summary>
     /// Provides event arguments for connection events between connection points.

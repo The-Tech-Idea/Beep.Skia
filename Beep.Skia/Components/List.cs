@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-
+using Beep.Skia.Model;
 namespace Beep.Skia.Components
 {
     /// <summary>

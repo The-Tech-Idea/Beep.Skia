@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Beep.Skia;
-
+using Beep.Skia.Model;
 namespace Beep.Skia.Helpers
 {
     using SkiaSharp;

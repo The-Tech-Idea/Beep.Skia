@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using SkiaButtonComponent = Beep.Skia.Components.Button;
-
+using Beep.Skia.Model;
 namespace Beep.Skia.Winform.Controls
 {
     [ToolboxItem(true)]

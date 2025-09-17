@@ -1,6 +1,6 @@
 using System;
 using SkiaSharp;
-
+using Beep.Skia.Model;
 namespace Beep.Skia.Components
 {
     /// <summary>

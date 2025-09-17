@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beep.Skia
+namespace Beep.Skia.Model
 {
     /// <summary>
     /// Specifies the shape of a workflow component.

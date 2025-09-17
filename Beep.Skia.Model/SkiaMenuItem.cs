@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Beep.Skia
+namespace Beep.Skia.Model
 {
     /// <summary>
     /// Represents a menu item for Skia-based user interfaces.

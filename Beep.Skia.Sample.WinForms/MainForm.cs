@@ -3,7 +3,7 @@ using System.IO;
 using System.Text.Json;
 using System.Windows.Forms;
 using Beep.Skia.Components;
-
+using Beep.Skia.Model;
 namespace Beep.Skia.Sample.WinForms
 {
     public partial class MainForm : Form
@@ -25,18 +25,7 @@ namespace Beep.Skia.Sample.WinForms
         {
             InitializeComponent();
 
-            // Discover and register Skia components from loaded assemblies so the palette can be populated
-            try
-            {
-                var discovered = Beep.Skia.SkiaComponentRegistry.DiscoverAndRegisterDomainComponents();
-                try
-                {
-                    var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log");
-                    System.IO.File.AppendAllText(lp, $"MainForm: Discovered {discovered.Count} components\n");
-                }
-                catch { }
-            }
-            catch { }
+            // Palette and discovery are handled by SkiaHostControl now to avoid duplication.
 
             toolAddButton.Click += (s, e) => AddSkiaButton();
             toolAddLabel.Click += (s, e) => AddSkiaLabel();
@@ -44,135 +33,7 @@ namespace Beep.Skia.Sample.WinForms
             toolSave.Click += (s, e) => SaveLayout();
             toolLoad.Click += (s, e) => LoadLayout();
 
-                // create a skia palette and add it to the host so everything is inside the Skia host
-                try
-                {
-                    var palette = new Beep.Skia.Components.Palette();
-                    // populate palette items from the SkiaComponentRegistry so available components are discovered dynamically
-                    try
-                    {
-                        foreach (var def in Beep.Skia.SkiaComponentRegistry.GetComponentsOrdered())
-                        {
-                            try
-                            {
-                                // AssemblyClassDefinition uses fields like className, type, dllname, AssemblyName
-                                var display = def.className ?? def.type?.Name ?? def.dllname ?? def.AssemblyName ?? "Unknown";
-                                var compType = def.type != null ? def.type.AssemblyQualifiedName : (def.className ?? def.dllname ?? string.Empty);
-                                palette.Items.Add(new Beep.Skia.Components.PaletteItem { Name = display, ComponentType = compType });
-                            }
-                            catch { }
-                        }
-                    }
-                    catch
-                    {
-                        // fallback to toolbox map if registry fails
-                        foreach (var kv in _toolboxMap)
-                        {
-                            palette.Items.Add(new Beep.Skia.Components.PaletteItem { Name = kv.Key, ComponentType = kv.Value });
-                        }
-                    }
-
-                palette.ItemActivated += (s, item) =>
-                {
-                    try
-                    {
-                        var desc = new Beep.Skia.Winform.Controls.SkiaComponentDescriptor
-                        {
-                            ComponentType = item.ComponentType,
-                            X = 220, // default drop position; user can move
-                            Y = 60,
-                            Width = 120,
-                            Height = 36,
-                            Name = "skia" + DateTime.Now.Ticks.ToString("x")
-                        };
-                        skiaHostControl1.CreateAndAddComponentFromDescriptor(desc);
-                    }
-                    catch { }
-                };
-
-                    palette.ItemDropped += (sender, args) =>
-                    {
-                        var item = args.Item;
-                        var point = args.DropPoint; // canvas coordinates
-                        System.Diagnostics.Trace.WriteLine($"Palette.ItemDropped: {item?.Name} at SKPoint({point.X},{point.Y})");
-                        Console.WriteLine($"Palette.ItemDropped: {item?.Name} at SKPoint({point.X},{point.Y})");
-                        try
-                        {
-                            var dbg = skiaHostControl1?.DrawingManager;
-                            if (dbg != null)
-                            {
-                                var msg = $"[PaletteDrop] PanOffset={dbg.PanOffset} Zoom={dbg.Zoom} RawDrop=({point.X},{point.Y})";
-                                Console.WriteLine(msg);
-                                try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { }
-                            }
-                        }
-                        catch { }
-
-                        try
-                        {
-                            var w = 120f;
-                            var h = 36f;
-                            bool center = false;
-                            try { center = skiaHostControl1.CenterOnDrop; } catch { }
-                            float x = center ? point.X - w / 2f : point.X;
-                            float y = center ? point.Y - h / 2f : point.Y;
-                            x = Math.Max(0f, x);
-                            y = Math.Max(0f, y);
-
-                            var desc = new Beep.Skia.Winform.Controls.SkiaComponentDescriptor
-                            {
-                                ComponentType = item.ComponentType,
-                                X = x,
-                                Y = y,
-                                Width = w,
-                                Height = h,
-                                Name = "skia" + DateTime.Now.Ticks.ToString("x")
-                            };
-                            try
-                            {
-                                var placementMsg = $"[PaletteDrop] DescriptorPlacement Type={item.ComponentType} W={w} H={h} X={x} Y={y} CenterOnDrop={center}";
-                                Console.WriteLine(placementMsg);
-                                try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, placementMsg + Environment.NewLine); } catch { }
-                            }
-                            catch { }
-                            var created = skiaHostControl1.CreateAndAddComponentFromDescriptor(desc);
-                            try
-                            {
-                                if (created != null)
-                                {
-                                    Console.WriteLine($"Created component '{created.Name}' at X={created.X}, Y={created.Y}, W={created.Width}, H={created.Height}");
-                                    System.Diagnostics.Trace.WriteLine($"Created component '{created.Name}' at X={created.X}, Y={created.Y}, W={created.Width}, H={created.Height}");
-                                }
-                                else
-                                {
-                                    Console.WriteLine("CreateAndAddComponentFromDescriptor returned null");
-                                }
-                            }
-                            catch { }
-                        }
-                        catch (Exception ex)
-                        {
-                            System.Diagnostics.Trace.WriteLine("Failed to create component from drop: " + ex.Message);
-                        }
-                    };
-                // Add the palette into the host's drawing manager so it participates in hit-testing and rendering
-                skiaHostControl1.DrawingManager.AddComponent(palette);
-                // Diagnostic: confirm palette was added and report manager transforms
-                try
-                {
-                    var msg = $"MainForm: Added palette. DrawingManager.Components.Count={skiaHostControl1.DrawingManager.GetComponents().Count}";
-                    Console.WriteLine(msg);
-                    Console.WriteLine($"MainForm: DrawingManager PanOffset={skiaHostControl1.DrawingManager.PanOffset}, Zoom={skiaHostControl1.DrawingManager.Zoom}");
-                    try
-                    {
-                        var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log");
-                        System.IO.File.AppendAllText(lp, msg + Environment.NewLine);
-                    }
-                    catch { }
-                }
-                catch { }
-            }
-            catch { }
+            // Palette is now owned and added by SkiaHostControl. You can access it via skiaHostControl1.Palette if needed.
         }
 
         private void AddSkiaButton()

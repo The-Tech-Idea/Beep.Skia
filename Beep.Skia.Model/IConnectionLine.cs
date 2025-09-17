@@ -1,6 +1,6 @@
 ﻿using SkiaSharp;
 
-namespace Beep.Skia
+namespace Beep.Skia.Model
 {
     /// <summary>
     /// Represents a connection line between two workflow components in a Skia-based diagram.

@@ -10,6 +10,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Beep.Skia\Beep.Skia.csproj" />
+    <ProjectReference Include="..\Beep.Skia.UML\Beep.Skia.UML.csproj" />
+    <ProjectReference Include="..\Beep.Skia.ETL\Beep.Skia.ETL.csproj" />
+    <ProjectReference Include="..\Beep.Skia.Business\Beep.Skia.Business.csproj" />
+    <ProjectReference Include="..\Beep.Skia.Network\Beep.Skia.Network.csproj" />
     <ProjectReference Include="..\Beep.Skia.Winform.Controls\Beep.Skia.Winform.Controls.csproj" />
   </ItemGroup>
 

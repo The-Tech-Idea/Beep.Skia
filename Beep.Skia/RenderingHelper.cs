@@ -2,7 +2,7 @@ using SkiaSharp;
 using System;
 using System.Diagnostics;
 using System.IO;
-
+using Beep.Skia.Model;
 namespace Beep.Skia
 {
     /// <summary>

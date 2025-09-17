@@ -62,11 +62,65 @@ namespace Beep.Skia.Winform.Controls
             // Create the in-Skia palette and add it to the drawing manager so it's present by default.
             try
             {
-                _palette = new Palette();
-                // Palette constructor sets reasonable defaults (X,Y,Width,Height)
-                // Ensure palette is placed near the top-left of the canvas
-                _palette.X = 8;
-                _palette.Y = 40;
+                _palette = new Palette
+                {
+                    X = 8,
+                    Y = 40
+                };
+                // Constrain palette height to the host so it scrolls instead of growing endlessly
+                try { _palette.MaxHeight = Math.Max(120, this.Height - 80); } catch { }
+                try
+                {
+                    this.SizeChanged += (s2, e2) =>
+                    {
+                        try
+                        {
+                            if (_palette != null)
+                            {
+                                _palette.MaxHeight = Math.Max(120, this.Height - 80);
+                                _palette.RefreshLayout();
+                                _skControl?.Invalidate();
+                            }
+                        }
+                        catch { }
+                    };
+                }
+                catch { }
+
+                // Populate palette using registry discovery; categorize UML vs Components
+                try
+                {
+                    // Discover components across loaded and base-directory assemblies
+                    var discovered = Beep.Skia.SkiaComponentRegistry.DiscoverAndRegisterDomainComponents();
+                    foreach (var def in Beep.Skia.SkiaComponentRegistry.GetComponentsOrdered())
+                    {
+                        try
+                        {
+                            var display = def.className ?? def.type?.Name ?? def.dllname ?? def.AssemblyName ?? "Unknown";
+                            var compType = def.type != null ? def.type.AssemblyQualifiedName : (def.className ?? def.dllname ?? string.Empty);
+                            string category = "Components";
+                            var ns = def.type?.Namespace ?? string.Empty;
+                            if (!string.IsNullOrEmpty(ns))
+                            {
+                                if (ns.Contains(".UML", StringComparison.OrdinalIgnoreCase))
+                                    category = "UML";
+                                else if (ns.Contains(".Network", StringComparison.OrdinalIgnoreCase))
+                                    category = "Network";
+                                else if (ns.Contains(".ETL", StringComparison.OrdinalIgnoreCase))
+                                    category = "ETL";
+                                else if (ns.Contains(".Business", StringComparison.OrdinalIgnoreCase))
+                                    category = "Business";
+                            }
+                            if (!string.IsNullOrWhiteSpace(compType))
+                            {
+                                _palette.Items.Add(new PaletteItem { Name = display, ComponentType = compType, Category = category });
+                            }
+                        }
+                        catch { }
+                    }
+                }
+                catch { }
+
                 // Wire palette events so drops and clicks actually instantiate components
                 _palette.ItemDropped += (s, tup) =>
                 {
@@ -601,6 +655,8 @@ namespace Beep.Skia.Winform.Controls
                         if (rect.Contains(canvasPoint))
                         {
                             _dragComponent = c;
+                            // Respect IsStatic components: do not start drag
+                            try { if (_dragComponent.IsStatic) { _dragComponent = null; break; } } catch { }
                             _isDraggingComponent = true;
                             _dragStartCanvas = canvasPoint;
                             _dragComponentStartX = c.X;

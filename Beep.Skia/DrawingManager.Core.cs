@@ -2,7 +2,7 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-
+using Beep.Skia.Model;
 namespace Beep.Skia
 {
     /// <summary>

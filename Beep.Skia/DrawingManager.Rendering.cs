@@ -1,5 +1,5 @@
 using SkiaSharp;
-
+using Beep.Skia.Model;
 namespace Beep.Skia
 {
     public partial class DrawingManager

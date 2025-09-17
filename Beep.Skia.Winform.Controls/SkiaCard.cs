@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using SkiaCardComponent = Beep.Skia.Components.Card;
-
+using Beep.Skia.Model;
 namespace Beep.Skia.Winform.Controls
 {
     [ToolboxItem(true)]

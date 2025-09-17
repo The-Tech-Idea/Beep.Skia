@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using Beep.Skia.Model;
 
 namespace Beep.Skia
 {
@@ -17,6 +18,7 @@ namespace Beep.Skia
         private SKRect _bounds;
         private bool _isVisible = true;
         private bool _isEnabled = true;
+        private bool _isStatic = false;
         private float _opacity = 1.0f;
 
         private float _x;
@@ -130,6 +132,17 @@ namespace Beep.Skia
                     OnEnabledChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// When true, this component is static (non-movable) by user interactions.
+        /// Framework drag operations should respect this and not move it.
+        /// Default is false.
+        /// </summary>
+        public bool IsStatic
+        {
+            get => _isStatic;
+            set => _isStatic = value;
         }
 
         /// <summary>
@@ -475,7 +488,7 @@ namespace Beep.Skia
         /// <param name="point">The mouse position.</param>
         /// <param name="context">The interaction context.</param>
         /// <returns>true if the event was handled; otherwise, false.</returns>
-        protected virtual bool OnMouseMove(SKPoint point, InteractionContext context)
+        protected virtual bool OnMouseMove(SKPoint point, Beep.Skia.Model.InteractionContext context)
         {
             return false;
         }
@@ -486,7 +499,7 @@ namespace Beep.Skia
         /// <param name="point">The mouse position.</param>
         /// <param name="context">The interaction context.</param>
         /// <returns>true if the event was handled; otherwise, false.</returns>
-        protected virtual bool OnMouseUp(SKPoint point, InteractionContext context)
+        protected virtual bool OnMouseUp(SKPoint point, Beep.Skia.Model.InteractionContext context)
         {
             return false;
         }

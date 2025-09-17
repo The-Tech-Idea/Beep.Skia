@@ -1,6 +1,6 @@
 using SkiaSharp;
 using System.Collections.Generic;
-
+using Beep.Skia.Model;
 namespace Beep.Skia
 {
     /// <summary>

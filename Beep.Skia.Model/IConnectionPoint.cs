@@ -1,6 +1,6 @@
 ﻿using SkiaSharp;
 
-namespace Beep.Skia
+namespace Beep.Skia.Model
 {
     /// <summary>
     /// Represents a connection point on a workflow component that can be used to create connections between components.

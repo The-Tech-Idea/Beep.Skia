@@ -3,20 +3,33 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
+using Beep.Skia.Model;
 namespace Beep.Skia.Components
 {
+    public class PaletteCategory
+    {
+        public string Name { get; set; } = "General";
+        public bool IsCollapsed { get; set; } = false;
+        public List<PaletteItem> Items { get; } = new List<PaletteItem>();
+        // Runtime layout cache
+        internal SKRect HeaderRect;
+    }
+
     public class PaletteItem
     {
         public string Name { get; set; }
         public string ComponentType { get; set; }
+        public string Category { get; set; } = "General";
     }
 
     public class Palette : SkiaComponent
     {
+        // Flat list for backward compatibility (populate Categories from this)
         public List<PaletteItem> Items { get; } = new List<PaletteItem>();
+        // Grouped categories used for rendering/interaction
+        public List<PaletteCategory> Categories { get; } = new List<PaletteCategory>();
 
-        public event EventHandler<PaletteItem>? ItemActivated;
+    public event EventHandler<PaletteItem> ItemActivated;
         // Raised when an item is dragged and dropped somewhere in the canvas
     public event EventHandler<(PaletteItem Item, SKPoint DropPoint)> ItemDropped;
 
@@ -40,12 +53,24 @@ namespace Beep.Skia.Components
         private SKPoint _dragCurrentPoint;
         private const float DragThreshold = 4f;
 
+    // hover state
+    private int _hoverHeaderIndex = -1;       // index into Categories
+    private int _hoverItemGlobalIndex = -1;   // index into flat Items list
+
+        // Category rendering metrics
+        private const float CategoryHeaderHeight = 26f;
+        private const float CategoryHeaderPaddingX = 8f;
+        private const float CategoryChevronSize = 10f;
+
         public Palette()
         {
             Width = 160;
             Height = 400; // initial; will shrink/grow if _autoSize
             X = 8;
             Y = 40;
+            // Palette itself should not be selectable — only its items are interactable
+            ShowInPalette = false; // hide from other palettes if any
+            IsStatic = true; // palette should not move with canvas dragging
         }
 
         public bool AutoHeight
@@ -89,28 +114,86 @@ namespace Beep.Skia.Components
 
             using var textPaint = new SKPaint { Color = SKColors.Black }; // for glyph rendering
             using var font = new SKFont { Size = 14 };
-            // Compute visible range based on scroll
-            _cachedContentTotalHeight = Items.Count * _itemHeight + _verticalPadding * 2;
-            var firstVisibleIndex = (int)Math.Floor((_scrollOffset) / _itemHeight);
-            var visibleItemCapacity = (int)Math.Ceiling((Height - _verticalPadding * 2) / _itemHeight) + 1;
-            if (firstVisibleIndex < 0) firstVisibleIndex = 0;
-            int lastVisibleIndex = Math.Min(Items.Count - 1, firstVisibleIndex + visibleItemCapacity);
+            EnsureCategories();
+
+            // Compute total content height considering categories and collapsed states
+            _cachedContentTotalHeight = CalculateTotalContentHeight();
 
             // Clip to palette region
             canvas.Save();
             canvas.ClipRect(outer);
 
-            for (int i = firstVisibleIndex; i <= lastVisibleIndex; i++)
+            float cursorY = Y + _verticalPadding - _scrollOffset;
+            int headerIdx = 0;
+            foreach (var cat in Categories)
             {
-                var itemTopGlobal = Y + _verticalPadding + i * _itemHeight - _scrollOffset;
-                var rect = new SKRect(
+                // Draw category header
+                var headerRect = new SKRect(
                     X + _horizontalPadding,
-                    itemTopGlobal + 4,
+                    cursorY,
                     X + Width - _horizontalPadding,
-                    itemTopGlobal + _itemHeight - 4);
-                using var itemBg = new SKPaint { Color = SKColors.White, Style = SKPaintStyle.Fill };
-                canvas.DrawRect(rect, itemBg);
-                canvas.DrawText(Items[i].Name, rect.Left + 8, rect.MidY + 6, SKTextAlign.Left, font, textPaint);
+                    cursorY + CategoryHeaderHeight);
+                cat.HeaderRect = headerRect;
+                var isHeaderHover = headerIdx == _hoverHeaderIndex;
+                var headerColor = isHeaderHover ? new SKColor(200, 200, 200) : new SKColor(220, 220, 220);
+                using (var headerBg = new SKPaint { Color = headerColor, Style = SKPaintStyle.Fill })
+                {
+                    canvas.DrawRect(headerRect, headerBg);
+                }
+                if (isHeaderHover)
+                {
+                    using var headerBorder = new SKPaint { Color = new SKColor(120, 120, 120), Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
+                    canvas.DrawRect(headerRect, headerBorder);
+                }
+                // Chevron
+                using (var chevronPaint = new SKPaint { Color = SKColors.Black, Style = SKPaintStyle.Stroke, StrokeWidth = 2 })
+                {
+                    float cx = headerRect.Left + CategoryHeaderPaddingX;
+                    float cy = headerRect.MidY;
+                    if (cat.IsCollapsed)
+                    {
+                        // right-pointing
+                        canvas.DrawLine(cx, cy - CategoryChevronSize / 2, cx + CategoryChevronSize, cy, chevronPaint);
+                        canvas.DrawLine(cx + CategoryChevronSize, cy, cx, cy + CategoryChevronSize / 2, chevronPaint);
+                    }
+                    else
+                    {
+                        // down-pointing
+                        canvas.DrawLine(cx, cy - CategoryChevronSize / 2, cx + CategoryChevronSize / 2, cy + CategoryChevronSize / 2, chevronPaint);
+                        canvas.DrawLine(cx + CategoryChevronSize / 2, cy + CategoryChevronSize / 2, cx + CategoryChevronSize, cy - CategoryChevronSize / 2, chevronPaint);
+                    }
+                }
+                // Header text
+                canvas.DrawText(cat.Name ?? "", headerRect.Left + CategoryHeaderPaddingX + 14, headerRect.MidY + 5, SKTextAlign.Left, font, textPaint);
+                cursorY += CategoryHeaderHeight;
+
+                if (cat.IsCollapsed)
+                {
+                    headerIdx++;
+                    continue;
+                }
+
+                // Draw items in this category
+                foreach (var it in cat.Items)
+                {
+                    var rect = new SKRect(
+                        X + _horizontalPadding,
+                        cursorY + 4,
+                        X + Width - _horizontalPadding,
+                        cursorY + _itemHeight - 4);
+                    bool isItemHover = _hoverItemGlobalIndex >= 0 && _hoverItemGlobalIndex == Items.IndexOf(it);
+                    var itemColor = isItemHover ? new SKColor(230, 245, 255) : SKColors.White;
+                    using var itemBg = new SKPaint { Color = itemColor, Style = SKPaintStyle.Fill };
+                    canvas.DrawRect(rect, itemBg);
+                    if (isItemHover)
+                    {
+                        using var itemBorder = new SKPaint { Color = new SKColor(120, 160, 200), Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
+                        canvas.DrawRect(rect, itemBorder);
+                    }
+                    canvas.DrawText(it.Name ?? string.Empty, rect.Left + 8, rect.MidY + 6, SKTextAlign.Left, font, textPaint);
+                    cursorY += _itemHeight;
+                }
+                headerIdx++;
             }
             canvas.Restore();
 
@@ -127,7 +210,7 @@ namespace Beep.Skia.Components
                 canvas.DrawRect(rect, ghost);
                 using var gText = new SKPaint { Color = SKColors.White };
                 using var gFont = new SKFont { Size = 14 };
-                canvas.DrawText(item.Name, rect.Left + 8, rect.MidY + 6, SKTextAlign.Left, gFont, gText);
+                canvas.DrawText(item?.Name ?? string.Empty, rect.Left + 8, rect.MidY + 6, SKTextAlign.Left, gFont, gText);
             }
         }
 
@@ -145,7 +228,8 @@ namespace Beep.Skia.Components
 
         private void RecalculateHeight()
         {
-            var desired = _verticalPadding * 2 + Items.Count * _itemHeight;
+            EnsureCategories();
+            var desired = _verticalPadding * 2 + CalculateTotalContentHeight();
             if (_maxHeight.HasValue && desired > _maxHeight.Value)
             {
                 desired = _maxHeight.Value; // we will scroll
@@ -160,6 +244,7 @@ namespace Beep.Skia.Components
         // Public helper to force refresh when external code adds/removes items
         public void RefreshLayout()
         {
+            EnsureCategories();
             if (_autoSize) RecalculateHeight();
             if (_autoWidth) RecalculateWidth();
             UpdateBounds();
@@ -169,6 +254,14 @@ namespace Beep.Skia.Components
         public void AddItem(PaletteItem item)
         {
             Items.Add(item);
+            // update categories
+            var cat = Categories.Find(c => string.Equals(c.Name, item.Category ?? "General", StringComparison.OrdinalIgnoreCase));
+            if (cat == null)
+            {
+                cat = new PaletteCategory { Name = item.Category ?? "General" };
+                Categories.Add(cat);
+            }
+            cat.Items.Add(item);
             if (_autoSize) RecalculateHeight();
             if (_autoWidth) RecalculateWidth();
             UpdateBounds();
@@ -177,6 +270,18 @@ namespace Beep.Skia.Components
         public bool RemoveItem(PaletteItem item)
         {
             var removed = Items.Remove(item);
+            if (removed)
+            {
+                var cat = Categories.Find(c => string.Equals(c.Name, item.Category ?? "General", StringComparison.OrdinalIgnoreCase));
+                if (cat != null)
+                {
+                    cat.Items.Remove(item);
+                    if (cat.Items.Count == 0)
+                    {
+                        Categories.Remove(cat);
+                    }
+                }
+            }
             if (removed && _autoSize) RecalculateHeight();
             if (removed && _autoWidth) RecalculateWidth();
             if (removed) UpdateBounds();
@@ -214,7 +319,7 @@ namespace Beep.Skia.Components
 
         private void ClampScroll()
         {
-            var full = Items.Count * _itemHeight + _verticalPadding * 2;
+            var full = CalculateTotalContentHeight() + _verticalPadding * 2;
             if (!_maxHeight.HasValue || full <= Height)
             {
                 _scrollOffset = 0;
@@ -228,7 +333,7 @@ namespace Beep.Skia.Components
         private void DrawScrollbar(SKCanvas canvas)
         {
             if (!_maxHeight.HasValue) return;
-            var total = Items.Count * _itemHeight + _verticalPadding * 2;
+            var total = CalculateTotalContentHeight() + _verticalPadding * 2;
             if (total <= Height + 0.5f) return; // no need
 
             float trackWidth = 8f;
@@ -263,33 +368,16 @@ namespace Beep.Skia.Components
                 _scrollStartOffset = _scrollOffset;
                 return true;
             }
-
-            // Adjust for scroll when detecting item index
-            var handled = base.HandleMouseDown(point, context);
-            if (!handled)
-            {
-                if (Bounds.Contains(point.X, point.Y))
-                {
-                    var localYAdj = point.Y - Y + _scrollOffset - _verticalPadding;
-                    var idx = (int)(localYAdj / _itemHeight);
-                    if (idx >= 0 && idx < Items.Count)
-                    {
-                        _dragIndex = idx;
-                        _isDragging = true;
-                        _dragStartPoint = point;
-                        _dragCurrentPoint = point;
-                        return true;
-                    }
-                }
-            }
-            return handled;
+            // Delegate to component-specific mouse down (category-aware)
+            return OnMouseDown(point, context);
         }
 
         public override bool HandleMouseMove(SKPoint point, InteractionContext context)
         {
             if (_scrollThumbDragging)
             {
-                var total = Items.Count * _itemHeight + _verticalPadding * 2;
+                // Use category-aware total height (headers + visible items)
+                var total = CalculateTotalContentHeight() + _verticalPadding * 2;
                 if (_maxHeight.HasValue && total > Height)
                 {
                     float trackHeight = Height - 4; // minus padding used in DrawScrollbar
@@ -303,6 +391,8 @@ namespace Beep.Skia.Components
                 }
                 return true;
             }
+            // Hover detection when not dragging the scrollbar thumb
+            UpdateHoverState(point);
             if (_isDragging && _dragIndex >= 0)
             {
                 _dragCurrentPoint = point;
@@ -342,8 +432,12 @@ namespace Beep.Skia.Components
                 catch { }
                 _isDragging = false;
                 _dragIndex = -1;
+                _hoverHeaderIndex = -1;
+                _hoverItemGlobalIndex = -1;
                 return true;
             }
+            _hoverHeaderIndex = -1;
+            _hoverItemGlobalIndex = -1;
             return base.HandleMouseUp(point, context);
         }
 
@@ -351,6 +445,162 @@ namespace Beep.Skia.Components
         {
             _scrollOffset += deltaPixels;
             ClampScroll();
+        }
+
+        private void UpdateHoverState(SKPoint point)
+        {
+            int newHeaderHover = -1;
+            int newItemHover = -1;
+
+            if (Bounds.Contains(point.X, point.Y))
+            {
+                // Check headers first
+                for (int i = 0; i < Categories.Count; i++)
+                {
+                    var cat = Categories[i];
+                    if (cat.HeaderRect.Contains(point))
+                    {
+                        newHeaderHover = i;
+                        break;
+                    }
+                }
+                if (newHeaderHover == -1)
+                {
+                    // Hit test items with scroll applied
+                    foreach (var cat in Categories)
+                    {
+                        float yPtr = cat.HeaderRect.Bottom; // start after header
+                        if (!cat.IsCollapsed)
+                        {
+                            for (int i = 0; i < cat.Items.Count; i++)
+                            {
+                                var rowTop = yPtr;
+                                var rowBottom = yPtr + _itemHeight;
+                                if (point.Y >= rowTop && point.Y <= rowBottom)
+                                {
+                                    newItemHover = Items.IndexOf(cat.Items[i]);
+                                    break;
+                                }
+                                yPtr += _itemHeight;
+                            }
+                        }
+                        if (newItemHover != -1) break;
+                    }
+                }
+            }
+
+            if (newHeaderHover != _hoverHeaderIndex || newItemHover != _hoverItemGlobalIndex)
+            {
+                _hoverHeaderIndex = newHeaderHover;
+                _hoverItemGlobalIndex = newItemHover;
+                // No direct invalidation here; DrawingManager triggers a redraw after mouse move.
+            }
+        }
+
+        // =========================
+        // Category helpers & layout
+        // =========================
+        private void EnsureCategories()
+        {
+            if (Categories.Count == 0 && Items.Count > 0)
+            {
+                foreach (var grp in Items.GroupBy(i => i.Category ?? "General"))
+                {
+                    var cat = new PaletteCategory { Name = grp.Key };
+                    cat.Items.AddRange(grp);
+                    Categories.Add(cat);
+                }
+            }
+        }
+
+        private float CalculateTotalContentHeight()
+        {
+            EnsureCategories();
+            float total = 0f;
+            foreach (var cat in Categories)
+            {
+                total += CategoryHeaderHeight;
+                if (!cat.IsCollapsed)
+                {
+                    total += cat.Items.Count * _itemHeight;
+                }
+            }
+            return total;
+        }
+
+        // =========================
+        // Interaction overrides
+        // =========================
+        protected override bool OnMouseDown(SKPoint point, InteractionContext context)
+        {
+            // Prevent the palette itself from being marked selected by parent logic
+            this.IsSelected = false;
+
+            // Toggle category collapse when clicking the header
+            bool toggled = false;
+            for (int i = 0; i < Categories.Count; i++)
+            {
+                var cat = Categories[i];
+                if (cat.HeaderRect.Contains(point))
+                {
+                    cat.IsCollapsed = !cat.IsCollapsed;
+                    toggled = true;
+                    break;
+                }
+            }
+            if (toggled)
+            {
+                RefreshLayout();
+                return true;
+            }
+
+            // Begin drag on item click within bounds
+            if (Bounds.Contains(point.X, point.Y))
+            {
+                // Determine which item based on scroll and category layout
+                float cursorY = Y + _verticalPadding - _scrollOffset + CategoryHeaderHeight; // start after first header baseline shift within loop
+                foreach (var cat in Categories)
+                {
+                    // header already tested
+                    float yPtr = cat.HeaderRect.Bottom; // start after header
+                    if (!cat.IsCollapsed)
+                    {
+                        for (int i = 0; i < cat.Items.Count; i++)
+                        {
+                            var rowTop = yPtr;
+                            var rowBottom = yPtr + _itemHeight;
+                            if (point.Y >= rowTop && point.Y <= rowBottom)
+                            {
+                                var globalIndex = Items.IndexOf(cat.Items[i]);
+                                if (globalIndex >= 0)
+                                {
+                                    _dragIndex = globalIndex;
+                                    _isDragging = true;
+                                    _dragStartPoint = point;
+                                    _dragCurrentPoint = point;
+                                    return true;
+                                }
+                            }
+                            yPtr += _itemHeight;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        protected override bool OnMouseMove(SKPoint point, InteractionContext context)
+        {
+            // No additional per-component move handling beyond public HandleMouseMove
+            // Avoid calling base.HandleMouseMove here to prevent recursion.
+            return false;
+        }
+
+        protected override bool OnMouseUp(SKPoint point, InteractionContext context)
+        {
+            // No additional per-component mouse up handling beyond public HandleMouseUp
+            // Avoid calling base.HandleMouseUp here to prevent recursion.
+            return false;
         }
     }
 }

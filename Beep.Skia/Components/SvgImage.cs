@@ -3,7 +3,7 @@ using SkiaSharp.Extended.Svg;
 using System;
 using System.IO;
 using System.Reflection;
-
+using Beep.Skia.Model;
 namespace Beep.Skia.Components
 {
     /// <summary>

@@ -2,7 +2,7 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using static Beep.Skia.Components.Button;
-
+using Beep.Skia.Model;
 namespace Beep.Skia.Components
 {
     /// <summary>
