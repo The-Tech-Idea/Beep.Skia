@@ -25,6 +25,17 @@ namespace Beep.Skia.UML
         public string SequenceNumber { get; set; } = "";
 
         /// <summary>
+        /// Gets or sets whether to show animated data flow for this message.
+        /// Useful for visualizing data flow in sequence diagrams.
+        /// </summary>
+        public bool ShowDataFlow { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets the return data type for the message (used for data flow visualization).
+        /// </summary>
+        public string ReturnDataType { get; set; } = "void";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="UMLMessage"/> class.
         /// </summary>
         public UMLMessage() : base(() => { })
@@ -39,6 +50,11 @@ namespace Beep.Skia.UML
             // Disable default arrows since we draw custom ones
             ShowStartArrow = false;
             ShowEndArrow = false;
+
+            // Enable data flow animation by default for return messages
+            IsDataFlowAnimated = false; // Let users opt-in
+            DataFlowSpeed = 30.0f; // Slower for messages
+            DataFlowParticleSize = 3.0f; // Smaller particles
         }
 
         /// <summary>
@@ -47,7 +63,16 @@ namespace Beep.Skia.UML
         /// <param name="canvas">The canvas to draw on.</param>
         public new void Draw(SKCanvas canvas)
         {
-            // Draw the basic line
+            // Enable/disable data flow animation based on ShowDataFlow setting
+            IsDataFlowAnimated = ShowDataFlow;
+
+            // Set data flow color based on return data type
+            if (ShowDataFlow && ReturnDataType != "void")
+            {
+                DataFlowColor = GetDataFlowColorForType(ReturnDataType);
+            }
+
+            // Draw the basic line (includes data flow animation)
             base.Draw(canvas);
 
             // Draw message-specific arrow and label
@@ -263,6 +288,29 @@ namespace Beep.Skia.UML
                 $"{SequenceNumber}: {MessageText}";
 
             canvas.DrawText(labelText, midPoint.X, labelY, SKTextAlign.Center, font, paint);
+        }
+
+        /// <summary>
+        /// Gets the appropriate data flow color for a given data type.
+        /// </summary>
+        /// <param name="dataType">The data type string.</param>
+        /// <returns>The SKColor for data flow visualization.</returns>
+        private SKColor GetDataFlowColorForType(string dataType)
+        {
+            if (string.IsNullOrEmpty(dataType))
+                return SKColors.Gray;
+
+            return dataType.ToLowerInvariant() switch
+            {
+                "string" => SKColors.Blue,
+                "number" or "int" or "float" or "double" => SKColors.Green,
+                "boolean" or "bool" => SKColors.Orange,
+                "object" or "reference" => SKColors.Purple,
+                "array" or "list" => SKColors.Red,
+                "datetime" or "date" => SKColors.Cyan,
+                "void" => SKColors.Gray,
+                _ => SKColors.Gray
+            };
         }
     }
 

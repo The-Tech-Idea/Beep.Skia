@@ -1,6 +1,7 @@
 using SkiaSharp;
 using System.Linq;
 using Beep.Skia.Model;
+using Beep.Skia.Components;
 namespace Beep.Skia
 {
     public partial class DrawingManager
@@ -21,6 +22,13 @@ namespace Beep.Skia
             if (component1 == component2)
                 throw new ArgumentException("Cannot connect component to itself.");
 
+            // For automation nodes, use connection points
+            if (component1 is AutomationNode node1 && component2 is AutomationNode node2)
+            {
+                ConnectAutomationNodes(node1, node2);
+                return;
+            }
+
             component1.ConnectTo(component2);
             component2.ConnectTo(component1);
 
@@ -33,6 +41,224 @@ namespace Beep.Skia
                 _historyManager.ExecuteAction(new ConnectComponentsAction(this, component1, component2, line));
             }
             DrawSurface?.Invoke(this, null);
+        }
+
+        /// <summary>
+        /// Connects two automation nodes with proper validation and connection point management.
+        /// </summary>
+        /// <param name="node1">The first automation node.</param>
+        /// <param name="node2">The second automation node.</param>
+        private void ConnectAutomationNodes(AutomationNode node1, AutomationNode node2)
+        {
+            // Find available connection points
+            var outputPoint = node1.OutputConnections.FirstOrDefault(cp => cp.IsAvailable);
+            var inputPoint = node2.InputConnections.FirstOrDefault(cp => cp.IsAvailable);
+
+            if (outputPoint == null || inputPoint == null)
+            {
+                // No available connection points
+                return;
+            }
+
+            // Validate connection (additional business logic can be added here)
+            if (!CanConnectNodes(node1, node2, outputPoint, inputPoint))
+            {
+                return;
+            }
+
+            // Create the connection
+            var line = new ConnectionLine(outputPoint, inputPoint, () => DrawSurface?.Invoke(this, null));
+            line.IsDataFlowAnimated = true; // Enable data flow animation by default
+            line.DataFlowColor = GetDataFlowColor(outputPoint.DataType); // Set color based on data type
+            _lines.Add(line);
+
+            // Mark points as connected
+            outputPoint.IsAvailable = false;
+            inputPoint.IsAvailable = false;
+            outputPoint.Connection = inputPoint;
+            inputPoint.Connection = outputPoint;
+
+            _historyManager.ExecuteAction(new ConnectAutomationNodesAction(this, node1, node2, line, outputPoint, inputPoint));
+            DrawSurface?.Invoke(this, null);
+        }
+
+        /// <summary>
+        /// Validates whether two automation nodes can be connected.
+        /// </summary>
+        /// <param name="sourceNode">The source node.</param>
+        /// <param name="targetNode">The target node.</param>
+        /// <param name="outputPoint">The output connection point.</param>
+        /// <param name="inputPoint">The input connection point.</param>
+        /// <returns>True if the connection is valid, false otherwise.</returns>
+        private bool CanConnectNodes(AutomationNode sourceNode, AutomationNode targetNode, IConnectionPoint outputPoint, IConnectionPoint inputPoint)
+        {
+            // Prevent self-connections
+            if (sourceNode == targetNode)
+                return false;
+
+            // Prevent connecting to the same node multiple times (for now)
+            // This can be enhanced to allow multiple connections with different logic
+            var existingConnection = _lines.FirstOrDefault(line =>
+                (line.Start?.Component == sourceNode && line.End?.Component == targetNode) ||
+                (line.Start?.Component == targetNode && line.End?.Component == sourceNode));
+
+            if (existingConnection != null)
+                return false;
+
+            // Validate data flow (output to input only)
+            if (outputPoint.Type != ConnectionPointType.Out || inputPoint.Type != ConnectionPointType.In)
+                return false;
+
+            // Advanced validation: Data type compatibility
+            if (!AreDataTypesCompatible(outputPoint.DataType, inputPoint.DataType))
+                return false;
+
+            // Advanced validation: Node type compatibility
+            if (!AreNodeTypesCompatible(sourceNode, targetNode))
+                return false;
+
+            // Advanced validation: Prevent circular dependencies
+            if (WouldCreateCircularDependency(sourceNode, targetNode))
+                return false;
+
+            // Additional validation can be added here:
+            // - Business rules specific to node types
+            // - Resource constraints
+            // - Execution order requirements
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if two data types are compatible for connection.
+        /// </summary>
+        /// <param name="outputDataType">The output data type.</param>
+        /// <param name="inputDataType">The input data type.</param>
+        /// <returns>True if the data types are compatible, false otherwise.</returns>
+        private bool AreDataTypesCompatible(string outputDataType, string inputDataType)
+        {
+            // Allow any type to connect to "any" type
+            if (inputDataType == "any" || outputDataType == "any")
+                return true;
+
+            // Exact type match
+            if (string.Equals(outputDataType, inputDataType, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            // Type compatibility rules
+            var compatibilityRules = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase)
+            {
+                // Numbers can connect to strings (string conversion)
+                ["number"] = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "string" },
+
+                // Strings can connect to objects (JSON parsing)
+                ["string"] = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "object" },
+
+                // Arrays can connect to objects
+                ["array"] = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "object" },
+
+                // Objects can connect to arrays (single item arrays)
+                ["object"] = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "array" },
+
+                // Booleans can connect to numbers (0/1) and strings
+                ["boolean"] = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "number", "string" }
+            };
+
+            return compatibilityRules.TryGetValue(outputDataType ?? "", out var compatibleTypes) &&
+                   compatibleTypes.Contains(inputDataType ?? "");
+        }
+
+        /// <summary>
+        /// Checks if two node types are compatible for connection.
+        /// </summary>
+        /// <param name="sourceNode">The source node.</param>
+        /// <param name="targetNode">The target node.</param>
+        /// <returns>True if the node types are compatible, false otherwise.</returns>
+        private bool AreNodeTypesCompatible(AutomationNode sourceNode, AutomationNode targetNode)
+        {
+            // Basic node type compatibility rules
+            var incompatiblePairs = new HashSet<(NodeType, NodeType)>
+            {
+                // Trigger nodes should only connect to processing nodes, not other triggers
+                (NodeType.Trigger, NodeType.Trigger),
+
+                // Data sources shouldn't connect to other data sources
+                (NodeType.DataSource, NodeType.DataSource)
+            };
+
+            var pair = (sourceNode.NodeType, targetNode.NodeType);
+            return !incompatiblePairs.Contains(pair);
+        }
+
+        /// <summary>
+        /// Checks if connecting two nodes would create a circular dependency.
+        /// </summary>
+        /// <param name="sourceNode">The source node.</param>
+        /// <param name="targetNode">The target node.</param>
+        /// <returns>True if a circular dependency would be created, false otherwise.</returns>
+        private bool WouldCreateCircularDependency(AutomationNode sourceNode, AutomationNode targetNode)
+        {
+            // Build a dependency graph and check for cycles
+            var visited = new HashSet<AutomationNode>();
+            var recursionStack = new HashSet<AutomationNode>();
+
+            return HasCircularDependency(targetNode, sourceNode, visited, recursionStack);
+        }
+
+        /// <summary>
+        /// Recursive helper method to detect circular dependencies using DFS.
+        /// </summary>
+        /// <param name="current">The current node being visited.</param>
+        /// <param name="target">The target node we're trying to reach.</param>
+        /// <param name="visited">Set of visited nodes.</param>
+        /// <param name="recursionStack">Current recursion stack.</param>
+        /// <returns>True if a circular dependency is found, false otherwise.</returns>
+        private bool HasCircularDependency(AutomationNode current, AutomationNode target, HashSet<AutomationNode> visited, HashSet<AutomationNode> recursionStack)
+        {
+            // If we reach the target node, there's a cycle
+            if (current == target)
+                return true;
+
+            visited.Add(current);
+            recursionStack.Add(current);
+
+            // Check all nodes that this node connects to
+            var connectedNodes = _lines
+                .Where(line => line.Start?.Component == current)
+                .Select(line => line.End?.Component as AutomationNode)
+                .Where(node => node != null);
+
+            foreach (var connectedNode in connectedNodes)
+            {
+                if (!visited.Contains(connectedNode) && HasCircularDependency(connectedNode, target, visited, recursionStack))
+                    return true;
+                else if (recursionStack.Contains(connectedNode))
+                    return true;
+            }
+
+            recursionStack.Remove(current);
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the appropriate data flow color based on the data type.
+        /// </summary>
+        /// <param name="dataType">The data type.</param>
+        /// <returns>The color for the data flow animation.</returns>
+        private SKColor GetDataFlowColor(string dataType)
+        {
+            return (dataType?.ToLowerInvariant()) switch
+            {
+                "string" => SKColors.Green,
+                "number" => SKColors.Blue,
+                "boolean" => SKColors.Orange,
+                "object" => SKColors.Purple,
+                "array" => SKColors.Red,
+                "file" => SKColors.Brown,
+                "image" => SKColors.Pink,
+                "binary" => SKColors.Gray,
+                _ => SKColors.Cyan // Default color for unknown or "any" types
+            };
         }
 
         /// <summary>

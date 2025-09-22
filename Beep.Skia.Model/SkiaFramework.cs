@@ -93,6 +93,21 @@ namespace Beep.Skia.Model
         public SKRect Bounds { get; set; } = SKRect.Empty;
 
         /// <summary>
+        /// Gets or sets the canvas being drawn on.
+        /// </summary>
+        public SKCanvas Canvas { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current mouse position.
+        /// </summary>
+        public SKPoint MousePosition { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parent component.
+        /// </summary>
+        public object Parent { get; set; }
+
+        /// <summary>
         /// Gets or sets additional context data.
         /// </summary>
         public Dictionary<string, object> Data { get; set; } = new Dictionary<string, object>();
@@ -119,7 +134,22 @@ namespace Beep.Skia.Model
         public int Modifiers { get; set; }
 
         /// <summary>
-        /// Gets or sets the visible bounds for interaction checking.
+        /// Gets a value indicating whether the Control key was pressed during the interaction.
+        /// </summary>
+        public bool IsControlPressed => (Modifiers & 0x1) != 0;
+
+        /// <summary>
+        /// Gets a value indicating whether the Shift key was pressed during the interaction.
+        /// </summary>
+        public bool IsShiftPressed => (Modifiers & 0x2) != 0;
+
+        /// <summary>
+        /// Gets a value indicating whether the Alt key was pressed during the interaction.
+        /// </summary>
+        public bool IsAltPressed => (Modifiers & 0x4) != 0;
+
+        /// <summary>
+        /// Gets the visible bounds for interaction checking.
         /// </summary>
         public SKRect Bounds { get; set; } = SKRect.Empty;
 

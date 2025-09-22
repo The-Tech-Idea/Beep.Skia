@@ -83,6 +83,12 @@ namespace Beep.Skia
         public ConnectionPointType Type { get; set; }
 
         /// <summary>
+        /// Gets or sets the data type of this connection point (e.g., "string", "number", "object").
+        /// Used for data flow visualization and connection validation.
+        /// </summary>
+        public string DataType { get; set; }
+
+        /// <summary>
         /// Occurs when a connection is made from this connection point to another connection point.
         /// </summary>
         public event EventHandler<ConnectionEventArgs> ConnectionMade;

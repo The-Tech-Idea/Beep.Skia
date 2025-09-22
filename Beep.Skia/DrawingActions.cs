@@ -231,4 +231,50 @@ namespace Beep.Skia
             _manager.MoveConnectionLine(_line, _oldStartPoint, _oldEndPoint);
         }
     }
+
+    /// <summary>
+    /// Action for connecting automation nodes.
+    /// </summary>
+    public class ConnectAutomationNodesAction : DrawingAction
+    {
+        private readonly DrawingManager _manager;
+        private readonly Components.AutomationNode _node1;
+        private readonly Components.AutomationNode _node2;
+        private readonly IConnectionLine _line;
+        private readonly IConnectionPoint _outputPoint;
+        private readonly IConnectionPoint _inputPoint;
+
+        public ConnectAutomationNodesAction(DrawingManager manager, Components.AutomationNode node1,
+            Components.AutomationNode node2, IConnectionLine line, IConnectionPoint outputPoint, IConnectionPoint inputPoint)
+        {
+            _manager = manager;
+            _node1 = node1;
+            _node2 = node2;
+            _line = line;
+            _outputPoint = outputPoint;
+            _inputPoint = inputPoint;
+        }
+
+        public override void Execute()
+        {
+            // Nodes are already connected in the manager
+        }
+
+        public override void Undo()
+        {
+            // Disconnect the automation nodes
+            _outputPoint.IsAvailable = true;
+            _inputPoint.IsAvailable = true;
+            _outputPoint.Connection = null;
+            _inputPoint.Connection = null;
+
+            // Remove the line from the manager's lines collection
+            var linesField = _manager.GetType().GetField("_lines", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (linesField != null)
+            {
+                var lines = linesField.GetValue(_manager) as System.Collections.Generic.List<IConnectionLine>;
+                lines?.Remove(_line);
+            }
+        }
+    }
 }

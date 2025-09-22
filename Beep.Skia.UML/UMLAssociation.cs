@@ -36,6 +36,17 @@ namespace Beep.Skia.UML
         public AssociationType AssociationType { get; set; } = AssociationType.Association;
 
         /// <summary>
+        /// Gets or sets whether to show animated data flow for this association.
+        /// Useful for associations that represent data flow or communication relationships.
+        /// </summary>
+        public bool ShowDataFlow { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets the data type for the association (used for data flow visualization).
+        /// </summary>
+        public string DataType { get; set; } = "reference";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="UMLAssociation"/> class.
         /// </summary>
         public UMLAssociation() : base(() => { })
@@ -46,6 +57,11 @@ namespace Beep.Skia.UML
                 Paint.Color = SKColors.Black;
                 Paint.StrokeWidth = 2;
             }
+
+            // Enable data flow animation by default for data associations
+            IsDataFlowAnimated = false; // Let users opt-in
+            DataFlowSpeed = 50.0f;
+            DataFlowParticleSize = 4.0f;
         }
 
         /// <summary>
@@ -54,7 +70,13 @@ namespace Beep.Skia.UML
         /// <param name="canvas">The canvas to draw on.</param>
         public new void Draw(SKCanvas canvas)
         {
-            // Call base Draw method first
+            // Enable/disable data flow animation based on ShowDataFlow setting
+            IsDataFlowAnimated = ShowDataFlow;
+
+            // Set data flow color based on data type
+            DataFlowColor = GetDataFlowColorForType(DataType);
+
+            // Call base Draw method first (includes data flow animation)
             base.Draw(canvas);
 
             // Draw association-specific decorations
@@ -151,6 +173,28 @@ namespace Beep.Skia.UML
                 basePoint.X + perpendicular.X * offset,
                 basePoint.Y + perpendicular.Y * offset
             );
+        }
+
+        /// <summary>
+        /// Gets the appropriate data flow color for a given data type.
+        /// </summary>
+        /// <param name="dataType">The data type string.</param>
+        /// <returns>The SKColor for data flow visualization.</returns>
+        private SKColor GetDataFlowColorForType(string dataType)
+        {
+            if (string.IsNullOrEmpty(dataType))
+                return SKColors.Gray;
+
+            return dataType.ToLowerInvariant() switch
+            {
+                "string" => SKColors.Blue,
+                "number" or "int" or "float" or "double" => SKColors.Green,
+                "boolean" or "bool" => SKColors.Orange,
+                "object" or "reference" => SKColors.Purple,
+                "array" or "list" => SKColors.Red,
+                "datetime" or "date" => SKColors.Cyan,
+                _ => SKColors.Gray
+            };
         }
     }
 

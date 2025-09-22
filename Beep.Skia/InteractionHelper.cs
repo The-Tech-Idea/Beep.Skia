@@ -232,14 +232,19 @@ namespace Beep.Skia
                 var targetPoint = GetConnectionPointAt(canvasPoint);
                 if (targetPoint != null && targetPoint != _sourcePoint)
                 {
-                    if (_sourcePoint.Type == ConnectionPointType.Out && targetPoint.Type == ConnectionPointType.In)
+                    // Validate the connection
+                    if (CanConnectPoints(_sourcePoint, targetPoint))
                     {
-                        _drawingManager.MoveConnectionLine(_draggingLine, null, targetPoint);
+                        if (_sourcePoint.Type == ConnectionPointType.Out && targetPoint.Type == ConnectionPointType.In)
+                        {
+                            _drawingManager.MoveConnectionLine(_draggingLine, null, targetPoint);
+                        }
+                        else if (_sourcePoint.Type == ConnectionPointType.In && targetPoint.Type == ConnectionPointType.Out)
+                        {
+                            _drawingManager.MoveConnectionLine(_draggingLine, targetPoint, null);
+                        }
                     }
-                    else if (_sourcePoint.Type == ConnectionPointType.In && targetPoint.Type == ConnectionPointType.Out)
-                    {
-                        _drawingManager.MoveConnectionLine(_draggingLine, targetPoint, null);
-                    }
+                    // If connection is invalid, the line will be discarded
                 }
 
                 _draggingLine = null;
@@ -392,6 +397,50 @@ namespace Beep.Skia
         private IConnectionPoint GetConnectionPointAt(SKPoint point) => _drawingManager.GetConnectionPointAt(point);
         private IConnectionLine GetLineAt(SKPoint point) => _drawingManager.GetLineAt(point);
         private string GetArrowAt(IConnectionLine line, SKPoint point) => _drawingManager.GetArrowAt(line, point);
+
+        /// <summary>
+        /// Validates whether two connection points can be connected.
+        /// </summary>
+        /// <param name="sourcePoint">The source connection point.</param>
+        /// <param name="targetPoint">The target connection point.</param>
+        /// <returns>True if the connection is valid, false otherwise.</returns>
+        private bool CanConnectPoints(IConnectionPoint sourcePoint, IConnectionPoint targetPoint)
+        {
+            // Can't connect to self
+            if (sourcePoint == targetPoint)
+                return false;
+
+            // Can't connect if either point is not available
+            if (!sourcePoint.IsAvailable || !targetPoint.IsAvailable)
+                return false;
+
+            // Must connect output to input (data flow direction)
+            if (sourcePoint.Type == targetPoint.Type)
+                return false;
+
+            // Can't connect points from the same component
+            if (sourcePoint.Component == targetPoint.Component)
+                return false;
+
+            // Additional validation can be added here for automation nodes
+            if (sourcePoint.Component is Components.AutomationNode sourceNode &&
+                targetPoint.Component is Components.AutomationNode targetNode)
+            {
+                // For automation nodes, ensure proper data flow
+                if (sourcePoint.Type == ConnectionPointType.Out && targetPoint.Type == ConnectionPointType.In)
+                {
+                    // Validate node compatibility if needed
+                    return true;
+                }
+                else if (sourcePoint.Type == ConnectionPointType.In && targetPoint.Type == ConnectionPointType.Out)
+                {
+                    // Reverse connection (less common but allowed)
+                    return true;
+                }
+            }
+
+            return true;
+        }
         private string GetResizeHandleAt(SkiaComponent component, SKPoint point) => _drawingManager.GetResizeHandleAt(component, point);
         private void StartDrawingLine(IConnectionPoint sourcePoint, SKPoint point) => _drawingManager.StartDrawingLine(sourcePoint, point);
     }

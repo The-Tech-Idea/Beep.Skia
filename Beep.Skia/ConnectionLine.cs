@@ -79,6 +79,26 @@ namespace Beep.Skia
         public bool IsAnimated { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether data flow animation is enabled.
+        /// </summary>
+        public bool IsDataFlowAnimated { get; set; }
+
+        /// <summary>
+        /// Gets or sets the speed of the data flow animation (pixels per second).
+        /// </summary>
+        public float DataFlowSpeed { get; set; } = 100f;
+
+        /// <summary>
+        /// Gets or sets the size of the data flow particles.
+        /// </summary>
+        public float DataFlowParticleSize { get; set; } = 4f;
+
+        /// <summary>
+        /// Gets or sets the color of the data flow particles.
+        /// </summary>
+        public SKColor DataFlowColor { get; set; } = SKColors.Blue;
+
+        /// <summary>
         /// Gets or sets a value indicating whether to show an arrow at the start of the line.
         /// </summary>
         public bool ShowStartArrow { get; set; } = true;
@@ -109,6 +129,12 @@ namespace Beep.Skia
         public string Label3 { get; set; }
 
         /// <summary>
+        /// Gets or sets the data type label to display on the connection line.
+        /// If not set, will automatically use the data type from the start connection point.
+        /// </summary>
+        public string DataTypeLabel { get; set; }
+
+        /// <summary>
         /// The size of the arrow in pixels.
         /// </summary>
         private const float ArrowSize = 10.0f;
@@ -119,6 +145,12 @@ namespace Beep.Skia
         private const float LineClickThreshold = 5.0f;
 
         private System.Timers.Timer animationTimer;
+
+        /// <summary>
+        /// Animation state for data flow particles.
+        /// </summary>
+        private float dataFlowOffset = 0f;
+        private float dataFlowSpacing = 30f; // Distance between particles
 
         /// <summary>
         /// Occurs when the start arrow of the connection line is clicked.
@@ -229,6 +261,22 @@ namespace Beep.Skia
                 canvas.DrawText(Label3, labelPosition.X, labelPosition.Y, SKTextAlign.Center, _textFont, _textPaint);
             }
 
+            // Draw data type label
+            string dataTypeText = DataTypeLabel ?? Start?.DataType;
+            if (!string.IsNullOrEmpty(dataTypeText))
+            {
+                // Draw data type label below the line in the middle
+                var midpoint = new SKPoint((lineStart.X + lineEnd.X) / 2, (lineStart.Y + lineEnd.Y) / 2);
+                var labelPosition = midpoint + new SKPoint(-_textFont.MeasureText(dataTypeText) / 2, 20);
+                canvas.DrawText(dataTypeText, labelPosition.X, labelPosition.Y, SKTextAlign.Center, _textFont, _textPaint);
+            }
+
+            // Draw data flow animation particles
+            if (IsDataFlowAnimated && Start != null && End != null)
+            {
+                DrawDataFlowParticles(canvas, lineStart, lineEnd);
+            }
+
         }
 
         /// <summary>
@@ -249,6 +297,60 @@ namespace Beep.Skia
                          arrowPosition.Y - ArrowSize * (float)Math.Sin(angle - Math.PI / 6));
             canvas.DrawLine(arrowPosition, arrowEndPoint1, paint);
             canvas.DrawLine(arrowPosition, arrowEndPoint2, paint);
+        }
+
+        /// <summary>
+        /// Draws animated data flow particles along the connection line.
+        /// </summary>
+        /// <param name="canvas">The canvas to draw on.</param>
+        /// <param name="lineStart">The start point of the line.</param>
+        /// <param name="lineEnd">The end point of the line.</param>
+        private void DrawDataFlowParticles(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd)
+        {
+            // Calculate line direction and length
+            var direction = lineEnd - lineStart;
+            var length = (float)Math.Sqrt(direction.X * direction.X + direction.Y * direction.Y);
+
+            if (length == 0) return;
+
+            // Normalize direction
+            direction = new SKPoint(direction.X / length, direction.Y / length);
+
+            // Create paint for particles
+            using var particlePaint = new SKPaint
+            {
+                Style = SKPaintStyle.Fill,
+                Color = DataFlowColor,
+                IsAntialias = true
+            };
+
+            // Draw multiple particles along the line
+            float currentOffset = -dataFlowOffset;
+            while (currentOffset < length)
+            {
+                if (currentOffset >= 0)
+                {
+                    // Calculate particle position
+                    var particlePos = new SKPoint(
+                        lineStart.X + direction.X * currentOffset,
+                        lineStart.Y + direction.Y * currentOffset
+                    );
+
+                    // Draw particle as a circle
+                    canvas.DrawCircle(particlePos, DataFlowParticleSize, particlePaint);
+
+                    // Add a subtle glow effect
+                    using var glowPaint = new SKPaint
+                    {
+                        Style = SKPaintStyle.Fill,
+                        Color = DataFlowColor.WithAlpha(100),
+                        IsAntialias = true
+                    };
+                    canvas.DrawCircle(particlePos, DataFlowParticleSize * 2, glowPaint);
+                }
+
+                currentOffset += dataFlowSpacing;
+            }
         }
 
         /// <summary>
@@ -374,16 +476,35 @@ namespace Beep.Skia
         /// <param name="e">The event arguments.</param>
         private void Animate(object sender, ElapsedEventArgs e)
         {
+            bool needsRedraw = false;
+
             if (IsAnimated)
             {
                 // Update the LineColor property based on the elapsed time
                 var (hue, saturation, luminosity) = LineColor.ToHsl();
                 hue = (hue + 1) % 360;
                 LineColor = SkiaUtil.FromHsl(hue, saturation, luminosity);
+                needsRedraw = true;
+            }
+
+            if (IsDataFlowAnimated)
+            {
+                // Update data flow animation
+                dataFlowOffset += DataFlowSpeed * 0.016f; // 16ms per frame approximately
+
+                // Reset offset when it exceeds the spacing
+                if (dataFlowOffset > dataFlowSpacing)
+                {
+                    dataFlowOffset = 0f;
+                }
+
+                needsRedraw = true;
+            }
+
+            if (needsRedraw)
+            {
                 // Trigger a redraw of the scene
                 invalidateVisualAction?.Invoke();
-                // Trigger a redraw of the scene
-                // This depends on your specific UI framework, e.g., InvalidateSurface() for SkiaSharp.Views.Forms.SKCanvasView
             }
         }
 
