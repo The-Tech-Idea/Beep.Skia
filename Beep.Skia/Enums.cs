@@ -44,19 +44,20 @@ namespace Beep.Skia
         Right,
 
         /// <summary>
-        /// Text is positioned at the top.
+        /// Text is positioned at the above.
         /// </summary>
-        Top,
+        Above,
 
         /// <summary>
-        /// Text is positioned at the bottom.
+        /// Text is positioned at the below.
         /// </summary>
-        Bottom,
+        Below,
 
         /// <summary>
         /// Text is centered.
         /// </summary>
-        Center
+
+        Inside
     }
 
     /// <summary>

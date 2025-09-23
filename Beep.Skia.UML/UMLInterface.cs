@@ -14,7 +14,19 @@ namespace Beep.Skia.UML
         /// <summary>
         /// Gets or sets the name of the interface.
         /// </summary>
-        public string InterfaceName { get; set; } = "InterfaceName";
+        public string InterfaceName
+        {
+            get => _interfaceName;
+            set
+            {
+                if (_interfaceName != value)
+                {
+                    _interfaceName = value;
+                    DisplayText = value;
+                }
+            }
+        }
+        private string _interfaceName = "InterfaceName";
 
         /// <summary>
         /// Gets or sets the list of operations for this interface.
@@ -29,6 +41,9 @@ namespace Beep.Skia.UML
             Width = 150;
             Height = 100;
             Name = "UMLInterface";
+            DisplayText = InterfaceName;
+            TextPosition = TextPosition.Inside;
+            ShowDisplayText = true;
 
             // Add some default operations for demonstration
             Operations.Add("+operation1(): void");
@@ -138,6 +153,9 @@ namespace Beep.Skia.UML
 
             // Draw stereotype if present (additional to interface stereotype)
             DrawStereotype(canvas, context, font);
+
+            // Draw connection points
+            DrawConnectionPoints(canvas, context);
 
             // Draw selection indicator
             DrawSelection(canvas, context);

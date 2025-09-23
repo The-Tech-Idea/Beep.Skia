@@ -20,6 +20,10 @@ namespace Beep.Skia.Components
         public string Name { get; set; }
         public string ComponentType { get; set; }
         public string Category { get; set; } = "General";
+        // Optional preset for connection line multiplicities (used for ERD quick connects)
+        public ERDMultiplicity? StartMultiplicity { get; set; }
+        public ERDMultiplicity? EndMultiplicity { get; set; }
+        // Special item if ComponentType == null and either multiplicity set: acts as a preset tool
     }
 
     public class Palette : SkiaComponent

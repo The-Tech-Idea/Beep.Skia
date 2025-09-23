@@ -85,6 +85,73 @@ namespace Beep.Skia.UML
 
             // Draw transform arrows
             DrawTransformArrows(canvas);
+
+            // Draw connection points
+            DrawConnectionPoints(canvas, context);
+
+            // Draw selection indicator
+            DrawSelection(canvas, context);
+        }
+
+        /// <summary>
+        /// Draws connection points positioned at the hexagon's flat sides.
+        /// </summary>
+        protected override void DrawConnectionPoints(SKCanvas canvas, DrawingContext context)
+        {
+            var centerX = Width / 2;
+            var centerY = Height / 2;
+            var radius = Width / 2 - 5;
+
+            // Position connection points at the midpoints of each hexagon side
+            var points = new List<(SKPoint position, SKColor color)>();
+
+            for (int i = 0; i < 6; i++)
+            {
+                // Calculate the midpoint of each side
+                var angle1 = i * Math.PI / 3;
+                var angle2 = ((i + 1) % 6) * Math.PI / 3;
+
+                var x1 = centerX + radius * Math.Cos(angle1);
+                var y1 = centerY + radius * Math.Sin(angle1);
+                var x2 = centerX + radius * Math.Cos(angle2);
+                var y2 = centerY + radius * Math.Sin(angle2);
+
+                var midX = (x1 + x2) / 2;
+                var midY = (y1 + y2) / 2;
+
+                // Alternate between input (blue) and output (green) for visual distinction
+                var color = (i % 2 == 0) ? SKColors.Blue : SKColors.Green;
+                points.Add((new SKPoint((float)midX, (float)midY), color));
+            }
+
+            foreach (var (position, color) in points)
+            {
+                DrawConnectionPoint(canvas, position, color);
+            }
+        }
+
+        /// <summary>
+        /// Draws a single connection point.
+        /// </summary>
+        private void DrawConnectionPoint(SKCanvas canvas, SKPoint position, SKColor color)
+        {
+            using var paint = new SKPaint
+            {
+                Color = color,
+                Style = SKPaintStyle.Fill,
+                IsAntialias = true
+            };
+
+            using var borderPaint = new SKPaint
+            {
+                Color = SKColors.White,
+                StrokeWidth = 1,
+                Style = SKPaintStyle.Stroke,
+                IsAntialias = true
+            };
+
+            canvas.DrawCircle(position.X, position.Y, 6, paint);
+            canvas.DrawCircle(position.X, position.Y, 6, borderPaint);
         }
 
         /// <summary>

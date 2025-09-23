@@ -85,6 +85,12 @@ namespace Beep.Skia.UML
 
             // Draw output arrow icon
             DrawOutputArrow(canvas, Width - 30, Height / 2 - 8);
+
+            // Draw connection points
+            DrawConnectionPoints(canvas, context);
+
+            // Draw selection indicator
+            DrawSelection(canvas, context);
         }
 
         /// <summary>

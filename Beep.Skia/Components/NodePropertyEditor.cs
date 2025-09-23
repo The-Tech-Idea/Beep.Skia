@@ -13,6 +13,8 @@ namespace Beep.Skia.Components
     /// </summary>
     public class NodePropertyEditor : SkiaComponent
     {
+        // Hide from palette/toolbox
+        public override bool ShowInPalette { get; set; } = false;
         #region Private Fields
         private AutomationNode _selectedNode;
         private readonly List<SkiaComponent> _childComponents = new List<SkiaComponent>();

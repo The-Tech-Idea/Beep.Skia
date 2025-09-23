@@ -15,11 +15,26 @@ namespace Beep.Skia
     public class ConnectionPoint : IConnectionPoint
     {
         /// <summary>
+        /// Gets the unique identifier of this connection point.
+        /// </summary>
+        public Guid Id { get; private set; } = Guid.NewGuid();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ConnectionPoint"/> class.
         /// </summary>
         public ConnectionPoint()
         {
 
+        }
+
+        /// <summary>
+        /// Assigns a specific identifier to this connection point. Intended for restoring from persistence.
+        /// </summary>
+        /// <param name="id">The identifier to assign.</param>
+        internal void SetId(Guid id)
+        {
+            if (id == Guid.Empty) return;
+            Id = id;
         }
 
         /// <summary>

@@ -115,7 +115,7 @@ namespace Beep.Skia
                 }
             }
 
-            // Check for line manipulation first
+            // Check for line hit (allow arrow drag or line selection)
             var line = GetLineAt(canvasPoint);
             if (line != null)
             {
@@ -127,6 +127,20 @@ namespace Beep.Skia
                     _sourcePoint = arrow == "start" ? line.Start : line.End;
                     return;
                 }
+                // If not on arrow, treat as selection toggle/select
+                if ((modifiers & SKKeyModifiers.Control) == SKKeyModifiers.Control)
+                {
+                    if (_drawingManager.SelectionManager.IsSelected(line))
+                        _drawingManager.SelectionManager.RemoveFromSelection(line);
+                    else
+                        _drawingManager.SelectionManager.SelectLine(line, addToSelection: true);
+                }
+                else if (!_drawingManager.SelectionManager.IsSelected(line))
+                {
+                    _drawingManager.SelectionManager.ClearSelection();
+                    _drawingManager.SelectionManager.SelectLine(line);
+                }
+                return;
             }
 
             // Check for component interaction
@@ -193,8 +207,28 @@ namespace Beep.Skia
                 var sourcePoint = GetConnectionPointAt(canvasPoint);
                 if (sourcePoint != null)
                 {
-                    _isDrawingLine = true;
-                    StartDrawingLine(sourcePoint, canvasPoint);
+                    // If Shift pressed, start drawing from connection point; otherwise select the point
+                    if ((modifiers & SKKeyModifiers.Shift) == SKKeyModifiers.Shift)
+                    {
+                        _isDrawingLine = true;
+                        StartDrawingLine(sourcePoint, canvasPoint);
+                    }
+                    else
+                    {
+                        if ((modifiers & SKKeyModifiers.Control) == SKKeyModifiers.Control)
+                        {
+                            if (_drawingManager.SelectionManager.IsSelected(sourcePoint))
+                                _drawingManager.SelectionManager.RemoveFromSelection(sourcePoint);
+                            else
+                                _drawingManager.SelectionManager.SelectConnectionPoint(sourcePoint, addToSelection: true);
+                        }
+                        else if (!_drawingManager.SelectionManager.IsSelected(sourcePoint))
+                        {
+                            _drawingManager.SelectionManager.ClearSelection();
+                            _drawingManager.SelectionManager.SelectConnectionPoint(sourcePoint);
+                        }
+                    }
+                    return;
                 }
                 else
                 {

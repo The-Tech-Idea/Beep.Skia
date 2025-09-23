@@ -10,12 +10,23 @@ namespace Beep.Skia.ETL
     /// </summary>
     public abstract class ETLControl : SkiaComponent
     {
-        public string Title { get; set; } = "ETL";
-        public string Subtitle { get; set; } = string.Empty;
-        public SKColor Background { get; set; } = new SKColor(0xF5, 0xF5, 0xF5);
-        public SKColor Stroke { get; set; } = new SKColor(0x60, 0x60, 0x60);
-        public SKColor HeaderColor { get; set; } = new SKColor(0x42, 0x85, 0xF4); // blue
-        public SKColor HeaderTextColor { get; set; } = SKColors.White;
+    private string _title = "ETL";
+    public string Title { get => _title; set { if (_title == value) return; _title = value ?? string.Empty; InvalidateVisual(); } }
+
+    private string _subtitle = string.Empty;
+    public string Subtitle { get => _subtitle; set { if (_subtitle == value) return; _subtitle = value ?? string.Empty; InvalidateVisual(); } }
+
+    private SKColor _background = new SKColor(0xF5, 0xF5, 0xF5);
+    public SKColor Background { get => _background; set { if (_background == value) return; _background = value; InvalidateVisual(); } }
+
+    private SKColor _stroke = new SKColor(0x60, 0x60, 0x60);
+    public SKColor Stroke { get => _stroke; set { if (_stroke == value) return; _stroke = value; InvalidateVisual(); } }
+
+    private SKColor _headerColor = new SKColor(0x42, 0x85, 0xF4); // blue
+    public SKColor HeaderColor { get => _headerColor; set { if (_headerColor == value) return; _headerColor = value; InvalidateVisual(); } }
+
+    private SKColor _headerTextColor = SKColors.White;
+    public SKColor HeaderTextColor { get => _headerTextColor; set { if (_headerTextColor == value) return; _headerTextColor = value; InvalidateVisual(); } }
 
         // Layout constants
         protected const float CornerRadius = 8f;
@@ -27,6 +38,13 @@ namespace Beep.Skia.ETL
         {
             Width = Math.Max(120, Width);
             Height = Math.Max(64, Height);
+        }
+
+        // Local no-op invalidation hook (SkiaComponent doesn't expose InvalidateVisual).
+        // This allows ETL property setters to trigger a potential redraw path in the future.
+        protected virtual void InvalidateVisual()
+        {
+            // No-op; host controls may call SkiaHostControl.InvalidateSurface or similar.
         }
 
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
@@ -71,20 +89,21 @@ namespace Beep.Skia.ETL
         {
             // Grow/shrink input ports
             while (InConnectionPoints.Count < inCount)
-                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Radius = (int)PortRadius, Component = this });
+                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "object", IsAvailable = true });
             while (InConnectionPoints.Count > inCount)
                 InConnectionPoints.RemoveAt(InConnectionPoints.Count - 1);
 
             // Grow/shrink output ports
             while (OutConnectionPoints.Count < outCount)
-                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Radius = (int)PortRadius, Component = this });
+                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "object", IsAvailable = true });
             while (OutConnectionPoints.Count > outCount)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
             LayoutPorts();
+            InvalidateVisual();
         }
 
-        protected void LayoutPorts()
+        protected virtual void LayoutPorts()
         {
             // Distribute ports evenly along left (inputs) and right (outputs) sides, inside content below header
             float inAreaTop = Y + HeaderHeight + Padding;
@@ -135,6 +154,17 @@ namespace Beep.Skia.ETL
         {
             base.UpdateBounds();
             LayoutPorts();
+        }
+
+        /// <summary>
+        /// Gets the effective text positioning bounds for ETL components.
+        /// Accounts for the header area and component shape for proper text placement.
+        /// </summary>
+        /// <returns>A rectangle defining the effective bounds for text positioning.</returns>
+        protected override SKRect GetTextPositioningBounds()
+        {
+            // For ETL components, use the full bounds but account for header in positioning
+            return new SKRect(X, Y, X + Width, Y + Height);
         }
     }
 }

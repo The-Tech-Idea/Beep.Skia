@@ -134,10 +134,44 @@ namespace Beep.Skia
         /// </summary>
         public string DataTypeLabel { get; set; }
 
-        /// <summary>
-        /// The size of the arrow in pixels.
-        /// </summary>
-        private const float ArrowSize = 10.0f;
+    /// <summary>
+    /// Size of arrowheads in pixels.
+    /// </summary>
+    public float ArrowSize { get; set; } = 10.0f;
+
+    /// <summary>
+    /// Optional dash pattern (pairs of on/off lengths). Null/empty for solid.
+    /// </summary>
+    public float[] DashPattern { get; set; }
+
+    /// <summary>
+    /// Routing mode for how the line is drawn.
+    /// </summary>
+    public LineRoutingMode RoutingMode { get; set; } = LineRoutingMode.Straight;
+
+    /// <summary>
+    /// Data flow animation direction.
+    /// </summary>
+    public DataFlowDirection FlowDirection { get; set; } = DataFlowDirection.None;
+
+    public LabelPlacement Label1Placement { get; set; } = LabelPlacement.Above;
+    public LabelPlacement Label2Placement { get; set; } = LabelPlacement.Above;
+    public LabelPlacement Label3Placement { get; set; } = LabelPlacement.Over;
+    public LabelPlacement DataLabelPlacement { get; set; } = LabelPlacement.Below;
+
+    public bool ShowStatusIndicator { get; set; } = false;
+    public LineStatus Status { get; set; } = LineStatus.None;
+    public SKColor StatusColor { get; set; } = SKColors.DimGray;
+
+    // ERD multiplicity markers
+    public ERDMultiplicity StartMultiplicity { get; set; } = ERDMultiplicity.Unspecified;
+    public ERDMultiplicity EndMultiplicity { get; set; } = ERDMultiplicity.Unspecified;
+
+    // Optional styling for ERD crow's foot markers
+    // Spread angle in degrees between the center prong and each outer prong
+    public float CrowFootSpreadDegrees { get; set; } = 18f; // ~PI/10
+    // Length scale (multiplier on unit) for the crow's foot prongs
+    public float CrowFootLength { get; set; } = 1.0f;
 
         /// <summary>
         /// The threshold distance for detecting line clicks.
@@ -223,41 +257,77 @@ namespace Beep.Skia
             // Calculate line coordinates and draw the line
             var lineStart = Start.Position;
             var lineEnd = End.Position;
-            // Calculate line coordinates and draw the line
             Paint.Color = LineColor;
-            canvas.DrawLine(lineStart, lineEnd, Paint);
 
-            // Draw optional arrows
-            if (ShowStartArrow)
+            // Configure dash pattern if provided
+            using var stroke = new SKPaint
             {
+                Color = Paint.Color,
+                Style = Paint.Style,
+                StrokeWidth = Paint.StrokeWidth,
+                IsAntialias = Paint.IsAntialias,
+                StrokeCap = Paint.StrokeCap,
+                StrokeJoin = Paint.StrokeJoin
+            };
+            if (DashPattern != null && DashPattern.Length >= 2)
+            {
+                stroke.PathEffect = SKPathEffect.CreateDash(DashPattern, 0);
+            }
+
+            switch (RoutingMode)
+            {
+                case LineRoutingMode.Orthogonal:
+                {
+                    float midX = (lineStart.X + lineEnd.X) * 0.5f;
+                    var p2 = new SKPoint(midX, lineStart.Y);
+                    var p3 = new SKPoint(midX, lineEnd.Y);
+                    canvas.DrawLine(lineStart, p2, stroke);
+                    canvas.DrawLine(p2, p3, stroke);
+                    canvas.DrawLine(p3, lineEnd, stroke);
+                    break;
+                }
+                case LineRoutingMode.Curved:
+                {
+                    using var path = new SKPath();
+                    path.MoveTo(lineStart);
+                    var c1 = new SKPoint((lineStart.X * 2 + lineEnd.X) / 3f, lineStart.Y);
+                    var c2 = new SKPoint((lineEnd.X * 2 + lineStart.X) / 3f, lineEnd.Y);
+                    path.CubicTo(c1, c2, lineEnd);
+                    canvas.DrawPath(path, stroke);
+                    break;
+                }
+                default:
+                    canvas.DrawLine(lineStart, lineEnd, stroke);
+                    break;
+            }
+
+            // Draw ERD multiplicity markers or arrows
+            if (StartMultiplicity != ERDMultiplicity.Unspecified)
+                DrawErdMultiplicity(canvas, stroke, atPoint: lineStart, toward: lineEnd, StartMultiplicity);
+            else if (ShowStartArrow)
                 DrawArrow(canvas, Paint, lineStart, lineEnd);
-            }
 
-            if (ShowEndArrow)
-            {
+            if (EndMultiplicity != ERDMultiplicity.Unspecified)
+                DrawErdMultiplicity(canvas, stroke, atPoint: lineEnd, toward: lineStart, EndMultiplicity);
+            else if (ShowEndArrow)
                 DrawArrow(canvas, Paint, lineEnd, lineStart);
-            }
 
             // Draw optional labels
             if (!string.IsNullOrEmpty(Label1))
             {
-                // Draw Label1 above the first arrow
-                var labelPosition = lineStart + new SKPoint(-_textFont.MeasureText(Label1) / 2, -15);
+                var labelPosition = GetLabelPosition(lineStart, lineEnd, Label1Placement, atStart: true, text: Label1);
                 canvas.DrawText(Label1, labelPosition.X, labelPosition.Y, SKTextAlign.Center, _textFont, _textPaint);
             }
 
             if (!string.IsNullOrEmpty(Label2))
             {
-                // Draw Label2 above the second arrow
-                var labelPosition = lineEnd + new SKPoint(-_textFont.MeasureText(Label2) / 2, -15);
+                var labelPosition = GetLabelPosition(lineStart, lineEnd, Label2Placement, atStart: false, text: Label2);
                 canvas.DrawText(Label2, labelPosition.X, labelPosition.Y, SKTextAlign.Center, _textFont, _textPaint);
             }
 
             if (!string.IsNullOrEmpty(Label3))
             {
-                // Draw Label3 in the middle of the line
-                var midpoint = new SKPoint((lineStart.X + lineEnd.X) / 2, (lineStart.Y + lineEnd.Y) / 2);
-                var labelPosition = midpoint + new SKPoint(-_textFont.MeasureText(Label3) / 2, -10);
+                var labelPosition = GetMidLabelPosition(lineStart, lineEnd, Label3Placement, Label3);
                 canvas.DrawText(Label3, labelPosition.X, labelPosition.Y, SKTextAlign.Center, _textFont, _textPaint);
             }
 
@@ -265,16 +335,20 @@ namespace Beep.Skia
             string dataTypeText = DataTypeLabel ?? Start?.DataType;
             if (!string.IsNullOrEmpty(dataTypeText))
             {
-                // Draw data type label below the line in the middle
-                var midpoint = new SKPoint((lineStart.X + lineEnd.X) / 2, (lineStart.Y + lineEnd.Y) / 2);
-                var labelPosition = midpoint + new SKPoint(-_textFont.MeasureText(dataTypeText) / 2, 20);
+                var labelPosition = GetMidLabelPosition(lineStart, lineEnd, DataLabelPlacement, dataTypeText);
                 canvas.DrawText(dataTypeText, labelPosition.X, labelPosition.Y, SKTextAlign.Center, _textFont, _textPaint);
             }
 
             // Draw data flow animation particles
-            if (IsDataFlowAnimated && Start != null && End != null)
+            if (IsDataFlowAnimated && Start != null && End != null && FlowDirection != DataFlowDirection.None)
             {
-                DrawDataFlowParticles(canvas, lineStart, lineEnd);
+                DrawDataFlowParticles(canvas, lineStart, lineEnd, FlowDirection);
+            }
+
+            // Status indicator
+            if (ShowStatusIndicator && Status != LineStatus.None)
+            {
+                DrawStatusIndicator(canvas, lineStart, lineEnd);
             }
 
         }
@@ -300,12 +374,101 @@ namespace Beep.Skia
         }
 
         /// <summary>
+        /// Draw ERD multiplicity marks at a line end: combinations of small circle, single/double bar, and crow's foot.
+        /// Orientation is computed from the vector atPoint -> toward so symbols sit outside the endpoint.
+        /// </summary>
+        private void DrawErdMultiplicity(SKCanvas canvas, SKPaint paint, SKPoint atPoint, SKPoint toward, ERDMultiplicity mult)
+        {
+            // Geometry parameters (relative to ArrowSize/StrokeWidth)
+            float unit = Math.Max(6f, ArrowSize * 0.75f);
+            float barLen = unit * 1.2f;
+            float gap = Math.Max(2f, paint.StrokeWidth);
+            float circleR = unit * 0.45f;
+            float footLen = unit * Math.Max(0.1f, CrowFootLength);
+            float footSpread = (float)(Math.PI * CrowFootSpreadDegrees / 180.0); // angle offset for the outer prongs
+
+            // Direction from end outward
+            var vx = atPoint.X - toward.X;
+            var vy = atPoint.Y - toward.Y;
+            float len = (float)Math.Sqrt(vx * vx + vy * vy);
+            if (len < 0.001f) len = 0.001f;
+            vx /= len; vy /= len; // normalized outward
+
+            // Build a local right vector for perpendiculars
+            var rx = -vy; var ry = vx;
+
+            // Helper to shift a point along v or r
+            SKPoint Along(SKPoint p, float s) => new SKPoint(p.X + vx * s, p.Y + vy * s);
+            SKPoint Right(SKPoint p, float s) => new SKPoint(p.X + rx * s, p.Y + ry * s);
+
+            // Start a little off the endpoint so symbols don’t overlap the node outline
+            var origin = Along(atPoint, gap + paint.StrokeWidth);
+
+            // Rendering order: near endpoint to far (so circle is closest, then bars, then foot at farthest)
+            bool needsCircle = mult == ERDMultiplicity.ZeroOrOne || mult == ERDMultiplicity.ZeroOrMany;
+            bool needsBar = mult == ERDMultiplicity.ZeroOrOne || mult == ERDMultiplicity.OneOnly || mult == ERDMultiplicity.OneOrMany || mult == ERDMultiplicity.One;
+            bool needsDoubleBar = mult == ERDMultiplicity.OneOnly; // exactly one often shown as double bar
+            bool needsFoot = mult == ERDMultiplicity.OneOrMany || mult == ERDMultiplicity.ZeroOrMany || mult == ERDMultiplicity.Many;
+
+            using var symbolPaint = new SKPaint
+            {
+                Color = paint.Color,
+                Style = SKPaintStyle.Stroke,
+                StrokeWidth = paint.StrokeWidth,
+                IsAntialias = true,
+                StrokeCap = SKStrokeCap.Butt
+            };
+
+            float cursor = 0f;
+            if (needsCircle)
+            {
+                var c = Along(origin, cursor + circleR);
+                canvas.DrawCircle(c, circleR, symbolPaint);
+                cursor += circleR * 2 + gap;
+            }
+
+            if (needsBar)
+            {
+                var p1 = Right(Along(origin, cursor), -barLen / 2);
+                var p2 = Right(Along(origin, cursor), +barLen / 2);
+                canvas.DrawLine(p1, p2, symbolPaint);
+                cursor += gap * 1.2f;
+            }
+
+            if (needsDoubleBar)
+            {
+                var p1 = Right(Along(origin, cursor), -barLen / 2);
+                var p2 = Right(Along(origin, cursor), +barLen / 2);
+                canvas.DrawLine(p1, p2, symbolPaint);
+                cursor += gap * 1.2f;
+            }
+
+            if (needsFoot)
+            {
+                // Crow’s foot with three prongs from a base point
+                var baseP = Along(origin, cursor);
+                // central prong straight out
+                var mid = Along(baseP, footLen);
+                canvas.DrawLine(baseP, mid, symbolPaint);
+
+                // two outer prongs at small angles
+                float ang = (float)Math.Atan2(vy, vx);
+                var v1 = new SKPoint((float)Math.Cos(ang + footSpread), (float)Math.Sin(ang + footSpread));
+                var v2 = new SKPoint((float)Math.Cos(ang - footSpread), (float)Math.Sin(ang - footSpread));
+                var pOut1 = new SKPoint(baseP.X + v1.X * footLen, baseP.Y + v1.Y * footLen);
+                var pOut2 = new SKPoint(baseP.X + v2.X * footLen, baseP.Y + v2.Y * footLen);
+                canvas.DrawLine(baseP, pOut1, symbolPaint);
+                canvas.DrawLine(baseP, pOut2, symbolPaint);
+            }
+        }
+
+        /// <summary>
         /// Draws animated data flow particles along the connection line.
         /// </summary>
         /// <param name="canvas">The canvas to draw on.</param>
         /// <param name="lineStart">The start point of the line.</param>
         /// <param name="lineEnd">The end point of the line.</param>
-        private void DrawDataFlowParticles(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd)
+        private void DrawDataFlowParticles(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd, DataFlowDirection directionMode)
         {
             // Calculate line direction and length
             var direction = lineEnd - lineStart;
@@ -316,6 +479,10 @@ namespace Beep.Skia
             // Normalize direction
             direction = new SKPoint(direction.X / length, direction.Y / length);
 
+            // Possibly reverse or draw both directions
+            bool drawForward = directionMode == DataFlowDirection.Forward || directionMode == DataFlowDirection.Bidirectional;
+            bool drawBackward = directionMode == DataFlowDirection.Backward || directionMode == DataFlowDirection.Bidirectional;
+
             // Create paint for particles
             using var particlePaint = new SKPaint
             {
@@ -325,32 +492,33 @@ namespace Beep.Skia
             };
 
             // Draw multiple particles along the line
-            float currentOffset = -dataFlowOffset;
-            while (currentOffset < length)
+            void drawAlong(SKPoint s, SKPoint e, bool reverse)
             {
-                if (currentOffset >= 0)
+                var dir = reverse ? new SKPoint(-direction.X, -direction.Y) : direction;
+                float currentOffset = -dataFlowOffset;
+                while (currentOffset < length)
                 {
-                    // Calculate particle position
-                    var particlePos = new SKPoint(
-                        lineStart.X + direction.X * currentOffset,
-                        lineStart.Y + direction.Y * currentOffset
-                    );
-
-                    // Draw particle as a circle
-                    canvas.DrawCircle(particlePos, DataFlowParticleSize, particlePaint);
-
-                    // Add a subtle glow effect
-                    using var glowPaint = new SKPaint
+                    if (currentOffset >= 0)
                     {
-                        Style = SKPaintStyle.Fill,
-                        Color = DataFlowColor.WithAlpha(100),
-                        IsAntialias = true
-                    };
-                    canvas.DrawCircle(particlePos, DataFlowParticleSize * 2, glowPaint);
+                        var particlePos = new SKPoint(
+                            s.X + dir.X * currentOffset,
+                            s.Y + dir.Y * currentOffset
+                        );
+                        canvas.DrawCircle(particlePos, DataFlowParticleSize, particlePaint);
+                        using var glowPaint = new SKPaint
+                        {
+                            Style = SKPaintStyle.Fill,
+                            Color = DataFlowColor.WithAlpha(100),
+                            IsAntialias = true
+                        };
+                        canvas.DrawCircle(particlePos, DataFlowParticleSize * 2, glowPaint);
+                    }
+                    currentOffset += dataFlowSpacing;
                 }
-
-                currentOffset += dataFlowSpacing;
             }
+
+            if (drawForward) drawAlong(lineStart, lineEnd, reverse: false);
+            if (drawBackward) drawAlong(lineEnd, lineStart, reverse: true);
         }
 
         /// <summary>
@@ -501,10 +669,72 @@ namespace Beep.Skia
                 needsRedraw = true;
             }
 
+            if (ShowStatusIndicator && Status is LineStatus.Working or LineStatus.Running)
+            {
+                // Rotate spinner implicitly by advancing a phase via color or offset
+                // We can reuse dataFlowOffset to animate spinner rotation
+                needsRedraw = true;
+            }
+
             if (needsRedraw)
             {
                 // Trigger a redraw of the scene
                 invalidateVisualAction?.Invoke();
+            }
+        }
+
+        private SKPoint GetLabelPosition(SKPoint start, SKPoint end, LabelPlacement placement, bool atStart, string text)
+        {
+            var pos = atStart ? start : end;
+            float yOffset = placement switch
+            {
+                LabelPlacement.Above => -15,
+                LabelPlacement.Below => 20,
+                _ => -5,
+            };
+            return pos + new SKPoint(-_textFont.MeasureText(text) / 2, yOffset);
+        }
+
+        private SKPoint GetMidLabelPosition(SKPoint start, SKPoint end, LabelPlacement placement, string text)
+        {
+            var mid = new SKPoint((start.X + end.X) / 2, (start.Y + end.Y) / 2);
+            float yOffset = placement switch
+            {
+                LabelPlacement.Above => -10,
+                LabelPlacement.Below => 20,
+                _ => 4,
+            };
+            return mid + new SKPoint(-_textFont.MeasureText(text) / 2, yOffset);
+        }
+
+        private void DrawStatusIndicator(SKCanvas canvas, SKPoint start, SKPoint end)
+        {
+            var mid = new SKPoint((start.X + end.X) / 2, (start.Y + end.Y) / 2);
+            using var paint = new SKPaint { IsAntialias = true, Color = StatusColor, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
+            float r = 8f;
+
+            if (Status is LineStatus.Working or LineStatus.Running)
+            {
+                // Simple spinner arc that appears to rotate as Animate updates
+                float sweep = 270f;
+                float angle = (dataFlowOffset * 360f / Math.Max(1f, dataFlowSpacing)) % 360f;
+                using var path = new SKPath();
+                var rect = new SKRect(mid.X - r, mid.Y - r, mid.X + r, mid.Y + r);
+                path.AddArc(rect, angle, sweep);
+                canvas.DrawPath(path, paint);
+            }
+            else if (Status == LineStatus.Warning)
+            {
+                canvas.DrawCircle(mid, r, paint);
+                using var fill = new SKPaint { IsAntialias = true, Color = StatusColor.WithAlpha(60), Style = SKPaintStyle.Fill };
+                canvas.DrawCircle(mid, r - 2, fill);
+            }
+            else if (Status == LineStatus.Error)
+            {
+                canvas.DrawCircle(mid, r, paint);
+                using var cross = new SKPaint { IsAntialias = true, Color = StatusColor, StrokeWidth = 2, Style = SKPaintStyle.Stroke };
+                canvas.DrawLine(mid.X - r / 2, mid.Y - r / 2, mid.X + r / 2, mid.Y + r / 2, cross);
+                canvas.DrawLine(mid.X - r / 2, mid.Y + r / 2, mid.X + r / 2, mid.Y - r / 2, cross);
             }
         }
 

@@ -34,6 +34,11 @@
   <ItemGroup>
     <Compile Remove="UMLEditor.cs" />
     <Compile Remove="UMLDiagram.cs" />
+    <None Remove="UMLEditor.cs" />
+    <None Remove="UMLDiagram.cs" />
+    <!-- Remove generic automation node wrapper; use specific UML nodes instead -->
+    <Compile Remove="AutomationNodeUML.cs" />
+    <None Remove="AutomationNodeUML.cs" />
   </ItemGroup>
 
   <ItemGroup>

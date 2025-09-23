@@ -14,7 +14,19 @@ namespace Beep.Skia.Business
         /// <summary>
         /// Gets or sets the business component type.
         /// </summary>
-        public BusinessComponentType ComponentType { get; set; } = BusinessComponentType.Task;
+        public BusinessComponentType ComponentType 
+        { 
+            get => _componentType;
+            set
+            {
+                if (_componentType != value)
+                {
+                    _componentType = value;
+                    InitializeConnectionPoints();
+                }
+            }
+        }
+        private BusinessComponentType _componentType = BusinessComponentType.Task;
 
         /// <summary>
         /// Gets or sets the business role or department this component represents.
@@ -41,10 +53,7 @@ namespace Beep.Skia.Business
         /// </summary>
         public SKColor BorderColor { get; set; } = SKColors.DarkBlue;
 
-        /// <summary>
-        /// Gets or sets the text color of the component.
-        /// </summary>
-        public SKColor TextColor { get; set; } = SKColors.Black;
+    // Use TextColor from SkiaComponent
 
         /// <summary>
         /// Gets or sets the border thickness.
@@ -61,7 +70,229 @@ namespace Beep.Skia.Business
             BorderColor = GetDefaultBorderColor();
             TextColor = SKColors.Black;
             BorderThickness = 2.0f;
+            
+            // Initialize connection points based on component type
+            InitializeConnectionPoints();
         }
+
+        /// <summary>
+        /// Initializes connection points based on the component type.
+        /// </summary>
+        protected virtual void InitializeConnectionPoints()
+        {
+            // Clear existing connection points
+            InConnectionPoints.Clear();
+            OutConnectionPoints.Clear();
+
+            // Initialize connection points based on component type
+            switch (ComponentType)
+            {
+                case BusinessComponentType.StartEvent:
+                    // Start events have no inputs, 1 output
+                    AddOutputConnectionPoint();
+                    break;
+
+                case BusinessComponentType.EndEvent:
+                    // End events have 1 input, no outputs
+                    AddInputConnectionPoint();
+                    break;
+
+                case BusinessComponentType.Task:
+                    // Tasks have 1 input, 1 output
+                    AddInputConnectionPoint();
+                    AddOutputConnectionPoint();
+                    break;
+
+                case BusinessComponentType.Decision:
+                    // Decisions have 1 input, 2 outputs (true/false)
+                    AddInputConnectionPoint();
+                    AddOutputConnectionPoint();
+                    AddOutputConnectionPoint();
+                    break;
+
+                case BusinessComponentType.Gateway:
+                    // Gateways have 1 input, 2 outputs (parallel processing)
+                    AddInputConnectionPoint();
+                    AddOutputConnectionPoint();
+                    AddOutputConnectionPoint();
+                    break;
+
+                case BusinessComponentType.Document:
+                case BusinessComponentType.Database:
+                case BusinessComponentType.DataStore:
+                case BusinessComponentType.ExternalData:
+                    // Data components have 1 input/output for data flow
+                    AddInputConnectionPoint();
+                    AddOutputConnectionPoint();
+                    break;
+
+                case BusinessComponentType.Person:
+                case BusinessComponentType.Department:
+                case BusinessComponentType.Role:
+                case BusinessComponentType.System:
+                    // Organizational components have 1 input/output for relationships
+                    AddInputConnectionPoint();
+                    AddOutputConnectionPoint();
+                    break;
+
+                default:
+                    // Default: 1 input, 1 output
+                    AddInputConnectionPoint();
+                    AddOutputConnectionPoint();
+                    break;
+            }
+
+            // Position the connection points
+            UpdateConnectionPointPositions();
+            // Notify listeners (e.g., DrawingManager) that geometry-affecting port structure changed
+            try { OnBoundsChanged(Bounds); } catch { }
+        }
+
+        /// <summary>
+        /// Adds an input connection point.
+        /// </summary>
+        protected void AddInputConnectionPoint()
+        {
+            var point = new ConnectionPoint
+            {
+                Type = ConnectionPointType.In,
+                Radius = 6,
+                Component = this,
+                Shape = ComponentShape.Circle,
+                IsAvailable = true,
+                DataType = "object"
+            };
+            InConnectionPoints.Add(point);
+        }
+
+        /// <summary>
+        /// Adds an output connection point.
+        /// </summary>
+        protected void AddOutputConnectionPoint()
+        {
+            var point = new ConnectionPoint
+            {
+                Type = ConnectionPointType.Out,
+                Radius = 6,
+                Component = this,
+                Shape = ComponentShape.Circle,
+                IsAvailable = true,
+                DataType = "object"
+            };
+            OutConnectionPoints.Add(point);
+        }
+
+        /// <summary>
+        /// Updates the positions of all connection points.
+        /// </summary>
+        protected virtual void UpdateConnectionPointPositions()
+        {
+            // Position input points on the left side
+            if (InConnectionPoints.Count > 0)
+            {
+                float spacing = Height / (InConnectionPoints.Count + 1);
+                for (int i = 0; i < InConnectionPoints.Count; i++)
+                {
+                    var cp = InConnectionPoints[i] as ConnectionPoint;
+                    if (cp != null)
+                    {
+                        float cy = Y + spacing * (i + 1);
+                        float cx = X; // left edge
+                        cp.Position = new SKPoint(cx, cy);
+                        cp.Center = cp.Position;
+                        cp.Offset = new SKPoint(0, spacing * (i + 1));
+                        float r = Math.Max(1, cp.Radius);
+                        cp.Bounds = new SKRect(cp.Center.X - r, cp.Center.Y - r, cp.Center.X + r, cp.Center.Y + r);
+                        cp.Rect = cp.Bounds;
+                        cp.Index = i;
+                        cp.Component = this;
+                        cp.IsAvailable = true;
+                    }
+                }
+            }
+
+            // Position output points on the right side
+            if (OutConnectionPoints.Count > 0)
+            {
+                float spacing = Height / (OutConnectionPoints.Count + 1);
+                for (int i = 0; i < OutConnectionPoints.Count; i++)
+                {
+                    var cp = OutConnectionPoints[i] as ConnectionPoint;
+                    if (cp != null)
+                    {
+                        float cy = Y + spacing * (i + 1);
+                        float cx = X + Width; // right edge
+                        cp.Position = new SKPoint(cx, cy);
+                        cp.Center = cp.Position;
+                        cp.Offset = new SKPoint(Width, spacing * (i + 1));
+                        float r = Math.Max(1, cp.Radius);
+                        cp.Bounds = new SKRect(cp.Center.X - r, cp.Center.Y - r, cp.Center.X + r, cp.Center.Y + r);
+                        cp.Rect = cp.Bounds;
+                        cp.Index = i;
+                        cp.Component = this;
+                        cp.IsAvailable = true;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draws the connection points.
+        /// </summary>
+        /// <param name="canvas">The canvas to draw on.</param>
+        /// <param name="context">The drawing context.</param>
+        protected virtual void DrawConnectionPoints(SKCanvas canvas, DrawingContext context)
+        {
+            // Draw input connection points
+            foreach (var point in InConnectionPoints)
+            {
+                DrawConnectionPoint(canvas, point, SKColors.Blue);
+            }
+
+            // Draw output connection points
+            foreach (var point in OutConnectionPoints)
+            {
+                DrawConnectionPoint(canvas, point, SKColors.Green);
+            }
+        }
+
+        /// <summary>
+        /// Draws a single connection point.
+        /// </summary>
+        /// <param name="canvas">The canvas to draw on.</param>
+        /// <param name="point">The connection point to draw.</param>
+        /// <param name="color">The color to use for the point.</param>
+        protected virtual void DrawConnectionPoint(SKCanvas canvas, IConnectionPoint point, SKColor color)
+        {
+            using var paint = new SKPaint
+            {
+                Color = color,
+                Style = SKPaintStyle.Fill,
+                IsAntialias = true
+            };
+
+            using var borderPaint = new SKPaint
+            {
+                Color = SKColors.White,
+                StrokeWidth = 1,
+                Style = SKPaintStyle.Stroke,
+                IsAntialias = true
+            };
+
+            var center = point.Position;
+            canvas.DrawCircle(center.X, center.Y, point.Radius, paint);
+            canvas.DrawCircle(center.X, center.Y, point.Radius, borderPaint);
+        }
+
+        /// <summary>
+        /// Updates the component bounds and refreshes connection point positions.
+        /// </summary>
+        protected override void UpdateBounds()
+        {
+            base.UpdateBounds();
+            UpdateConnectionPointPositions();
+        }
+
 
         /// <summary>
         /// Draws the content of the business component.
@@ -78,6 +309,9 @@ namespace Beep.Skia.Business
 
             // Draw status indicators
             DrawStatusIndicators(canvas);
+
+            // Draw connection points
+            DrawConnectionPoints(canvas, context);
 
             // Draw selection indicator if selected
             if (IsSelected)

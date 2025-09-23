@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Windows.Forms;
 using Beep.Skia.Components;
 using Beep.Skia.Model;
+using Beep.Skia.Serialization;
 namespace Beep.Skia.Sample.WinForms
 {
     public partial class MainForm : Form
@@ -11,13 +12,13 @@ namespace Beep.Skia.Sample.WinForms
         // Simple mapping from toolbox display names to Skia component CLR types
         private readonly System.Collections.Generic.Dictionary<string, string> _toolboxMap = new System.Collections.Generic.Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase)
         {
-            ["Button"] = typeof(Beep.Skia.Components.Button).AssemblyQualifiedName,
-            ["Label"] = typeof(Beep.Skia.Components.Label).AssemblyQualifiedName,
-            ["Menu"] = typeof(Beep.Skia.Components.Menu).AssemblyQualifiedName,
-            ["Card"] = typeof(Beep.Skia.Components.Card).AssemblyQualifiedName,
-            ["Checkbox"] = typeof(Beep.Skia.Components.Checkbox).AssemblyQualifiedName,
-            ["TextBox"] = typeof(Beep.Skia.Components.TextBox).AssemblyQualifiedName,
-            ["Panel"] = typeof(Beep.Skia.Components.Panel).AssemblyQualifiedName,
+            ["Button"] = typeof(Beep.Skia.Components.Button).AssemblyQualifiedName!,
+            ["Label"] = typeof(Beep.Skia.Components.Label).AssemblyQualifiedName!,
+            ["Menu"] = typeof(Beep.Skia.Components.Menu).AssemblyQualifiedName!,
+            ["Card"] = typeof(Beep.Skia.Components.Card).AssemblyQualifiedName!,
+            ["Checkbox"] = typeof(Beep.Skia.Components.Checkbox).AssemblyQualifiedName!,
+            ["TextBox"] = typeof(Beep.Skia.Components.TextBox).AssemblyQualifiedName!,
+            ["Panel"] = typeof(Beep.Skia.Components.Panel).AssemblyQualifiedName!,
             // add more as needed
         };
 
@@ -67,28 +68,35 @@ namespace Beep.Skia.Sample.WinForms
         {
             try
             {
-                var comps = skiaHostControl1.DrawingManager.GetComponents();
-                var list = new System.Collections.Generic.List<object>();
-                foreach (var c in comps)
-                {
-                    // Build a small property bag for common properties
-                    var bag = new System.Collections.Generic.Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                    try { var p = c.GetType().GetProperty("Text"); if (p != null) { var v = p.GetValue(c) as string; if (!string.IsNullOrEmpty(v)) bag["Text"] = v; } } catch { }
-                    try { var p = c.GetType().GetProperty("FillColor") ?? c.GetType().GetProperty("BackgroundColor") ?? c.GetType().GetProperty("Color"); if (p != null) { var v = p.GetValue(c); if (v != null) bag["Color"] = v.ToString(); } } catch { }
+                // Use the built-in DTO exporter to capture components and connection lines
+                DiagramDto dto = skiaHostControl1.DrawingManager.ToDto();
 
-                    list.Add(new
+                // Optionally enrich property bag for common component properties
+                // Not strictly required for restoring connections, but useful for demos
+                foreach (var c in skiaHostControl1.DrawingManager.GetComponents())
+                {
+                    try
                     {
-                        Type = c.GetType().AssemblyQualifiedName,
-                        X = c.X,
-                        Y = c.Y,
-                        Width = c.Width,
-                        Height = c.Height,
-                        Name = c.Name,
-                        PropertyBag = bag
-                    });
+                        var match = dto.Components.Find(x => x.Name == c.Name && x.Type == c.GetType().AssemblyQualifiedName);
+                        if (match == null) continue;
+                        var bag = match.PropertyBag;
+                        var pText = c.GetType().GetProperty("Text");
+                        if (pText != null)
+                        {
+                            var v = pText.GetValue(c) as string;
+                            if (!string.IsNullOrEmpty(v)) bag["Text"] = v;
+                        }
+                        var pColor = c.GetType().GetProperty("FillColor") ?? c.GetType().GetProperty("BackgroundColor") ?? c.GetType().GetProperty("Color");
+                        if (pColor != null)
+                        {
+                            var v = pColor.GetValue(c);
+                            if (v != null) bag["Color"] = v.ToString();
+                        }
+                    }
+                    catch { }
                 }
 
-                var json = JsonSerializer.Serialize(list, new JsonSerializerOptions { WriteIndented = true });
+                var json = JsonSerializer.Serialize(dto, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText("skia_layout.json", json);
                 MessageBox.Show("Saved layout to skia_layout.json");
             }
@@ -104,43 +112,34 @@ namespace Beep.Skia.Sample.WinForms
             {
                 if (!File.Exists("skia_layout.json")) { MessageBox.Show("No layout file found"); return; }
                 var json = File.ReadAllText("skia_layout.json");
-                var arr = JsonSerializer.Deserialize<System.Text.Json.JsonElement[]>(json);
-                if (arr == null) return;
+                var dto = JsonSerializer.Deserialize<DiagramDto>(json);
+                if (dto == null) { MessageBox.Show("Invalid or empty layout file"); return; }
 
-                // Clear the component manager before loading
-                // Clear existing components from the drawing manager
-                foreach (var c in new System.Collections.Generic.List<Beep.Skia.SkiaComponent>(skiaHostControl1.DrawingManager.GetComponents()))
-                {
-                    try { skiaHostControl1.DrawingManager.RemoveComponent(c); } catch { }
-                }
+                // Use the built-in loader to clear and restore components and lines
+                skiaHostControl1.DrawingManager.LoadFromDto(dto);
 
-                foreach (var el in arr)
+                // Optionally reapply saved property bags
+                foreach (var compDto in dto.Components)
                 {
                     try
                     {
-                        var desc = new Beep.Skia.Winform.Controls.SkiaComponentDescriptor();
-                        desc.ComponentType = el.GetProperty("Type").GetString() ?? string.Empty;
-                        desc.X = (float)el.GetProperty("X").GetDouble();
-                        desc.Y = (float)el.GetProperty("Y").GetDouble();
-                        desc.Width = (float)el.GetProperty("Width").GetDouble();
-                        desc.Height = (float)el.GetProperty("Height").GetDouble();
-                        desc.Name = el.GetProperty("Name").GetString() ?? string.Empty;
-
-                        // Load property bag
-                        try
+                        var comp = skiaHostControl1.DrawingManager.GetComponents()
+                            .FirstOrDefault(cc => cc.Name == compDto.Name && cc.GetType().AssemblyQualifiedName == compDto.Type);
+                        if (comp == null) continue;
+                        if (compDto.PropertyBag.TryGetValue("Text", out var text))
                         {
-                            if (el.TryGetProperty("PropertyBag", out var pb))
+                            var pText = comp.GetType().GetProperty("Text");
+                            if (pText != null) pText.SetValue(comp, text);
+                        }
+                        if (compDto.PropertyBag.TryGetValue("Color", out var colorStr))
+                        {
+                            var pColor = comp.GetType().GetProperty("FillColor") ?? comp.GetType().GetProperty("BackgroundColor") ?? comp.GetType().GetProperty("Color");
+                            if (pColor != null)
                             {
-                                foreach (var kvp in pb.EnumerateObject())
-                                {
-                                    try { var sval = kvp.Value.GetString(); if (sval != null) desc.PropertyBag[kvp.Name] = sval; } catch { }
-                                }
+                                // Best-effort parse of color string (e.g., SKColor text). If parsing fails, ignore.
+                                try { pColor.SetValue(comp, colorStr); } catch { }
                             }
                         }
-                        catch { }
-
-                        // Let the host create and apply property bag
-                        skiaHostControl1.CreateAndAddComponentFromDescriptor(desc);
                     }
                     catch { }
                 }

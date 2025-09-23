@@ -6,6 +6,18 @@ namespace Beep.Skia
 {
     public partial class DrawingManager
     {
+        // If set, the next created ConnectionLine will have these ERD multiplicities applied,
+        // then the preset is cleared. Used by palette presets for ERD quick connect.
+        internal (ERDMultiplicity? Start, ERDMultiplicity? End)? PendingLineMultiplicityPreset { get; set; }
+
+        /// <summary>
+        /// Sets a one-shot ERD multiplicity preset that will be applied to the next created connection line.
+        /// Pass nulls or Unspecified to clear.
+        /// </summary>
+        public void SetNextLineMultiplicityPreset(ERDMultiplicity? start, ERDMultiplicity? end)
+        {
+            PendingLineMultiplicityPreset = (start, end);
+        }
         /// <summary>
         /// Connects two workflow components and creates a visual connection line between them.
         /// </summary>
@@ -37,6 +49,9 @@ namespace Beep.Skia
             if (connectionPoint1 != null && connectionPoint2 != null)
             {
                 var line = new ConnectionLine(connectionPoint1, connectionPoint2, () => { /* InvalidateSurface callback */ });
+                ApplyPendingLinePreset(line);
+                // Default line behavior
+                line.FlowDirection = DataFlowDirection.Forward;
                 _lines.Add(line);
                 _historyManager.ExecuteAction(new ConnectComponentsAction(this, component1, component2, line));
             }
@@ -68,7 +83,9 @@ namespace Beep.Skia
 
             // Create the connection
             var line = new ConnectionLine(outputPoint, inputPoint, () => DrawSurface?.Invoke(this, null));
+            ApplyPendingLinePreset(line);
             line.IsDataFlowAnimated = true; // Enable data flow animation by default
+            line.FlowDirection = DataFlowDirection.Forward; // Default flow direction
             line.DataFlowColor = GetDataFlowColor(outputPoint.DataType); // Set color based on data type
             _lines.Add(line);
 
@@ -373,7 +390,19 @@ namespace Beep.Skia
         /// <returns>The connection line at the specified point, or null if no line is found.</returns>
         internal IConnectionLine GetLineAt(SKPoint point)
         {
-            return _lines.FirstOrDefault(line => line.LineContainsPoint(point));
+            // Search from top-most to bottom-most (last drawn is on top)
+            for (int i = _lines.Count - 1; i >= 0; i--)
+            {
+                var line = _lines[i];
+                if (line == null) continue;
+                try
+                {
+                    if (_renderingHelper.LineContainsPoint(line, point))
+                        return line;
+                }
+                catch { }
+            }
+            return null;
         }
 
         /// <summary>
@@ -399,6 +428,25 @@ namespace Beep.Skia
         }
 
         /// <summary>
+        /// Gets the owning component given a connection point identifier.
+        /// </summary>
+        internal SkiaComponent GetOwnerForConnectionPoint(Guid connectionPointId)
+        {
+            var cp = GetConnectionPoint(connectionPointId);
+            return GetOwnerForConnectionPoint(cp);
+        }
+
+        /// <summary>
+        /// Resolves a connection point by position using the registry first.
+        /// </summary>
+        internal IConnectionPoint GetConnectionPointAtWithRegistry(SKPoint point)
+        {
+            // For now, delegate to geometry-based hit-test.
+            // Registry lookups can be added here if we index spatially in the future.
+            return GetConnectionPointAt(point);
+        }
+
+        /// <summary>
         /// Starts drawing a connection line from the specified source point.
         /// </summary>
         /// <param name="sourcePoint">The source connection point.</param>
@@ -406,6 +454,7 @@ namespace Beep.Skia
         internal void StartDrawingLine(IConnectionPoint sourcePoint, SKPoint point)
         {
             var line = new ConnectionLine(sourcePoint, point, () => { /* InvalidateSurface callback */ });
+            ApplyPendingLinePreset(line);
             CurrentLine = line;
         }
 
@@ -418,5 +467,18 @@ namespace Beep.Skia
         /// Gets a value indicating whether a line is currently being drawn.
         /// </summary>
         internal bool IsDrawingLine => CurrentLine != null;
+
+        private void ApplyPendingLinePreset(ConnectionLine line)
+        {
+            if (line == null) return;
+            if (PendingLineMultiplicityPreset.HasValue)
+            {
+                var p = PendingLineMultiplicityPreset.Value;
+                if (p.Start.HasValue) line.StartMultiplicity = p.Start.Value;
+                if (p.End.HasValue) line.EndMultiplicity = p.End.Value;
+                // clear one-shot preset
+                PendingLineMultiplicityPreset = null;
+            }
+        }
     }
 }

@@ -23,6 +23,10 @@ namespace Beep.Skia
             }
             catch { }
             _components.Add(component);
+            // Listen for geometry changes to keep connection points in sync
+            try { component.BoundsChanged += OnComponentBoundsChanged; } catch { }
+            // Register connection points for this component
+            RegisterConnectionPoints(component);
             // Log the component being added for debugging drop/creation coordinate issues
             try
             {
@@ -61,6 +65,10 @@ namespace Beep.Skia
             }
 
             _components.Remove(component);
+            // Unsubscribe events
+            try { component.BoundsChanged -= OnComponentBoundsChanged; } catch { }
+            // Unregister its connection points
+            UnregisterConnectionPoints(component);
             _selectionManager.RemoveFromSelection(component);
             _historyManager.ExecuteAction(new RemoveComponentAction(this, component, linesToRemove));
             DrawSurface?.Invoke(this, null);
@@ -91,6 +99,8 @@ namespace Beep.Skia
             foreach (var component in componentsToDelete)
             {
                 _components.Remove(component);
+                try { component.BoundsChanged -= OnComponentBoundsChanged; } catch { }
+                UnregisterConnectionPoints(component);
                 _selectionManager.RemoveFromSelection(component);
             }
 
@@ -130,6 +140,8 @@ namespace Beep.Skia
             foreach (var component in _selectionManager.SelectedComponents)
             {
                 component.Move(snappedOffset);
+                // Keep connection point registry in sync
+                RefreshConnectionPoints(component);
             }
 
             DrawSurface?.Invoke(this, null);
@@ -145,7 +157,16 @@ namespace Beep.Skia
             _lines.Clear();
 
             // Remove all components
+            // Unsubscribe events before clearing
+            foreach (var c in _components.ToList())
+            {
+                try { c.BoundsChanged -= OnComponentBoundsChanged; } catch { }
+            }
             _components.Clear();
+
+            // Clear connection point registry
+            _connectionPointsById.Clear();
+            _ownerByConnectionPoint.Clear();
 
             // Clear selection
             try { _selectionManager?.ClearSelection(); } catch { }
@@ -179,6 +200,57 @@ namespace Beep.Skia
         internal SkiaComponent GetComponentAt(SKPoint point)
         {
             return _components.LastOrDefault(component => component.HitTest(point));
+        }
+
+        /// <summary>
+        /// Registers all connection points of a component into the central registry.
+        /// </summary>
+        /// <param name="component">The component whose points to register.</param>
+        private void RegisterConnectionPoints(SkiaComponent component)
+        {
+            if (component == null) return;
+            foreach (var cp in component.InConnectionPoints.Concat(component.OutConnectionPoints).Where(p => p != null))
+            {
+                // Ensure component reference is set
+                if (cp.Component == null) cp.Component = component;
+                _connectionPointsById[cp.Id] = cp;
+                _ownerByConnectionPoint[cp] = component;
+            }
+        }
+
+        /// <summary>
+        /// Removes all connection points of a component from the central registry.
+        /// </summary>
+        /// <param name="component">The component to unregister.</param>
+        private void UnregisterConnectionPoints(SkiaComponent component)
+        {
+            if (component == null) return;
+            foreach (var cp in component.InConnectionPoints.Concat(component.OutConnectionPoints).Where(p => p != null))
+            {
+                _connectionPointsById.Remove(cp.Id);
+                _ownerByConnectionPoint.Remove(cp);
+            }
+        }
+
+        /// <summary>
+        /// Refreshes a component's connection points in the registry, e.g. after resize/move.
+        /// Call this after layout changes.
+        /// </summary>
+        /// <param name="component">The component to refresh.</param>
+        public void RefreshConnectionPoints(SkiaComponent component)
+        {
+            if (component == null) return;
+            // Remove then re-add to capture new instances/geometry
+            UnregisterConnectionPoints(component);
+            RegisterConnectionPoints(component);
+        }
+
+        private void OnComponentBoundsChanged(object sender, SKRectEventArgs e)
+        {
+            if (sender is SkiaComponent comp)
+            {
+                RefreshConnectionPoints(comp);
+            }
         }
     }
 }

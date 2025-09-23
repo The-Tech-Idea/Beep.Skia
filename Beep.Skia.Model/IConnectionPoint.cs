@@ -1,4 +1,5 @@
 ﻿using SkiaSharp;
+using System;
 
 namespace Beep.Skia.Model
 {
@@ -8,6 +9,11 @@ namespace Beep.Skia.Model
     /// </summary>
     public interface IConnectionPoint
     {
+        /// <summary>
+        /// Gets the unique identifier of this connection point.
+        /// </summary>
+        Guid Id { get; }
+
         /// <summary>
         /// Gets or sets the bounding rectangle of the connection point.
         /// </summary>

@@ -95,6 +95,70 @@ namespace Beep.Skia.UML
                     canvas.DrawText(ConditionExpression, (Width - exprWidth) / 2, Height / 2 + 10, exprFont, exprPaint);
                 }
             }
+
+            // Draw connection points
+            DrawConnectionPoints(canvas, context);
+
+            // Draw selection indicator
+            DrawSelection(canvas, context);
+        }
+
+        /// <summary>
+        /// Draws connection points positioned at the diamond's corners.
+        /// </summary>
+        protected override void DrawConnectionPoints(SKCanvas canvas, DrawingContext context)
+        {
+            // Position connection points at the diamond's corners
+            var points = new List<(SKPoint position, SKColor color)>
+            {
+                (new SKPoint(Width / 2, 2), SKColors.Blue),      // Top point (input)
+                (new SKPoint(Width - 2, Height / 2), SKColors.Green), // Right point (output)
+                (new SKPoint(Width / 2, Height - 2), SKColors.Blue),  // Bottom point (input)
+                (new SKPoint(2, Height / 2), SKColors.Green)     // Left point (output)
+            };
+
+            foreach (var (position, color) in points)
+            {
+                DrawConnectionPoint(canvas, position, color);
+            }
+        }
+
+        /// <summary>
+        /// Draws a single connection point.
+        /// </summary>
+        private void DrawConnectionPoint(SKCanvas canvas, SKPoint position, SKColor color)
+        {
+            using var paint = new SKPaint
+            {
+                Color = color,
+                Style = SKPaintStyle.Fill,
+                IsAntialias = true
+            };
+
+            using var borderPaint = new SKPaint
+            {
+                Color = SKColors.White,
+                StrokeWidth = 1,
+                Style = SKPaintStyle.Stroke,
+                IsAntialias = true
+            };
+
+            canvas.DrawCircle(position.X, position.Y, 6, paint);
+            canvas.DrawCircle(position.X, position.Y, 6, borderPaint);
+        }
+
+        /// <summary>
+        /// Gets the effective text positioning bounds for the diamond shape.
+        /// For diamond shapes, we adjust the bounds to account for the diamond's geometry
+        /// so text positioning (Above, Below, Left, Right) is relative to the diamond's points.
+        /// </summary>
+        /// <returns>A rectangle defining the effective bounds for text positioning.</returns>
+        protected override SKRect GetTextPositioningBounds()
+        {
+            // For diamond shape, adjust bounds to be relative to the diamond's points
+            // The diamond extends to the corners, so we use the full rectangular bounds
+            // but components can override positioning logic if needed
+            return new SKRect(X, Y, X + Width, Y + Height);
         }
     }
 }

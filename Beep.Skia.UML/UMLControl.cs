@@ -10,6 +10,8 @@ namespace Beep.Skia.UML
     /// </summary>
     public abstract class UMLControl : SkiaComponent
     {
+        // Persisted connection points (shared for In/Out in UML)
+        private readonly List<IConnectionPoint> _points = new List<IConnectionPoint>();
         /// <summary>
         /// Gets or sets the stereotype of this UML element (e.g., "<<interface>>", "<<abstract>>").
         /// </summary>
@@ -28,7 +30,7 @@ namespace Beep.Skia.UML
         /// <summary>
         /// Gets or sets the text color for this UML element.
         /// </summary>
-        public SKColor TextColor { get; set; } = SKColors.Black;
+        public new SKColor TextColor { get; set; } = SKColors.Black;
 
         /// <summary>
         /// Gets or sets the border thickness.
@@ -56,6 +58,10 @@ namespace Beep.Skia.UML
 
             // Enable palette visibility by default
             ShowInPalette = true;
+
+            // Initialize persisted connection points (shared In/Out positions)
+            InitializeConnectionPoints();
+            UpdateConnectionPointPositions();
         }
 
         /// <summary>
@@ -164,63 +170,124 @@ namespace Beep.Skia.UML
         }
 
         /// <summary>
-        /// Gets the connection points for this UML element.
+        /// UML input connection points (persisted).
         /// </summary>
-        /// <returns>A list of connection points.</returns>
-        public override List<IConnectionPoint> InConnectionPoints
+        public override List<IConnectionPoint> InConnectionPoints => _points;
+
+        /// <summary>
+        /// UML output connection points (same instances, UML treats ports as bidirectional visually).
+        /// </summary>
+        public override List<IConnectionPoint> OutConnectionPoints => _points;
+
+        /// <summary>
+        /// Initialize the shared connection points at cardinal directions.
+        /// </summary>
+        protected virtual void InitializeConnectionPoints()
         {
-            get
+            _points.Clear();
+            // top, right, bottom, left
+            _points.Add(new ConnectionPoint { Component = this, Type = ConnectionPointType.In, Radius = 6, Shape = ComponentShape.Circle, IsAvailable = true });
+            _points.Add(new ConnectionPoint { Component = this, Type = ConnectionPointType.In, Radius = 6, Shape = ComponentShape.Circle, IsAvailable = true });
+            _points.Add(new ConnectionPoint { Component = this, Type = ConnectionPointType.In, Radius = 6, Shape = ComponentShape.Circle, IsAvailable = true });
+            _points.Add(new ConnectionPoint { Component = this, Type = ConnectionPointType.In, Radius = 6, Shape = ComponentShape.Circle, IsAvailable = true });
+        }
+
+        /// <summary>
+        /// Update persisted connection point geometry to match current bounds.
+        /// </summary>
+        protected virtual void UpdateConnectionPointPositions()
+        {
+            if (_points.Count < 4) return;
+
+            var top = _points[0];
+            var right = _points[1];
+            var bottom = _points[2];
+            var left = _points[3];
+
+            float cx = X + Width / 2f;
+            float cy = Y + Height / 2f;
+            float r = top is { Radius: > 0 } ? top.Radius : 6f;
+
+            // Top
+            top.Center = new SKPoint(cx, Y);
+            top.Position = top.Center;
+            top.Bounds = new SKRect(top.Center.X - r, top.Center.Y - r, top.Center.X + r, top.Center.Y + r);
+            top.Rect = top.Bounds;
+            top.Index = 0;
+            top.Component = this;
+
+            // Right
+            right.Center = new SKPoint(X + Width, cy);
+            right.Position = right.Center;
+            right.Bounds = new SKRect(right.Center.X - r, right.Center.Y - r, right.Center.X + r, right.Center.Y + r);
+            right.Rect = right.Bounds;
+            right.Index = 1;
+            right.Component = this;
+
+            // Bottom
+            bottom.Center = new SKPoint(cx, Y + Height);
+            bottom.Position = bottom.Center;
+            bottom.Bounds = new SKRect(bottom.Center.X - r, bottom.Center.Y - r, bottom.Center.X + r, bottom.Center.Y + r);
+            bottom.Rect = bottom.Bounds;
+            bottom.Index = 2;
+            bottom.Component = this;
+
+            // Left
+            left.Center = new SKPoint(X, cy);
+            left.Position = left.Center;
+            left.Bounds = new SKRect(left.Center.X - r, left.Center.Y - r, left.Center.X + r, left.Center.Y + r);
+            left.Rect = left.Bounds;
+            left.Index = 3;
+            left.Component = this;
+        }
+
+        protected override void UpdateBounds()
+        {
+            base.UpdateBounds();
+            UpdateConnectionPointPositions();
+        }
+
+        /// <summary>
+        /// Draws the connection points for this UML control.
+        /// </summary>
+        /// <param name="canvas">The canvas to draw on.</param>
+        /// <param name="context">The drawing context.</param>
+        protected virtual void DrawConnectionPoints(SKCanvas canvas, DrawingContext context)
+        {
+            // If In/Out share the same list, draw once
+            var points = InConnectionPoints;
+            foreach (var point in points)
             {
-                var points = new List<IConnectionPoint>();
-
-                // Add connection points at cardinal directions
-                var topPoint = new ConnectionPoint
-                {
-                    Position = new SKPoint(X + Width / 2, Y),
-                    Component = this,
-                    Type = ConnectionPointType.In
-                };
-                points.Add(topPoint);
-
-                var rightPoint = new ConnectionPoint
-                {
-                    Position = new SKPoint(X + Width, Y + Height / 2),
-                    Component = this,
-                    Type = ConnectionPointType.In
-                };
-                points.Add(rightPoint);
-
-                var bottomPoint = new ConnectionPoint
-                {
-                    Position = new SKPoint(X + Width / 2, Y + Height),
-                    Component = this,
-                    Type = ConnectionPointType.In
-                };
-                points.Add(bottomPoint);
-
-                var leftPoint = new ConnectionPoint
-                {
-                    Position = new SKPoint(X, Y + Height / 2),
-                    Component = this,
-                    Type = ConnectionPointType.In
-                };
-                points.Add(leftPoint);
-
-                return points;
+                DrawConnectionPoint(canvas, point, SKColors.Blue);
             }
         }
 
         /// <summary>
-        /// Gets the output connection points for this UML element.
+        /// Draws a single connection point.
         /// </summary>
-        /// <returns>A list of output connection points.</returns>
-        public override List<IConnectionPoint> OutConnectionPoints
+        /// <param name="canvas">The canvas to draw on.</param>
+        /// <param name="point">The connection point to draw.</param>
+        /// <param name="color">The color to use for the point.</param>
+        protected virtual void DrawConnectionPoint(SKCanvas canvas, IConnectionPoint point, SKColor color)
         {
-            get
+            using var paint = new SKPaint
             {
-                // For most UML elements, input and output points are the same
-                return InConnectionPoints;
-            }
+                Color = color,
+                Style = SKPaintStyle.Fill,
+                IsAntialias = true
+            };
+
+            using var borderPaint = new SKPaint
+            {
+                Color = SKColors.White,
+                StrokeWidth = 1,
+                Style = SKPaintStyle.Stroke,
+                IsAntialias = true
+            };
+
+            var center = point.Position;
+            canvas.DrawCircle(center.X, center.Y, point.Radius, paint);
+            canvas.DrawCircle(center.X, center.Y, point.Radius, borderPaint);
         }
     }
 }

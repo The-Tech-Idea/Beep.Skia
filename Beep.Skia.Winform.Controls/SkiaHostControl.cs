@@ -19,6 +19,7 @@ namespace Beep.Skia.Winform.Controls
     // private Beep.Skia.ComponentManager _componentManager;
     private SkiaComponentDescriptorCollection _designTimeComponents = new SkiaComponentDescriptorCollection();
     private Palette _palette;
+    private ComponentPropertyEditor _propertyEditor;
     // Runtime registry of created components keyed by Guid Id for quick lookup
     private readonly Dictionary<Guid, Beep.Skia.SkiaComponent> _componentRegistry = new Dictionary<Guid, Beep.Skia.SkiaComponent>();
     [Browsable(false)]
@@ -58,6 +59,31 @@ namespace Beep.Skia.Winform.Controls
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             _drawingManager = new Beep.Skia.DrawingManager();
             _drawingManager.DrawSurface += (s, e) => _skControl?.Invalidate();
+            // Keep the property editor synchronized with current selection
+            _drawingManager.SelectionChanged += (s, e) =>
+            {
+                try
+                {
+                    if (_propertyEditor == null) return;
+                    var sm = _drawingManager.SelectionManager;
+                    // Prefer single line selection; otherwise single component; otherwise clear
+                    if (sm.SelectedLines != null && sm.SelectedLines.Count == 1)
+                    {
+                        _propertyEditor.SelectedLine = sm.SelectedLines[0];
+                    }
+                    else if (sm.SelectedComponents != null && sm.SelectedComponents.Count == 1)
+                    {
+                        _propertyEditor.SelectedComponent = sm.SelectedComponents[0];
+                    }
+                    else
+                    {
+                        _propertyEditor.SelectedLine = null;
+                        _propertyEditor.SelectedComponent = null;
+                    }
+                    _skControl?.Invalidate();
+                }
+                catch { }
+            };
             // ComponentManager removed: runtime now uses DrawingManager exclusively.
             // Create the in-Skia palette and add it to the drawing manager so it's present by default.
             try
@@ -110,6 +136,12 @@ namespace Beep.Skia.Winform.Controls
                                     category = "ETL";
                                 else if (ns.Contains(".Business", StringComparison.OrdinalIgnoreCase))
                                     category = "Business";
+                                else if (ns.Contains(".DFD", StringComparison.OrdinalIgnoreCase))
+                                    category = "DFD";
+                                else if (ns.Contains(".ERD", StringComparison.OrdinalIgnoreCase))
+                                    category = "ERD";
+                                else if (ns.Contains(".Flowchart", StringComparison.OrdinalIgnoreCase))
+                                    category = "Flowchart";
                             }
                             if (!string.IsNullOrWhiteSpace(compType))
                             {
@@ -118,6 +150,15 @@ namespace Beep.Skia.Winform.Controls
                         }
                         catch { }
                     }
+
+                    // Add ERD multiplicity presets (tool items with no component type)
+                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: One (|)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.One, EndMultiplicity = null });
+                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: Many (crow's foot)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.Many, EndMultiplicity = null });
+                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: One and only one (||)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.OneOnly, EndMultiplicity = null });
+                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: Zero or one (o|)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.ZeroOrOne, EndMultiplicity = null });
+                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: One or many (|<)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.OneOrMany, EndMultiplicity = null });
+                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: Zero or many (o<)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.ZeroOrMany, EndMultiplicity = null });
+                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: Clear (none)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.Unspecified, EndMultiplicity = null });
                 }
                 catch { }
 
@@ -128,16 +169,24 @@ namespace Beep.Skia.Winform.Controls
                     {
                         var item = tup.Item;
                         var pt = tup.DropPoint;
-                        var desc = new SkiaComponentDescriptor
+                        if (string.IsNullOrWhiteSpace(item.ComponentType) && (item.StartMultiplicity.HasValue || item.EndMultiplicity.HasValue))
                         {
-                            ComponentType = item.ComponentType,
-                            X = pt.X,
-                            Y = pt.Y,
-                            Width = 120,
-                            Height = 36,
-                            Name = "skia" + DateTime.UtcNow.Ticks.ToString("x")
-                        };
-                        CreateAndAddComponentFromDescriptor(desc);
+                            // Treat as ERD preset tool: set pending multiplicities for next line
+                            _drawingManager.SetNextLineMultiplicityPreset(item.StartMultiplicity, item.EndMultiplicity);
+                        }
+                        else
+                        {
+                            var desc = new SkiaComponentDescriptor
+                            {
+                                ComponentType = item.ComponentType,
+                                X = pt.X,
+                                Y = pt.Y,
+                                Width = 120,
+                                Height = 36,
+                                Name = "skia" + DateTime.UtcNow.Ticks.ToString("x")
+                            };
+                            CreateAndAddComponentFromDescriptor(desc);
+                        }
                     }
                     catch { }
                 };
@@ -145,20 +194,60 @@ namespace Beep.Skia.Winform.Controls
                 {
                     try
                     {
-                        var desc = new SkiaComponentDescriptor
+                        if (string.IsNullOrWhiteSpace(item.ComponentType) && (item.StartMultiplicity.HasValue || item.EndMultiplicity.HasValue))
                         {
-                            ComponentType = item.ComponentType,
-                            X = _palette.X + _palette.Width + 20,
-                            Y = _palette.Y + 20,
-                            Width = 120,
-                            Height = 36,
-                            Name = "skia" + DateTime.UtcNow.Ticks.ToString("x")
-                        };
-                        CreateAndAddComponentFromDescriptor(desc);
+                            _drawingManager.SetNextLineMultiplicityPreset(item.StartMultiplicity, item.EndMultiplicity);
+                        }
+                        else
+                        {
+                            var desc = new SkiaComponentDescriptor
+                            {
+                                ComponentType = item.ComponentType,
+                                X = _palette.X + _palette.Width + 20,
+                                Y = _palette.Y + 20,
+                                Width = 120,
+                                Height = 36,
+                                Name = "skia" + DateTime.UtcNow.Ticks.ToString("x")
+                            };
+                            CreateAndAddComponentFromDescriptor(desc);
+                        }
                     }
                     catch { }
                 };
                 _drawingManager?.AddComponent(_palette);
+
+                // Create and add the property editor panel inside the Skia surface
+                try
+                {
+                    _propertyEditor = new ComponentPropertyEditor
+                    {
+                        X = Math.Max(8, this.Width - 340),
+                        Y = 40,
+                        Width = 330,
+                        Height = Math.Max(200, this.Height - 80)
+                    };
+                    // Keep it aligned to the right on resize
+                    this.SizeChanged += (s2, e2) =>
+                    {
+                        try
+                        {
+                            if (_propertyEditor != null)
+                            {
+                                _propertyEditor.X = Math.Max(8, this.Width - _propertyEditor.Width - 10);
+                                _propertyEditor.Height = Math.Max(200, this.Height - 80);
+                                _skControl?.Invalidate();
+                            }
+                        }
+                        catch { }
+                    };
+
+                    // Invalidate canvas on save/cancel for immediate visual feedback
+                    _propertyEditor.PropertiesSaved += (s3, e3) => { try { _skControl?.Invalidate(); } catch { } };
+                    _propertyEditor.PropertiesCancelled += (s3, e3) => { try { _skControl?.Invalidate(); } catch { } };
+
+                    _drawingManager?.AddComponent(_propertyEditor);
+                }
+                catch { }
             }
             catch { }
             _skControl.PaintSurface += SkControl_PaintSurface;

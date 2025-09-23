@@ -1,4 +1,4 @@
-﻿namespace Beep.Ski.Quantitative
+﻿namespace Beep.Skia.Security
 {
     public class Class1
     {

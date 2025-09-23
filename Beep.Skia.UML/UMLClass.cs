@@ -13,7 +13,19 @@ namespace Beep.Skia.UML
         /// <summary>
         /// Gets or sets the name of the class.
         /// </summary>
-        public string ClassName { get; set; } = "ClassName";
+        public string ClassName
+        {
+            get => _className;
+            set
+            {
+                if (_className != value)
+                {
+                    _className = value;
+                    DisplayText = value;
+                }
+            }
+        }
+        private string _className = "ClassName";
 
         /// <summary>
         /// Gets or sets the list of attributes for this class.
@@ -38,6 +50,9 @@ namespace Beep.Skia.UML
             Width = 150;
             Height = 120;
             Name = "UMLClass";
+            DisplayText = ClassName;
+            TextPosition = TextPosition.Inside;
+            ShowDisplayText = true;
 
             // Add some default attributes and operations for demonstration
             Attributes.Add("+attribute1: string");
@@ -147,6 +162,9 @@ namespace Beep.Skia.UML
 
             // Draw stereotype if present
             DrawStereotype(canvas, context, font);
+
+            // Draw connection points
+            DrawConnectionPoints(canvas, context);
 
             // Draw selection indicator
             DrawSelection(canvas, context);

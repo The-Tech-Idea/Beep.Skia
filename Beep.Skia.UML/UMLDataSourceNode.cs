@@ -91,6 +91,60 @@ namespace Beep.Skia.UML
 
             // Draw database icon
             DrawDatabaseIcon(canvas, Width - 25, 20);
+
+            // Draw connection points
+            DrawConnectionPoints(canvas, context);
+
+            // Draw selection indicator
+            DrawSelection(canvas, context);
+        }
+
+        /// <summary>
+        /// Draws connection points positioned around the cylinder shape.
+        /// </summary>
+        protected override void DrawConnectionPoints(SKCanvas canvas, DrawingContext context)
+        {
+            // Position connection points around the cylinder
+            var points = new List<(SKPoint position, SKColor color)>
+            {
+                // Top ellipse center (input)
+                (new SKPoint(Width / 2, 15), SKColors.Blue),
+                // Bottom ellipse center (input)
+                (new SKPoint(Width / 2, Height - 15), SKColors.Blue),
+                // Left side of body (output)
+                (new SKPoint(8, Height / 2), SKColors.Green),
+                // Right side of body (output)
+                (new SKPoint(Width - 8, Height / 2), SKColors.Green)
+            };
+
+            foreach (var (position, color) in points)
+            {
+                DrawConnectionPoint(canvas, position, color);
+            }
+        }
+
+        /// <summary>
+        /// Draws a single connection point.
+        /// </summary>
+        private void DrawConnectionPoint(SKCanvas canvas, SKPoint position, SKColor color)
+        {
+            using var paint = new SKPaint
+            {
+                Color = color,
+                Style = SKPaintStyle.Fill,
+                IsAntialias = true
+            };
+
+            using var borderPaint = new SKPaint
+            {
+                Color = SKColors.White,
+                StrokeWidth = 1,
+                Style = SKPaintStyle.Stroke,
+                IsAntialias = true
+            };
+
+            canvas.DrawCircle(position.X, position.Y, 6, paint);
+            canvas.DrawCircle(position.X, position.Y, 6, borderPaint);
         }
 
         /// <summary>

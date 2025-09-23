@@ -80,6 +80,12 @@ namespace Beep.Skia.UML
 
             // Draw gear icon to represent action
             DrawGearIcon(canvas, Width - 20, Height - 20);
+
+            // Draw connection points
+            DrawConnectionPoints(canvas, context);
+
+            // Draw selection indicator
+            DrawSelection(canvas, context);
         }
 
         /// <summary>

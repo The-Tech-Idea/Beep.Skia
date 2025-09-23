@@ -211,6 +211,33 @@ namespace Beep.Skia
         /// </summary>
         public List<SkiaComponent> Children { get; } = new List<SkiaComponent>();
 
+        #region Text Display Properties
+        /// <summary>
+        /// Gets or sets the text to display on this component.
+        /// </summary>
+        public string DisplayText { get; set; }
+
+        /// <summary>
+        /// Gets or sets the position where text should be displayed relative to the component.
+        /// </summary>
+        public TextPosition TextPosition { get; set; } = TextPosition.Inside;
+
+        /// <summary>
+        /// Gets or sets the font size for the display text.
+        /// </summary>
+        public float TextFontSize { get; set; } = 12f;
+
+        /// <summary>
+        /// Gets or sets the color of the display text.
+        /// </summary>
+        public SKColor TextColor { get; set; } = SKColors.Black;
+
+        /// <summary>
+        /// Gets or sets whether to show the display text.
+        /// </summary>
+        public bool ShowDisplayText { get; set; } = true;
+        #endregion
+
         /// <summary>
         /// Occurs when the component's bounds change.
         /// </summary>
@@ -351,6 +378,7 @@ namespace Beep.Skia
 
                 DrawContent(canvas, context);
                 DrawChildren(canvas, context);
+                DrawText(canvas, context);
             }
             finally
             {
@@ -390,6 +418,95 @@ namespace Beep.Skia
             {
                 child.Draw(canvas, context);
             }
+        }
+
+        /// <summary>
+        /// Gets the effective text positioning bounds for this component.
+        /// Components with non-rectangular shapes can override this to provide
+        /// shape-aware text positioning.
+        /// </summary>
+        /// <returns>A rectangle defining the effective bounds for text positioning.</returns>
+        protected virtual SKRect GetTextPositioningBounds()
+        {
+            // Default: use the component's rectangular bounds
+            return new SKRect(X, Y, X + Width, Y + Height);
+        }
+
+        /// <summary>
+        /// Draws the display text for this component based on the TextPosition setting.
+        /// </summary>
+        /// <param name="canvas">The canvas to draw on.</param>
+        /// <param name="context">The drawing context.</param>
+        protected virtual void DrawText(SKCanvas canvas, DrawingContext context)
+        {
+            if (!ShowDisplayText || string.IsNullOrEmpty(DisplayText))
+                return;
+
+            using var font = new SKFont { Size = TextFontSize };
+            using var paint = new SKPaint
+            {
+                Color = TextColor,
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill
+            };
+
+            // Get proper text metrics for accurate positioning
+            var textBounds = new SKRect();
+            font.MeasureText(DisplayText, out textBounds);
+            var textWidth = textBounds.Width;
+
+            // Use font metrics for proper baseline alignment
+            var metrics = font.Metrics;
+            var textHeight = metrics.CapHeight; // Use cap height for consistent alignment
+            var descent = metrics.Descent;
+
+            // Get shape-aware positioning bounds
+            var positioningBounds = GetTextPositioningBounds();
+
+            float textX, textY;
+            float gap = 5f; // Gap between text and component
+
+            switch (TextPosition)
+            {
+                case TextPosition.Inside:
+                    // Center text within positioning bounds, but ensure it fits
+                    textX = positioningBounds.Left + Math.Max(2, (positioningBounds.Width - textWidth) / 2);
+                    textY = positioningBounds.Top + (positioningBounds.Height + textHeight) / 2 - descent;
+
+                    // If text is too wide, left-align with small margin
+                    if (textWidth > positioningBounds.Width - 4)
+                    {
+                        textX = positioningBounds.Left + 2;
+                    }
+                    break;
+
+                case TextPosition.Above:
+                    textX = positioningBounds.Left + (positioningBounds.Width - textWidth) / 2;
+                    textY = positioningBounds.Top - gap - descent;
+                    break;
+
+                case TextPosition.Below:
+                    textX = positioningBounds.Left + (positioningBounds.Width - textWidth) / 2;
+                    textY = positioningBounds.Bottom + gap + textHeight - descent;
+                    break;
+
+                case TextPosition.Left:
+                    textX = positioningBounds.Left - textWidth - gap;
+                    textY = positioningBounds.Top + (positioningBounds.Height + textHeight) / 2 - descent;
+                    break;
+
+                case TextPosition.Right:
+                    textX = positioningBounds.Right + gap;
+                    textY = positioningBounds.Top + (positioningBounds.Height + textHeight) / 2 - descent;
+                    break;
+
+                default:
+                    textX = positioningBounds.Left + (positioningBounds.Width - textWidth) / 2;
+                    textY = positioningBounds.Top + (positioningBounds.Height + textHeight) / 2 - descent;
+                    break;
+            }
+
+            canvas.DrawText(DisplayText, textX, textY, SKTextAlign.Left, font, paint);
         }
 
         /// <summary>

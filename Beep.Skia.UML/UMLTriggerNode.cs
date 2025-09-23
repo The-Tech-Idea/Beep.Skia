@@ -31,6 +31,9 @@ namespace Beep.Skia.UML
             Name = "TriggerNode";
             Stereotype = "<<trigger>>";
             BackgroundColor = SKColors.LightGreen;
+            DisplayText = "Trigger";
+            TextPosition = TextPosition.Inside;
+            ShowDisplayText = true;
         }
 
         /// <summary>
@@ -80,6 +83,12 @@ namespace Beep.Skia.UML
 
             // Draw lightning bolt icon to represent trigger
             DrawLightningBolt(canvas, Width - 25, 10);
+
+            // Draw connection points
+            DrawConnectionPoints(canvas, context);
+
+            // Draw selection indicator
+            DrawSelection(canvas, context);
         }
 
         /// <summary>
