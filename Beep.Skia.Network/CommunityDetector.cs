@@ -363,7 +363,7 @@ namespace Beep.Skia.Network
             var panelRect = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw panel background
-            DrawFilledRect(canvas, panelRect, SKColors.White);
+            DrawFilledRect(canvas, panelRect, MaterialColors.SurfaceContainer);
 
             // Draw title
             float currentY = Y + 15;
@@ -378,8 +378,8 @@ namespace Beep.Skia.Network
 
             // Draw community information
             using var font = new SKFont { Size = 11 };
-            using var namePaint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
-            using var countPaint = new SKPaint { Color = SKColors.Gray, IsAntialias = true };
+            using var namePaint = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
+            using var countPaint = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true };
 
             int displayCount = Math.Min(8, Communities.Count); // Limit display
             for (int i = 0; i < displayCount; i++)
@@ -404,7 +404,7 @@ namespace Beep.Skia.Network
             if (Communities.Count > displayCount)
             {
                 string summaryText = $"+{Communities.Count - displayCount} more communities";
-                canvas.DrawText(summaryText, leftMargin, currentY + lineHeight - 3, SKTextAlign.Left, font, countPaint);
+        canvas.DrawText(summaryText, leftMargin, currentY + lineHeight - 3, SKTextAlign.Left, font, countPaint);
             }
         }
     }

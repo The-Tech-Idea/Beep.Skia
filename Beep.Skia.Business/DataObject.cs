@@ -131,7 +131,7 @@ namespace Beep.Skia.Business
         {
             using var indicatorPaint = new SKPaint
             {
-                Color = SKColors.Orange,
+                Color = MaterialColors.Tertiary,
                 StrokeWidth = 2,
                 Style = SKPaintStyle.Stroke,
                 IsAntialias = true

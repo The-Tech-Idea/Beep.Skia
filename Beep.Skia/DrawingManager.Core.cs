@@ -176,6 +176,66 @@ namespace Beep.Skia
                     Height = c.Height,
                     Name = c.Name
                 };
+                // Persist MindMap-specific options via PropertyBag
+                try
+                {
+                    if (c.GetType().Namespace == "Beep.Skia.MindMap")
+                    {
+                        var t = c.GetType();
+                        var title = t.GetProperty("Title");
+                        var notes = t.GetProperty("Notes");
+                        var inCount = t.GetProperty("InPortCount");
+                        var outCount = t.GetProperty("OutPortCount");
+                        if (title != null)
+                        {
+                            var val = title.GetValue(c) as string;
+                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["Title"] = val;
+                        }
+                        if (notes != null)
+                        {
+                            var val = notes.GetValue(c) as string;
+                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["Notes"] = val;
+                        }
+                        if (inCount != null)
+                        {
+                            var val = inCount.GetValue(c);
+                            if (val != null) comp.PropertyBag["InPortCount"] = Convert.ToString(val);
+                        }
+                        if (outCount != null)
+                        {
+                            var val = outCount.GetValue(c);
+                            if (val != null) comp.PropertyBag["OutPortCount"] = Convert.ToString(val);
+                        }
+                    }
+                }
+                catch { }
+                // Persist StateMachine-specific options via PropertyBag
+                try
+                {
+                    if (c.GetType().Namespace == "Beep.Skia.StateMachine")
+                    {
+                        var t = c.GetType();
+                        var title = t.GetProperty("Title");
+                        var inCount = t.GetProperty("InPortCount");
+                        var outCount = t.GetProperty("OutPortCount");
+                        if (title != null)
+                        {
+                            var val = title.GetValue(c) as string;
+                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["Title"] = val;
+                        }
+                        if (inCount != null)
+                        {
+                            var val = inCount.GetValue(c);
+                            if (val != null) comp.PropertyBag["InPortCount"] = Convert.ToString(val);
+                        }
+                        if (outCount != null)
+                        {
+                            var val = outCount.GetValue(c);
+                            if (val != null) comp.PropertyBag["OutPortCount"] = Convert.ToString(val);
+                        }
+                    }
+                }
+                catch { }
                 // Persist Flowchart-specific options via PropertyBag (counts/flags)
                 try
                 {
@@ -205,6 +265,84 @@ namespace Beep.Skia
                         {
                             var val = outOnTop.GetValue(c);
                             if (val != null) comp.PropertyBag["OutPortsOnTop"] = Convert.ToString(val).ToLowerInvariant();
+                        }
+                    }
+                }
+                catch { }
+                // Persist PM-specific options via PropertyBag (counts and common fields)
+                try
+                {
+                    if (c.GetType().Namespace == "Beep.Skia.PM")
+                    {
+                        var t = c.GetType();
+                        var inCount = t.GetProperty("InPortCount");
+                        var outCount = t.GetProperty("OutPortCount");
+                        var title = t.GetProperty("Title");
+                        var label = t.GetProperty("Label");
+                        var percent = t.GetProperty("PercentComplete");
+                        if (inCount != null)
+                        {
+                            var val = inCount.GetValue(c);
+                            if (val != null) comp.PropertyBag["InPortCount"] = Convert.ToString(val);
+                        }
+                        if (outCount != null)
+                        {
+                            var val = outCount.GetValue(c);
+                            if (val != null) comp.PropertyBag["OutPortCount"] = Convert.ToString(val);
+                        }
+                        if (title != null)
+                        {
+                            var val = title.GetValue(c) as string;
+                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["Title"] = val;
+                        }
+                        if (label != null)
+                        {
+                            var val = label.GetValue(c) as string;
+                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["Label"] = val;
+                        }
+                        if (percent != null)
+                        {
+                            var val = percent.GetValue(c);
+                            if (val != null) comp.PropertyBag["PercentComplete"] = Convert.ToString(val);
+                        }
+                    }
+                }
+                catch { }
+                // Persist ERD-specific options via PropertyBag (entity rows and name)
+                try
+                {
+                    if (c.GetType().Namespace == "Beep.Skia.ERD")
+                    {
+                        var t = c.GetType();
+                        var entityName = t.GetProperty("EntityName");
+                        var rowsText = t.GetProperty("RowsText");
+                        var rowIdsCsv = t.GetProperty("RowIdsCsv");
+                        var inCount = t.GetProperty("InPortCount");
+                        var outCount = t.GetProperty("OutPortCount");
+                        if (entityName != null)
+                        {
+                            var val = entityName.GetValue(c) as string;
+                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["EntityName"] = val;
+                        }
+                        if (rowsText != null)
+                        {
+                            var val = rowsText.GetValue(c) as string;
+                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["RowsText"] = val;
+                        }
+                        if (rowIdsCsv != null)
+                        {
+                            var val = rowIdsCsv.GetValue(c) as string;
+                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["RowIdsCsv"] = val;
+                        }
+                        if (inCount != null)
+                        {
+                            var val = inCount.GetValue(c);
+                            if (val != null) comp.PropertyBag["InPortCount"] = Convert.ToString(val);
+                        }
+                        if (outCount != null)
+                        {
+                            var val = outCount.GetValue(c);
+                            if (val != null) comp.PropertyBag["OutPortCount"] = Convert.ToString(val);
                         }
                     }
                 }
@@ -285,6 +423,59 @@ namespace Beep.Skia
                         instance.Width = comp.Width;
                         instance.Height = comp.Height;
                         instance.Name = comp.Name;
+                        // Apply MindMap-specific options BEFORE assigning connection point IDs
+                        try
+                        {
+                            if (type.Namespace == "Beep.Skia.MindMap" && comp.PropertyBag != null)
+                            {
+                                var t = type;
+                                if (comp.PropertyBag.TryGetValue("Title", out var titleStr))
+                                {
+                                    var prop = t.GetProperty("Title");
+                                    prop?.SetValue(instance, titleStr);
+                                }
+                                if (comp.PropertyBag.TryGetValue("Notes", out var notesStr))
+                                {
+                                    var prop = t.GetProperty("Notes");
+                                    prop?.SetValue(instance, notesStr);
+                                }
+                                if (comp.PropertyBag.TryGetValue("InPortCount", out var inCountStr) && int.TryParse(inCountStr, out var inCount))
+                                {
+                                    var prop = t.GetProperty("InPortCount");
+                                    prop?.SetValue(instance, inCount);
+                                }
+                                if (comp.PropertyBag.TryGetValue("OutPortCount", out var outCountStr) && int.TryParse(outCountStr, out var outCount))
+                                {
+                                    var prop = t.GetProperty("OutPortCount");
+                                    prop?.SetValue(instance, outCount);
+                                }
+                            }
+                        }
+                        catch { }
+                        // Apply StateMachine-specific options BEFORE assigning connection point IDs
+                        try
+                        {
+                            if (type.Namespace == "Beep.Skia.StateMachine" && comp.PropertyBag != null)
+                            {
+                                var t = type;
+                                if (comp.PropertyBag.TryGetValue("InPortCount", out var inCountStr) && int.TryParse(inCountStr, out var inCount))
+                                {
+                                    var prop = t.GetProperty("InPortCount");
+                                    prop?.SetValue(instance, inCount);
+                                }
+                                if (comp.PropertyBag.TryGetValue("OutPortCount", out var outCountStr) && int.TryParse(outCountStr, out var outCount))
+                                {
+                                    var prop = t.GetProperty("OutPortCount");
+                                    prop?.SetValue(instance, outCount);
+                                }
+                                if (comp.PropertyBag.TryGetValue("Title", out var titleStr))
+                                {
+                                    var prop = t.GetProperty("Title");
+                                    prop?.SetValue(instance, titleStr);
+                                }
+                            }
+                        }
+                        catch { }
                         // Apply Flowchart-specific persisted options BEFORE assigning connection point IDs
                         try
                         {
@@ -312,6 +503,75 @@ namespace Beep.Skia
                                 {
                                     var prop = t.GetProperty("OutPortsOnTop");
                                     prop?.SetValue(instance, outOnTop);
+                                }
+                            }
+                        }
+                        catch { }
+                        // Apply PM-specific persisted options BEFORE assigning connection point IDs
+                        try
+                        {
+                            if (type.Namespace == "Beep.Skia.PM" && comp.PropertyBag != null)
+                            {
+                                var t = type;
+                                if (comp.PropertyBag.TryGetValue("InPortCount", out var inCountStr) && int.TryParse(inCountStr, out var inCount))
+                                {
+                                    var prop = t.GetProperty("InPortCount");
+                                    prop?.SetValue(instance, inCount);
+                                }
+                                if (comp.PropertyBag.TryGetValue("OutPortCount", out var outCountStr) && int.TryParse(outCountStr, out var outCount))
+                                {
+                                    var prop = t.GetProperty("OutPortCount");
+                                    prop?.SetValue(instance, outCount);
+                                }
+                                if (comp.PropertyBag.TryGetValue("Title", out var titleStr))
+                                {
+                                    var prop = t.GetProperty("Title");
+                                    prop?.SetValue(instance, titleStr);
+                                }
+                                if (comp.PropertyBag.TryGetValue("Label", out var labelStr))
+                                {
+                                    var prop = t.GetProperty("Label");
+                                    prop?.SetValue(instance, labelStr);
+                                }
+                                if (comp.PropertyBag.TryGetValue("PercentComplete", out var pctStr) && int.TryParse(pctStr, out var pct))
+                                {
+                                    var prop = t.GetProperty("PercentComplete");
+                                    prop?.SetValue(instance, pct);
+                                }
+                            }
+                        }
+                        catch { }
+                        // Apply ERD-specific persisted options BEFORE assigning connection point IDs
+                        try
+                        {
+                            if (type.Namespace == "Beep.Skia.ERD" && comp.PropertyBag != null)
+                            {
+                                var t = type;
+                                if (comp.PropertyBag.TryGetValue("EntityName", out var nameStr))
+                                {
+                                    var prop = t.GetProperty("EntityName");
+                                    prop?.SetValue(instance, nameStr);
+                                }
+                                if (comp.PropertyBag.TryGetValue("RowsText", out var rowsStr))
+                                {
+                                    var prop = t.GetProperty("RowsText");
+                                    prop?.SetValue(instance, rowsStr);
+                                }
+                                if (comp.PropertyBag.TryGetValue("RowIdsCsv", out var idsStr))
+                                {
+                                    var prop = t.GetProperty("RowIdsCsv");
+                                    prop?.SetValue(instance, idsStr);
+                                }
+                                // If counts were persisted, set them after rows so row-based layout can sync
+                                if (comp.PropertyBag.TryGetValue("InPortCount", out var inCountStr2) && int.TryParse(inCountStr2, out var inCount2))
+                                {
+                                    var prop = t.GetProperty("InPortCount");
+                                    prop?.SetValue(instance, inCount2);
+                                }
+                                if (comp.PropertyBag.TryGetValue("OutPortCount", out var outCountStr2) && int.TryParse(outCountStr2, out var outCount2))
+                                {
+                                    var prop = t.GetProperty("OutPortCount");
+                                    prop?.SetValue(instance, outCount2);
                                 }
                             }
                         }

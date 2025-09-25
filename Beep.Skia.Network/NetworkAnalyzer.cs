@@ -49,12 +49,12 @@ namespace Beep.Skia.Network
         /// <summary>
         /// Gets or sets the background color for the analyzer panel.
         /// </summary>
-        public SKColor PanelBackground { get; set; } = new SKColor(0xFA, 0xFA, 0xFA); // Light gray
+    public SKColor PanelBackground { get; set; } = MaterialColors.SurfaceContainer;
 
         /// <summary>
         /// Gets or sets the header background color.
         /// </summary>
-        public SKColor HeaderBackground { get; set; } = new SKColor(0x42, 0xA5, 0xF5); // Blue
+    public SKColor HeaderBackground { get; set; } = MaterialColors.Primary;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkAnalyzer"/> class.
@@ -66,7 +66,7 @@ namespace Beep.Skia.Network
             Name = "NetworkAnalyzer";
             DisplayText = "Network Analysis";
             TextPosition = TextPosition.Above;
-            PrimaryColor = new SKColor(0x42, 0xA5, 0xF5); // Blue
+            PrimaryColor = MaterialColors.Primary;
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Beep.Skia.Network
             DrawFilledRect(canvas, headerRect, HeaderBackground);
 
             // Draw header text
-            DrawCenteredText(canvas, "Network Metrics", headerRect, 14, SKColors.White);
+            DrawCenteredText(canvas, "Network Metrics", headerRect, 14, MaterialColors.OnPrimary);
 
             // Draw metrics
             float currentY = Y + 40;
@@ -120,8 +120,8 @@ namespace Beep.Skia.Network
         private void DrawMetricLine(SKCanvas canvas, string label, string value, float x, float y, float lineHeight)
         {
             using var font = new SKFont { Size = 11 };
-            using var labelPaint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
-            using var valuePaint = new SKPaint { Color = PrimaryColor, IsAntialias = true };
+            using var labelPaint = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
+            using var valuePaint = new SKPaint { Color = MaterialColors.Primary, IsAntialias = true };
 
             canvas.DrawText(label, x, y + lineHeight - 3, SKTextAlign.Left, font, labelPaint);
             canvas.DrawText(value, x + 120, y + lineHeight - 3, SKTextAlign.Left, font, valuePaint);

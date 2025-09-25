@@ -24,6 +24,19 @@ namespace Beep.Skia.ERD
             EnsurePortCounts(1, 1);
         }
 
+        // Allow editor-driven adjustments to port counts
+        public int InPortCount
+        {
+            get => InConnectionPoints?.Count ?? 0;
+            set { int v = Math.Max(0, value); EnsurePortCounts(v, OutPortCount); InvalidateVisual(); }
+        }
+
+        public int OutPortCount
+        {
+            get => OutConnectionPoints?.Count ?? 0;
+            set { int v = Math.Max(0, value); EnsurePortCounts(InPortCount, v); InvalidateVisual(); }
+        }
+
         protected void EnsurePortCounts(int inputs, int outputs)
         {
             while (InConnectionPoints.Count < inputs)
@@ -87,8 +100,8 @@ namespace Beep.Skia.ERD
 
         protected void DrawPorts(SKCanvas canvas)
         {
-            using var inPaint = new SKPaint { Color = new SKColor(0x42, 0xA5, 0xF5), IsAntialias = true };
-            using var outPaint = new SKPaint { Color = new SKColor(0x66, 0xBB, 0x6A), IsAntialias = true };
+            using var inPaint = new SKPaint { Color = MaterialColors.SecondaryContainer, IsAntialias = true };
+            using var outPaint = new SKPaint { Color = MaterialColors.Primary, IsAntialias = true };
             foreach (var p in InConnectionPoints) canvas.DrawCircle(p.Center, PortRadius, inPaint);
             foreach (var p in OutConnectionPoints) canvas.DrawCircle(p.Center, PortRadius, outPaint);
         }

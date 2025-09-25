@@ -77,6 +77,13 @@ namespace Beep.Skia.Business
             canvas.DrawPath(bodyPath, iconPaint);
         }
 
+        protected override void LayoutPorts()
+        {
+            // Circle profile: use ellipse perimeter placement, 1 in / 1 out
+            EnsurePortCounts(1, 1);
+            LayoutPortsOnEllipse(topInset: 4f, bottomInset: 4f, outwardOffset: 2f);
+        }
+
         protected override void DrawComponentText(SKCanvas canvas)
         {
             if (string.IsNullOrEmpty(PersonName))

@@ -57,5 +57,12 @@ namespace Beep.Skia.Business
             canvas.DrawOval(bottomEllipse, fillPaint);
             canvas.DrawOval(bottomEllipse, borderPaint);
         }
+
+        protected override void LayoutPorts()
+        {
+            // Cylinder: use vertical segment layout; 1 in / 1 out
+            EnsurePortCounts(1, 1);
+            LayoutPortsVerticalSegments(topInset: 8f, bottomInset: 8f);
+        }
     }
 }

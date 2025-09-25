@@ -72,5 +72,11 @@ namespace Beep.Skia.Business
 
             canvas.DrawText(RoleName, centerX, centerY, SKTextAlign.Center, font, paint);
         }
+
+        protected override void LayoutPorts()
+        {
+            EnsurePortCounts(1, 1);
+            LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
+        }
     }
 }

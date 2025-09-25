@@ -142,6 +142,10 @@ namespace Beep.Skia.Winform.Controls
                                     category = "ERD";
                                 else if (ns.Contains(".Flowchart", StringComparison.OrdinalIgnoreCase))
                                     category = "Flowchart";
+                                else if (ns.Contains(".PM", StringComparison.OrdinalIgnoreCase))
+                                    category = "PM";
+                                else if (ns.Contains(".StateMachine", StringComparison.OrdinalIgnoreCase))
+                                    category = "StateMachine";
                             }
                             if (!string.IsNullOrWhiteSpace(compType))
                             {
@@ -168,7 +172,20 @@ namespace Beep.Skia.Winform.Controls
                     try
                     {
                         var item = tup.Item;
-                        var pt = tup.DropPoint;
+                        // Convert palette-provided screen-space point to canvas coordinates
+                        var ptScreen = tup.DropPoint;
+                        var dm = _drawingManager;
+                        var pt = ptScreen;
+                        try
+                        {
+                            if (dm != null)
+                            {
+                                var offset = new SKPoint(ptScreen.X - dm.PanOffset.X, ptScreen.Y - dm.PanOffset.Y);
+                                pt = new SKPoint(dm.Zoom != 0f ? offset.X / dm.Zoom : offset.X,
+                                                 dm.Zoom != 0f ? offset.Y / dm.Zoom : offset.Y);
+                            }
+                        }
+                        catch { }
                         if (string.IsNullOrWhiteSpace(item.ComponentType) && (item.StartMultiplicity.HasValue || item.EndMultiplicity.HasValue))
                         {
                             // Treat as ERD preset tool: set pending multiplicities for next line
@@ -203,8 +220,9 @@ namespace Beep.Skia.Winform.Controls
                             var desc = new SkiaComponentDescriptor
                             {
                                 ComponentType = item.ComponentType,
-                                X = _palette.X + _palette.Width + 20,
-                                Y = _palette.Y + 20,
+                                // Place near the palette in canvas space regardless of pan/zoom
+                                X = (_palette.X + _palette.Width + 20 - _drawingManager.PanOffset.X) / (_drawingManager.Zoom == 0 ? 1f : _drawingManager.Zoom),
+                                Y = (_palette.Y + 20 - _drawingManager.PanOffset.Y) / (_drawingManager.Zoom == 0 ? 1f : _drawingManager.Zoom),
                                 Width = 120,
                                 Height = 36,
                                 Name = "skia" + DateTime.UtcNow.Ticks.ToString("x")

@@ -29,9 +29,9 @@ namespace Beep.Skia.DFD
             LayoutPorts();
 
             var r = Bounds;
-            using var fill = new SKPaint { Color = new SKColor(0xE3, 0xF2, 0xFD), IsAntialias = true };
-            using var stroke = new SKPaint { Color = new SKColor(0x1E, 0x88, 0xE5), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
-            using var header = new SKPaint { Color = new SKColor(0xBB, 0xDE, 0xFB), IsAntialias = true };
+            using var fill = new SKPaint { Color = MaterialColors.Surface, IsAntialias = true };
+            using var stroke = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
+            using var header = new SKPaint { Color = MaterialColors.PrimaryContainer, IsAntialias = true };
 
             canvas.DrawRect(r, fill);
             canvas.DrawRect(r, stroke);

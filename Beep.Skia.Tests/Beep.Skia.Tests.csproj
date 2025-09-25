@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Beep.Skia\Beep.Skia.csproj" />
     <ProjectReference Include="..\Beep.Skia.Winform.Controls\Beep.Skia.Winform.Controls.csproj" />
+    <ProjectReference Include="..\Beep.Skia.StateMachine\Beep.Skia.StateMachine.csproj" />
   </ItemGroup>
 
 </Project>

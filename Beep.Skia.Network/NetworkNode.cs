@@ -1,20 +1,21 @@
 using SkiaSharp;
 using Beep.Skia;
 using Beep.Skia.Model;
+using Beep.Skia.Components;
 
 namespace Beep.Skia.Network
 {
     // Simple network node component; discoverable via SkiaComponentRegistry
     public class NetworkNode : SkiaComponent
     {
-        public SKColor FillColor { get; set; } = new SKColor(0x42, 0xA5, 0xF5); // Material Blue 400
-        public SKColor StrokeColor { get; set; } = SKColors.Black;
+    public SKColor FillColor { get; set; } = MaterialDesignColors.Surface;
+    public SKColor StrokeColor { get; set; } = MaterialDesignColors.Outline;
         public float StrokeWidth { get; set; } = 1.5f;
         public float CornerRadius { get; set; } = 6f;
 
         // Additional properties for advanced network functionality
         public string NodeType { get; set; } = "Default";
-        public bool IsHighlighted { get; set; } = false;
+    public bool IsHighlighted { get; set; } = false;
         public float Scale { get; set; } = 1.0f;
         public SKColor CentralityColor { get; set; } = SKColors.Transparent;
         public SKColor CommunityColor { get; set; } = SKColors.Transparent;
@@ -72,12 +73,8 @@ namespace Beep.Skia.Network
             float scaledY = Y - (scaledHeight - Height) / 2;
 
             // Determine effective colors
-            SKColor effectiveFillColor = FillColor;
-            if (IsHighlighted)
-            {
-                effectiveFillColor = new SKColor(0xFF, 0xEB, 0x3B); // Yellow highlight
-            }
-            else if (CommunityColor != SKColors.Transparent)
+            SKColor effectiveFillColor = IsHighlighted ? MaterialDesignColors.TertiaryContainer : FillColor;
+            if (CommunityColor != SKColors.Transparent)
             {
                 effectiveFillColor = CommunityColor;
             }
@@ -93,7 +90,7 @@ namespace Beep.Skia.Network
             canvas.DrawRoundRect(rect, CornerRadius, CornerRadius, stroke);
 
             // label
-            using var text = new SKPaint { Color = SKColors.White, IsAntialias = true };
+            using var text = new SKPaint { Color = MaterialDesignColors.OnSurface, IsAntialias = true };
             using var font = new SKFont { Size = 14 * Scale };
             var label = string.IsNullOrWhiteSpace(Name) ? "Node" : Name;
             var tb = new SKRect();
@@ -108,15 +105,15 @@ namespace Beep.Skia.Network
 
         private void DrawPorts(SKCanvas canvas, float scaledX, float scaledY, float scaledWidth, float scaledHeight)
         {
-            using var inFill = new SKPaint { Color = new SKColor(0x34, 0xA8, 0x53), Style = SKPaintStyle.Fill, IsAntialias = true }; // green
-            using var outFill = new SKPaint { Color = new SKColor(0xFB, 0xBC, 0x05), Style = SKPaintStyle.Fill, IsAntialias = true }; // amber
+            using var inFill = new SKPaint { Color = MaterialDesignColors.SecondaryContainer, Style = SKPaintStyle.Fill, IsAntialias = true };
+            using var outFill = new SKPaint { Color = MaterialDesignColors.Primary, Style = SKPaintStyle.Fill, IsAntialias = true };
             foreach (var p in InConnectionPoints)
                 canvas.DrawCircle(p.Center, PortRadius, inFill);
             foreach (var p in OutConnectionPoints)
                 canvas.DrawCircle(p.Center, PortRadius, outFill);
         }
 
-        private void EnsurePortCounts(int inCount, int outCount)
+    private void EnsurePortCounts(int inCount, int outCount)
         {
             // inputs
             while (InConnectionPoints.Count < inCount)
@@ -131,8 +128,6 @@ namespace Beep.Skia.Network
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
             LayoutPorts();
-            // Notify DrawingManager to refresh registry if we were already added
-            OnBoundsChanged(Bounds);
         }
 
         private void LayoutPorts()
@@ -173,10 +168,10 @@ namespace Beep.Skia.Network
             }
         }
 
-        protected override void UpdateBounds()
+        protected override void OnBoundsChanged(SKRect bounds)
         {
-            base.UpdateBounds();
             LayoutPorts();
+            base.OnBoundsChanged(bounds);
         }
     }
 }

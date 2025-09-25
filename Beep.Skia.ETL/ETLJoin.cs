@@ -1,5 +1,6 @@
 using SkiaSharp;
 using Beep.Skia.ETL;
+using Beep.Skia.Components;
 
 namespace Beep.Skia.ETL
 {
@@ -15,7 +16,7 @@ namespace Beep.Skia.ETL
         public ETLJoin()
         {
             Title = "Join";
-            HeaderColor = new SKColor(0x8E, 0x24, 0xAA); // Purple
+            HeaderColor = MaterialControl.MaterialColors.PrimaryContainer; // Material token
             Width = 180;
             Height = 96;
             DisplayText = "Join";

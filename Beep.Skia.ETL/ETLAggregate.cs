@@ -1,5 +1,6 @@
 using SkiaSharp;
 using Beep.Skia.ETL;
+using Beep.Skia.Components;
 
 namespace Beep.Skia.ETL
 {
@@ -15,7 +16,7 @@ namespace Beep.Skia.ETL
         public ETLAggregate()
         {
             Title = "Aggregate";
-            HeaderColor = new SKColor(0x00, 0x95, 0x88); // Teal
+            HeaderColor = MaterialControl.MaterialColors.SecondaryContainer; // Material token
             Width = 160;
             Height = 96;
             DisplayText = "Aggregate";

@@ -71,7 +71,7 @@ namespace Beep.Skia.Business
 
                 using var indicatorPaint = new SKPaint
                 {
-                    Color = i == 0 ? SKColors.Green : SKColors.Gray,
+                    Color = i == 0 ? MaterialColors.Primary : MaterialColors.OutlineVariant,
                     Style = SKPaintStyle.Fill,
                     IsAntialias = true
                 };
@@ -96,6 +96,12 @@ namespace Beep.Skia.Business
             float textY = Y + Height + 15;
 
             canvas.DrawText(SystemName, centerX, textY, SKTextAlign.Center, font, paint);
+        }
+
+        protected override void LayoutPorts()
+        {
+            EnsurePortCounts(1, 1);
+            LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
         }
     }
 }

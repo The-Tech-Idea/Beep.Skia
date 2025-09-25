@@ -8,9 +8,35 @@ namespace Beep.Skia.Flowchart
     /// </summary>
     public class DocumentNode : FlowchartControl
     {
-        public string Label { get; set; } = "Document";
+        private string _label = "Document";
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (!string.Equals(_label, v, System.StringComparison.Ordinal))
+                {
+                    _label = v;
+                    InvalidateVisual();
+                }
+            }
+        }
         // Optionally place outgoing ports along the top straight edge (avoids curved bottom)
-        public bool OutPortsOnTop { get; set; } = false;
+        private bool _outPortsOnTop = false;
+        public bool OutPortsOnTop
+        {
+            get => _outPortsOnTop;
+            set
+            {
+                if (_outPortsOnTop != value)
+                {
+                    _outPortsOnTop = value;
+                    LayoutPorts();
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public DocumentNode()
         {

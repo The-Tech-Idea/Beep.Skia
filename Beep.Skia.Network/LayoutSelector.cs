@@ -64,7 +64,7 @@ namespace Beep.Skia.Network
             Name = "LayoutSelector";
             DisplayText = "Layout";
             TextPosition = TextPosition.Above;
-            PrimaryColor = new SKColor(0x4C, 0xAF, 0x50); // Green
+            PrimaryColor = MaterialColors.Primary;
         }
 
         /// <summary>
@@ -344,7 +344,7 @@ namespace Beep.Skia.Network
             var panelRect = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw panel background
-            DrawFilledRect(canvas, panelRect, SKColors.White);
+            DrawFilledRect(canvas, panelRect, MaterialColors.SurfaceContainer);
 
             if (!ShowOptions)
                 return;
@@ -362,9 +362,6 @@ namespace Beep.Skia.Network
 
             // Draw algorithm buttons
             using var buttonFont = new SKFont { Size = 10 };
-            using var buttonPaint = new SKPaint { Color = SKColors.LightGray, IsAntialias = true };
-            using var selectedPaint = new SKPaint { Color = PrimaryColor, IsAntialias = true };
-            using var textPaint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
 
             float buttonHeight = 18;
 
@@ -373,12 +370,14 @@ namespace Beep.Skia.Network
                 var buttonRect = new SKRect(leftMargin, currentY, X + Width - 10, currentY + buttonHeight);
 
                 // Highlight selected algorithm
-                var paint = algorithm == SelectedAlgorithm ? PrimaryColor : SKColors.LightGray;
+                var paint = algorithm == SelectedAlgorithm ? PrimaryColor : MaterialColors.SurfaceVariant;
                 DrawFilledRect(canvas, buttonRect, paint);
 
                 // Draw algorithm name
                 string algorithmName = GetAlgorithmDisplayName(algorithm);
-                canvas.DrawText(algorithmName, buttonRect.MidX, buttonRect.MidY + 3, SKTextAlign.Center, buttonFont, textPaint);
+                var textColor = paint == PrimaryColor ? MaterialColors.OnPrimary : MaterialColors.OnSurface;
+                using var textPaintLocal = new SKPaint { Color = textColor, IsAntialias = true };
+                canvas.DrawText(algorithmName, buttonRect.MidX, buttonRect.MidY + 3, SKTextAlign.Center, buttonFont, textPaintLocal);
 
                 currentY += buttonHeight + 2;
             }
@@ -387,7 +386,7 @@ namespace Beep.Skia.Network
             if (IsCalculating)
             {
                 using var statusFont = new SKFont { Size = 9 };
-                using var statusPaint = new SKPaint { Color = SKColors.Orange, IsAntialias = true };
+                using var statusPaint = new SKPaint { Color = MaterialColors.Tertiary, IsAntialias = true };
                 canvas.DrawText("Calculating...", leftMargin, currentY + lineHeight - 3, SKTextAlign.Left, statusFont, statusPaint);
             }
         }

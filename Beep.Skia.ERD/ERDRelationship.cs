@@ -1,5 +1,6 @@
 using SkiaSharp;
 using Beep.Skia.Model;
+using Beep.Skia.Components;
 
 namespace Beep.Skia.ERD
 {
@@ -8,9 +9,12 @@ namespace Beep.Skia.ERD
     /// </summary>
     public class ERDRelationship : ERDControl
     {
-        public string Label { get; set; } = "relates";
-        public string Degree { get; set; } = "1..*";
-        public bool Identifying { get; set; } = false;
+        private string _label = "relates";
+        public string Label { get => _label; set { if (_label == value) return; _label = value ?? string.Empty; InvalidateVisual(); } }
+        private string _degree = "1..*";
+        public string Degree { get => _degree; set { if (_degree == value) return; _degree = value ?? string.Empty; InvalidateVisual(); } }
+        private bool _identifying = false;
+        public bool Identifying { get => _identifying; set { if (_identifying == value) return; _identifying = value; InvalidateVisual(); } }
 
         public ERDRelationship()
         {
@@ -54,9 +58,9 @@ namespace Beep.Skia.ERD
             var pBottom = new SKPoint(b.MidX, b.Bottom);
             var pLeft = new SKPoint(b.Left, b.MidY);
 
-            using var fill = new SKPaint { Color = new SKColor(0xFF, 0xF8, 0xE1), IsAntialias = true };
-            using var stroke = new SKPaint { Color = new SKColor(0xFB, 0x8C, 0x00), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = Identifying ? 3 : 2 };
-            using var text = new SKPaint { Color = SKColors.Black, IsAntialias = true };
+            using var fill = new SKPaint { Color = MaterialControl.MaterialColors.Surface, IsAntialias = true };
+            using var stroke = new SKPaint { Color = MaterialControl.MaterialColors.Outline, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = Identifying ? 3 : 1.5f };
+            using var text = new SKPaint { Color = MaterialControl.MaterialColors.OnSurface, IsAntialias = true };
             using var font = new SKFont(SKTypeface.Default, 13);
 
             using var path = new SKPath();

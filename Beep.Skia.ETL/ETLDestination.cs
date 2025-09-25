@@ -1,5 +1,6 @@
 using SkiaSharp;
 using Beep.Skia.ETL;
+using Beep.Skia.Components;
 
 namespace Beep.Skia.ETL
 {
@@ -15,7 +16,7 @@ namespace Beep.Skia.ETL
         public ETLDestination()
         {
             Title = "Destination";
-            HeaderColor = new SKColor(0xE5, 0x39, 0x35); // Red
+            HeaderColor = MaterialControl.MaterialColors.TertiaryContainer; // Material token
             Width = 160;
             Height = 72;
             DisplayText = "Destination";

@@ -78,7 +78,7 @@ namespace Beep.Skia.Network
             Name = "FilterPanel";
             DisplayText = "Filters";
             TextPosition = TextPosition.Above;
-            PrimaryColor = new SKColor(0xFF, 0x98, 0x00); // Orange
+            PrimaryColor = MaterialColors.Tertiary;
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace Beep.Skia.Network
             var panelRect = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw panel background
-            DrawFilledRect(canvas, panelRect, SKColors.White);
+            DrawFilledRect(canvas, panelRect, MaterialColors.SurfaceContainer);
 
             if (!ShowControls)
                 return;
@@ -299,11 +299,11 @@ namespace Beep.Skia.Network
 
             // Draw search box
             using var controlFont = new SKFont { Size = 10 };
-            using var controlPaint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
-            using var boxPaint = new SKPaint { Color = SKColors.LightGray, IsAntialias = true };
+            using var controlPaint = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
+            using var boxPaint = new SKPaint { Color = MaterialColors.SurfaceVariant, IsAntialias = true };
 
             var searchRect = new SKRect(leftMargin, currentY, X + Width - 10, currentY + 20);
-            DrawFilledRect(canvas, searchRect, SKColors.LightGray);
+            DrawFilledRect(canvas, searchRect, MaterialColors.SurfaceVariant);
 
             string displayQuery = string.IsNullOrEmpty(SearchQuery) ? "Search nodes..." : SearchQuery;
             canvas.DrawText(displayQuery, leftMargin + 5, currentY + 14, SKTextAlign.Left, controlFont, controlPaint);
@@ -316,12 +316,12 @@ namespace Beep.Skia.Network
 
             // Draw checkboxes
             float checkBoxSize = 12;
-            using var checkPaint = new SKPaint { Color = SKColors.Gray, IsAntialias = true };
+            using var checkPaint = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true };
             using var checkFillPaint = new SKPaint { Color = PrimaryColor, IsAntialias = true };
 
             // Connected only checkbox
             var connectedRect = new SKRect(leftMargin, currentY - 2, leftMargin + checkBoxSize, currentY + checkBoxSize - 2);
-            DrawFilledRect(canvas, connectedRect, SKColors.Gray);
+            DrawFilledRect(canvas, connectedRect, MaterialColors.Outline);
             if (ShowConnectedOnly)
             {
                 var innerRect = new SKRect(connectedRect.Left + 2, connectedRect.Top + 2,
@@ -334,7 +334,7 @@ namespace Beep.Skia.Network
 
             // Isolated nodes checkbox
             var isolatedRect = new SKRect(leftMargin, currentY - 2, leftMargin + checkBoxSize, currentY + checkBoxSize - 2);
-            DrawFilledRect(canvas, isolatedRect, SKColors.Gray);
+            DrawFilledRect(canvas, isolatedRect, MaterialColors.Outline);
             if (ShowIsolatedNodes)
             {
                 var innerRect = new SKRect(isolatedRect.Left + 2, isolatedRect.Top + 2,
@@ -347,7 +347,7 @@ namespace Beep.Skia.Network
 
             // Draw filter summary
             using var summaryFont = new SKFont { Size = 9 };
-            using var summaryPaint = new SKPaint { Color = SKColors.Gray, IsAntialias = true };
+            using var summaryPaint = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true };
 
             string summaryText = $"{FilteredNodes.Count} nodes, {FilteredLinks.Count} links";
             canvas.DrawText(summaryText, leftMargin, currentY + lineHeight - 3, SKTextAlign.Left, summaryFont, summaryPaint);

@@ -376,6 +376,13 @@ namespace Beep.Skia.Components
             return OnMouseDown(point, context);
         }
 
+        // Palette is a static overlay; ensure hit-testing is performed in screen space
+        public override bool ContainsPoint(SKPoint point)
+        {
+            var rect = new SKRect(X, Y, X + Width, Y + Height);
+            return rect.Contains(point);
+        }
+
         public override bool HandleMouseMove(SKPoint point, InteractionContext context)
         {
             if (_scrollThumbDragging)

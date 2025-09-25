@@ -8,8 +8,34 @@ namespace Beep.Skia.Flowchart
     /// </summary>
     public class StartEndNode : FlowchartControl
     {
-        public string Label { get; set; } = "Start/End";
-        public bool ShowTopBottomPorts { get; set; } = false;
+        private string _label = "Start/End";
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (!string.Equals(_label, v, System.StringComparison.Ordinal))
+                {
+                    _label = v;
+                    InvalidateVisual();
+                }
+            }
+        }
+        private bool _showTopBottomPorts = false;
+        public bool ShowTopBottomPorts
+        {
+            get => _showTopBottomPorts;
+            set
+            {
+                if (_showTopBottomPorts != value)
+                {
+                    _showTopBottomPorts = value;
+                    LayoutPorts();
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public StartEndNode()
         {

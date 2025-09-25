@@ -40,5 +40,12 @@ namespace Beep.Skia.Business
             canvas.DrawRoundRect(rect, 12, 12, fillPaint);
             canvas.DrawRoundRect(rect, 12, 12, borderPaint);
         }
+
+        protected override void LayoutPorts()
+        {
+            // Rounded rect: 1 in / 1 out, vertical segments
+            EnsurePortCounts(1, 1);
+            LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
+        }
     }
 }

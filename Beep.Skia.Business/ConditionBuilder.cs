@@ -27,14 +27,14 @@ namespace Beep.Skia.Business
         {
             using var fillPaint = new SKPaint
             {
-                Color = IsValid ? BackgroundColor : SKColors.LightCoral,
+                Color = IsValid ? BackgroundColor : MaterialColors.ErrorContainer,
                 Style = SKPaintStyle.Fill,
                 IsAntialias = true
             };
 
             using var borderPaint = new SKPaint
             {
-                Color = IsValid ? BorderColor : SKColors.DarkRed,
+                Color = IsValid ? BorderColor : MaterialColors.Error,
                 StrokeWidth = BorderThickness,
                 Style = SKPaintStyle.Stroke,
                 IsAntialias = true
@@ -52,7 +52,7 @@ namespace Beep.Skia.Business
         {
             using var iconPaint = new SKPaint
             {
-                Color = IsValid ? BorderColor : SKColors.DarkRed,
+                Color = IsValid ? BorderColor : MaterialColors.Error,
                 StrokeWidth = 3,
                 Style = SKPaintStyle.Stroke,
                 IsAntialias = true,
@@ -103,6 +103,13 @@ namespace Beep.Skia.Business
             float textY = Y + Height + 12;
 
             canvas.DrawText(ConditionText, centerX, textY, SKTextAlign.Center, font, paint);
+        }
+
+        protected override void LayoutPorts()
+        {
+            // Rect-like shape: 1 in / 1 out
+            EnsurePortCounts(1, 1);
+            LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
         }
     }
 }

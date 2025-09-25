@@ -30,8 +30,8 @@ namespace Beep.Skia.DFD
             LayoutPorts();
 
             var rect = Bounds;
-            using var fill = new SKPaint { Color = new SKColor(0xE0, 0xF2, 0xF1), IsAntialias = true };
-            using var stroke = new SKPaint { Color = new SKColor(0x00, 0x96, 0x88), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
+            using var fill = new SKPaint { Color = MaterialColors.Surface, IsAntialias = true };
+            using var stroke = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
 
             canvas.DrawRoundRect(rect, CornerRadius, CornerRadius, fill);
             canvas.DrawRoundRect(rect, CornerRadius, CornerRadius, stroke);
@@ -39,9 +39,9 @@ namespace Beep.Skia.DFD
             // ID bubble near top-left inside body
             float bubbleR = 14f;
             var bubbleCenter = new SKPoint(rect.Left + bubbleR + 8f, rect.Top + bubbleR + 8f);
-            using var bubbleFill = new SKPaint { Color = new SKColor(0xFA, 0xFA, 0xFA), IsAntialias = true };
-            using var bubbleStroke = new SKPaint { Color = new SKColor(0x42, 0x42, 0x42), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
-            using var textPaint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
+            using var bubbleFill = new SKPaint { Color = MaterialColors.SurfaceContainer, IsAntialias = true };
+            using var bubbleStroke = new SKPaint { Color = MaterialColors.OutlineVariant, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
+            using var textPaint = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
             using var font = new SKFont { Size = 12 };
 
             canvas.DrawCircle(bubbleCenter, bubbleR, bubbleFill);

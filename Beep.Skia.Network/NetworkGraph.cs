@@ -1,14 +1,15 @@
 using SkiaSharp;
 using Beep.Skia;
 using Beep.Skia.Model;
+using Beep.Skia.Components;
 using System.Collections.Generic;
 
 namespace Beep.Skia.Network
 {
     public class NetworkGraph : SkiaComponent
     {
-        public SKColor Background { get; set; } = new SKColor(250, 250, 250);
-        public SKColor GridColor { get; set; } = new SKColor(230, 230, 230);
+    public SKColor Background { get; set; } = MaterialDesignColors.Surface;
+    public SKColor GridColor { get; set; } = MaterialDesignColors.SurfaceVariant;
         public float GridSpacing { get; set; } = 24f;
 
         public List<NetworkNode> Nodes { get; } = new List<NetworkNode>();

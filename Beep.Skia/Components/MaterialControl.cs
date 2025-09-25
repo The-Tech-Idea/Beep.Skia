@@ -47,6 +47,8 @@ namespace Beep.Skia.Components
             public static readonly SKColor OnSurface = new SKColor(0x1C, 0x1B, 0x1F);
             public static readonly SKColor SurfaceVariant = new SKColor(0xE7, 0xE0, 0xEC);
             public static readonly SKColor OnSurfaceVariant = new SKColor(0x49, 0x45, 0x4F);
+            // Container tiers (add base container token used by components)
+            public static readonly SKColor SurfaceContainer = new SKColor(0xF3, 0xED, 0xF4); // Align with high container tint
             public static readonly SKColor SurfaceContainerHigh = new SKColor(0xF3, 0xED, 0xF4);
 
             // Outline

@@ -30,7 +30,7 @@ namespace Beep.Skia.Business
 
             using var borderPaint = new SKPaint
             {
-                Color = BorderColor,
+                Color = MaterialColors.Outline,
                 StrokeWidth = 4, // Thick border for end event
                 Style = SKPaintStyle.Stroke,
                 IsAntialias = true
@@ -42,6 +42,13 @@ namespace Beep.Skia.Business
 
             canvas.DrawCircle(centerX, centerY, radius, fillPaint);
             canvas.DrawCircle(centerX, centerY, radius, borderPaint);
+        }
+
+        protected override void LayoutPorts()
+        {
+            // Place the single input on the ellipse perimeter to the left; no outputs.
+            EnsurePortCounts(1, 0);
+            LayoutPortsOnEllipse(topInset: 4f, bottomInset: 4f, outwardOffset: 2f);
         }
     }
 }

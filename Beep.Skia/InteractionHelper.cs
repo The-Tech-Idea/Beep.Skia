@@ -86,23 +86,51 @@ namespace Beep.Skia
         /// <param name="modifiers">Keyboard modifiers.</param>
         public void HandleMouseDown(SKPoint point, SKKeyModifiers modifiers = SKKeyModifiers.None)
         {
-            // Convert screen point to canvas point
+            // Convert screen point to canvas point (world space)
             var canvasPoint = ScreenToCanvas(point);
 
-            // Give the top-most component a chance to handle the mouse down first
+            // 1) Prioritize connection point hit-testing at the exact cursor position
+            var immediateCp = GetConnectionPointAt(canvasPoint);
+            if (immediateCp != null)
+            {
+                if ((modifiers & SKKeyModifiers.Shift) == SKKeyModifiers.Shift)
+                {
+                    _isDrawingLine = true;
+                    StartDrawingLine(immediateCp, canvasPoint);
+                }
+                else
+                {
+                    if ((modifiers & SKKeyModifiers.Control) == SKKeyModifiers.Control)
+                    {
+                        if (_drawingManager.SelectionManager.IsSelected(immediateCp))
+                            _drawingManager.SelectionManager.RemoveFromSelection(immediateCp);
+                        else
+                            _drawingManager.SelectionManager.SelectConnectionPoint(immediateCp, addToSelection: true);
+                    }
+                    else if (!_drawingManager.SelectionManager.IsSelected(immediateCp))
+                    {
+                        _drawingManager.SelectionManager.ClearSelection();
+                        _drawingManager.SelectionManager.SelectConnectionPoint(immediateCp);
+                    }
+                }
+                return;
+            }
+
+            // 2) Give the top-most component a chance to handle the mouse down first
             var topComponent = GetComponentAt(canvasPoint);
             if (topComponent != null)
             {
                 var ctx = new InteractionContext
                 {
-                    MousePosition = canvasPoint,
+                    MousePosition = (topComponent.IsStatic ? point : canvasPoint),
                     Modifiers = (int)modifiers,
                     Bounds = topComponent.Bounds
                 };
 
                 try
                 {
-                    if (topComponent.HandleMouseDown(canvasPoint, ctx))
+                    var ptForComp = topComponent.IsStatic ? point : canvasPoint;
+                    if (topComponent.HandleMouseDown(ptForComp, ctx))
                     {
                         // Component handled the interaction; remember it and return
                         _componentHandlingMouse = topComponent;
@@ -203,40 +231,10 @@ namespace Beep.Skia
             }
             else
             {
-                // Check for connection point
-                var sourcePoint = GetConnectionPointAt(canvasPoint);
-                if (sourcePoint != null)
-                {
-                    // If Shift pressed, start drawing from connection point; otherwise select the point
-                    if ((modifiers & SKKeyModifiers.Shift) == SKKeyModifiers.Shift)
-                    {
-                        _isDrawingLine = true;
-                        StartDrawingLine(sourcePoint, canvasPoint);
-                    }
-                    else
-                    {
-                        if ((modifiers & SKKeyModifiers.Control) == SKKeyModifiers.Control)
-                        {
-                            if (_drawingManager.SelectionManager.IsSelected(sourcePoint))
-                                _drawingManager.SelectionManager.RemoveFromSelection(sourcePoint);
-                            else
-                                _drawingManager.SelectionManager.SelectConnectionPoint(sourcePoint, addToSelection: true);
-                        }
-                        else if (!_drawingManager.SelectionManager.IsSelected(sourcePoint))
-                        {
-                            _drawingManager.SelectionManager.ClearSelection();
-                            _drawingManager.SelectionManager.SelectConnectionPoint(sourcePoint);
-                        }
-                    }
-                    return;
-                }
-                else
-                {
-                    // Start selection rectangle
-                    _isSelecting = true;
-                    _selectionStart = canvasPoint;
-                    _selectionRect = new SKRect(canvasPoint.X, canvasPoint.Y, canvasPoint.X, canvasPoint.Y);
-                }
+                // Start selection rectangle in world space
+                _isSelecting = true;
+                _selectionStart = canvasPoint;
+                _selectionRect = new SKRect(canvasPoint.X, canvasPoint.Y, canvasPoint.X, canvasPoint.Y);
             }
         }
 
@@ -252,8 +250,8 @@ namespace Beep.Skia
             // If a component consumed the mouse interaction, forward the up and clear
             if (_componentHandlingMouse != null)
             {
-                var ctx = new InteractionContext { MousePosition = canvasPoint, Modifiers = (int)modifiers };
-                try { _componentHandlingMouse.HandleMouseUp(canvasPoint, ctx); } catch { }
+                var ctx = new InteractionContext { MousePosition = (_componentHandlingMouse.IsStatic ? point : canvasPoint), Modifiers = (int)modifiers };
+                try { _componentHandlingMouse.HandleMouseUp(_componentHandlingMouse.IsStatic ? point : canvasPoint, ctx); } catch { }
                 _componentHandlingMouse = null;
                 return;
             }
@@ -325,8 +323,8 @@ namespace Beep.Skia
             // If a component consumed the mouse interaction, forward the move
             if (_componentHandlingMouse != null)
             {
-                var ctx = new InteractionContext { MousePosition = canvasPoint, Modifiers = (int)modifiers };
-                try { _componentHandlingMouse.HandleMouseMove(canvasPoint, ctx); } catch { }
+                var ctx = new InteractionContext { MousePosition = (_componentHandlingMouse.IsStatic ? point : canvasPoint), Modifiers = (int)modifiers };
+                try { _componentHandlingMouse.HandleMouseMove(_componentHandlingMouse.IsStatic ? point : canvasPoint, ctx); } catch { }
                 return;
             }
 

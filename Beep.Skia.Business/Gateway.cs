@@ -85,5 +85,12 @@ namespace Beep.Skia.Business
 
             canvas.DrawText(Name, centerX, textY, SKTextAlign.Center, font, paint);
         }
+
+        protected override void LayoutPorts()
+        {
+            // Diamond-like: avoid tips; allow 1 input, 2 outputs by default
+            EnsurePortCounts(1, 2);
+            LayoutPortsVerticalSegments(topInset: Height * 0.25f, bottomInset: Height * 0.25f);
+        }
     }
 }

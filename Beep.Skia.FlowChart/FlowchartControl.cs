@@ -117,8 +117,9 @@ namespace Beep.Skia.Flowchart
 
         protected void DrawPorts(SKCanvas canvas)
         {
-            using var inPaint = new SKPaint { Color = new SKColor(0x42, 0xA5, 0xF5), IsAntialias = true };
-            using var outPaint = new SKPaint { Color = new SKColor(0x66, 0xBB, 0x6A), IsAntialias = true };
+            // Use Material Design tokens for consistent theming across families
+            using var inPaint = new SKPaint { Color = MaterialColors.SecondaryContainer, IsAntialias = true };
+            using var outPaint = new SKPaint { Color = MaterialColors.Primary, IsAntialias = true };
             foreach (var p in InConnectionPoints) canvas.DrawCircle(p.Center, PortRadius, inPaint);
             foreach (var p in OutConnectionPoints) canvas.DrawCircle(p.Center, PortRadius, outPaint);
         }

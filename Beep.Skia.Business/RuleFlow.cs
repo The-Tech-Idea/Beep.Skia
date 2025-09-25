@@ -33,7 +33,7 @@ namespace Beep.Skia.Business
         {
             using var arrowPaint = new SKPaint
             {
-                Color = IsActive ? SKColors.Green : BorderColor,
+                Color = IsActive ? MaterialColors.Primary : BorderColor,
                 StrokeWidth = 3,
                 Style = SKPaintStyle.Stroke,
                 IsAntialias = true,
@@ -104,6 +104,12 @@ namespace Beep.Skia.Business
                 Y - 5 : Y + Height + 15;
 
             canvas.DrawText(FlowLabel, centerX, textY, SKTextAlign.Center, font, paint);
+        }
+
+        protected override void LayoutPorts()
+        {
+            // RuleFlow is a visual connector; no ports by default.
+            EnsurePortCounts(0, 0);
         }
     }
 }

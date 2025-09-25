@@ -1,5 +1,6 @@
 using SkiaSharp;
 using Beep.Skia.ETL;
+using Beep.Skia.Components;
 
 namespace Beep.Skia.ETL
 {
@@ -15,7 +16,7 @@ namespace Beep.Skia.ETL
         public ETLFilter()
         {
             Title = "Filter";
-            HeaderColor = new SKColor(0xFB, 0xBC, 0x05); // Yellow/Orange
+            HeaderColor = MaterialControl.MaterialColors.SecondaryContainer; // Material token
             Width = 140;
             Height = 72;
             DisplayText = "Filter";

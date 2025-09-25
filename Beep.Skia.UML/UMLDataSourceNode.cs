@@ -40,22 +40,26 @@ namespace Beep.Skia.UML
         /// <param name="context">The drawing context.</param>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
+            // Base top-left for absolute drawing
+            float left = X;
+            float top = Y;
+
             // Draw cylinder shape (database symbol)
             using (var paint = new SKPaint())
             {
                 paint.Color = BackgroundColor;
                 paint.IsAntialias = true;
 
-                // Draw main cylinder body
-                var rect = new SKRect(8, 15, Width - 8, Height - 15);
+                // Draw main cylinder body (absolute coordinates)
+                var rect = new SKRect(left + 8, top + 15, left + Width - 8, top + Height - 15);
                 canvas.DrawRect(rect, paint);
 
                 // Draw top ellipse
-                var topEllipseRect = new SKRect(8, 5, Width - 8, 25);
+                var topEllipseRect = new SKRect(left + 8, top + 5, left + Width - 8, top + 25);
                 canvas.DrawOval(topEllipseRect, paint);
 
                 // Draw bottom ellipse
-                var bottomEllipseRect = new SKRect(8, Height - 25, Width - 8, Height - 5);
+                var bottomEllipseRect = new SKRect(left + 8, top + Height - 25, left + Width - 8, top + Height - 5);
                 canvas.DrawOval(bottomEllipseRect, paint);
 
                 // Draw border
@@ -73,26 +77,26 @@ namespace Beep.Skia.UML
             {
                 using var font = new SKFont(SKTypeface.Default, 9);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
-                canvas.DrawText(Stereotype, 10, 18, font, textPaint);
+                canvas.DrawText(Stereotype, left + 10, top + 18, font, textPaint);
             }
 
             // Draw data source type
             using var typeFont = new SKFont(SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold), 11);
             using var typePaint = new SKPaint { IsAntialias = true, Color = TextColor };
-            canvas.DrawText(DataSourceType, 10, 40, typeFont, typePaint);
+            canvas.DrawText(DataSourceType, left + 10, top + 40, typeFont, typePaint);
 
             // Draw data source name if present
             if (!string.IsNullOrEmpty(DataSourceName))
             {
                 using var nameFont = new SKFont(SKTypeface.Default, 9);
                 using var namePaint = new SKPaint { IsAntialias = true, Color = TextColor };
-                canvas.DrawText(DataSourceName, 10, 58, nameFont, namePaint);
+                canvas.DrawText(DataSourceName, left + 10, top + 58, nameFont, namePaint);
             }
 
-            // Draw database icon
-            DrawDatabaseIcon(canvas, Width - 25, 20);
+            // Draw database icon (absolute)
+            DrawDatabaseIcon(canvas, left + Width - 25, top + 20);
 
-            // Draw connection points
+            // Draw connection points using persisted absolute positions
             DrawConnectionPoints(canvas, context);
 
             // Draw selection indicator
@@ -104,23 +108,8 @@ namespace Beep.Skia.UML
         /// </summary>
         protected override void DrawConnectionPoints(SKCanvas canvas, DrawingContext context)
         {
-            // Position connection points around the cylinder
-            var points = new List<(SKPoint position, SKColor color)>
-            {
-                // Top ellipse center (input)
-                (new SKPoint(Width / 2, 15), SKColors.Blue),
-                // Bottom ellipse center (input)
-                (new SKPoint(Width / 2, Height - 15), SKColors.Blue),
-                // Left side of body (output)
-                (new SKPoint(8, Height / 2), SKColors.Green),
-                // Right side of body (output)
-                (new SKPoint(Width - 8, Height / 2), SKColors.Green)
-            };
-
-            foreach (var (position, color) in points)
-            {
-                DrawConnectionPoint(canvas, position, color);
-            }
+            // Use base implementation which draws from persisted ConnectionPoint positions
+            base.DrawConnectionPoints(canvas, context);
         }
 
         /// <summary>
@@ -164,6 +153,65 @@ namespace Beep.Skia.UML
                 canvas.DrawArc(new SKRect(x, y, x + 12, y + 6), 0, 180, false, paint);
                 canvas.DrawArc(new SKRect(x, y + 6, x + 12, y + 12), 180, 180, false, paint);
             }
+        }
+
+        /// <summary>
+        /// Align UML connection points to the cylinder geometry using absolute coordinates.
+        /// Top/Bottom at +/-15px from edges; Left/Right at +/-8px from sides.
+        /// </summary>
+        protected override void UpdateConnectionPointPositions()
+        {
+            var points = InConnectionPoints; // shared list with OutConnectionPoints
+            if (points == null || points.Count < 4)
+            {
+                base.UpdateConnectionPointPositions();
+                return;
+            }
+
+            var topCp = points[0];
+            var rightCp = points[1];
+            var bottomCp = points[2];
+            var leftCp = points[3];
+
+            float cx = X + Width / 2f;
+            float cy = Y + Height / 2f;
+            float r = topCp is { Radius: > 0 } ? topCp.Radius : 6f;
+
+            // Top at center of top ellipse (15px from top)
+            topCp.Center = new SKPoint(cx, Y + 15);
+            topCp.Position = topCp.Center;
+            topCp.Bounds = new SKRect(topCp.Center.X - r, topCp.Center.Y - r, topCp.Center.X + r, topCp.Center.Y + r);
+            topCp.Rect = topCp.Bounds;
+            topCp.Index = 0;
+            topCp.Component = this;
+            topCp.Type = ConnectionPointType.In; // consume data on top by convention
+
+            // Right at center of right side (8px inset)
+            rightCp.Center = new SKPoint(X + Width - 8, cy);
+            rightCp.Position = rightCp.Center;
+            rightCp.Bounds = new SKRect(rightCp.Center.X - r, rightCp.Center.Y - r, rightCp.Center.X + r, rightCp.Center.Y + r);
+            rightCp.Rect = rightCp.Bounds;
+            rightCp.Index = 1;
+            rightCp.Component = this;
+            rightCp.Type = ConnectionPointType.Out; // emit data to the right
+
+            // Bottom at center of bottom ellipse (15px from bottom)
+            bottomCp.Center = new SKPoint(cx, Y + Height - 15);
+            bottomCp.Position = bottomCp.Center;
+            bottomCp.Bounds = new SKRect(bottomCp.Center.X - r, bottomCp.Center.Y - r, bottomCp.Center.X + r, bottomCp.Center.Y + r);
+            bottomCp.Rect = bottomCp.Bounds;
+            bottomCp.Index = 2;
+            bottomCp.Component = this;
+            bottomCp.Type = ConnectionPointType.Out; // downstream out by convention
+
+            // Left at center of left side (8px inset)
+            leftCp.Center = new SKPoint(X + 8, cy);
+            leftCp.Position = leftCp.Center;
+            leftCp.Bounds = new SKRect(leftCp.Center.X - r, leftCp.Center.Y - r, leftCp.Center.X + r, leftCp.Center.Y + r);
+            leftCp.Rect = leftCp.Bounds;
+            leftCp.Index = 3;
+            leftCp.Component = this;
+            leftCp.Type = ConnectionPointType.In; // upstream input from left
         }
     }
 }

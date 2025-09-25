@@ -29,14 +29,14 @@ namespace Beep.Skia.Business
         {
             using var fillPaint = new SKPaint
             {
-                Color = IsTriggered ? SKColors.LightGreen : BackgroundColor,
+                Color = IsTriggered ? MaterialColors.SecondaryContainer : BackgroundColor,
                 Style = SKPaintStyle.Fill,
                 IsAntialias = true
             };
 
             using var borderPaint = new SKPaint
             {
-                Color = BorderColor,
+                Color = IsTriggered ? MaterialColors.Secondary : BorderColor,
                 StrokeWidth = IsTriggered ? 3 : BorderThickness,
                 Style = SKPaintStyle.Stroke,
                 IsAntialias = true
@@ -57,7 +57,7 @@ namespace Beep.Skia.Business
         {
             using var iconPaint = new SKPaint
             {
-                Color = IsTriggered ? SKColors.DarkGreen : BorderColor,
+                Color = IsTriggered ? MaterialColors.Secondary : BorderColor,
                 StrokeWidth = 2,
                 Style = SKPaintStyle.Stroke,
                 IsAntialias = true,
@@ -116,6 +116,13 @@ namespace Beep.Skia.Business
                     canvas.DrawCircle(centerX, centerY + iconSize * 0.4f, 2, iconPaint);
                     break;
             }
+        }
+
+        protected override void LayoutPorts()
+        {
+            // Default event node: treat as circle (ellipse). One in/one out for generic events.
+            EnsurePortCounts(1, 1);
+            LayoutPortsOnEllipse(topInset: 4f, bottomInset: 4f, outwardOffset: 2f);
         }
 
         protected override void DrawComponentText(SKCanvas canvas)

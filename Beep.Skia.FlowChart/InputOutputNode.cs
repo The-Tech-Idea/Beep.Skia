@@ -8,7 +8,20 @@ namespace Beep.Skia.Flowchart
     /// </summary>
     public class InputOutputNode : FlowchartControl
     {
-        public string Label { get; set; } = "Input/Output";
+        private string _label = "Input/Output";
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (!string.Equals(_label, v, System.StringComparison.Ordinal))
+                {
+                    _label = v;
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public InputOutputNode()
         {

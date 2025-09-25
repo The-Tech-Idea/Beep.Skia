@@ -30,8 +30,8 @@ namespace Beep.Skia.DFD
             var r = Bounds;
             float capHeight = r.Height * 0.25f;
 
-            using var fill = new SKPaint { Color = new SKColor(0xEF, 0xEB, 0xE9), IsAntialias = true };
-            using var stroke = new SKPaint { Color = new SKColor(0x6D, 0x4C, 0x41), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
+            using var fill = new SKPaint { Color = MaterialColors.Surface, IsAntialias = true };
+            using var stroke = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
 
             // Body
             canvas.DrawRect(new SKRect(r.Left, r.Top + capHeight / 2, r.Right, r.Bottom - capHeight / 2), fill);

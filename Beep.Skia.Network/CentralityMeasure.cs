@@ -335,7 +335,7 @@ namespace Beep.Skia.Network
             var panelRect = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw panel background
-            DrawFilledRect(canvas, panelRect, SKColors.White);
+            DrawFilledRect(canvas, panelRect, MaterialColors.SurfaceContainer);
 
             // Draw title
             float currentY = Y + 15;
@@ -350,8 +350,8 @@ namespace Beep.Skia.Network
 
             // Draw top nodes
             using var font = new SKFont { Size = 11 };
-            using var namePaint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
-            using var valuePaint = new SKPaint { Color = SKColors.Gray, IsAntialias = true };
+            using var namePaint = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
+            using var valuePaint = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true };
 
             int displayCount = Math.Min(MaxDisplayCount, NodeCentralities.Count);
             for (int i = 0; i < displayCount; i++)

@@ -1,6 +1,7 @@
 using SkiaSharp;
 using Beep.Skia;
 using Beep.Skia.Model;
+using Beep.Skia.Components;
 
 namespace Beep.Skia.Network
 {
@@ -9,7 +10,7 @@ namespace Beep.Skia.Network
     {
         public SKPoint Start { get; set; }
         public SKPoint End { get; set; }
-        public SKColor Color { get; set; } = SKColors.DarkSlateGray;
+    public SKColor Color { get; set; } = MaterialDesignColors.Outline;
         public float Thickness { get; set; } = 2f;
 
         // Additional properties for advanced network functionality
@@ -39,11 +40,7 @@ namespace Beep.Skia.Network
             }
 
             // Determine effective color
-            SKColor effectiveColor = Color;
-            if (IsHighlighted)
-            {
-                effectiveColor = new SKColor(0xFF, 0x98, 0x00); // Orange highlight
-            }
+            SKColor effectiveColor = IsHighlighted ? MaterialDesignColors.Tertiary : Color;
 
             using var paint = new SKPaint { Color = effectiveColor, Style = SKPaintStyle.Stroke, StrokeWidth = Thickness, IsAntialias = true };
             // Simple cubic curve for aesthetics

@@ -85,7 +85,7 @@ namespace Beep.Skia.Business
         {
             using var indicatorPaint = new SKPaint
             {
-                Color = SKColors.Gray,
+                Color = MaterialColors.OutlineVariant,
                 StrokeWidth = 1,
                 Style = SKPaintStyle.Stroke,
                 IsAntialias = true
@@ -111,7 +111,7 @@ namespace Beep.Skia.Business
             {
                 using var textPaint = new SKPaint
                 {
-                    Color = SKColors.Gray,
+                    Color = MaterialColors.OutlineVariant,
                     IsAntialias = true
                 };
                 using var font = new SKFont(SKTypeface.Default, 6);
@@ -166,6 +166,13 @@ namespace Beep.Skia.Business
         public void ToggleCollapsed()
         {
             IsCollapsed = !IsCollapsed;
+        }
+
+        protected override void LayoutPorts()
+        {
+            // Rounded rectangle: 1 in / 1 out
+            EnsurePortCounts(1, 1);
+            LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
         }
     }
 }

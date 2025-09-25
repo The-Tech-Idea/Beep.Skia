@@ -1,5 +1,6 @@
 using SkiaSharp;
 using Beep.Skia.Model;
+using Beep.Skia.Components;
 
 namespace Beep.Skia.ERD
 {
@@ -8,9 +9,12 @@ namespace Beep.Skia.ERD
     /// </summary>
     public class ERDAttribute : ERDControl
     {
-        public string NameText { get; set; } = "Attribute";
-        public bool IsKey { get; set; } = false;
-        public bool IsMultivalued { get; set; } = false;
+        private string _nameText = "Attribute";
+        public string NameText { get => _nameText; set { if (_nameText == value) return; _nameText = value ?? string.Empty; InvalidateVisual(); } }
+        private bool _isKey = false;
+        public bool IsKey { get => _isKey; set { if (_isKey == value) return; _isKey = value; InvalidateVisual(); } }
+        private bool _isMultivalued = false;
+        public bool IsMultivalued { get => _isMultivalued; set { if (_isMultivalued == value) return; _isMultivalued = value; InvalidateVisual(); } }
 
         public ERDAttribute()
         {
@@ -49,9 +53,9 @@ namespace Beep.Skia.ERD
             LayoutPorts();
 
             var b = Bounds;
-            using var stroke = new SKPaint { Color = new SKColor(0x19, 0x76, 0xD2), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
-            using var fill = new SKPaint { Color = new SKColor(0xE3, 0xF2, 0xFD), IsAntialias = true };
-            using var text = new SKPaint { Color = SKColors.Black, IsAntialias = true };
+            using var stroke = new SKPaint { Color = MaterialControl.MaterialColors.Outline, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
+            using var fill = new SKPaint { Color = MaterialControl.MaterialColors.Surface, IsAntialias = true };
+            using var text = new SKPaint { Color = MaterialControl.MaterialColors.OnSurface, IsAntialias = true };
             using var font = new SKFont(SKTypeface.Default, 14);
 
             canvas.DrawOval(b, fill);

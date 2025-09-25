@@ -23,7 +23,7 @@ namespace Beep.Skia.Business
             Height = 60;
             Name = "Annotation";
             ComponentType = BusinessComponentType.Task;
-            BackgroundColor = SKColors.LightYellow;
+            BackgroundColor = MaterialColors.SurfaceContainer;
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)
@@ -176,6 +176,13 @@ namespace Beep.Skia.Business
             {
                 canvas.DrawText("...", X + Width - 15, startY + (2 * lineHeight), SKTextAlign.Left, font, paint);
             }
+        }
+
+        protected override void LayoutPorts()
+        {
+            // Non-interrupting box: default 0 in / 0 out unless used as connector; keep 1/1 for flexibility
+            EnsurePortCounts(1, 1);
+            LayoutPortsVerticalSegments(topInset: 4f, bottomInset: 4f);
         }
     }
 }

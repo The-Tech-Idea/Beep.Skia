@@ -197,9 +197,34 @@ namespace Beep.Skia
         /// </summary>
         /// <param name="point">The point to test.</param>
         /// <returns>The component at the specified point, or null if no component is found.</returns>
-        internal SkiaComponent GetComponentAt(SKPoint point)
+        internal SkiaComponent GetComponentAt(SKPoint canvasPoint)
         {
-            return _components.LastOrDefault(component => component.HitTest(point));
+            // Compute corresponding screen point for testing static overlays
+            SKPoint screenPoint;
+            try { screenPoint = new SKPoint(canvasPoint.X * Zoom + PanOffset.X, canvasPoint.Y * Zoom + PanOffset.Y); }
+            catch { screenPoint = canvasPoint; }
+
+            for (int i = _components.Count - 1; i >= 0; i--)
+            {
+                var component = _components[i];
+                if (component == null) continue;
+                try
+                {
+                    if (component.IsStatic)
+                    {
+                        // Screen-space hit-test
+                        var rect = new SKRect(component.X, component.Y, component.X + component.Width, component.Y + component.Height);
+                        if (rect.Contains(screenPoint)) return component;
+                    }
+                    else
+                    {
+                        // World-space hit-test
+                        if (component.HitTest(canvasPoint)) return component;
+                    }
+                }
+                catch { }
+            }
+            return null;
         }
 
         /// <summary>

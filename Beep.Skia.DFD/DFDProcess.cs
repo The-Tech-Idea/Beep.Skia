@@ -28,8 +28,8 @@ namespace Beep.Skia.DFD
             LayoutPorts();
 
             var rect = Bounds;
-            using var fill = new SKPaint { Color = new SKColor(0xE0, 0xF2, 0xF1), IsAntialias = true };
-            using var stroke = new SKPaint { Color = new SKColor(0x00, 0x96, 0x88), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
+            using var fill = new SKPaint { Color = MaterialColors.Surface, IsAntialias = true };
+            using var stroke = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
 
             canvas.DrawRoundRect(rect, CornerRadius, CornerRadius, fill);
             canvas.DrawRoundRect(rect, CornerRadius, CornerRadius, stroke);

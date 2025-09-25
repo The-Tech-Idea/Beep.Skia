@@ -285,7 +285,8 @@ namespace Beep.Skia.UML
                 IsAntialias = true
             };
 
-            var center = point.Position;
+            // Use Center to avoid drift if Offset is used elsewhere
+            var center = point.Center == default ? point.Position : point.Center;
             canvas.DrawCircle(center.X, center.Y, point.Radius, paint);
             canvas.DrawCircle(center.X, center.Y, point.Radius, borderPaint);
         }

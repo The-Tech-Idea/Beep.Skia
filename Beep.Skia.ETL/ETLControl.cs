@@ -1,6 +1,7 @@
 using SkiaSharp;
 using Beep.Skia.Model;
 using System;
+using Beep.Skia.Components;
 
 namespace Beep.Skia.ETL
 {
@@ -8,25 +9,26 @@ namespace Beep.Skia.ETL
     /// Base visual for ETL nodes: rounded rectangle with a header/title and optional subtitle.
     /// Provides helpers to create and maintain input/output connection points along the left/right edges.
     /// </summary>
-    public abstract class ETLControl : SkiaComponent
+    public abstract class ETLControl : MaterialControl
     {
-    private string _title = "ETL";
-    public string Title { get => _title; set { if (_title == value) return; _title = value ?? string.Empty; InvalidateVisual(); } }
+        private string _title = "ETL";
+        public string Title { get => _title; set { if (_title == value) return; _title = value ?? string.Empty; InvalidateVisual(); } }
 
-    private string _subtitle = string.Empty;
-    public string Subtitle { get => _subtitle; set { if (_subtitle == value) return; _subtitle = value ?? string.Empty; InvalidateVisual(); } }
+        private string _subtitle = string.Empty;
+        public string Subtitle { get => _subtitle; set { if (_subtitle == value) return; _subtitle = value ?? string.Empty; InvalidateVisual(); } }
 
-    private SKColor _background = new SKColor(0xF5, 0xF5, 0xF5);
-    public SKColor Background { get => _background; set { if (_background == value) return; _background = value; InvalidateVisual(); } }
+        // Adopt Material Design tokens for consistent theming
+        private SKColor _background = MaterialColors.Surface;
+        public SKColor Background { get => _background; set { if (_background == value) return; _background = value; InvalidateVisual(); } }
 
-    private SKColor _stroke = new SKColor(0x60, 0x60, 0x60);
-    public SKColor Stroke { get => _stroke; set { if (_stroke == value) return; _stroke = value; InvalidateVisual(); } }
+        private SKColor _stroke = MaterialColors.Outline;
+        public SKColor Stroke { get => _stroke; set { if (_stroke == value) return; _stroke = value; InvalidateVisual(); } }
 
-    private SKColor _headerColor = new SKColor(0x42, 0x85, 0xF4); // blue
-    public SKColor HeaderColor { get => _headerColor; set { if (_headerColor == value) return; _headerColor = value; InvalidateVisual(); } }
+        private SKColor _headerColor = MaterialColors.PrimaryContainer;
+        public SKColor HeaderColor { get => _headerColor; set { if (_headerColor == value) return; _headerColor = value; InvalidateVisual(); } }
 
-    private SKColor _headerTextColor = SKColors.White;
-    public SKColor HeaderTextColor { get => _headerTextColor; set { if (_headerTextColor == value) return; _headerTextColor = value; InvalidateVisual(); } }
+        private SKColor _headerTextColor = MaterialColors.OnPrimaryContainer;
+        public SKColor HeaderTextColor { get => _headerTextColor; set { if (_headerTextColor == value) return; _headerTextColor = value; InvalidateVisual(); } }
 
         // Layout constants
         protected const float CornerRadius = 8f;
@@ -40,11 +42,17 @@ namespace Beep.Skia.ETL
             Height = Math.Max(64, Height);
         }
 
-        // Local no-op invalidation hook (SkiaComponent doesn't expose InvalidateVisual).
-        // This allows ETL property setters to trigger a potential redraw path in the future.
-        protected virtual void InvalidateVisual()
+        // Allow runtime adjustment via property editor
+        public int InPortCount
         {
-            // No-op; host controls may call SkiaHostControl.InvalidateSurface or similar.
+            get => InConnectionPoints?.Count ?? 0;
+            set { int v = Math.Max(0, value); EnsurePortCounts(v, OutPortCount); InvalidateVisual(); }
+        }
+
+        public int OutPortCount
+        {
+            get => OutConnectionPoints?.Count ?? 0;
+            set { int v = Math.Max(0, value); EnsurePortCounts(InPortCount, v); InvalidateVisual(); }
         }
 
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
@@ -138,8 +146,8 @@ namespace Beep.Skia.ETL
 
         protected void DrawPorts(SKCanvas canvas)
         {
-            using var inFill = new SKPaint { Color = new SKColor(0x34, 0xA8, 0x53), Style = SKPaintStyle.Fill, IsAntialias = true };
-            using var outFill = new SKPaint { Color = new SKColor(0xFB, 0xBC, 0x05), Style = SKPaintStyle.Fill, IsAntialias = true };
+            using var inFill = new SKPaint { Color = MaterialColors.SecondaryContainer, Style = SKPaintStyle.Fill, IsAntialias = true };
+            using var outFill = new SKPaint { Color = MaterialColors.Primary, Style = SKPaintStyle.Fill, IsAntialias = true };
             foreach (var p in InConnectionPoints)
             {
                 canvas.DrawCircle(p.Center, PortRadius, inFill);
@@ -150,10 +158,10 @@ namespace Beep.Skia.ETL
             }
         }
 
-        protected override void UpdateBounds()
+        protected override void OnBoundsChanged(SKRect bounds)
         {
-            base.UpdateBounds();
             LayoutPorts();
+            base.OnBoundsChanged(bounds);
         }
 
         /// <summary>

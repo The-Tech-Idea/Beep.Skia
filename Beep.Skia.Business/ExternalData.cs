@@ -49,5 +49,12 @@ namespace Beep.Skia.Business
             canvas.DrawPath(path, fillPaint);
             canvas.DrawPath(path, borderPaint);
         }
+
+        protected override void LayoutPorts()
+        {
+            // Parallelogram: use vertical segments; 1 in / 1 out
+            EnsurePortCounts(1, 1);
+            LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
+        }
     }
 }

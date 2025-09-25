@@ -17,6 +17,9 @@
     <ProjectReference Include="..\Beep.Skia.Winform.Controls\Beep.Skia.Winform.Controls.csproj" />
     <ProjectReference Include="..\Beep.Skia.DFD\Beep.Skia.DFD.csproj" />
     <ProjectReference Include="..\Beep.Skia.ERD\Beep.Skia.ERD.csproj" />
+    <ProjectReference Include="..\Beep.Skia.FlowChart\Beep.Skia.FlowChart.csproj" />
+    <ProjectReference Include="..\Beep.Skia.PM\Beep.Skia.PM.csproj" />
+    <ProjectReference Include="..\Beep.Skia.StateMachine\Beep.Skia.StateMachine.csproj" />
   </ItemGroup>
 
 </Project>

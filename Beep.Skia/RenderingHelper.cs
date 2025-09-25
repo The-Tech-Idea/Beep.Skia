@@ -149,6 +149,7 @@ namespace Beep.Skia
                 Bounds = new SKRect(0, 0, canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height)
             };
 
+            // Update all components once per frame
             foreach (var comp in _drawingManager.Components.ToList())
             {
                 try
@@ -180,6 +181,11 @@ namespace Beep.Skia
                 }
             }
 
+            // Partition components into dynamic (world space) vs static (screen space overlays)
+            var dynamicComponents = _drawingManager.Components.Where(c => !(c?.IsStatic ?? false)).ToList();
+            var staticComponents = _drawingManager.Components.Where(c => (c?.IsStatic ?? false)).ToList();
+
+            // Apply world transform for dynamic content
             canvas.Translate(_drawingManager.PanOffset.X, _drawingManager.PanOffset.Y);
             canvas.Scale(_drawingManager.Zoom);
 
@@ -215,7 +221,7 @@ namespace Beep.Skia
             }
             catch { }
 
-            // Draw grid if enabled
+            // Draw grid if enabled (grid lives in world space)
             DrawGrid(canvas);
 
             // Create a single, correct context to be passed to all components
@@ -226,8 +232,8 @@ namespace Beep.Skia
                 Bounds = canvas.DeviceClipBounds
             };
 
-            // Draw components
-            foreach (var component in _drawingManager.Components)
+            // Draw dynamic (world-space) components only
+            foreach (var component in dynamicComponents)
             {
                 component.Draw(canvas, drawingContext);
             }
@@ -255,6 +261,21 @@ namespace Beep.Skia
 
             // Restore the canvas state
             canvas.Restore();
+
+            // Draw static (screen-space) overlay components without world transforms
+            if (staticComponents.Count > 0)
+            {
+                var uiContext = new DrawingContext
+                {
+                    PanOffset = new SKPoint(0, 0),
+                    Zoom = 1f,
+                    Bounds = canvas.DeviceClipBounds
+                };
+                foreach (var component in staticComponents)
+                {
+                    try { component.Draw(canvas, uiContext); } catch { }
+                }
+            }
         }
 
         /// <summary>

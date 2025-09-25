@@ -8,7 +8,20 @@ namespace Beep.Skia.Flowchart
     /// </summary>
     public class PredefinedProcessNode : FlowchartControl
     {
-        public string Label { get; set; } = "Predefined Process";
+        private string _label = "Predefined Process";
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (!string.Equals(_label, v, System.StringComparison.Ordinal))
+                {
+                    _label = v;
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public PredefinedProcessNode()
         {

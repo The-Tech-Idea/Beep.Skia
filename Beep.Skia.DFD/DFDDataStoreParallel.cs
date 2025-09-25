@@ -30,8 +30,8 @@ namespace Beep.Skia.DFD
             LayoutPorts();
 
             var r = Bounds;
-            using var stroke = new SKPaint { Color = new SKColor(0xFB, 0x8C, 0x00), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
-            using var faint = new SKPaint { Color = stroke.Color.WithAlpha(50), IsAntialias = true, Style = SKPaintStyle.Fill };
+            using var stroke = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
+            using var faint = new SKPaint { Color = MaterialColors.SurfaceContainer, IsAntialias = true, Style = SKPaintStyle.Fill };
 
             // Slight background tint
             canvas.DrawRect(r, faint);

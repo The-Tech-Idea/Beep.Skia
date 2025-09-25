@@ -51,7 +51,7 @@ namespace Beep.Skia.Business
         {
             using var iconPaint = new SKPaint
             {
-                Color = IsEnabled ? SKColors.Orange : SKColors.Gray,
+                Color = IsEnabled ? MaterialColors.Tertiary : MaterialColors.OutlineVariant,
                 StrokeWidth = 3,
                 Style = SKPaintStyle.Stroke,
                 IsAntialias = true,
@@ -91,6 +91,12 @@ namespace Beep.Skia.Business
             float textY = Y + Height + 12;
 
             canvas.DrawText(ActionText, centerX, textY, SKTextAlign.Center, font, paint);
+        }
+
+        protected override void LayoutPorts()
+        {
+            EnsurePortCounts(1, 1);
+            LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
         }
     }
 }

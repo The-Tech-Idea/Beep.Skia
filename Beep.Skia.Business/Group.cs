@@ -14,7 +14,7 @@ namespace Beep.Skia.Business
     {
         public List<BusinessControl> GroupedComponents { get; set; } = new List<BusinessControl>();
         public string GroupName { get; set; } = "Group";
-        public SKColor GroupColor { get; set; } = SKColors.LightBlue;
+    public SKColor GroupColor { get; set; } = MaterialColors.Tertiary;
         public GroupType GroupType { get; set; } = GroupType.Process;
 
         public Group()
@@ -23,7 +23,7 @@ namespace Beep.Skia.Business
             Height = 150;
             Name = "Group";
             ComponentType = BusinessComponentType.Task;
-            BackgroundColor = SKColors.Transparent;
+            BackgroundColor = MaterialColors.Surface;
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)
@@ -161,6 +161,12 @@ namespace Beep.Skia.Business
             Y = minY - padding;
             Width = (maxX - minX) + (padding * 2);
             Height = (maxY - minY) + (padding * 2);
+        }
+
+        protected override void LayoutPorts()
+        {
+            // Group is a container; typically not connected directly. Keep 0 ports by default.
+            EnsurePortCounts(0, 0);
         }
     }
 }

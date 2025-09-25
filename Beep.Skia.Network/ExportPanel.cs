@@ -70,7 +70,7 @@ namespace Beep.Skia.Network
             Name = "ExportPanel";
             DisplayText = "Export";
             TextPosition = TextPosition.Above;
-            PrimaryColor = new SKColor(0x9C, 0x27, 0xB0); // Purple
+            PrimaryColor = MaterialColors.Secondary;
         }
 
         /// <summary>
@@ -365,7 +365,7 @@ namespace Beep.Skia.Network
             var panelRect = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw panel background
-            DrawFilledRect(canvas, panelRect, SKColors.White);
+            DrawFilledRect(canvas, panelRect, MaterialColors.SurfaceContainer);
 
             if (!ShowOptions)
                 return;
@@ -383,9 +383,6 @@ namespace Beep.Skia.Network
 
             // Draw format buttons
             using var buttonFont = new SKFont { Size = 10 };
-            using var buttonPaint = new SKPaint { Color = SKColors.LightGray, IsAntialias = true };
-            using var selectedPaint = new SKPaint { Color = PrimaryColor, IsAntialias = true };
-            using var textPaint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
 
             float buttonHeight = 18;
 
@@ -394,12 +391,14 @@ namespace Beep.Skia.Network
                 var buttonRect = new SKRect(leftMargin, currentY, X + Width - 10, currentY + buttonHeight);
 
                 // Highlight selected format
-                var paint = format == SelectedFormat ? PrimaryColor : SKColors.LightGray;
+                var paint = format == SelectedFormat ? PrimaryColor : MaterialColors.SurfaceVariant;
                 DrawFilledRect(canvas, buttonRect, paint);
 
                 // Draw format name
                 string formatName = format.ToString();
-                canvas.DrawText(formatName, buttonRect.MidX, buttonRect.MidY + 3, SKTextAlign.Center, buttonFont, textPaint);
+                var textColor = paint == PrimaryColor ? MaterialColors.OnPrimary : MaterialColors.OnSurface;
+                using var textPaintLocal = new SKPaint { Color = textColor, IsAntialias = true };
+                canvas.DrawText(formatName, buttonRect.MidX, buttonRect.MidY + 3, SKTextAlign.Center, buttonFont, textPaintLocal);
 
                 currentY += buttonHeight + 2;
             }
@@ -410,12 +409,12 @@ namespace Beep.Skia.Network
 
             if (IsExporting)
             {
-                statusPaint = new SKPaint { Color = SKColors.Orange, IsAntialias = true };
+                statusPaint = new SKPaint { Color = MaterialColors.Tertiary, IsAntialias = true };
                 canvas.DrawText("Exporting...", leftMargin, currentY + lineHeight - 3, SKTextAlign.Left, statusFont, statusPaint);
             }
             else if (!string.IsNullOrEmpty(LastExportPath))
             {
-                statusPaint = new SKPaint { Color = SKColors.Green, IsAntialias = true };
+                statusPaint = new SKPaint { Color = MaterialColors.Primary, IsAntialias = true };
                 string fileName = Path.GetFileName(LastExportPath);
                 canvas.DrawText($"Exported: {fileName}", leftMargin, currentY + lineHeight - 3, SKTextAlign.Left, statusFont, statusPaint);
             }

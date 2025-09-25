@@ -15,6 +15,7 @@ namespace Beep.Skia.Components
     {
         // Hide this infrastructure component from the palette/toolbox
         public override bool ShowInPalette { get; set; } = false;
+        // Note: Render as an overlay; do not move/scale with canvas pan/zoom
         #region Private Fields
         private SkiaComponent _selectedComponent;
         private Beep.Skia.Model.IConnectionLine _selectedLine;
@@ -88,6 +89,7 @@ namespace Beep.Skia.Components
         /// </summary>
         public ComponentPropertyEditor()
         {
+            this.IsStatic = true;
             InitializeComponents();
         }
         #endregion
@@ -388,6 +390,11 @@ namespace Beep.Skia.Components
             {
                 AddFlowchartProperties(_selectedComponent);
             }
+            // PM nodes
+            else if (componentType.Namespace == "Beep.Skia.PM")
+            {
+                AddPMProperties(_selectedComponent);
+            }
         }
 
         /// <summary>
@@ -481,6 +488,72 @@ namespace Beep.Skia.Components
                 AddBooleanProperty("Out Ports On Top", (bool)(outOnTop.GetValue(component) ?? false), v =>
                 {
                     outOnTop.SetValue(component, v);
+                    _isDirty = true;
+                });
+            }
+        }
+
+        /// <summary>
+        /// Adds properties for Project Management (PM) components using reflection.
+        /// Supports common port counts and typical PM fields like Title/Label/PercentComplete.
+        /// </summary>
+        private void AddPMProperties(SkiaComponent component)
+        {
+            var type = component.GetType();
+
+            // Common counts on PMControl: InPortCount / OutPortCount
+            var inCountProp = type.GetProperty("InPortCount");
+            if (inCountProp != null)
+            {
+                AddNumericProperty("In Ports", Convert.ToSingle(inCountProp.GetValue(component) ?? 0), v =>
+                {
+                    inCountProp.SetValue(component, (int)MathF.Round(v));
+                    _isDirty = true;
+                });
+            }
+
+            var outCountProp = type.GetProperty("OutPortCount");
+            if (outCountProp != null)
+            {
+                AddNumericProperty("Out Ports", Convert.ToSingle(outCountProp.GetValue(component) ?? 0), v =>
+                {
+                    outCountProp.SetValue(component, (int)MathF.Round(v));
+                    _isDirty = true;
+                });
+            }
+
+            // Typical PM properties by convention
+            var titleProp = type.GetProperty("Title");
+            if (titleProp != null)
+            {
+                AddTextProperty("Title", (string)(titleProp.GetValue(component) ?? string.Empty), s =>
+                {
+                    titleProp.SetValue(component, s);
+                    _isDirty = true;
+                });
+            }
+
+            var labelProp = type.GetProperty("Label");
+            if (labelProp != null)
+            {
+                AddTextProperty("Label", (string)(labelProp.GetValue(component) ?? string.Empty), s =>
+                {
+                    labelProp.SetValue(component, s);
+                    _isDirty = true;
+                });
+            }
+
+            var percentProp = type.GetProperty("PercentComplete");
+            if (percentProp != null)
+            {
+                var val = percentProp.GetValue(component);
+                float f = 0f;
+                try { f = Convert.ToSingle(val ?? 0); } catch { }
+                AddNumericProperty("% Complete", f, v =>
+                {
+                    // clamp 0..100
+                    var iv = (int)MathF.Round(Math.Clamp(v, 0, 100));
+                    percentProp.SetValue(component, iv);
                     _isDirty = true;
                 });
             }

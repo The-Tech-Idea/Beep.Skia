@@ -25,15 +25,15 @@ namespace Beep.Skia.DFD
             if (!context.Bounds.IntersectsWith(Bounds)) return;
 
             var r = Bounds;
-            using var fill = new SKPaint { Color = new SKColor(0xFF, 0xF9, 0xC4), IsAntialias = true }; // light yellow
-            using var stroke = new SKPaint { Color = new SKColor(0xF9, 0xA8, 0x25), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
+            using var fill = new SKPaint { Color = MaterialColors.SurfaceContainer, IsAntialias = true };
+            using var stroke = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
 
             canvas.DrawRect(r, fill);
             canvas.DrawRect(r, stroke);
 
             // Folded corner effect (top-right)
             float fold = 12f;
-            using var foldPaint = new SKPaint { Color = new SKColor(0xFF, 0xEE, 0x58), IsAntialias = true };
+            using var foldPaint = new SKPaint { Color = MaterialColors.SecondaryContainer, IsAntialias = true };
             var path = new SKPath();
             path.MoveTo(r.Right - fold, r.Top);
             path.LineTo(r.Right, r.Top);

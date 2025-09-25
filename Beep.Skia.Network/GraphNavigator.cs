@@ -81,7 +81,7 @@ namespace Beep.Skia.Network
             Name = "GraphNavigator";
             DisplayText = "Navigator";
             TextPosition = TextPosition.Above;
-            PrimaryColor = new SKColor(0x21, 0x96, 0xF3); // Blue
+            PrimaryColor = MaterialColors.Primary;
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace Beep.Skia.Network
             var panelRect = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw panel background
-            DrawFilledRect(canvas, panelRect, SKColors.White);
+            DrawFilledRect(canvas, panelRect, MaterialColors.SurfaceContainer);
 
             if (!ShowControls)
                 return;
@@ -258,17 +258,17 @@ namespace Beep.Skia.Network
 
             // Draw zoom controls
             using var controlFont = new SKFont { Size = 10 };
-            using var controlPaint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
-            using var buttonPaint = new SKPaint { Color = SKColors.LightGray, IsAntialias = true };
+            using var controlPaint = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
+            using var buttonPaint = new SKPaint { Color = MaterialColors.SurfaceVariant, IsAntialias = true };
 
             // Zoom buttons
             var zoomInRect = new SKRect(leftMargin, currentY, leftMargin + 25, currentY + 18);
             var zoomOutRect = new SKRect(leftMargin + 30, currentY, leftMargin + 55, currentY + 18);
             var resetRect = new SKRect(leftMargin + 60, currentY, leftMargin + 110, currentY + 18);
 
-            DrawFilledRect(canvas, zoomInRect, SKColors.LightGray);
-            DrawFilledRect(canvas, zoomOutRect, SKColors.LightGray);
-            DrawFilledRect(canvas, resetRect, SKColors.LightGray);
+            DrawFilledRect(canvas, zoomInRect, MaterialColors.SurfaceVariant);
+            DrawFilledRect(canvas, zoomOutRect, MaterialColors.SurfaceVariant);
+            DrawFilledRect(canvas, resetRect, MaterialColors.SurfaceVariant);
 
             canvas.DrawText("+", zoomInRect.MidX, zoomInRect.MidY + 3, SKTextAlign.Center, controlFont, controlPaint);
             canvas.DrawText("-", zoomOutRect.MidX, zoomOutRect.MidY + 3, SKTextAlign.Center, controlFont, controlPaint);
@@ -278,7 +278,7 @@ namespace Beep.Skia.Network
 
             // Draw zoom level
             using var infoFont = new SKFont { Size = 10 };
-            using var infoPaint = new SKPaint { Color = SKColors.Gray, IsAntialias = true };
+            using var infoPaint = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true };
             string zoomText = $"Zoom: {(ZoomLevel * 100):F0}%";
             canvas.DrawText(zoomText, leftMargin, currentY + lineHeight - 3, SKTextAlign.Left, infoFont, infoPaint);
 

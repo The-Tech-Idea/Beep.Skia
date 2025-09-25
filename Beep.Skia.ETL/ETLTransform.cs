@@ -1,5 +1,6 @@
 using SkiaSharp;
 using Beep.Skia.ETL;
+using Beep.Skia.Components;
 
 namespace Beep.Skia.ETL
 {
@@ -15,7 +16,7 @@ namespace Beep.Skia.ETL
         public ETLTransform()
         {
             Title = "Transform";
-            HeaderColor = new SKColor(0x43, 0xA0, 0x47); // Green
+            HeaderColor = MaterialControl.MaterialColors.SecondaryContainer; // Material token
             Width = 160;
             Height = 84;
             DisplayText = "Transform";

@@ -94,7 +94,7 @@ namespace Beep.Skia.Business
         {
             using var indicatorPaint = new SKPaint
             {
-                Color = SKColors.Orange,
+                Color = MaterialColors.Tertiary,
                 StrokeWidth = 2,
                 Style = SKPaintStyle.Stroke,
                 IsAntialias = true
@@ -132,6 +132,13 @@ namespace Beep.Skia.Business
             {
                 canvas.DrawText($"{RuleCount} rules", centerX, countY, SKTextAlign.Center, countFont, paint);
             }
+        }
+
+        protected override void LayoutPorts()
+        {
+            // Gear-like circular control: treat as ellipse; default 1 in / 1 out
+            EnsurePortCounts(1, 1);
+            LayoutPortsOnEllipse(topInset: 6f, bottomInset: 6f, outwardOffset: 2f);
         }
     }
 }

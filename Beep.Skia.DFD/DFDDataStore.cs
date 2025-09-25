@@ -28,13 +28,13 @@ namespace Beep.Skia.DFD
             LayoutPorts();
 
             var r = Bounds;
-            using var fill = new SKPaint { Color = new SKColor(0xFF, 0xF3, 0xE0), IsAntialias = true };
-            using var stroke = new SKPaint { Color = new SKColor(0xFB, 0x8C, 0x00), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
+            using var fill = new SKPaint { Color = MaterialColors.Surface, IsAntialias = true };
+            using var stroke = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
 
             canvas.DrawRect(r, fill);
             canvas.DrawRect(r, stroke);
 
-            using var line = new SKPaint { Color = stroke.Color, IsAntialias = true, StrokeWidth = 2 };
+            using var line = new SKPaint { Color = stroke.Color, IsAntialias = true, StrokeWidth = 1.5f };
             canvas.DrawLine(r.Left + 6, r.Top, r.Left + 6, r.Bottom, line);
 
             DrawPorts(canvas);

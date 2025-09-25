@@ -1,6 +1,7 @@
 using SkiaSharp;
 using Beep.Skia;
 using Beep.Skia.Model;
+using Beep.Skia.Components;
 
 namespace Beep.Skia.Network
 {
@@ -8,27 +9,27 @@ namespace Beep.Skia.Network
     /// Base class for all network-related controls in the Beep.Skia framework.
     /// Provides common functionality for network visualization components.
     /// </summary>
-    public abstract class NetworkControl : SkiaComponent
+    public abstract class NetworkControl : MaterialControl
     {
         /// <summary>
         /// Gets or sets the primary color for this network control.
         /// </summary>
-        public SKColor PrimaryColor { get; set; } = new SKColor(0x42, 0xA5, 0xF5); // Material Blue 400
+        public SKColor PrimaryColor { get; set; } = MaterialColors.Primary;
 
         /// <summary>
         /// Gets or sets the secondary color for this network control.
         /// </summary>
-        public SKColor SecondaryColor { get; set; } = new SKColor(0x81, 0xC7, 0x84); // Material Green 400
+    public SKColor SecondaryColor { get; set; } = MaterialColors.Secondary;
 
         /// <summary>
         /// Gets or sets the accent color for this network control.
         /// </summary>
-        public SKColor AccentColor { get; set; } = new SKColor(0xFF, 0x98, 0x00); // Material Orange 400
+    public SKColor AccentColor { get; set; } = MaterialColors.Tertiary;
 
         /// <summary>
         /// Gets or sets the border color for this network control.
         /// </summary>
-        public SKColor BorderColor { get; set; } = SKColors.Black;
+    public SKColor BorderColor { get; set; } = MaterialColors.Outline;
 
         /// <summary>
         /// Gets or sets the border thickness for this network control.
@@ -48,7 +49,7 @@ namespace Beep.Skia.Network
         /// <summary>
         /// Gets or sets the highlight color.
         /// </summary>
-        public SKColor HighlightColor { get; set; } = new SKColor(0xFF, 0xEB, 0x3B); // Material Yellow 500
+    public SKColor HighlightColor { get; set; } = MaterialColors.Tertiary;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkControl"/> class.
@@ -59,7 +60,7 @@ namespace Beep.Skia.Network
             DisplayText = Name;
             TextPosition = TextPosition.Below;
             ShowDisplayText = true;
-            TextColor = SKColors.Black;
+            TextColor = MaterialColors.OnSurface;
             TextFontSize = 12f;
         }
 

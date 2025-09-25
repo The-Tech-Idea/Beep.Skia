@@ -44,12 +44,12 @@ namespace Beep.Skia.Network
         /// <summary>
         /// Gets or sets the color for highlighting the path.
         /// </summary>
-        public SKColor PathHighlightColor { get; set; } = new SKColor(0xFF, 0x98, 0x00); // Orange
+    public SKColor PathHighlightColor { get; set; } = MaterialColors.Tertiary;
 
         /// <summary>
         /// Gets or sets the color for highlighting path nodes.
         /// </summary>
-        public SKColor NodeHighlightColor { get; set; } = new SKColor(0xFF, 0xEB, 0x3B); // Yellow
+    public SKColor NodeHighlightColor { get; set; } = MaterialColors.Secondary;
 
         /// <summary>
         /// Gets or sets whether to show path metrics.
@@ -66,7 +66,7 @@ namespace Beep.Skia.Network
             Name = "PathFinder";
             DisplayText = "Shortest Path";
             TextPosition = TextPosition.Above;
-            PrimaryColor = new SKColor(0xFF, 0x98, 0x00); // Orange
+            PrimaryColor = MaterialColors.Tertiary;
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Beep.Skia.Network
             var panelRect = new SKRect(X, Y, X + Width, Y + Height);
 
             // Draw panel background
-            DrawFilledRect(canvas, panelRect, SKColors.White);
+            DrawFilledRect(canvas, panelRect, MaterialColors.SurfaceContainer);
 
             // Draw path information
             float currentY = Y + 15;
@@ -123,8 +123,8 @@ namespace Beep.Skia.Network
             float leftMargin = X + 10;
 
             using var font = new SKFont { Size = 12 };
-            using var labelPaint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
-            using var valuePaint = new SKPaint { Color = PrimaryColor, IsAntialias = true };
+            using var labelPaint = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
+            using var valuePaint = new SKPaint { Color = MaterialColors.Primary, IsAntialias = true };
 
             if (StartNode != null && EndNode != null)
             {
@@ -161,10 +161,10 @@ namespace Beep.Skia.Network
                 node.IsHighlighted = true;
             }
 
-            // Mark path links for highlighting (if NetworkLink had IsHighlighted property)
+            // Mark path links for highlighting
             foreach (var link in PathLinks)
             {
-                // link.IsHighlighted = true; // Would need to add this property to NetworkLink
+                link.IsHighlighted = true;
             }
         }
 
@@ -176,6 +176,11 @@ namespace Beep.Skia.Network
             foreach (var node in PathNodes)
             {
                 node.IsHighlighted = false;
+            }
+
+            foreach (var link in PathLinks)
+            {
+                link.IsHighlighted = false;
             }
         }
     }

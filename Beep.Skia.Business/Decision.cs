@@ -30,7 +30,7 @@ namespace Beep.Skia.Business
 
             using var borderPaint = new SKPaint
             {
-                Color = BorderColor,
+                Color = MaterialColors.Outline,
                 StrokeWidth = BorderThickness,
                 Style = SKPaintStyle.Stroke,
                 IsAntialias = true
@@ -51,6 +51,12 @@ namespace Beep.Skia.Business
 
             canvas.DrawPath(path, fillPaint);
             canvas.DrawPath(path, borderPaint);
+        }
+
+        protected override void LayoutPorts()
+        {
+            // For a diamond, avoid top/bottom sharp corners by adding generous insets.
+            LayoutPortsVerticalSegments(topInset: Height * 0.25f, bottomInset: Height * 0.25f);
         }
     }
 }

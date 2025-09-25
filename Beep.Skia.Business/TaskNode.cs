@@ -78,7 +78,7 @@ namespace Beep.Skia.Business
             {
                 using var checkPaint = new SKPaint
                 {
-                    Color = SKColors.Green,
+                    Color = MaterialColors.Primary,
                     StrokeWidth = 2,
                     Style = SKPaintStyle.Stroke,
                     IsAntialias = true,
@@ -104,7 +104,7 @@ namespace Beep.Skia.Business
             // Background
             using var bgPaint = new SKPaint
             {
-                Color = SKColors.LightGray,
+                Color = MaterialColors.SurfaceVariant,
                 Style = SKPaintStyle.Fill,
                 IsAntialias = true
             };
@@ -117,7 +117,7 @@ namespace Beep.Skia.Business
             {
                 using var progressPaint = new SKPaint
                 {
-                    Color = SKColors.Green,
+                    Color = MaterialColors.Primary,
                     Style = SKPaintStyle.Fill,
                     IsAntialias = true
                 };
@@ -132,12 +132,12 @@ namespace Beep.Skia.Business
         {
             return TaskStatus switch
             {
-                TaskStatus.NotStarted => SKColors.LightBlue,
-                TaskStatus.InProgress => SKColors.LightYellow,
-                TaskStatus.Completed => SKColors.LightGreen,
-                TaskStatus.Cancelled => SKColors.LightCoral,
-                TaskStatus.OnHold => SKColors.LightGray,
-                _ => SKColors.LightBlue
+                TaskStatus.NotStarted => MaterialColors.Surface,
+                TaskStatus.InProgress => MaterialColors.SecondaryContainer,
+                TaskStatus.Completed => MaterialColors.TertiaryContainer,
+                TaskStatus.Cancelled => MaterialColors.ErrorContainer,
+                TaskStatus.OnHold => MaterialColors.SurfaceVariant,
+                _ => MaterialColors.Surface
             };
         }
 
