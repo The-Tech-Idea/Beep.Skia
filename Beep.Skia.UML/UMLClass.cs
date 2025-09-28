@@ -116,6 +116,8 @@ namespace Beep.Skia.UML
         /// <param name="context">The drawing context.</param>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
+            LayoutPorts();
+            
             // Draw background and border using shape method
             DrawBackground(canvas, context);
 

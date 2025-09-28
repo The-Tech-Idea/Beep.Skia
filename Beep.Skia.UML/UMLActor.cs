@@ -60,6 +60,8 @@ namespace Beep.Skia.UML
         /// <param name="context">The drawing context.</param>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
+            LayoutPorts();
+            
             // Draw the enhanced stick figure
             DrawEnhancedStickFigure(canvas);
 

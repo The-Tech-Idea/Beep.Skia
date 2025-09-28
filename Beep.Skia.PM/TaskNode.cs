@@ -49,6 +49,12 @@ namespace Beep.Skia.PM
             OutPortCount = 1;
         }
 
+        protected override void LayoutPorts()
+        {
+            // Rectangular task: ports on left/right sides
+            LayoutPortsVerticalSegments(topInset: 8f, bottomInset: 8f);
+        }
+
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
             var r = Bounds;

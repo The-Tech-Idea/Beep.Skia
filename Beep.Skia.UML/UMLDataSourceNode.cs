@@ -40,6 +40,8 @@ namespace Beep.Skia.UML
         /// <param name="context">The drawing context.</param>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
+            LayoutPorts();
+            
             // Base top-left for absolute drawing
             float left = X;
             float top = Y;
@@ -159,12 +161,12 @@ namespace Beep.Skia.UML
         /// Align UML connection points to the cylinder geometry using absolute coordinates.
         /// Top/Bottom at +/-15px from edges; Left/Right at +/-8px from sides.
         /// </summary>
-        protected override void UpdateConnectionPointPositions()
+        protected override void LayoutPorts()
         {
             var points = InConnectionPoints; // shared list with OutConnectionPoints
             if (points == null || points.Count < 4)
             {
-                base.UpdateConnectionPointPositions();
+                base.LayoutPorts();
                 return;
             }
 

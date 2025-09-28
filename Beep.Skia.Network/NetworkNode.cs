@@ -66,6 +66,8 @@ namespace Beep.Skia.Network
 
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
+            LayoutPorts();
+            
             // Apply scaling
             float scaledWidth = Width * Scale;
             float scaledHeight = Height * Scale;

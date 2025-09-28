@@ -35,6 +35,39 @@ namespace Beep.Skia.PM
             OutPortCount = 1;
         }
 
+        protected override void LayoutPorts()
+        {
+            // Diamond milestone: ports on middle left/right points of the diamond
+            var b = Bounds;
+            float cy = b.MidY;
+            
+            // Position input ports on the left point of diamond
+            for (int i = 0; i < InConnectionPoints.Count; i++)
+            {
+                var cp = InConnectionPoints[i];
+                cp.Center = new SKPoint(b.Left, cy);
+                cp.Position = cp.Center;
+                cp.Bounds = new SKRect(cp.Center.X - PortRadius, cp.Center.Y - PortRadius, cp.Center.X + PortRadius, cp.Center.Y + PortRadius);
+                cp.Rect = cp.Bounds;
+                cp.Index = i;
+                cp.Component = this;
+                cp.IsAvailable = true;
+            }
+            
+            // Position output ports on the right point of diamond
+            for (int i = 0; i < OutConnectionPoints.Count; i++)
+            {
+                var cp = OutConnectionPoints[i];
+                cp.Center = new SKPoint(b.Right, cy);
+                cp.Position = cp.Center;
+                cp.Bounds = new SKRect(cp.Center.X - PortRadius, cp.Center.Y - PortRadius, cp.Center.X + PortRadius, cp.Center.Y + PortRadius);
+                cp.Rect = cp.Bounds;
+                cp.Index = i;
+                cp.Component = this;
+                cp.IsAvailable = true;
+            }
+        }
+
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
             var r = Bounds;

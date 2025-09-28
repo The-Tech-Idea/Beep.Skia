@@ -332,6 +332,8 @@ namespace Beep.Skia.Business
         /// <param name="context">The drawing context.</param>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
+            LayoutPorts();
+            
             // Draw the custom shape
             DrawShape(canvas, context);
 

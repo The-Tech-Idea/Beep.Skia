@@ -57,6 +57,8 @@ namespace Beep.Skia.ETL
 
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
+            LayoutPorts();
+            
             // Draw the shape (virtual method for customization)
             DrawShape(canvas);
 

@@ -40,6 +40,8 @@ namespace Beep.Skia.UML
         /// <param name="context">The drawing context.</param>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
+            LayoutPorts();
+            
             // Draw rectangle background
             using (var paint = new SKPaint())
             {

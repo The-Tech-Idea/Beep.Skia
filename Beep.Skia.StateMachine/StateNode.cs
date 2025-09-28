@@ -21,6 +21,12 @@ namespace Beep.Skia.StateMachine
             EnsurePortCounts(1, 2);
         }
 
+        protected override void LayoutPorts()
+        {
+            // Regular state: rounded rectangle with inputs on left, outputs on right
+            LayoutPortsRightEdge(6f, 6f);
+        }
+
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
             using var fill = new SKPaint { Color = BackgroundColor, Style = SKPaintStyle.Fill, IsAntialias = true };

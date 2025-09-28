@@ -61,7 +61,7 @@ namespace Beep.Skia.UML
 
             // Initialize persisted connection points (shared In/Out positions)
             InitializeConnectionPoints();
-            UpdateConnectionPointPositions();
+            LayoutPorts();
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace Beep.Skia.UML
         /// <summary>
         /// Update persisted connection point geometry to match current bounds.
         /// </summary>
-        protected virtual void UpdateConnectionPointPositions()
+        protected virtual void LayoutPorts()
         {
             if (_points.Count < 4) return;
 
@@ -244,7 +244,13 @@ namespace Beep.Skia.UML
         protected override void UpdateBounds()
         {
             base.UpdateBounds();
-            UpdateConnectionPointPositions();
+            LayoutPorts();
+        }
+
+        protected override void OnBoundsChanged(SKRect bounds)
+        {
+            LayoutPorts();
+            base.OnBoundsChanged(bounds);
         }
 
         /// <summary>

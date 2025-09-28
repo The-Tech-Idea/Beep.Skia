@@ -35,6 +35,12 @@ namespace Beep.Skia.PM
             OutPortCount = 1;
         }
 
+        protected override void LayoutPorts()
+        {
+            // Summary bracket: ports on left/right ends of the horizontal bracket
+            LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
+        }
+
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
             var r = Bounds;
