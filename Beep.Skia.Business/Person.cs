@@ -11,8 +11,37 @@ namespace Beep.Skia.Business
     /// </summary>
     public class Person : BusinessControl
     {
-        public string PersonName { get; set; } = "Person";
-        public string Title { get; set; } = "";
+        private string _personName = "Person";
+        private string _title = string.Empty;
+        public string PersonName
+        {
+            get => _personName;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_personName != v)
+                {
+                    _personName = v;
+                    if (NodeProperties.TryGetValue("PersonName", out var p)) p.ParameterCurrentValue = _personName; else NodeProperties["PersonName"] = new ParameterInfo { ParameterName = "PersonName", ParameterType = typeof(string), DefaultParameterValue = _personName, ParameterCurrentValue = _personName, Description = "Person name" };
+                    Name = _personName;
+                    InvalidateVisual();
+                }
+            }
+        }
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_title != v)
+                {
+                    _title = v;
+                    if (NodeProperties.TryGetValue("Title", out var p)) p.ParameterCurrentValue = _title; else NodeProperties["Title"] = new ParameterInfo { ParameterName = "Title", ParameterType = typeof(string), DefaultParameterValue = _title, ParameterCurrentValue = _title, Description = "Job title" };
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public Person()
         {
@@ -20,6 +49,8 @@ namespace Beep.Skia.Business
             Height = 80;
             Name = "Person";
             ComponentType = BusinessComponentType.Person;
+            NodeProperties["PersonName"] = new ParameterInfo { ParameterName = "PersonName", ParameterType = typeof(string), DefaultParameterValue = _personName, ParameterCurrentValue = _personName, Description = "Person name" };
+            NodeProperties["Title"] = new ParameterInfo { ParameterName = "Title", ParameterType = typeof(string), DefaultParameterValue = _title, ParameterCurrentValue = _title, Description = "Job title" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

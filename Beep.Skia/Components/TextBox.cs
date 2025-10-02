@@ -263,7 +263,7 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Gets or sets the text color.
         /// </summary>
-        public SKColor TextColor
+        public new SKColor TextColor
         {
             get => _textColor ?? MaterialControl.MaterialColors.OnSurface;
             set
@@ -614,7 +614,8 @@ namespace Beep.Skia.Components
             using var cursorPaint = new SKPaint { Color = TextColor, StrokeWidth = 1, Style = SKPaintStyle.Stroke };
             using var font = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), _fontSize);
             string textBeforeCursor = GetDisplayText().Substring(0, _cursorPosition);
-            float cursorX = leadingOffset + 16;
+            // Include component X so the caret is in absolute canvas coordinates
+            float cursorX = X + leadingOffset + 16;
             if (!string.IsNullOrEmpty(textBeforeCursor))
             {
                 cursorX += font.MeasureText(textBeforeCursor);
@@ -645,11 +646,29 @@ namespace Beep.Skia.Components
             if (!_isReadOnly)
             {
                 Focus();
-                // Simple cursor positioning (would need more sophisticated text measurement)
-                _cursorPosition = _text.Length;
+                // Position cursor based on click X within the text content area
+                float leadingOffset = 0f;
+                if (!string.IsNullOrEmpty(_leadingIcon)) leadingOffset = 20 + 24; // keep in sync with DrawLeadingIcon
+                float contentStartX = X + leadingOffset + 16;
+                using var font = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), _fontSize);
+                string displayText = GetDisplayText();
+                // Default to end
+                _cursorPosition = displayText.Length;
+                // Iterate to find nearest position
+                for (int i = 0; i <= displayText.Length; i++)
+                {
+                    string left = i > 0 ? displayText.Substring(0, i) : string.Empty;
+                    float xAt = contentStartX + (string.IsNullOrEmpty(left) ? 0 : font.MeasureText(left));
+                    if (location.X <= xAt)
+                    {
+                        _cursorPosition = i;
+                        break;
+                    }
+                }
                 InvalidateVisual();
             }
-            return base.OnMouseDown(location, context);
+            // Capture the mouse down so higher-level handlers don't treat it as unhandled
+            return true;
         }
 
         /// <summary>

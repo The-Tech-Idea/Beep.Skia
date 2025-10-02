@@ -13,8 +13,37 @@ namespace Beep.Skia.Business
     public class SubProcess : BusinessControl
     {
         public List<BusinessControl> ChildComponents { get; set; } = new List<BusinessControl>();
-        public bool IsCollapsed { get; set; } = false;
-        public string ProcessName { get; set; } = "Sub Process";
+        private bool _isCollapsed = false;
+        private string _processName = "Sub Process";
+        public bool IsCollapsed
+        {
+            get => _isCollapsed;
+            set
+            {
+                if (_isCollapsed != value)
+                {
+                    _isCollapsed = value;
+                    if (NodeProperties.TryGetValue("IsCollapsed", out var p)) p.ParameterCurrentValue = _isCollapsed; else NodeProperties["IsCollapsed"] = new ParameterInfo { ParameterName = "IsCollapsed", ParameterType = typeof(bool), DefaultParameterValue = _isCollapsed, ParameterCurrentValue = _isCollapsed, Description = "Collapsed state" };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public string ProcessName
+        {
+            get => _processName;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_processName != v)
+                {
+                    _processName = v;
+                    if (NodeProperties.TryGetValue("ProcessName", out var p)) p.ParameterCurrentValue = _processName; else NodeProperties["ProcessName"] = new ParameterInfo { ParameterName = "ProcessName", ParameterType = typeof(string), DefaultParameterValue = _processName, ParameterCurrentValue = _processName, Description = "Process name" };
+                    // Keep Name roughly aligned
+                    Name = _processName;
+                    InvalidateVisual();
+                }
+            }
+        }
         public int ChildCount => ChildComponents.Count;
 
         public SubProcess()
@@ -23,6 +52,9 @@ namespace Beep.Skia.Business
             Height = 100;
             Name = "Sub Process";
             ComponentType = BusinessComponentType.Task;
+            // Seed NodeProperties
+            NodeProperties["IsCollapsed"] = new ParameterInfo { ParameterName = "IsCollapsed", ParameterType = typeof(bool), DefaultParameterValue = _isCollapsed, ParameterCurrentValue = _isCollapsed, Description = "Collapsed state" };
+            NodeProperties["ProcessName"] = new ParameterInfo { ParameterName = "ProcessName", ParameterType = typeof(string), DefaultParameterValue = _processName, ParameterCurrentValue = _processName, Description = "Process name" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)
@@ -150,6 +182,8 @@ namespace Beep.Skia.Business
         public void AddChild(BusinessControl component)
         {
             ChildComponents.Add(component);
+            if (!string.IsNullOrEmpty(component.Name))
+                ChildNodes[component.Name] = component;
         }
 
         /// <summary>
@@ -158,6 +192,8 @@ namespace Beep.Skia.Business
         public void RemoveChild(BusinessControl component)
         {
             ChildComponents.Remove(component);
+            if (!string.IsNullOrEmpty(component.Name))
+                ChildNodes.Remove(component.Name);
         }
 
         /// <summary>

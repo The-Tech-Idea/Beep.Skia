@@ -23,10 +23,9 @@ namespace Beep.Skia.DFD
             LayoutPortsOnEllipse(inset, inset, outwardOffset: 2f);
         }
 
-    protected override void DrawContent(SKCanvas canvas, Beep.Skia.Model.DrawingContext context)
+    protected override void DrawDFDContent(SKCanvas canvas, Beep.Skia.Model.DrawingContext context)
         {
             if (!context.Bounds.IntersectsWith(Bounds)) return;
-            LayoutPorts();
 
             using var fill = new SKPaint { Color = new SKColor(0xE8, 0xF5, 0xE9), IsAntialias = true };
             using var stroke = new SKPaint { Color = new SKColor(0x43, 0xA0, 0x47), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };

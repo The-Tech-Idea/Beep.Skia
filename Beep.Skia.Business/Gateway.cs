@@ -11,12 +11,29 @@ namespace Beep.Skia.Business
     /// </summary>
     public class Gateway : BusinessControl
     {
+        private string _label = "Gateway";
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                if (_label != value)
+                {
+                    _label = value ?? string.Empty;
+                    Name = _label; // draw below the diamond
+                    if (NodeProperties.TryGetValue("Label", out var p)) p.ParameterCurrentValue = _label; else NodeProperties["Label"] = new ParameterInfo { ParameterName = "Label", ParameterType = typeof(string), DefaultParameterValue = _label, ParameterCurrentValue = _label, Description = "Display label" };
+                    InvalidateVisual();
+                }
+            }
+        }
+
         public Gateway()
         {
             Width = 70;
             Height = 70;
-            Name = "Gateway";
+            Name = _label;
             ComponentType = BusinessComponentType.Gateway;
+            NodeProperties["Label"] = new ParameterInfo { ParameterName = "Label", ParameterType = typeof(string), DefaultParameterValue = _label, ParameterCurrentValue = _label, Description = "Display label" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

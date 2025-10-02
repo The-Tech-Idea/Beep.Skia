@@ -11,11 +11,81 @@ namespace Beep.Skia.Business
     /// </summary>
     public class TaskNode : BusinessControl
     {
-        public string TaskDescription { get; set; } = "Task Description";
-        public TaskStatus TaskStatus { get; set; } = TaskStatus.NotStarted;
-        public string AssignedTo { get; set; } = "";
-        public DateTime? DueDate { get; set; }
-        public int Progress { get; set; } = 0; // 0-100
+        private string _taskDescription = "Task Description";
+        public string TaskDescription
+        {
+            get => _taskDescription;
+            set
+            {
+                if (_taskDescription != value)
+                {
+                    _taskDescription = value ?? string.Empty;
+                    if (NodeProperties.TryGetValue("TaskDescription", out var p)) p.ParameterCurrentValue = _taskDescription; else NodeProperties["TaskDescription"] = new ParameterInfo { ParameterName = "TaskDescription", ParameterType = typeof(string), DefaultParameterValue = _taskDescription, ParameterCurrentValue = _taskDescription, Description = "Task description" };
+                    InvalidateVisual();
+                }
+            }
+        }
+
+        private TaskStatus _taskStatus = TaskStatus.NotStarted;
+        public TaskStatus TaskStatus
+        {
+            get => _taskStatus;
+            set
+            {
+                if (_taskStatus != value)
+                {
+                    _taskStatus = value;
+                    if (NodeProperties.TryGetValue("TaskStatus", out var p)) p.ParameterCurrentValue = value; else NodeProperties["TaskStatus"] = new ParameterInfo { ParameterName = "TaskStatus", ParameterType = typeof(TaskStatus), DefaultParameterValue = value, ParameterCurrentValue = value, Description = "Task status", Choices = Enum.GetNames(typeof(TaskStatus)) };
+                    InvalidateVisual();
+                }
+            }
+        }
+
+        private string _assignedTo = string.Empty;
+        public string AssignedTo
+        {
+            get => _assignedTo;
+            set
+            {
+                if (_assignedTo != value)
+                {
+                    _assignedTo = value ?? string.Empty;
+                    if (NodeProperties.TryGetValue("AssignedTo", out var p)) p.ParameterCurrentValue = _assignedTo; else NodeProperties["AssignedTo"] = new ParameterInfo { ParameterName = "AssignedTo", ParameterType = typeof(string), DefaultParameterValue = _assignedTo, ParameterCurrentValue = _assignedTo, Description = "Assigned owner" };
+                    InvalidateVisual();
+                }
+            }
+        }
+
+        private DateTime? _dueDate;
+        public DateTime? DueDate
+        {
+            get => _dueDate;
+            set
+            {
+                if (_dueDate != value)
+                {
+                    _dueDate = value;
+                    if (NodeProperties.TryGetValue("DueDate", out var p)) p.ParameterCurrentValue = _dueDate; else NodeProperties["DueDate"] = new ParameterInfo { ParameterName = "DueDate", ParameterType = typeof(DateTime?), DefaultParameterValue = _dueDate, ParameterCurrentValue = _dueDate, Description = "Due date" };
+                    InvalidateVisual();
+                }
+            }
+        }
+
+        private int _progress = 0; // 0-100
+        public int Progress
+        {
+            get => _progress;
+            set
+            {
+                var v = Math.Clamp(value, 0, 100);
+                if (_progress != v)
+                {
+                    _progress = v;
+                    if (NodeProperties.TryGetValue("Progress", out var p)) p.ParameterCurrentValue = _progress; else NodeProperties["Progress"] = new ParameterInfo { ParameterName = "Progress", ParameterType = typeof(int), DefaultParameterValue = _progress, ParameterCurrentValue = _progress, Description = "Percent complete (0-100)" };
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public TaskNode()
         {
@@ -23,6 +93,12 @@ namespace Beep.Skia.Business
             Height = 80;
             Name = "Task";
             ComponentType = BusinessComponentType.Task;
+            // Seed TaskNode-specific NodeProperties
+            NodeProperties["TaskDescription"] = new ParameterInfo { ParameterName = "TaskDescription", ParameterType = typeof(string), DefaultParameterValue = _taskDescription, ParameterCurrentValue = _taskDescription, Description = "Task description" };
+            NodeProperties["TaskStatus"] = new ParameterInfo { ParameterName = "TaskStatus", ParameterType = typeof(TaskStatus), DefaultParameterValue = _taskStatus, ParameterCurrentValue = _taskStatus, Description = "Task status", Choices = Enum.GetNames(typeof(TaskStatus)) };
+            NodeProperties["AssignedTo"] = new ParameterInfo { ParameterName = "AssignedTo", ParameterType = typeof(string), DefaultParameterValue = _assignedTo, ParameterCurrentValue = _assignedTo, Description = "Assigned owner" };
+            NodeProperties["DueDate"] = new ParameterInfo { ParameterName = "DueDate", ParameterType = typeof(DateTime?), DefaultParameterValue = _dueDate, ParameterCurrentValue = _dueDate, Description = "Due date" };
+            NodeProperties["Progress"] = new ParameterInfo { ParameterName = "Progress", ParameterType = typeof(int), DefaultParameterValue = _progress, ParameterCurrentValue = _progress, Description = "Percent complete (0-100)" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

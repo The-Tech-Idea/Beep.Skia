@@ -11,9 +11,51 @@ namespace Beep.Skia.Business
     /// </summary>
     public class RuleEngine : BusinessControl
     {
-        public string RuleSetName { get; set; } = "Rule Engine";
-        public int RuleCount { get; set; } = 0;
-        public bool IsActive { get; set; } = true;
+        private string _ruleSetName = "Rule Engine";
+        private int _ruleCount = 0;
+        private bool _isActive = true;
+        public string RuleSetName
+        {
+            get => _ruleSetName;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_ruleSetName != v)
+                {
+                    _ruleSetName = v;
+                    if (NodeProperties.TryGetValue("RuleSetName", out var p)) p.ParameterCurrentValue = _ruleSetName; else NodeProperties["RuleSetName"] = new ParameterInfo { ParameterName = "RuleSetName", ParameterType = typeof(string), DefaultParameterValue = _ruleSetName, ParameterCurrentValue = _ruleSetName, Description = "Rule set name" };
+                    Name = _ruleSetName;
+                    InvalidateVisual();
+                }
+            }
+        }
+        public int RuleCount
+        {
+            get => _ruleCount;
+            set
+            {
+                var v = Math.Max(0, value);
+                if (_ruleCount != v)
+                {
+                    _ruleCount = v;
+                    if (NodeProperties.TryGetValue("RuleCount", out var p)) p.ParameterCurrentValue = _ruleCount; else NodeProperties["RuleCount"] = new ParameterInfo { ParameterName = "RuleCount", ParameterType = typeof(int), DefaultParameterValue = _ruleCount, ParameterCurrentValue = _ruleCount, Description = "Number of rules" };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public bool IsActive
+        {
+            get => _isActive;
+            set
+            {
+                if (_isActive != value)
+                {
+                    _isActive = value;
+                    if (NodeProperties.TryGetValue("IsActive", out var p)) p.ParameterCurrentValue = _isActive; else NodeProperties["IsActive"] = new ParameterInfo { ParameterName = "IsActive", ParameterType = typeof(bool), DefaultParameterValue = _isActive, ParameterCurrentValue = _isActive, Description = "Active state" };
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public RuleEngine()
         {
@@ -21,6 +63,9 @@ namespace Beep.Skia.Business
             Height = 100;
             Name = "Rule Engine";
             ComponentType = BusinessComponentType.Task; // Using Task as base type
+            NodeProperties["RuleSetName"] = new ParameterInfo { ParameterName = "RuleSetName", ParameterType = typeof(string), DefaultParameterValue = _ruleSetName, ParameterCurrentValue = _ruleSetName, Description = "Rule set name" };
+            NodeProperties["RuleCount"] = new ParameterInfo { ParameterName = "RuleCount", ParameterType = typeof(int), DefaultParameterValue = _ruleCount, ParameterCurrentValue = _ruleCount, Description = "Number of rules" };
+            NodeProperties["IsActive"] = new ParameterInfo { ParameterName = "IsActive", ParameterType = typeof(bool), DefaultParameterValue = _isActive, ParameterCurrentValue = _isActive, Description = "Active state" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

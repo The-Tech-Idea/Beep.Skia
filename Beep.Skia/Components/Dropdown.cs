@@ -259,7 +259,7 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Gets or sets the text color.
         /// </summary>
-        public SKColor TextColor
+        public new SKColor TextColor
         {
             get => _textColor ?? MaterialColors.OnSurface;
             set
@@ -387,6 +387,24 @@ namespace Beep.Skia.Components
         }
 
         /// <summary>
+        /// Override hit testing to include the expanded dropdown list area when open.
+        /// </summary>
+        public override bool ContainsPoint(SKPoint point)
+        {
+            // Base field bounds
+            var field = new SKRect(X, Y, X + Width, Y + Height);
+            if (field.Contains(point)) return true;
+            if (_isExpanded && _items.Count > 0)
+            {
+                float itemHeight = 48;
+                float listHeight = Math.Min(_dropdownHeight, _items.Count * itemHeight);
+                var listBounds = new SKRect(field.Left, field.Bottom + 4, field.Right, field.Bottom + 4 + listHeight);
+                if (listBounds.Contains(point)) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Adds an item to the dropdown.
         /// </summary>
         public void AddItem(string text, string value = null, object tag = null, string iconPath = null, SKColor? iconColor = null)
@@ -472,6 +490,41 @@ namespace Beep.Skia.Components
         private void OnDropdownClicked(object sender, EventArgs e)
         {
             ToggleDropdown();
+        }
+
+        /// <summary>
+        /// Handle mouse down to support selecting items from the expanded list.
+        /// </summary>
+        protected override bool OnMouseDown(SKPoint location, InteractionContext context)
+        {
+            // If expanded and click occurs within list, compute index and select
+            var field = new SKRect(X, Y, X + Width, Y + Height);
+            if (_isExpanded)
+            {
+                float itemHeight = 48;
+                float listHeight = Math.Min(_dropdownHeight, _items.Count * itemHeight);
+                var listBounds = new SKRect(field.Left, field.Bottom + 4, field.Right, field.Bottom + 4 + listHeight);
+                if (listBounds.Contains(location))
+                {
+                    int index = (int)((location.Y - listBounds.Top) / itemHeight);
+                    if (index >= 0 && index < _items.Count)
+                    {
+                        SelectedItem = _items[index];
+                        // Close after selection
+                        _isExpanded = false;
+                        DropdownClosed?.Invoke(this, EventArgs.Empty);
+                        InvalidateVisual();
+                        return true;
+                    }
+                }
+            }
+            // Otherwise, toggle via click on field
+            if (field.Contains(location))
+            {
+                ToggleDropdown();
+                return true;
+            }
+            return base.OnMouseDown(location, context);
         }
 
         /// <summary>

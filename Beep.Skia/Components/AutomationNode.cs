@@ -2,6 +2,7 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Beep.Skia.Model;
@@ -246,6 +247,159 @@ namespace Beep.Skia.Components
         {
             Status = NodeStatus.Failed;
             ErrorOccurred?.Invoke(this, new NodeErrorEventArgs(Id, error, context));
+        }
+        #endregion
+
+        #region NodeProperties helper
+        /// <summary>
+        /// Ensures a NodeProperties entry exists with the correct type and updates its current value.
+        /// Use this from derived nodes in constructors and setters when geometry/config changes.
+        /// </summary>
+        protected void UpsertNodeProperty(string key, Type type, object value, string description = null)
+        {
+            if (string.IsNullOrWhiteSpace(key)) return;
+            if (!NodeProperties.TryGetValue(key, out var p) || p == null)
+            {
+                NodeProperties[key] = new Beep.Skia.Model.ParameterInfo
+                {
+                    ParameterName = key,
+                    ParameterType = type,
+                    DefaultParameterValue = value,
+                    ParameterCurrentValue = value,
+                    Description = description
+                };
+            }
+            else
+            {
+                if (p.ParameterType == null) p.ParameterType = type;
+                p.ParameterCurrentValue = value;
+                if (p.DefaultParameterValue == null) p.DefaultParameterValue = value;
+                if (string.IsNullOrEmpty(p.Description) && !string.IsNullOrEmpty(description)) p.Description = description;
+            }
+        }
+        #endregion
+
+        #region NodeProperties mapping
+        /// <summary>
+        /// Applies values from NodeProperties back to this node's public settable properties (by name) and updates Configuration.
+        /// Name matching is case-insensitive.
+        /// </summary>
+        public virtual void ApplyNodeProperties()
+        {
+            if (NodeProperties == null || NodeProperties.Count == 0) return;
+
+            var props = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var kv in NodeProperties)
+            {
+                var key = kv.Key;
+                var pinfo = kv.Value;
+                var value = pinfo?.ParameterCurrentValue ?? pinfo?.DefaultParameterValue;
+                if (key == null) continue;
+
+                // Update Configuration bag with raw value
+                try { Configuration[key] = value; } catch { }
+
+                // Find matching property by name (case-insensitive)
+                PropertyInfo targetProp = null;
+                foreach (var pi in props)
+                {
+                    if (string.Equals(pi.Name, key, StringComparison.OrdinalIgnoreCase)) { targetProp = pi; break; }
+                }
+                if (targetProp == null || !targetProp.CanWrite) continue;
+
+                try
+                {
+                    var targetType = targetProp.PropertyType;
+                    object converted = ConvertToType(value, targetType);
+                    if (converted != null || value == null) // allow null assignment
+                    {
+                        targetProp.SetValue(this, converted);
+                    }
+                }
+                catch { /* ignore assignment failures */ }
+            }
+        }
+
+        private static object ConvertToType(object value, Type targetType)
+        {
+            if (targetType == null) return value;
+            if (value == null) return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
+
+            var valType = value.GetType();
+            if (targetType.IsAssignableFrom(valType)) return value;
+
+            try
+            {
+                if (targetType.IsEnum)
+                {
+                    if (value is string es) return Enum.Parse(targetType, es, ignoreCase: true);
+                    return Enum.ToObject(targetType, System.Convert.ChangeType(value, Enum.GetUnderlyingType(targetType)));
+                }
+                if (targetType == typeof(string)) return System.Convert.ToString(value);
+                if (targetType == typeof(int) || targetType == typeof(int?)) return System.Convert.ToInt32(value);
+                if (targetType == typeof(float) || targetType == typeof(float?)) return System.Convert.ToSingle(value);
+                if (targetType == typeof(double) || targetType == typeof(double?)) return System.Convert.ToDouble(value);
+                if (targetType == typeof(bool) || targetType == typeof(bool?))
+                {
+                    if (value is string bs) { if (bool.TryParse(bs, out var bv)) return bv; }
+                    return System.Convert.ToBoolean(value);
+                }
+                if (targetType == typeof(SKColor) || targetType == typeof(SKColor?))
+                {
+                    if (value is SKColor c) return c;
+                    if (value is string s && TryParseColor(s, out var col)) return col;
+                }
+                // fallback
+                return System.Convert.ChangeType(value, targetType);
+            }
+            catch { return null; }
+        }
+
+        private static bool TryParseColor(string text, out SKColor color)
+        {
+            color = SKColors.Black;
+            if (string.IsNullOrWhiteSpace(text)) return false;
+            text = text.Trim();
+            try
+            {
+                if (text.StartsWith("#"))
+                {
+                    var hex = text.Substring(1);
+                    if (hex.Length == 6)
+                    {
+                        byte r = Convert.ToByte(hex.Substring(0, 2), 16);
+                        byte g = Convert.ToByte(hex.Substring(2, 2), 16);
+                        byte b = Convert.ToByte(hex.Substring(4, 2), 16);
+                        color = new SKColor(r, g, b);
+                        return true;
+                    }
+                    if (hex.Length == 8)
+                    {
+                        byte a = Convert.ToByte(hex.Substring(0, 2), 16);
+                        byte r = Convert.ToByte(hex.Substring(2, 2), 16);
+                        byte g = Convert.ToByte(hex.Substring(4, 2), 16);
+                        byte b = Convert.ToByte(hex.Substring(6, 2), 16);
+                        color = new SKColor(r, g, b, a);
+                        return true;
+                    }
+                }
+                else if (text.Contains(','))
+                {
+                    var parts = text.Split(',');
+                    if (parts.Length >= 3)
+                    {
+                        byte r = byte.Parse(parts[0].Trim());
+                        byte g = byte.Parse(parts[1].Trim());
+                        byte b = byte.Parse(parts[2].Trim());
+                        byte a = 255;
+                        if (parts.Length >= 4) a = byte.Parse(parts[3].Trim());
+                        color = new SKColor(r, g, b, a);
+                        return true;
+                    }
+                }
+            }
+            catch { }
+            return false;
         }
         #endregion
 

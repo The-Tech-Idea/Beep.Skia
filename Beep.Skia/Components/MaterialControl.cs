@@ -74,7 +74,7 @@ namespace Beep.Skia.Components
         private bool _maintainAspectRatio = true;
 
         // Material Design Properties
-        private ControlState _controlState = ControlState.Normal;
+    private ControlState _controlState = ControlState.Normal;
         private float _elevation = 0;
         private float _stateLayerOpacity = 0;
         private SKColor _stateLayerColor = SKColors.Black;
@@ -92,7 +92,7 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Gets or sets the current control state.
         /// </summary>
-        protected ControlState State
+        protected new ControlState State
         {
             get => _controlState;
             set
@@ -190,6 +190,20 @@ namespace Beep.Skia.Components
         }
 
         /// <summary>
+        /// Ensures connection ports are laid out before drawing. Families should
+        /// call this early inside DrawContent. The base implementation relies on
+        /// family classes implementing a protected virtual void LayoutPorts().
+        /// </summary>
+        protected void EnsurePortLayout(Action layoutPorts)
+        {
+            if (ArePortsDirty)
+            {
+                try { layoutPorts?.Invoke(); }
+                finally { ClearPortsDirty(); }
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the MaterialControl class.
         /// </summary>
         protected MaterialControl()
@@ -280,7 +294,7 @@ namespace Beep.Skia.Components
 
             // Draw the SVG picture
             var matrix = SKMatrix.CreateTranslation(destRect.Left, destRect.Top);
-            canvas.DrawPicture(_cachedPicture, ref matrix);
+            canvas.DrawPicture(_cachedPicture, in matrix);
         }
 
         /// <summary>
@@ -309,7 +323,7 @@ namespace Beep.Skia.Components
 
                     // Draw the SVG picture
                     var matrix = SKMatrix.CreateTranslation(destRect.Left, destRect.Top);
-                    canvas.DrawPicture(_cachedPicture, ref matrix);
+                    canvas.DrawPicture(_cachedPicture, in matrix);
                 }
             }
             finally
@@ -350,7 +364,7 @@ namespace Beep.Skia.Components
 
                     // Draw the SVG picture
                     var matrix = SKMatrix.CreateTranslation(finalRect.Left, finalRect.Top);
-                    canvas.DrawPicture(_cachedPicture, ref matrix);
+                    canvas.DrawPicture(_cachedPicture, in matrix);
                 }
             }
             finally

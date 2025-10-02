@@ -111,7 +111,7 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Gets or sets the text color (for backward compatibility).
         /// </summary>
-        public SKColor TextColor
+        public new SKColor TextColor
         {
             get => _customTextColor ?? MaterialControl.MaterialColors.OnSurface;
             set

@@ -18,15 +18,18 @@ namespace Beep.Skia.Business
         /// <summary>
         /// Gets or sets the business component type.
         /// </summary>
-        public BusinessComponentType ComponentType 
-        { 
+        public BusinessComponentType ComponentType
+        {
             get => _componentType;
             set
             {
                 if (_componentType != value)
                 {
                     _componentType = value;
+                    // sync NodeProperties
+                    if (NodeProperties.TryGetValue("ComponentType", out var p)) p.ParameterCurrentValue = value; else NodeProperties["ComponentType"] = new ParameterInfo { ParameterName = "ComponentType", ParameterType = typeof(BusinessComponentType), DefaultParameterValue = value, ParameterCurrentValue = value, Description = "Business component type", Choices = Enum.GetNames(typeof(BusinessComponentType)) };
                     InitializeConnectionPoints();
+                    InvalidateVisual();
                 }
             }
         }
@@ -35,34 +38,148 @@ namespace Beep.Skia.Business
         /// <summary>
         /// Gets or sets the business role or department this component represents.
         /// </summary>
-        public string BusinessRole { get; set; } = "";
+        public string BusinessRole
+        {
+            get => _businessRole;
+            set
+            {
+                if (_businessRole != value)
+                {
+                    _businessRole = value ?? string.Empty;
+                    if (NodeProperties.TryGetValue("BusinessRole", out var p)) p.ParameterCurrentValue = _businessRole; else NodeProperties["BusinessRole"] = new ParameterInfo { ParameterName = "BusinessRole", ParameterType = typeof(string), DefaultParameterValue = _businessRole, ParameterCurrentValue = _businessRole, Description = "Role/Department" };
+                    InvalidateVisual();
+                }
+            }
+        }
+        private string _businessRole = string.Empty;
 
         /// <summary>
         /// Gets or sets the business priority level of this business component.
         /// </summary>
-        public BusinessPriority BusinessPriority { get; set; } = BusinessPriority.Normal;
+        public BusinessPriority BusinessPriority
+        {
+            get => _businessPriority;
+            set
+            {
+                if (_businessPriority != value)
+                {
+                    _businessPriority = value;
+                    if (NodeProperties.TryGetValue("BusinessPriority", out var p)) p.ParameterCurrentValue = value; else NodeProperties["BusinessPriority"] = new ParameterInfo { ParameterName = "BusinessPriority", ParameterType = typeof(BusinessPriority), DefaultParameterValue = value, ParameterCurrentValue = value, Description = "Priority", Choices = Enum.GetNames(typeof(BusinessPriority)) };
+                    InvalidateVisual();
+                }
+            }
+        }
+        private BusinessPriority _businessPriority = BusinessPriority.Normal;
 
         /// <summary>
         /// Gets or sets the status of this business component.
         /// </summary>
-        public BusinessStatus Status { get; set; } = BusinessStatus.Active;
+        public BusinessStatus Status
+        {
+            get => _status;
+            set
+            {
+                if (_status != value)
+                {
+                    _status = value;
+                    if (NodeProperties.TryGetValue("Status", out var p)) p.ParameterCurrentValue = value; else NodeProperties["Status"] = new ParameterInfo { ParameterName = "Status", ParameterType = typeof(BusinessStatus), DefaultParameterValue = value, ParameterCurrentValue = value, Description = "Status", Choices = Enum.GetNames(typeof(BusinessStatus)) };
+                    InvalidateVisual();
+                }
+            }
+        }
+        private BusinessStatus _status = BusinessStatus.Active;
 
     /// <summary>
     /// Gets or sets the background color of the component.
     /// </summary>
-    public SKColor BackgroundColor { get; set; } = MaterialColors.Surface;
+    public SKColor BackgroundColor
+    {
+        get => _backgroundColor;
+        set
+        {
+            if (_backgroundColor != value)
+            {
+                _backgroundColor = value;
+                if (NodeProperties.TryGetValue("BackgroundColor", out var p)) p.ParameterCurrentValue = value; else NodeProperties["BackgroundColor"] = new ParameterInfo { ParameterName = "BackgroundColor", ParameterType = typeof(SKColor), DefaultParameterValue = value, ParameterCurrentValue = value, Description = "Background color" };
+                InvalidateVisual();
+            }
+        }
+    }
+    private SKColor _backgroundColor = MaterialColors.Surface;
 
     /// <summary>
     /// Gets or sets the border color of the component.
     /// </summary>
-    public SKColor BorderColor { get; set; } = MaterialColors.Outline;
+    public SKColor BorderColor
+    {
+        get => _borderColor;
+        set
+        {
+            if (_borderColor != value)
+            {
+                _borderColor = value;
+                if (NodeProperties.TryGetValue("BorderColor", out var p)) p.ParameterCurrentValue = value; else NodeProperties["BorderColor"] = new ParameterInfo { ParameterName = "BorderColor", ParameterType = typeof(SKColor), DefaultParameterValue = value, ParameterCurrentValue = value, Description = "Border color" };
+                InvalidateVisual();
+            }
+        }
+    }
+    private SKColor _borderColor = MaterialColors.Outline;
 
     // Use TextColor from SkiaComponent
 
         /// <summary>
         /// Gets or sets the border thickness.
         /// </summary>
-        public float BorderThickness { get; set; } = 2.0f;
+        public float BorderThickness
+        {
+            get => _borderThickness;
+            set
+            {
+                if (Math.Abs(_borderThickness - value) > float.Epsilon)
+                {
+                    _borderThickness = value;
+                    if (NodeProperties.TryGetValue("BorderThickness", out var p)) p.ParameterCurrentValue = value; else NodeProperties["BorderThickness"] = new ParameterInfo { ParameterName = "BorderThickness", ParameterType = typeof(float), DefaultParameterValue = value, ParameterCurrentValue = value, Description = "Border thickness" };
+                    InvalidateVisual();
+                }
+            }
+        }
+        private float _borderThickness = 2.0f;
+
+        /// <summary>
+        /// Exposes input port count for editors; updates ports lazily.
+        /// </summary>
+        public int InPortCount
+        {
+            get => InConnectionPoints.Count;
+            set
+            {
+                if (value < 0) value = 0;
+                if (InConnectionPoints.Count != value)
+                {
+                    EnsurePortCounts(value, OutConnectionPoints.Count);
+                    if (NodeProperties.TryGetValue("InPortCount", out var p)) p.ParameterCurrentValue = value; else NodeProperties["InPortCount"] = new ParameterInfo { ParameterName = "InPortCount", ParameterType = typeof(int), DefaultParameterValue = value, ParameterCurrentValue = value, Description = "Number of inputs" };
+                    InvalidateVisual();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Exposes output port count for editors; updates ports lazily.
+        /// </summary>
+        public int OutPortCount
+        {
+            get => OutConnectionPoints.Count;
+            set
+            {
+                if (value < 0) value = 0;
+                if (OutConnectionPoints.Count != value)
+                {
+                    EnsurePortCounts(InConnectionPoints.Count, value);
+                    if (NodeProperties.TryGetValue("OutPortCount", out var p)) p.ParameterCurrentValue = value; else NodeProperties["OutPortCount"] = new ParameterInfo { ParameterName = "OutPortCount", ParameterType = typeof(int), DefaultParameterValue = value, ParameterCurrentValue = value, Description = "Number of outputs" };
+                    InvalidateVisual();
+                }
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the BusinessControl class.
@@ -77,6 +194,18 @@ namespace Beep.Skia.Business
             
             // Initialize connection points based on component type
             InitializeConnectionPoints();
+
+            // Seed NodeProperties for editors
+            NodeProperties["ComponentType"] = new ParameterInfo { ParameterName = "ComponentType", ParameterType = typeof(BusinessComponentType), DefaultParameterValue = _componentType, ParameterCurrentValue = _componentType, Description = "Business component type", Choices = Enum.GetNames(typeof(BusinessComponentType)) };
+            NodeProperties["BusinessRole"] = new ParameterInfo { ParameterName = "BusinessRole", ParameterType = typeof(string), DefaultParameterValue = _businessRole, ParameterCurrentValue = _businessRole, Description = "Role/Department" };
+            NodeProperties["BusinessPriority"] = new ParameterInfo { ParameterName = "BusinessPriority", ParameterType = typeof(BusinessPriority), DefaultParameterValue = _businessPriority, ParameterCurrentValue = _businessPriority, Description = "Priority", Choices = Enum.GetNames(typeof(BusinessPriority)) };
+            NodeProperties["Status"] = new ParameterInfo { ParameterName = "Status", ParameterType = typeof(BusinessStatus), DefaultParameterValue = _status, ParameterCurrentValue = _status, Description = "Status", Choices = Enum.GetNames(typeof(BusinessStatus)) };
+            NodeProperties["BackgroundColor"] = new ParameterInfo { ParameterName = "BackgroundColor", ParameterType = typeof(SKColor), DefaultParameterValue = _backgroundColor, ParameterCurrentValue = _backgroundColor, Description = "Background color" };
+            NodeProperties["BorderColor"] = new ParameterInfo { ParameterName = "BorderColor", ParameterType = typeof(SKColor), DefaultParameterValue = _borderColor, ParameterCurrentValue = _borderColor, Description = "Border color" };
+            NodeProperties["BorderThickness"] = new ParameterInfo { ParameterName = "BorderThickness", ParameterType = typeof(float), DefaultParameterValue = _borderThickness, ParameterCurrentValue = _borderThickness, Description = "Border thickness" };
+            NodeProperties["TextColor"] = new ParameterInfo { ParameterName = "TextColor", ParameterType = typeof(SKColor), DefaultParameterValue = this.TextColor, ParameterCurrentValue = this.TextColor, Description = "Text color" };
+            NodeProperties["InPortCount"] = new ParameterInfo { ParameterName = "InPortCount", ParameterType = typeof(int), DefaultParameterValue = InConnectionPoints.Count, ParameterCurrentValue = InConnectionPoints.Count, Description = "Number of inputs" };
+            NodeProperties["OutPortCount"] = new ParameterInfo { ParameterName = "OutPortCount", ParameterType = typeof(int), DefaultParameterValue = OutConnectionPoints.Count, ParameterCurrentValue = OutConnectionPoints.Count, Description = "Number of outputs" };
         }
 
         /// <summary>
@@ -110,6 +239,7 @@ namespace Beep.Skia.Business
 
             EnsurePortCounts(inCount, outCount);
             // Notify listeners (e.g., DrawingManager) that geometry-affecting port structure changed
+            MarkPortsDirty();
             try { OnBoundsChanged(Bounds); } catch { }
         }
 
@@ -125,7 +255,10 @@ namespace Beep.Skia.Business
             while (OutConnectionPoints.Count > outputs)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
-            LayoutPorts();
+            MarkPortsDirty();
+            // sync counts metadata
+            if (NodeProperties.TryGetValue("InPortCount", out var pIn)) pIn.ParameterCurrentValue = InConnectionPoints.Count; else NodeProperties["InPortCount"] = new ParameterInfo { ParameterName = "InPortCount", ParameterType = typeof(int), DefaultParameterValue = InConnectionPoints.Count, ParameterCurrentValue = InConnectionPoints.Count, Description = "Number of inputs" };
+            if (NodeProperties.TryGetValue("OutPortCount", out var pOut)) pOut.ParameterCurrentValue = OutConnectionPoints.Count; else NodeProperties["OutPortCount"] = new ParameterInfo { ParameterName = "OutPortCount", ParameterType = typeof(int), DefaultParameterValue = OutConnectionPoints.Count, ParameterCurrentValue = OutConnectionPoints.Count, Description = "Number of outputs" };
         }
 
         /// <summary>
@@ -332,8 +465,12 @@ namespace Beep.Skia.Business
         /// <param name="context">The drawing context.</param>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            LayoutPorts();
-            
+            EnsurePortLayout(() => LayoutPorts());
+            DrawBusinessContent(canvas, context);
+        }
+
+        protected virtual void DrawBusinessContent(SKCanvas canvas, DrawingContext context)
+        {
             // Draw the custom shape
             DrawShape(canvas, context);
 
@@ -346,8 +483,9 @@ namespace Beep.Skia.Business
             // Draw connection points
             DrawConnectionPoints(canvas, context);
 
-            // Draw selection indicator if selected
-            if (IsSelected)
+            // Draw selection indicator if selected and explicitly enabled for this family.
+            // Global selection handles are drawn by RenderingHelper; avoid double highlights by default.
+            if (IsSelected && ShowSelectionBorder)
             {
                 DrawSelectionBorder(canvas);
             }
@@ -458,6 +596,12 @@ namespace Beep.Skia.Business
         }
 
         /// <summary>
+        /// When true, the node draws its own dashed selection border. Defaults to false to avoid duplication
+        /// since the framework already renders selection handles/highlights.
+        /// </summary>
+        public bool ShowSelectionBorder { get; set; } = false;
+
+        /// <summary>
         /// Gets the default background color based on component type.
         /// </summary>
         /// <returns>The default background color.</returns>
@@ -521,8 +665,8 @@ namespace Beep.Skia.Business
 
         protected override void OnBoundsChanged(SKRect bounds)
         {
-            // Keep ports aligned when size or position changes
-            LayoutPorts();
+            // Defer ports re-layout to draw using EnsurePortLayout pattern
+            MarkPortsDirty();
             base.OnBoundsChanged(bounds);
         }
     }

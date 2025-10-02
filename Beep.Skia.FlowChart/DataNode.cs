@@ -18,6 +18,8 @@ namespace Beep.Skia.Flowchart
                 if (!string.Equals(_label, v, System.StringComparison.Ordinal))
                 {
                     _label = v;
+                    if (NodeProperties.TryGetValue("Label", out var pi))
+                        pi.ParameterCurrentValue = _label;
                     InvalidateVisual();
                 }
             }
@@ -29,6 +31,15 @@ namespace Beep.Skia.Flowchart
             Width = 160;
             Height = 90;
             EnsurePortCounts(1, 1);
+
+            NodeProperties["Label"] = new ParameterInfo
+            {
+                ParameterName = "Label",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _label,
+                ParameterCurrentValue = _label,
+                Description = "Text shown inside the cylinder."
+            };
         }
 
         protected override void LayoutPorts()
@@ -40,10 +51,9 @@ namespace Beep.Skia.Flowchart
             PlacePortsAlongVerticalEdge(OutConnectionPoints, b.Right, b.Top + ry + 4f, b.Bottom - ry - 4f, outwardSign: +1f);
         }
 
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
         {
             if (!context.Bounds.IntersectsWith(Bounds)) return;
-            LayoutPorts();
 
             var b = Bounds;
             using var fill = new SKPaint { Color = new SKColor(0xE8, 0xEA, 0xF6), IsAntialias = true };

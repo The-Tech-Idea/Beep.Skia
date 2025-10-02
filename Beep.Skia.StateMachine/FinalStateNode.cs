@@ -10,7 +10,19 @@ namespace Beep.Skia.StateMachine
     /// </summary>
     public class FinalStateNode : StateMachineControl
     {
-        public string Title { get; set; } = "Final";
+        private string _title = "Final";
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_title == v) return;
+                _title = v;
+                if (NodeProperties.TryGetValue("Title", out var pi)) pi.ParameterCurrentValue = _title;
+                InvalidateVisual();
+            }
+        }
 
         public FinalStateNode()
         {
@@ -18,7 +30,10 @@ namespace Beep.Skia.StateMachine
             BackgroundColor = MaterialColors.Surface;
             BorderColor = MaterialColors.Primary;
             TextColor = MaterialColors.OnSurface;
+            if (NodeProperties.TryGetValue("TextColor", out var piTxt)) piTxt.ParameterCurrentValue = TextColor;
             EnsurePortCounts(1, 0);
+
+            NodeProperties["Title"] = new ParameterInfo { ParameterName = "Title", ParameterType = typeof(string), DefaultParameterValue = _title, ParameterCurrentValue = _title, Description = "Label" };
         }
 
         protected override void LayoutPorts()
@@ -41,7 +56,7 @@ namespace Beep.Skia.StateMachine
             }
         }
 
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawStateMachineContent(SKCanvas canvas, DrawingContext context)
         {
             float r = MathF.Min(Width, Height) / 2f - 2f;
             float cx = X + Width / 2f;

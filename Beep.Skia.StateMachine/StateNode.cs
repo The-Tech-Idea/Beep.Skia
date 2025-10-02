@@ -10,7 +10,19 @@ namespace Beep.Skia.StateMachine
     /// </summary>
     public class StateNode : StateMachineControl
     {
-        public string Title { get; set; } = "State";
+        private string _title = "State";
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_title == v) return;
+                _title = v;
+                if (NodeProperties.TryGetValue("Title", out var pi)) pi.ParameterCurrentValue = _title;
+                InvalidateVisual();
+            }
+        }
 
         public StateNode()
         {
@@ -18,7 +30,10 @@ namespace Beep.Skia.StateMachine
             BackgroundColor = MaterialColors.Surface;
             BorderColor = MaterialColors.Outline;
             TextColor = MaterialColors.OnSurface;
+            if (NodeProperties.TryGetValue("TextColor", out var piTxt)) piTxt.ParameterCurrentValue = TextColor;
             EnsurePortCounts(1, 2);
+
+            NodeProperties["Title"] = new ParameterInfo { ParameterName = "Title", ParameterType = typeof(string), DefaultParameterValue = _title, ParameterCurrentValue = _title, Description = "State title" };
         }
 
         protected override void LayoutPorts()
@@ -27,7 +42,7 @@ namespace Beep.Skia.StateMachine
             LayoutPortsRightEdge(6f, 6f);
         }
 
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawStateMachineContent(SKCanvas canvas, DrawingContext context)
         {
             using var fill = new SKPaint { Color = BackgroundColor, Style = SKPaintStyle.Fill, IsAntialias = true };
             using var stroke = new SKPaint { Color = BorderColor, Style = SKPaintStyle.Stroke, StrokeWidth = BorderThickness, IsAntialias = true };

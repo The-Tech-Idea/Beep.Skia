@@ -11,10 +11,65 @@ namespace Beep.Skia.Business
     /// </summary>
     public class DataObject : BusinessControl
     {
-        public string DataName { get; set; } = "Data Object";
-        public DataType DataType { get; set; } = DataType.Document;
-        public string DataFormat { get; set; } = "";
-        public bool IsCollection { get; set; } = false;
+        private string _dataName = "Data Object";
+        private DataType _dataType = DataType.Document;
+        private string _dataFormat = string.Empty;
+        private bool _isCollection = false;
+        public string DataName
+        {
+            get => _dataName;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_dataName != v)
+                {
+                    _dataName = v;
+                    if (NodeProperties.TryGetValue("DataName", out var p)) p.ParameterCurrentValue = _dataName; else NodeProperties["DataName"] = new ParameterInfo { ParameterName = "DataName", ParameterType = typeof(string), DefaultParameterValue = _dataName, ParameterCurrentValue = _dataName, Description = "Data name" };
+                    Name = _dataName;
+                    InvalidateVisual();
+                }
+            }
+        }
+        public DataType DataType
+        {
+            get => _dataType;
+            set
+            {
+                if (_dataType != value)
+                {
+                    _dataType = value;
+                    if (NodeProperties.TryGetValue("DataType", out var p)) p.ParameterCurrentValue = _dataType; else NodeProperties["DataType"] = new ParameterInfo { ParameterName = "DataType", ParameterType = typeof(DataType), DefaultParameterValue = _dataType, ParameterCurrentValue = _dataType, Description = "Data type", Choices = Enum.GetNames(typeof(DataType)) };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public string DataFormat
+        {
+            get => _dataFormat;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_dataFormat != v)
+                {
+                    _dataFormat = v;
+                    if (NodeProperties.TryGetValue("DataFormat", out var p)) p.ParameterCurrentValue = _dataFormat; else NodeProperties["DataFormat"] = new ParameterInfo { ParameterName = "DataFormat", ParameterType = typeof(string), DefaultParameterValue = _dataFormat, ParameterCurrentValue = _dataFormat, Description = "Data format" };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public bool IsCollection
+        {
+            get => _isCollection;
+            set
+            {
+                if (_isCollection != value)
+                {
+                    _isCollection = value;
+                    if (NodeProperties.TryGetValue("IsCollection", out var p)) p.ParameterCurrentValue = _isCollection; else NodeProperties["IsCollection"] = new ParameterInfo { ParameterName = "IsCollection", ParameterType = typeof(bool), DefaultParameterValue = _isCollection, ParameterCurrentValue = _isCollection, Description = "Is collection" };
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public DataObject()
         {
@@ -22,6 +77,10 @@ namespace Beep.Skia.Business
             Height = 70;
             Name = "Data Object";
             ComponentType = BusinessComponentType.Document;
+            NodeProperties["DataName"] = new ParameterInfo { ParameterName = "DataName", ParameterType = typeof(string), DefaultParameterValue = _dataName, ParameterCurrentValue = _dataName, Description = "Data name" };
+            NodeProperties["DataType"] = new ParameterInfo { ParameterName = "DataType", ParameterType = typeof(DataType), DefaultParameterValue = _dataType, ParameterCurrentValue = _dataType, Description = "Data type", Choices = Enum.GetNames(typeof(DataType)) };
+            NodeProperties["DataFormat"] = new ParameterInfo { ParameterName = "DataFormat", ParameterType = typeof(string), DefaultParameterValue = _dataFormat, ParameterCurrentValue = _dataFormat, Description = "Data format" };
+            NodeProperties["IsCollection"] = new ParameterInfo { ParameterName = "IsCollection", ParameterType = typeof(bool), DefaultParameterValue = _isCollection, ParameterCurrentValue = _isCollection, Description = "Is collection" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

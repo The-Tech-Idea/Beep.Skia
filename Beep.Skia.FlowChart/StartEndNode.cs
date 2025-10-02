@@ -18,6 +18,8 @@ namespace Beep.Skia.Flowchart
                 if (!string.Equals(_label, v, System.StringComparison.Ordinal))
                 {
                     _label = v;
+                    if (NodeProperties.TryGetValue("Label", out var pi))
+                        pi.ParameterCurrentValue = _label;
                     InvalidateVisual();
                 }
             }
@@ -31,7 +33,11 @@ namespace Beep.Skia.Flowchart
                 if (_showTopBottomPorts != value)
                 {
                     _showTopBottomPorts = value;
-                    LayoutPorts();
+                    if (NodeProperties.TryGetValue("ShowTopBottomPorts", out var pi))
+                        pi.ParameterCurrentValue = value;
+                    // Defer layout to draw; just mark ports dirty and notify
+                    MarkPortsDirty();
+                    try { OnBoundsChanged(Bounds); } catch { }
                     InvalidateVisual();
                 }
             }
@@ -43,6 +49,23 @@ namespace Beep.Skia.Flowchart
             Width = 140;
             Height = 56;
             EnsurePortCounts(1, 1);
+
+            NodeProperties["Label"] = new ParameterInfo
+            {
+                ParameterName = "Label",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _label,
+                ParameterCurrentValue = _label,
+                Description = "Text shown inside the terminator pill."
+            };
+            NodeProperties["ShowTopBottomPorts"] = new ParameterInfo
+            {
+                ParameterName = "ShowTopBottomPorts",
+                ParameterType = typeof(bool),
+                DefaultParameterValue = _showTopBottomPorts,
+                ParameterCurrentValue = _showTopBottomPorts,
+                Description = "If true, extra ports are distributed along top/bottom edges."
+            };
         }
 
         protected override void LayoutPorts()
@@ -78,10 +101,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
         {
             if (!context.Bounds.IntersectsWith(Bounds)) return;
-            LayoutPorts();
 
             var r = Bounds;
             float radius = Math.Min(r.Height / 2f, CornerRadius * 2f);

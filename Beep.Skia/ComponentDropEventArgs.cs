@@ -4,26 +4,15 @@ using Beep.Skia.Model;
 namespace Beep.Skia
 {
     /// <summary>
-    /// Provides data for the ComponentDropped event.
+    /// Legacy drop args, kept for source-compat only. Do not use.
     /// </summary>
-    public class ComponentDropEventArgs : EventArgs
+    [Obsolete("Use Beep.Skia.Events.ComponentDropEventArgs (with Canvas/Screen positions) instead.", true)]
+    internal class LegacyComponentDropEventArgs : EventArgs
     {
-        /// <summary>
-        /// Gets the component that was dropped.
-        /// </summary>
         public SkiaComponent Component { get; }
-
-        /// <summary>
-        /// Gets the location where the component was dropped.
-        /// </summary>
         public SKPoint Location { get; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ComponentDropEventArgs"/> class.
-        /// </summary>
-        /// <param name="component">The component that was dropped.</param>
-        /// <param name="location">The location where the component was dropped.</param>
-        public ComponentDropEventArgs(SkiaComponent component, SKPoint location)
+        public LegacyComponentDropEventArgs(SkiaComponent component, SKPoint location)
         {
             Component = component;
             Location = location;

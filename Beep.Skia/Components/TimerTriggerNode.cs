@@ -14,8 +14,22 @@ namespace Beep.Skia.Components
     /// </summary>
     public class TimerTriggerNode : AutomationNode
     {
+        public TimerTriggerNode()
+        {
+            UpsertNodeProperty("TriggerType", typeof(string), _triggerType.ToString(), "Interval | Cron | OneTime");
+            if (NodeProperties.TryGetValue("TriggerType", out var _piTrigger))
+            {
+                _piTrigger.Choices = new[] { nameof(TimerTriggerMode.Interval), nameof(TimerTriggerMode.Cron), nameof(TimerTriggerMode.OneTime) };
+            }
+            UpsertNodeProperty("Interval", typeof(string), _interval.ToString(), "TimeSpan as string e.g., 00:05:00");
+            UpsertNodeProperty("CronExpression", typeof(string), _cronExpression, "Cron expression if TriggerType=Cron");
+            UpsertNodeProperty("StartTime", typeof(string), _startTime?.ToString("O"), "ISO-8601 start time");
+            UpsertNodeProperty("EndTime", typeof(string), _endTime?.ToString("O"), "ISO-8601 end time");
+            UpsertNodeProperty("IsEnabled", typeof(bool), _isEnabled, "Enable/disable timer");
+            UpsertNodeProperty("MaxExecutions", typeof(int), _maxExecutions, "-1 for unlimited");
+        }
         #region Private Fields
-        private string _triggerType = "Interval";
+    private TimerTriggerMode _triggerType = TimerTriggerMode.Interval;
         private TimeSpan _interval = TimeSpan.FromMinutes(5);
         private string _cronExpression = "";
         private DateTime? _startTime;
@@ -40,15 +54,17 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Gets or sets the type of timer trigger (Interval, Cron, OneTime).
         /// </summary>
-        public string TriggerType
+        public TimerTriggerMode TriggerType
         {
             get => _triggerType;
             set
             {
                 if (_triggerType != value)
                 {
-                    _triggerType = value ?? "Interval";
-                    Configuration["TriggerType"] = _triggerType;
+                    _triggerType = value;
+                    var s = _triggerType.ToString();
+                    Configuration["TriggerType"] = s;
+                    UpsertNodeProperty("TriggerType", typeof(string), s);
                     RestartTimer();
                 }
             }
@@ -65,7 +81,9 @@ namespace Beep.Skia.Components
                 if (_interval != value)
                 {
                     _interval = value;
-                    Configuration["Interval"] = value.ToString();
+                    var s = value.ToString();
+                    Configuration["Interval"] = s;
+                    UpsertNodeProperty("Interval", typeof(string), s);
                     RestartTimer();
                 }
             }
@@ -83,6 +101,7 @@ namespace Beep.Skia.Components
                 {
                     _cronExpression = value ?? "";
                     Configuration["CronExpression"] = _cronExpression;
+                    UpsertNodeProperty("CronExpression", typeof(string), _cronExpression);
                     RestartTimer();
                 }
             }
@@ -99,7 +118,9 @@ namespace Beep.Skia.Components
                 if (_startTime != value)
                 {
                     _startTime = value;
-                    Configuration["StartTime"] = value?.ToString("O");
+                    var s = value?.ToString("O");
+                    Configuration["StartTime"] = s;
+                    UpsertNodeProperty("StartTime", typeof(string), s);
                     RestartTimer();
                 }
             }
@@ -116,7 +137,9 @@ namespace Beep.Skia.Components
                 if (_endTime != value)
                 {
                     _endTime = value;
-                    Configuration["EndTime"] = value?.ToString("O");
+                    var s = value?.ToString("O");
+                    Configuration["EndTime"] = s;
+                    UpsertNodeProperty("EndTime", typeof(string), s);
                 }
             }
         }
@@ -133,6 +156,7 @@ namespace Beep.Skia.Components
                 {
                     _isEnabled = value;
                     Configuration["IsEnabled"] = value;
+                    UpsertNodeProperty("IsEnabled", typeof(bool), _isEnabled);
                     if (value)
                         RestartTimer();
                     else
@@ -153,6 +177,7 @@ namespace Beep.Skia.Components
                 {
                     _maxExecutions = value;
                     Configuration["MaxExecutions"] = value;
+                    UpsertNodeProperty("MaxExecutions", typeof(int), _maxExecutions);
                 }
             }
         }
@@ -203,8 +228,10 @@ namespace Beep.Skia.Components
 
                 // Load configuration
                 Configuration = configuration ?? new Dictionary<string, object>();
-                
-                TriggerType = Configuration.GetValueOrDefault("TriggerType", "Interval")?.ToString() ?? "Interval";
+
+                var triggerStr = Configuration.GetValueOrDefault("TriggerType", nameof(TimerTriggerMode.Interval))?.ToString() ?? nameof(TimerTriggerMode.Interval);
+                if (!Enum.TryParse<TimerTriggerMode>(triggerStr, true, out var mode)) mode = TimerTriggerMode.Interval;
+                TriggerType = mode;
                 CronExpression = Configuration.GetValueOrDefault("CronExpression", "")?.ToString() ?? "";
                 IsTimerEnabled = Convert.ToBoolean(Configuration.GetValueOrDefault("IsEnabled", true));
                 MaxExecutions = Convert.ToInt32(Configuration.GetValueOrDefault("MaxExecutions", -1));
@@ -257,33 +284,30 @@ namespace Beep.Skia.Components
         {
             var issues = new List<string>();
 
-            // Validate trigger type
-            var validTriggerTypes = new[] { "Interval", "Cron", "OneTime" };
-            if (!validTriggerTypes.Contains(TriggerType, StringComparer.OrdinalIgnoreCase))
-                issues.Add($"Trigger type must be one of: {string.Join(", ", validTriggerTypes)}");
-
             // Validate based on trigger type
-            switch (TriggerType.ToLowerInvariant())
+            switch (TriggerType)
             {
-                case "interval":
+                case TimerTriggerMode.Interval:
                     if (Interval <= TimeSpan.Zero)
                         issues.Add("Interval must be greater than zero");
                     if (Interval < TimeSpan.FromSeconds(1))
                         issues.Add("Interval should be at least 1 second for performance reasons");
                     break;
 
-                case "cron":
+                case TimerTriggerMode.Cron:
                     if (string.IsNullOrWhiteSpace(CronExpression))
                         issues.Add("Cron expression is required for Cron trigger type");
                     else if (!IsValidCronExpression(CronExpression))
                         issues.Add("Invalid cron expression format");
                     break;
 
-                case "onetime":
+                case TimerTriggerMode.OneTime:
                     if (!StartTime.HasValue)
                         issues.Add("Start time is required for OneTime trigger type");
                     else if (StartTime.Value <= DateTime.UtcNow)
                         issues.Add("Start time must be in the future for OneTime trigger");
+                    break;
+                default:
                     break;
             }
 
@@ -502,8 +526,8 @@ namespace Beep.Skia.Components
                     var delay = CalculateInitialDelay();
                     if (delay.HasValue)
                     {
-                        var period = TriggerType.ToLowerInvariant() == "onetime" 
-                            ? Timeout.InfiniteTimeSpan 
+                        var period = TriggerType == TimerTriggerMode.OneTime
+                            ? Timeout.InfiniteTimeSpan
                             : CalculatePeriod();
 
                         _timer = new System.Threading.Timer(OnTimerCallback, null, delay.Value, period);
@@ -543,11 +567,11 @@ namespace Beep.Skia.Components
                 return null; // Already reached max executions
             }
 
-            return TriggerType.ToLowerInvariant() switch
+            return TriggerType switch
             {
-                "interval" => Interval,
-                "cron" => CalculateNextCronExecution() - now,
-                "onetime" => StartTime.HasValue ? StartTime.Value - now : TimeSpan.Zero,
+                TimerTriggerMode.Interval => Interval,
+                TimerTriggerMode.Cron => CalculateNextCronExecution() - now,
+                TimerTriggerMode.OneTime => StartTime.HasValue ? StartTime.Value - now : TimeSpan.Zero,
                 _ => TimeSpan.Zero
             };
         }
@@ -558,11 +582,11 @@ namespace Beep.Skia.Components
         /// <returns>The execution period.</returns>
         private TimeSpan CalculatePeriod()
         {
-            return TriggerType.ToLowerInvariant() switch
+            return TriggerType switch
             {
-                "interval" => Interval,
-                "cron" => TimeSpan.FromMinutes(1), // Check every minute for cron
-                "onetime" => Timeout.InfiniteTimeSpan,
+                TimerTriggerMode.Interval => Interval,
+                TimerTriggerMode.Cron => TimeSpan.FromMinutes(1), // Check every minute for cron
+                TimerTriggerMode.OneTime => Timeout.InfiniteTimeSpan,
                 _ => Interval
             };
         }
@@ -574,11 +598,11 @@ namespace Beep.Skia.Components
         {
             var now = DateTime.UtcNow;
 
-            _nextExecution = TriggerType.ToLowerInvariant() switch
+            _nextExecution = TriggerType switch
             {
-                "interval" => now.Add(Interval),
-                "cron" => CalculateNextCronExecution(),
-                "onetime" => StartTime ?? now,
+                TimerTriggerMode.Interval => now.Add(Interval),
+                TimerTriggerMode.Cron => CalculateNextCronExecution(),
+                TimerTriggerMode.OneTime => StartTime ?? now,
                 _ => now.Add(Interval)
             };
         }
@@ -656,7 +680,7 @@ namespace Beep.Skia.Components
                 await ExecuteAsync(context, CancellationToken.None);
 
                 // For one-time triggers, stop after execution
-                if (TriggerType.ToLowerInvariant() == "onetime")
+                if (TriggerType == TimerTriggerMode.OneTime)
                 {
                     StopTimer();
                 }
@@ -697,7 +721,7 @@ namespace Beep.Skia.Components
             }
 
             // For cron triggers, check if it's the right time
-            if (TriggerType.ToLowerInvariant() == "cron")
+            if (TriggerType == TimerTriggerMode.Cron)
             {
                 return IsCronTimeMatch(now);
             }
@@ -771,10 +795,11 @@ namespace Beep.Skia.Components
 
             // Draw trigger type
             using var typeFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI"), 10);
-            var typeWidth = typeFont.MeasureText(TriggerType);
+            var typeLabel = TriggerType.ToString();
+            var typeWidth = typeFont.MeasureText(typeLabel);
             var typeX = bounds.MidX - typeWidth / 2;
             var typeY = bounds.Top + 35;
-            canvas.DrawText(TriggerType, typeX, typeY, typeFont, textPaint);
+            canvas.DrawText(typeLabel, typeX, typeY, typeFont, textPaint);
 
             // Draw status info
             DrawStatusInfo(canvas, bounds);

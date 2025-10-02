@@ -255,8 +255,15 @@ namespace Beep.Skia
         public void Draw(SKCanvas canvas)
         {
             // Calculate line coordinates and draw the line
-            var lineStart = Start.Position;
-            var lineEnd = End.Position;
+            if (Start == null && End == null)
+            {
+                // Nothing to draw
+                return;
+            }
+
+            // Prefer actual connection points; fall back to EndPoint when End is not connected (preview/drag)
+            var lineStart = Start != null ? Start.Position : EndPoint;
+            var lineEnd = (End != null) ? End.Position : EndPoint;
             Paint.Color = LineColor;
 
             // Configure dash pattern if provided
@@ -302,9 +309,9 @@ namespace Beep.Skia
             }
 
             // Draw ERD multiplicity markers or arrows
-            if (StartMultiplicity != ERDMultiplicity.Unspecified)
+            if (Start != null && StartMultiplicity != ERDMultiplicity.Unspecified)
                 DrawErdMultiplicity(canvas, stroke, atPoint: lineStart, toward: lineEnd, StartMultiplicity);
-            else if (ShowStartArrow)
+            else if (ShowStartArrow && Start != null)
                 DrawArrow(canvas, Paint, lineStart, lineEnd);
 
             if (EndMultiplicity != ERDMultiplicity.Unspecified)
@@ -340,7 +347,7 @@ namespace Beep.Skia
             }
 
             // Draw data flow animation particles
-            if (IsDataFlowAnimated && Start != null && End != null && FlowDirection != DataFlowDirection.None)
+            if (IsDataFlowAnimated && FlowDirection != DataFlowDirection.None)
             {
                 DrawDataFlowParticles(canvas, lineStart, lineEnd, FlowDirection);
             }
@@ -528,9 +535,15 @@ namespace Beep.Skia
         /// <returns>true if the point is on the line; otherwise, false.</returns>
         public bool LineContainsPoint(SKPoint point)
         {
+            // Guard against missing endpoints; use EndPoint when End is null (preview state)
+            if (Start == null && End == null)
+                return false;
+
+            var a = Start != null ? Start.Position : EndPoint;
+            var b = End != null ? End.Position : EndPoint;
             // Check if the distance from the point to the line is within the click threshold
-            var lineVector = End.Position - Start.Position;
-            var pointVector = point - Start.Position;
+            var lineVector = b - a;
+            var pointVector = point - a;
             var lineLength = (float)Math.Sqrt(lineVector.X * lineVector.X + lineVector.Y * lineVector.Y);
             var dotProduct = lineVector.X * pointVector.X + lineVector.Y * pointVector.Y;
             var projectionLength = dotProduct / lineLength;
@@ -538,7 +551,7 @@ namespace Beep.Skia
             {
                 return false;
             }
-            var projectionPoint = Start.Position + new SKPoint(lineVector.X * projectionLength / lineLength, lineVector.Y * projectionLength / lineLength);
+            var projectionPoint = a + new SKPoint(lineVector.X * projectionLength / lineLength, lineVector.Y * projectionLength / lineLength);
             return (float)Math.Sqrt(Math.Pow(point.X - projectionPoint.X, 2) + Math.Pow(point.Y - projectionPoint.Y, 2)) <= LineClickThreshold;
         }
 
@@ -551,14 +564,16 @@ namespace Beep.Skia
         public bool ArrowContainsPoint(SKPoint point, bool startArrow)
         {
             // Check if the point is within the bounding box of the arrow
-            if (startArrow && ShowStartArrow)
+            if (startArrow && ShowStartArrow && Start != null)
             {
-                var arrowBoundingBox = CalculateArrowBoundingBox(Start.Position, End.Position);
+                var arrowBoundingBox = CalculateArrowBoundingBox(Start.Position, (End != null ? End.Position : EndPoint));
                 return arrowBoundingBox.Contains(point);
             }
             else if (!startArrow && ShowEndArrow)
             {
-                var arrowBoundingBox = CalculateArrowBoundingBox(End.Position, Start.Position);
+                var tip = (End != null ? End.Position : EndPoint);
+                var tail = (Start != null ? Start.Position : EndPoint);
+                var arrowBoundingBox = CalculateArrowBoundingBox(tip, tail);
                 return arrowBoundingBox.Contains(point);
             }
             return false;

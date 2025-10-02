@@ -16,6 +16,13 @@ namespace Beep.Skia.Components
     /// </summary>
     public class ConditionalNode : AutomationNode
     {
+        public ConditionalNode()
+        {
+            UpsertNodeProperty("LogicOperator", typeof(string), _logicOperator, "AND | OR");
+            UpsertNodeProperty("DefaultPath", typeof(string), _defaultPath, "true | false | custom");
+            UpsertNodeProperty("EvaluateAllConditions", typeof(bool), _evaluateAllConditions);
+            UpsertNodeProperty("AllowCustomPaths", typeof(bool), _allowCustomPaths);
+        }
         #region Private Fields
         private List<ConditionRule> _conditions = new List<ConditionRule>();
         private string _logicOperator = "AND";
@@ -51,6 +58,7 @@ namespace Beep.Skia.Components
                 {
                     _logicOperator = value?.ToUpperInvariant() ?? "AND";
                     Configuration["LogicOperator"] = _logicOperator;
+                    UpsertNodeProperty("LogicOperator", typeof(string), _logicOperator);
                 }
             }
         }
@@ -67,6 +75,7 @@ namespace Beep.Skia.Components
                 {
                     _defaultPath = value ?? "false";
                     Configuration["DefaultPath"] = _defaultPath;
+                    UpsertNodeProperty("DefaultPath", typeof(string), _defaultPath);
                 }
             }
         }
@@ -83,6 +92,7 @@ namespace Beep.Skia.Components
                 {
                     _evaluateAllConditions = value;
                     Configuration["EvaluateAllConditions"] = value;
+                    UpsertNodeProperty("EvaluateAllConditions", typeof(bool), _evaluateAllConditions);
                 }
             }
         }
@@ -112,6 +122,7 @@ namespace Beep.Skia.Components
                 {
                     _allowCustomPaths = value;
                     Configuration["AllowCustomPaths"] = value;
+                    UpsertNodeProperty("AllowCustomPaths", typeof(bool), _allowCustomPaths);
                 }
             }
         }

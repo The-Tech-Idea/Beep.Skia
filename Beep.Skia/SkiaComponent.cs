@@ -13,6 +13,11 @@ namespace Beep.Skia
     /// </summary>
     public abstract class SkiaComponent : IDrawableComponent, IDisposable
     {
+        // Tracks whether connection port geometry needs recomputation.
+        // Families should call MarkPortsDirty() when bounds-affecting properties change
+        // and call their own LayoutPorts() when rendering via an EnsurePortLayout pattern.
+        protected bool _portsDirty = true;
+
         private bool _isDisposed;
         private ComponentState _state = ComponentState.Initializing;
         private SKRect _bounds;
@@ -101,6 +106,311 @@ namespace Beep.Skia
         /// Gets or sets custom data associated with this component.
         /// </summary>
         public object Tag { get; set; }
+
+    /// <summary>
+    /// Per-node configurable properties surfaced in the property editor.
+    /// Keys are logical parameter names; values describe type, defaults, and current value.
+    /// </summary>
+    public Dictionary<string, ParameterInfo> NodeProperties { get; } = new Dictionary<string, ParameterInfo>(StringComparer.OrdinalIgnoreCase);
+
+        #region Generic property accessors
+        /// <summary>
+        /// Ensures a ParameterInfo exists under the given key and updates its metadata.
+        /// When <paramref name="choices"/> is provided, editors can render dropdowns for constrained strings.
+        /// </summary>
+        /// <param name="key">Logical parameter key (case-insensitive).</param>
+        /// <param name="parameterType">CLR type for the parameter; if null, inferred from values.</param>
+        /// <param name="defaultValue">Default value used when no current value is set.</param>
+        /// <param name="currentValue">Current value to apply; falls back to defaultValue when null.</param>
+        /// <param name="description">Optional description for UI/editor tooltips.</param>
+        /// <param name="choices">Optional constrained choices for string-like parameters.</param>
+        /// <returns>The upserted ParameterInfo instance.</returns>
+        protected ParameterInfo UpsertNodeProperty(
+            string key,
+            Type parameterType = null,
+            object defaultValue = null,
+            object currentValue = null,
+            string description = null,
+            System.Collections.Generic.IEnumerable<string> choices = null)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentException("Key cannot be null or whitespace.", nameof(key));
+
+            if (!NodeProperties.TryGetValue(key, out var p) || p == null)
+            {
+                p = new ParameterInfo
+                {
+                    ParameterName = key,
+                    ParameterType = parameterType,
+                    DefaultParameterValue = defaultValue,
+                    ParameterCurrentValue = currentValue ?? defaultValue,
+                    Description = description ?? string.Empty,
+                    Choices = choices != null ? choices.ToArray() : null
+                };
+                NodeProperties[key] = p;
+            }
+            else
+            {
+                if (parameterType != null) p.ParameterType = parameterType;
+                if (defaultValue != null) p.DefaultParameterValue = defaultValue;
+                if (currentValue != null) p.ParameterCurrentValue = currentValue;
+                if (description != null) p.Description = description;
+                if (choices != null) p.Choices = choices.ToArray();
+            }
+            return p;
+        }
+
+        /// <summary>
+        /// Tries to read a typed value from NodeProperties with safe conversion.
+        /// </summary>
+        protected bool TryGetNodeProperty<T>(string key, out T value)
+        {
+            value = default!;
+            if (!NodeProperties.TryGetValue(key, out var p) || p == null)
+                return false;
+            var raw = p.ParameterCurrentValue ?? p.DefaultParameterValue;
+            var converted = ConvertToType(raw, typeof(T));
+            if (converted is T t)
+            {
+                value = t;
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Returns a flat dictionary of this component's properties for editor/serialization use.
+        /// Includes common visual properties and flattens NodeProperties (key -> current value).
+        /// </summary>
+        /// <param name="includeCommon">Include common component properties (X, Y, Width, Height, Name, etc.).</param>
+        /// <param name="includeNodeProperties">Include NodeProperties entries as simple key/value pairs.</param>
+        public virtual Dictionary<string, object> GetProperties(bool includeCommon = true, bool includeNodeProperties = true)
+        {
+            var dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+
+            if (includeCommon)
+            {
+                dict["Id"] = Id.ToString();
+                dict["Name"] = Name;
+                dict["X"] = X;
+                dict["Y"] = Y;
+                dict["Width"] = Width;
+                dict["Height"] = Height;
+                dict["IsVisible"] = IsVisible;
+                dict["IsEnabled"] = IsEnabled;
+                dict["IsStatic"] = IsStatic;
+                dict["Opacity"] = Opacity;
+                // Text block
+                dict["DisplayText"] = DisplayText;
+                dict["TextPosition"] = TextPosition.ToString();
+                dict["TextFontSize"] = TextFontSize;
+                dict["TextColor"] = $"#{TextColor.Alpha:X2}{TextColor.Red:X2}{TextColor.Green:X2}{TextColor.Blue:X2}";
+                dict["ShowDisplayText"] = ShowDisplayText;
+            }
+
+            if (includeNodeProperties && NodeProperties != null)
+            {
+                foreach (var kv in NodeProperties)
+                {
+                    var p = kv.Value;
+                    var val = p?.ParameterCurrentValue ?? p?.DefaultParameterValue;
+                    dict[kv.Key] = val;
+                }
+            }
+
+            return dict;
+        }
+
+        /// <summary>
+        /// Applies a set of properties to this component. Keys match property names (case-insensitive) and/or NodeProperties keys.
+        /// Unknown keys are ignored. Safe type conversion is attempted for common types (numeric, bool, enum, SKColor, TimeSpan).
+        /// </summary>
+        /// <param name="properties">Dictionary of properties to apply.</param>
+        /// <param name="updateNodeProperties">When true, matching NodeProperties entries are updated with converted values.</param>
+        /// <param name="applyToPublicSetters">When true, attempts to set matching public properties on this component via reflection.</param>
+        public virtual void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
+        {
+            if (properties == null || properties.Count == 0) return;
+
+            var type = this.GetType();
+            var props = applyToPublicSetters
+                ? type.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                : Array.Empty<System.Reflection.PropertyInfo>();
+
+            bool boundsChanged = false;
+
+            foreach (var kv in properties)
+            {
+                var key = kv.Key;
+                var value = kv.Value;
+
+                // First try to update NodeProperties
+                if (updateNodeProperties && NodeProperties.TryGetValue(key, out var pinfo) && pinfo != null)
+                {
+                    var targetType = pinfo.ParameterType ?? pinfo.ParameterCurrentValue?.GetType() ?? pinfo.DefaultParameterValue?.GetType();
+                    var converted = ConvertToType(value, targetType);
+                    pinfo.ParameterCurrentValue = converted ?? value;
+                }
+
+                // Then try to set a public property on the component
+                if (applyToPublicSetters)
+                {
+                    var pi = props.FirstOrDefault(pr => string.Equals(pr.Name, key, StringComparison.OrdinalIgnoreCase) && pr.CanWrite);
+                    if (pi != null)
+                    {
+                        try
+                        {
+                            var converted = ConvertToType(value, pi.PropertyType);
+                            pi.SetValue(this, converted);
+
+                            // Track if bounds-affecting properties changed
+                            if (string.Equals(key, nameof(X), StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(key, nameof(Y), StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(key, nameof(Width), StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(key, nameof(Height), StringComparison.OrdinalIgnoreCase))
+                            {
+                                boundsChanged = true;
+                            }
+
+                            // Optionally seed NodeProperties for non-common public properties when missing
+                            if (updateNodeProperties && (NodeProperties == null || !NodeProperties.ContainsKey(key)))
+                            {
+                                // Exclude framework/common properties from NodeProperties auto-seeding
+                                var exclude = new System.Collections.Generic.HashSet<string>(System.StringComparer.OrdinalIgnoreCase)
+                                {
+                                    "Id", nameof(Name), nameof(X), nameof(Y), nameof(Width), nameof(Height),
+                                    nameof(IsVisible), nameof(IsEnabled), nameof(IsStatic), nameof(Opacity),
+                                    nameof(DisplayText), nameof(TextPosition), nameof(TextFontSize), nameof(TextColor), nameof(ShowDisplayText)
+                                };
+                                if (!exclude.Contains(key))
+                                {
+                                    try
+                                    {
+                                        var ptype = pi.PropertyType;
+                                        var autoPi = new ParameterInfo
+                                        {
+                                            ParameterName = key,
+                                            ParameterType = ptype,
+                                            DefaultParameterValue = converted,
+                                            ParameterCurrentValue = converted,
+                                            Description = string.Empty
+                                        };
+                                        NodeProperties[key] = autoPi;
+                                    }
+                                    catch { }
+                                }
+                            }
+                        }
+                        catch { /* ignore conversion/assignment errors */ }
+                    }
+                }
+            }
+
+            if (boundsChanged)
+            {
+                UpdateBounds();
+            }
+        }
+
+        /// <summary>
+        /// Convenience alias with corrected spelling.
+        /// </summary>
+        public void SetProperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
+            => SetPropperties(properties, updateNodeProperties, applyToPublicSetters);
+
+        private static object ConvertToType(object value, Type targetType)
+        {
+            if (targetType == null) return value;
+            if (value == null)
+            {
+                if (targetType.IsValueType)
+                    return Activator.CreateInstance(targetType);
+                return null;
+            }
+
+            var vType = value.GetType();
+            if (targetType.IsAssignableFrom(vType)) return value;
+
+            try
+            {
+                if (targetType.IsEnum)
+                {
+                    if (value is string es) return Enum.Parse(targetType, es, ignoreCase: true);
+                    return Enum.ToObject(targetType, System.Convert.ChangeType(value, Enum.GetUnderlyingType(targetType)));
+                }
+                if (targetType == typeof(string)) return System.Convert.ToString(value);
+                if (targetType == typeof(int) || targetType == typeof(int?)) return System.Convert.ToInt32(value);
+                if (targetType == typeof(float) || targetType == typeof(float?)) return System.Convert.ToSingle(value);
+                if (targetType == typeof(double) || targetType == typeof(double?)) return System.Convert.ToDouble(value);
+                if (targetType == typeof(bool) || targetType == typeof(bool?))
+                {
+                    if (value is string bs) { if (bool.TryParse(bs, out var bv)) return bv; }
+                    return System.Convert.ToBoolean(value);
+                }
+                if (targetType == typeof(TimeSpan) || targetType == typeof(TimeSpan?))
+                {
+                    if (value is TimeSpan ts) return ts;
+                    if (TimeSpan.TryParse(value.ToString(), out var parsedTs)) return parsedTs;
+                }
+                if (targetType == typeof(SKColor) || targetType == typeof(SKColor?))
+                {
+                    if (value is SKColor c) return c;
+                    if (value is string s && TryParseColor(s, out var col)) return col;
+                }
+                return System.Convert.ChangeType(value, targetType);
+            }
+            catch
+            {
+                return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
+            }
+        }
+
+        private static bool TryParseColor(string text, out SKColor color)
+        {
+            color = SKColors.Black;
+            if (string.IsNullOrWhiteSpace(text)) return false;
+            text = text.Trim();
+            try
+            {
+                if (text.StartsWith("#"))
+                {
+                    var hex = text.Substring(1);
+                    if (hex.Length == 6)
+                    {
+                        byte r = Convert.ToByte(hex.Substring(0, 2), 16);
+                        byte g = Convert.ToByte(hex.Substring(2, 2), 16);
+                        byte b = Convert.ToByte(hex.Substring(4, 2), 16);
+                        color = new SKColor(r, g, b);
+                        return true;
+                    }
+                    if (hex.Length == 8)
+                    {
+                        byte a = Convert.ToByte(hex.Substring(0, 2), 16);
+                        byte r = Convert.ToByte(hex.Substring(2, 2), 16);
+                        byte g = Convert.ToByte(hex.Substring(4, 2), 16);
+                        byte b = Convert.ToByte(hex.Substring(6, 2), 16);
+                        color = new SKColor(r, g, b, a);
+                        return true;
+                    }
+                }
+                else if (text.Contains(','))
+                {
+                    var parts = text.Split(',');
+                    if (parts.Length >= 3)
+                    {
+                        byte r = byte.Parse(parts[0].Trim());
+                        byte g = byte.Parse(parts[1].Trim());
+                        byte b = byte.Parse(parts[2].Trim());
+                        byte a = 255;
+                        if (parts.Length >= 4) a = byte.Parse(parts[3].Trim());
+                        color = new SKColor(r, g, b, a);
+                        return true;
+                    }
+                }
+            }
+            catch { }
+            return false;
+        }
+        #endregion
 
         /// <summary>
         /// Gets or sets a value indicating whether this component is visible.
@@ -210,6 +520,12 @@ namespace Beep.Skia
         /// Gets the child components of this component.
         /// </summary>
         public List<SkiaComponent> Children { get; } = new List<SkiaComponent>();
+
+    /// <summary>
+    /// Named child components for container-like controls. Keys are logical names (usually the child's Name).
+    /// This is a convenience lookup alongside the ordered Children list.
+    /// </summary>
+    public Dictionary<string, SkiaComponent> ChildNodes { get; } = new Dictionary<string, SkiaComponent>(StringComparer.OrdinalIgnoreCase);
 
         #region Text Display Properties
         /// <summary>
@@ -605,7 +921,7 @@ namespace Beep.Skia
         /// <param name="point">The mouse position.</param>
         /// <param name="context">The interaction context.</param>
         /// <returns>true if the event was handled; otherwise, false.</returns>
-        protected virtual bool OnMouseMove(SKPoint point, Beep.Skia.Model.InteractionContext context)
+        protected virtual bool OnMouseMove(SKPoint point, InteractionContext context)
         {
             return false;
         }
@@ -637,6 +953,10 @@ namespace Beep.Skia
 
             Children.Add(child);
             child.Parent = this;
+            if (!string.IsNullOrWhiteSpace(child.Name))
+            {
+                ChildNodes[child.Name] = child;
+            }
             OnChildAdded(child);
         }
 
@@ -652,6 +972,12 @@ namespace Beep.Skia
             if (Children.Remove(child))
             {
                 child.Parent = null;
+                // Remove from named dictionary if mapped to same instance
+                if (!string.IsNullOrWhiteSpace(child.Name) &&
+                    ChildNodes.TryGetValue(child.Name, out var existing) && ReferenceEquals(existing, child))
+                {
+                    ChildNodes.Remove(child.Name);
+                }
                 OnChildRemoved(child);
             }
         }
@@ -678,7 +1004,33 @@ namespace Beep.Skia
         /// <param name="bounds">The new bounds.</param>
         protected virtual void OnBoundsChanged(SKRect bounds)
         {
+            // Mark port layout as dirty so families can lazily re-position ports in DrawContent
+            MarkPortsDirty();
             BoundsChanged?.Invoke(this, new SKRectEventArgs(bounds));
+        }
+
+        /// <summary>
+        /// Marks the component's port layout as dirty. Call this when bounds-affecting
+        /// changes occur (size, style that affects geometry, port counts, etc.).
+        /// </summary>
+        protected void MarkPortsDirty()
+        {
+            _portsDirty = true;
+        }
+
+        /// <summary>
+        /// Returns true if the component's ports need re-layout.
+        /// </summary>
+        protected bool ArePortsDirty => _portsDirty;
+
+        /// <summary>
+        /// Clears the ports-dirty flag after a successful lazy layout.
+        /// Use this in families that implement their own lazy ensure pattern
+        /// without the MaterialControl wrapper.
+        /// </summary>
+        protected void ClearPortsDirty()
+        {
+            _portsDirty = false;
         }
 
         /// <summary>
@@ -920,6 +1272,7 @@ namespace Beep.Skia
                         child.Dispose();
                     }
                     Children.Clear();
+                    ChildNodes.Clear();
 
                     // Dispose managed resources
                     DisposeManagedResources();

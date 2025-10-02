@@ -49,7 +49,7 @@ namespace Beep.Skia.ERD
             while (OutConnectionPoints.Count > outputs)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
-            LayoutPorts();
+            MarkPortsDirty();
             try { OnBoundsChanged(Bounds); } catch { }
         }
 
@@ -106,9 +106,17 @@ namespace Beep.Skia.ERD
             foreach (var p in OutConnectionPoints) canvas.DrawCircle(p.Center, PortRadius, outPaint);
         }
 
+        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        {
+            EnsurePortLayout(() => LayoutPorts());
+            DrawERDContent(canvas, context);
+        }
+
+        protected virtual void DrawERDContent(SKCanvas canvas, DrawingContext context) { }
+
         protected override void OnBoundsChanged(SKRect bounds)
         {
-            LayoutPorts();
+            MarkPortsDirty();
             base.OnBoundsChanged(bounds);
         }
     }

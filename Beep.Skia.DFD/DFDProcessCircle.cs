@@ -24,11 +24,9 @@ namespace Beep.Skia.DFD
             LayoutPortsOnEllipse(topInset: inset, bottomInset: inset, outwardOffset: 2f);
         }
 
-    protected override void DrawContent(SKCanvas canvas, Beep.Skia.Model.DrawingContext context)
+    protected override void DrawDFDContent(SKCanvas canvas, Beep.Skia.Model.DrawingContext context)
         {
             if (!context.Bounds.IntersectsWith(Bounds)) return;
-
-            LayoutPorts();
 
             var r = Bounds;
             float d = System.Math.Min(r.Width, r.Height);

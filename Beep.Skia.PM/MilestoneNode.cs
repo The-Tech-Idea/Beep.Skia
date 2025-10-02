@@ -21,6 +21,8 @@ namespace Beep.Skia.PM
                 if (!string.Equals(_label, v, System.StringComparison.Ordinal))
                 {
                     _label = v;
+                    if (NodeProperties.TryGetValue("Label", out var pi))
+                        pi.ParameterCurrentValue = _label;
                     InvalidateVisual();
                 }
             }
@@ -33,6 +35,15 @@ namespace Beep.Skia.PM
             Height = 80;
             InPortCount = 1;
             OutPortCount = 1;
+
+            NodeProperties["Label"] = new Beep.Skia.Model.ParameterInfo
+            {
+                ParameterName = "Label",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _label,
+                ParameterCurrentValue = _label,
+                Description = "Milestone label"
+            };
         }
 
         protected override void LayoutPorts()
@@ -68,7 +79,7 @@ namespace Beep.Skia.PM
             }
         }
 
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawPMContent(SKCanvas canvas, DrawingContext context)
         {
             var r = Bounds;
             var cx = r.MidX; var cy = r.MidY;

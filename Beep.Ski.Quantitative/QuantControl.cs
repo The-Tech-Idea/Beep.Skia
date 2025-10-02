@@ -2,6 +2,7 @@ using SkiaSharp;
 using Beep.Skia;
 using Beep.Skia.Model;
 using System;
+using Beep.Skia.Components;
 
 namespace Beep.Ski.Quantitative
 {
@@ -9,21 +10,30 @@ namespace Beep.Ski.Quantitative
     /// Base class for quantitative analysis components (e.g., time series, indicators).
     /// Provides consistent styling and standardized connection points.
     /// </summary>
-    public abstract class QuantControl : SkiaComponent
+    public abstract class QuantControl : MaterialControl
     {
         protected const float PortRadius = 5f;
         protected const float CornerRadius = 8f;
         protected const float Padding = 8f;
 
-        public SKColor Fill { get; set; } = new SKColor(0xE0, 0xF7, 0xFA); // cyan 50
-        public SKColor Stroke { get; set; } = new SKColor(0x00, 0x96, 0x88); // teal 600
-        public float StrokeWidth { get; set; } = 1.5f;
+    private SKColor _fill = new SKColor(0xE0, 0xF7, 0xFA); // cyan 50
+    public SKColor Fill { get => _fill; set { if (_fill == value) return; _fill = value; if (NodeProperties.TryGetValue("Fill", out var pi)) pi.ParameterCurrentValue = _fill; InvalidateVisual(); } }
+    private SKColor _stroke = new SKColor(0x00, 0x96, 0x88); // teal 600
+    public SKColor Stroke { get => _stroke; set { if (_stroke == value) return; _stroke = value; if (NodeProperties.TryGetValue("Stroke", out var pi)) pi.ParameterCurrentValue = _stroke; InvalidateVisual(); } }
+    private float _strokeWidth = 1.5f;
+    public float StrokeWidth { get => _strokeWidth; set { if (Math.Abs(_strokeWidth - value) < 0.0001f) return; _strokeWidth = value; if (NodeProperties.TryGetValue("StrokeWidth", out var pi)) pi.ParameterCurrentValue = _strokeWidth; InvalidateVisual(); } }
 
         protected QuantControl()
         {
             Width = Math.Max(140, Width);
             Height = Math.Max(72, Height);
             TextColor = SKColors.Black;
+
+            // Seed NodeProperties for editor integration
+            NodeProperties["Fill"] = new ParameterInfo { ParameterName = "Fill", ParameterType = typeof(SKColor), DefaultParameterValue = _fill, ParameterCurrentValue = _fill, Description = "Background fill color" };
+            NodeProperties["Stroke"] = new ParameterInfo { ParameterName = "Stroke", ParameterType = typeof(SKColor), DefaultParameterValue = _stroke, ParameterCurrentValue = _stroke, Description = "Border color" };
+            NodeProperties["StrokeWidth"] = new ParameterInfo { ParameterName = "StrokeWidth", ParameterType = typeof(float), DefaultParameterValue = _strokeWidth, ParameterCurrentValue = _strokeWidth, Description = "Border thickness" };
+            NodeProperties["TextColor"] = new ParameterInfo { ParameterName = "TextColor", ParameterType = typeof(SKColor), DefaultParameterValue = this.TextColor, ParameterCurrentValue = this.TextColor, Description = "Text color" };
         }
 
         protected void EnsurePortCounts(int inCount, int outCount)
@@ -38,7 +48,8 @@ namespace Beep.Ski.Quantitative
             while (OutConnectionPoints.Count > outCount)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
-            LayoutPorts();
+            // Lazy layout: mark ports dirty and notify listeners; actual layout happens during draw
+            MarkPortsDirty();
             try { OnBoundsChanged(Bounds); } catch { }
         }
 
@@ -74,10 +85,21 @@ namespace Beep.Ski.Quantitative
         protected override void UpdateBounds()
         {
             base.UpdateBounds();
-            LayoutPorts();
+            // Defer port layout to DrawContent via lazy ensure
         }
 
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        {
+            // Ensure ports are laid out lazily, then delegate to visuals
+            EnsurePortLayout(() => LayoutPorts());
+            DrawQuantContent(canvas, context);
+        }
+
+        /// <summary>
+        /// Template method for derived quantitative nodes to draw visuals.
+        /// Ports are ensured by the base DrawContent wrapper.
+        /// </summary>
+        protected virtual void DrawQuantContent(SKCanvas canvas, DrawingContext context)
         {
             var rect = new SKRect(X, Y, X + Width, Y + Height);
             using var fill = new SKPaint { Color = Fill, Style = SKPaintStyle.Fill, IsAntialias = true };

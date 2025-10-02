@@ -21,7 +21,11 @@ namespace Beep.Skia
         private SKPoint _selectionStart;
         private SKRect _selectionRect;
         private IConnectionPoint _sourcePoint;
-        private IConnectionLine _currentLine;
+    // resizing state
+    private bool _isResizing;
+    private string _resizeHandle;
+    private SKRect _initialComponentBounds;
+    private SKPoint _mouseDownCanvas;
     // Component that has consumed the current mouse interaction (child components can handle their own drag)
     private SkiaComponent _componentHandlingMouse;
 
@@ -93,26 +97,13 @@ namespace Beep.Skia
             var immediateCp = GetConnectionPointAt(canvasPoint);
             if (immediateCp != null)
             {
-                if ((modifiers & SKKeyModifiers.Shift) == SKKeyModifiers.Shift)
-                {
-                    _isDrawingLine = true;
-                    StartDrawingLine(immediateCp, canvasPoint);
-                }
-                else
-                {
-                    if ((modifiers & SKKeyModifiers.Control) == SKKeyModifiers.Control)
-                    {
-                        if (_drawingManager.SelectionManager.IsSelected(immediateCp))
-                            _drawingManager.SelectionManager.RemoveFromSelection(immediateCp);
-                        else
-                            _drawingManager.SelectionManager.SelectConnectionPoint(immediateCp, addToSelection: true);
-                    }
-                    else if (!_drawingManager.SelectionManager.IsSelected(immediateCp))
-                    {
-                        _drawingManager.SelectionManager.ClearSelection();
-                        _drawingManager.SelectionManager.SelectConnectionPoint(immediateCp);
-                    }
-                }
+                // Begin drag-to-connect from a connection point immediately (no Shift required)
+                _drawingManager.SelectionManager.ClearSelection();
+                _drawingManager.SelectionManager.SelectConnectionPoint(immediateCp);
+                _isDrawingLine = true;
+                _sourcePoint = immediateCp;
+                _mouseDownCanvas = canvasPoint;
+                StartDrawingLine(immediateCp, canvasPoint);
                 return;
             }
 
@@ -175,22 +166,10 @@ namespace Beep.Skia
             var component = GetComponentAt(canvasPoint);
             if (component != null)
             {
-                // Respect static components: do not start drag/resize on IsStatic
+                // Respect static components: do not start drag/resize OR selection for overlays (palette/property editor)
                 if (component is SkiaComponent scStatic && scStatic.IsStatic)
                 {
-                    // Still allow selection toggling, but do not initiate drag/resize
-                    if (modifiers.HasFlag(SKKeyModifiers.Control))
-                    {
-                        if (_drawingManager.SelectionManager.IsSelected(component))
-                            _drawingManager.SelectionManager.RemoveFromSelection(component);
-                        else
-                            _drawingManager.SelectionManager.SelectComponent(component, true);
-                    }
-                    else if (!_drawingManager.SelectionManager.IsSelected(component))
-                    {
-                        _drawingManager.SelectionManager.ClearSelection();
-                        _drawingManager.SelectionManager.SelectComponent(component);
-                    }
+                    // Let the static overlay handle its own interactions (already called above), but do not affect canvas selection
                     return;
                 }
                 // Check if clicking on a resize handle
@@ -198,9 +177,11 @@ namespace Beep.Skia
                 if (handle != null)
                 {
                     // Start resizing
-                    _isDragging = true;
+                    _isResizing = true;
+                    _resizeHandle = handle;
                     _draggingComponent = component;
-                    _draggingOffset = canvasPoint - new SKPoint(component.Bounds.Left, component.Bounds.Top);
+                    _initialComponentBounds = component.Bounds;
+                    _mouseDownCanvas = canvasPoint;
                     return;
                 }
 
@@ -282,24 +263,89 @@ namespace Beep.Skia
                 _draggingLine = null;
                 _sourcePoint = null;
             }
+            else if (_isResizing && _draggingComponent != null)
+            {
+                // Finish resizing
+                _isResizing = false;
+                _resizeHandle = null;
+                _draggingComponent = null;
+            }
             else if (_isDragging && _draggingComponent != null)
             {
                 _isDragging = false;
+                // Fire drop event with final positions
+                try
+                {
+                    var screenPt = point;
+                    var canvasPt = ScreenToCanvas(point);
+                    var dropArgs = new ComponentDropEventArgs
+                    {
+                        Component = _draggingComponent,
+                        ScreenPosition = screenPt,
+                        CanvasPosition = canvasPt,
+                        Bounds = _draggingComponent.Bounds
+                    };
+                    _drawingManager.RaiseComponentDropped(dropArgs);
+                }
+                catch { }
 
-                // Handle drop - DrawingManager will handle the ComponentDropped event
                 _draggingComponent = null;
+
+                // After a component drag ends, ensure selection reflects the single component under cursor
+                try
+                {
+                    var compAtUp = GetComponentAt(canvasPoint);
+                    if (compAtUp != null)
+                    {
+                        // If only one component is intended, select it to drive property editor refresh
+                        if (!_drawingManager.SelectionManager.IsSelected(compAtUp) || _drawingManager.SelectionManager.SelectedComponents.Count != 1)
+                        {
+                            _drawingManager.SelectionManager.ClearSelection();
+                            _drawingManager.SelectionManager.SelectComponent(compAtUp);
+                        }
+                    }
+                }
+                catch { }
             }
             else if (_isDrawingLine)
             {
                 _isDrawingLine = false;
                 var targetPoint = GetConnectionPointAt(canvasPoint);
-                if (targetPoint != null && _sourcePoint.Component != targetPoint.Component && !_sourcePoint.Component.IsConnectedTo(targetPoint.Component))
+                var line = _drawingManager.CurrentLine;
+                // Allow connection when:
+                // - both points exist
+                // - they belong to different components
+                // - these specific points aren’t already connected by an existing line
+                if (targetPoint != null && _sourcePoint != null &&
+                    _sourcePoint.Component != targetPoint.Component &&
+                    !PointsAlreadyConnected(_sourcePoint, targetPoint))
                 {
-                    _currentLine.End = targetPoint;
-                    _drawingManager.AddLine(_currentLine);
-                    _drawingManager.ConnectComponents((SkiaComponent)_sourcePoint.Component, (SkiaComponent)targetPoint.Component);
+                    try
+                    {
+                        // Finalize the preview line onto the target port
+                        if (line != null)
+                        {
+                            line.End = targetPoint;
+                            _drawingManager.AddLine(line);
+                        }
+                        // Link connection points and components
+                        try { _sourcePoint.ConnectTo(targetPoint); } catch { }
+                        try { targetPoint.ConnectTo(_sourcePoint); } catch { }
+                        try
+                        {
+                            if (_sourcePoint.Component is SkiaComponent scA && targetPoint.Component is SkiaComponent scB)
+                            {
+                                scA.ConnectTo(scB);
+                                scB.ConnectTo(scA);
+                            }
+                        }
+                        catch { }
+                    }
+                    catch { }
                 }
-                _currentLine = null;
+                // Clear current line preview regardless of success
+                try { _drawingManager.CurrentLine = null; } catch { }
+                _sourcePoint = null;
             }
             else if (_isSelecting)
             {
@@ -333,6 +379,56 @@ namespace Beep.Skia
                 // Update line end point for visual feedback
                 _draggingLine.EndPoint = canvasPoint;
             }
+            else if (_isResizing && _draggingComponent != null)
+            {
+                // Resize based on the grabbed handle and mouse delta
+                var dx = canvasPoint.X - _mouseDownCanvas.X;
+                var dy = canvasPoint.Y - _mouseDownCanvas.Y;
+                var left = _initialComponentBounds.Left;
+                var top = _initialComponentBounds.Top;
+                var right = _initialComponentBounds.Right;
+                var bottom = _initialComponentBounds.Bottom;
+
+                float minW = 10f, minH = 10f;
+
+                switch (_resizeHandle)
+                {
+                    case "top-left":
+                        left += dx; top += dy; break;
+                    case "top-right":
+                        right += dx; top += dy; break;
+                    case "bottom-right":
+                        right += dx; bottom += dy; break;
+                    case "bottom-left":
+                        left += dx; bottom += dy; break;
+                }
+
+                // Normalize to ensure min size
+                float newX = Math.Min(left, right);
+                float newY = Math.Min(top, bottom);
+                float newW = Math.Max(minW, Math.Abs(right - left));
+                float newH = Math.Max(minH, Math.Abs(bottom - top));
+
+                // Apply grid snapping to size/pos if enabled
+                if (_drawingManager.SnapToGrid)
+                {
+                    var snappedPos = SnapToGridPoint(new SKPoint(newX, newY));
+                    newX = snappedPos.X; newY = snappedPos.Y;
+                    // sizes: snap the far corner relative to snapped origin
+                    var snappedFar = SnapToGridPoint(new SKPoint(newX + newW, newY + newH));
+                    newW = Math.Max(minW, snappedFar.X - newX);
+                    newH = Math.Max(minH, snappedFar.Y - newY);
+                }
+
+                // Assign size then move to trigger bounds update
+                try
+                {
+                    _draggingComponent.Width = newW;
+                    _draggingComponent.Height = newH;
+                    _draggingComponent.Move(newX, newY);
+                }
+                catch { }
+            }
             else if (_isDragging && _draggingComponent != null)
             {
                 // If the captured component is static, cancel movement updates
@@ -349,9 +445,10 @@ namespace Beep.Skia
                 var offset = newPosition - new SKPoint(_draggingComponent.X, _draggingComponent.Y);
                 _drawingManager.MoveSelectedComponents(offset);
             }
-            else if (_isDrawingLine && _currentLine != null)
+            else if (_isDrawingLine)
             {
-                _currentLine.EndPoint = canvasPoint;
+                var line = _drawingManager.CurrentLine;
+                if (line != null) line.EndPoint = canvasPoint;
             }
             else if (_isSelecting)
             {
@@ -475,5 +572,19 @@ namespace Beep.Skia
         }
         private string GetResizeHandleAt(SkiaComponent component, SKPoint point) => _drawingManager.GetResizeHandleAt(component, point);
         private void StartDrawingLine(IConnectionPoint sourcePoint, SKPoint point) => _drawingManager.StartDrawingLine(sourcePoint, point);
+
+        /// <summary>
+        /// Returns true if a line already exists that connects these two specific connection points (in either direction).
+        /// </summary>
+        private bool PointsAlreadyConnected(IConnectionPoint a, IConnectionPoint b)
+        {
+            if (a == null || b == null) return false;
+            foreach (var line in _drawingManager.Lines)
+            {
+                if ((line.Start == a && line.End == b) || (line.Start == b && line.End == a))
+                    return true;
+            }
+            return false;
+        }
     }
 }

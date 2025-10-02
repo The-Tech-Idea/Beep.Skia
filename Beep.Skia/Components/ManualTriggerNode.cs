@@ -13,6 +13,16 @@ namespace Beep.Skia.Components
     /// </summary>
     public class ManualTriggerNode : AutomationNode
     {
+        public ManualTriggerNode()
+        {
+            UpsertNodeProperty("TriggerText", typeof(string), _triggerText, "Button text");
+            UpsertNodeProperty("KeyboardShortcut", typeof(string), _keyboardShortcut, "e.g., Ctrl+Enter");
+            UpsertNodeProperty("RequireConfirmation", typeof(bool), _requireConfirmation);
+            UpsertNodeProperty("ConfirmationMessage", typeof(string), _confirmationMessage);
+            UpsertNodeProperty("IsTriggerable", typeof(bool), _isTriggerable);
+            UpsertNodeProperty("AutoReset", typeof(bool), _autoReset);
+            UpsertNodeProperty("CooldownPeriod", typeof(string), _cooldownPeriod.ToString());
+        }
         #region Private Fields
         private string _triggerText = "Start Workflow";
         private string _keyboardShortcut = "";
@@ -52,6 +62,7 @@ namespace Beep.Skia.Components
                 {
                     _triggerText = value ?? "Start Workflow";
                     Configuration["TriggerText"] = _triggerText;
+                    UpsertNodeProperty("TriggerText", typeof(string), _triggerText);
                 }
             }
         }
@@ -68,6 +79,7 @@ namespace Beep.Skia.Components
                 {
                     _keyboardShortcut = value ?? "";
                     Configuration["KeyboardShortcut"] = _keyboardShortcut;
+                    UpsertNodeProperty("KeyboardShortcut", typeof(string), _keyboardShortcut);
                 }
             }
         }
@@ -84,6 +96,7 @@ namespace Beep.Skia.Components
                 {
                     _requireConfirmation = value;
                     Configuration["RequireConfirmation"] = value;
+                    UpsertNodeProperty("RequireConfirmation", typeof(bool), _requireConfirmation);
                 }
             }
         }
@@ -100,6 +113,7 @@ namespace Beep.Skia.Components
                 {
                     _confirmationMessage = value ?? "Are you sure you want to start this workflow?";
                     Configuration["ConfirmationMessage"] = _confirmationMessage;
+                    UpsertNodeProperty("ConfirmationMessage", typeof(string), _confirmationMessage);
                 }
             }
         }
@@ -116,6 +130,7 @@ namespace Beep.Skia.Components
                 {
                     _isTriggerable = value;
                     Configuration["IsTriggerable"] = value;
+                    UpsertNodeProperty("IsTriggerable", typeof(bool), _isTriggerable);
                 }
             }
         }
@@ -155,6 +170,7 @@ namespace Beep.Skia.Components
                 {
                     _autoReset = value;
                     Configuration["AutoReset"] = value;
+                    UpsertNodeProperty("AutoReset", typeof(bool), _autoReset);
                 }
             }
         }
@@ -170,7 +186,9 @@ namespace Beep.Skia.Components
                 if (_cooldownPeriod != value)
                 {
                     _cooldownPeriod = value;
-                    Configuration["CooldownPeriod"] = value.ToString();
+                    var s = value.ToString();
+                    Configuration["CooldownPeriod"] = s;
+                    UpsertNodeProperty("CooldownPeriod", typeof(string), s);
                 }
             }
         }

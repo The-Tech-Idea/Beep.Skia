@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "test:quick-nodeprops",
+			"type": "shell",
+			"command": "dotnet test \"c:\\Users\\f_ald\\source\\repos\\The-Tech-Idea\\Beep.Skia\\Beep.Skia.Tests\\Beep.Skia.Tests.csproj\" -c Debug --nologo",
+			"problemMatcher": [
+				"$msCompile"
+			]
+		},
+		{
+			"label": "test:quick-nodeprops",
+			"type": "shell",
+			"command": "dotnet test \"c:\\Users\\f_ald\\source\\repos\\The-Tech-Idea\\Beep.Skia\\Beep.Skia.Tests\\Beep.Skia.Tests.csproj\" -c Debug --nologo",
+			"problemMatcher": [
+				"$msCompile"
+			]
+		},
+		{
+			"label": "test:full",
+			"type": "shell",
+			"command": "dotnet test \"c:\\Users\\f_ald\\source\\repos\\The-Tech-Idea\\Beep.Skia\\Beep.Skia.Tests\\Beep.Skia.Tests.csproj\" -c Debug --nologo",
+			"problemMatcher": [
+				"$msCompile"
+			]
+		}
+	]
+}

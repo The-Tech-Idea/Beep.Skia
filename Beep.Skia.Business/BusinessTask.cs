@@ -11,12 +11,37 @@ namespace Beep.Skia.Business
     /// </summary>
     public class BusinessTask : BusinessControl
     {
+        private string _label = "Task";
+
         public BusinessTask()
         {
             Width = 120;
             Height = 60;
             Name = "Task";
             ComponentType = BusinessComponentType.Task;
+            // Seed editable label synced with Name
+            Label = Name;
+        }
+
+        /// <summary>
+        /// Display label for the task. Synced with Name for convenience.
+        /// </summary>
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_label != v)
+                {
+                    _label = v;
+                    // sync NodeProperties
+                    if (NodeProperties.TryGetValue("Label", out var p)) p.ParameterCurrentValue = _label; else NodeProperties["Label"] = new ParameterInfo { ParameterName = "Label", ParameterType = typeof(string), DefaultParameterValue = _label, ParameterCurrentValue = _label, Description = "Task label" };
+                    // Keep Name aligned for base text rendering
+                    Name = _label;
+                    InvalidateVisual();
+                }
+            }
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

@@ -23,10 +23,9 @@ namespace Beep.Skia.DFD
             LayoutPortsVerticalSegments(topInset: 8f, bottomInset: 8f);
         }
 
-    protected override void DrawContent(SKCanvas canvas, Beep.Skia.Model.DrawingContext context)
+    protected override void DrawDFDContent(SKCanvas canvas, Beep.Skia.Model.DrawingContext context)
         {
             if (!context.Bounds.IntersectsWith(Bounds)) return;
-            LayoutPorts();
 
             var r = Bounds;
             using var fill = new SKPaint { Color = new SKColor(0xE0, 0xF7, 0xFA), IsAntialias = true };

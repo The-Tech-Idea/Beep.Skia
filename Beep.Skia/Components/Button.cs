@@ -65,7 +65,7 @@ namespace Beep.Skia.Components
         /// <summary>
         /// Gets or sets the text color of the button.
         /// </summary>
-        public SKColor TextColor
+        public new SKColor TextColor
         {
             get => _textColor;
             set

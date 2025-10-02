@@ -10,7 +10,22 @@ namespace Beep.Skia.Business
     /// </summary>
     public class Role : BusinessControl
     {
-        public string RoleName { get; set; } = "Role";
+        private string _roleName = "Role";
+        public string RoleName
+        {
+            get => _roleName;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_roleName != v)
+                {
+                    _roleName = v;
+                    if (NodeProperties.TryGetValue("RoleName", out var p)) p.ParameterCurrentValue = _roleName; else NodeProperties["RoleName"] = new ParameterInfo { ParameterName = "RoleName", ParameterType = typeof(string), DefaultParameterValue = _roleName, ParameterCurrentValue = _roleName, Description = "Role name" };
+                    Name = _roleName;
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public Role()
         {
@@ -18,6 +33,7 @@ namespace Beep.Skia.Business
             Height = 50;
             Name = "Role";
             ComponentType = BusinessComponentType.Role;
+            NodeProperties["RoleName"] = new ParameterInfo { ParameterName = "RoleName", ParameterType = typeof(string), DefaultParameterValue = _roleName, ParameterCurrentValue = _roleName, Description = "Role name" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

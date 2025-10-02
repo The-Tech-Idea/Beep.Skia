@@ -26,12 +26,13 @@ namespace Beep.Skia.Tests
 
             // Connect initial -> state, state -> final
             var l1 = new ConnectionLine(initial.OutConnectionPoints[0], state.InConnectionPoints[0], () => { });
-            mgr.AddLine(l1);
+            // Add via ConnectComponents to stay within public API and ensure history/presets
+            mgr.ConnectComponents(initial, state);
 
             // Make sure final has an input
             Assert.True(final.InConnectionPoints.Count >= 1);
             var l2 = new ConnectionLine(state.OutConnectionPoints[0], final.InConnectionPoints[0], () => { });
-            mgr.AddLine(l2);
+            mgr.ConnectComponents(state, final);
 
             // Serialize to DTO
             var dto = mgr.ToDto();

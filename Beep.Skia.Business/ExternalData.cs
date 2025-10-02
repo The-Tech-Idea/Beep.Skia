@@ -11,12 +11,29 @@ namespace Beep.Skia.Business
     /// </summary>
     public class ExternalData : BusinessControl
     {
+        private string _label = "External Data";
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                if (_label != value)
+                {
+                    _label = value ?? string.Empty;
+                    Name = _label;
+                    if (NodeProperties.TryGetValue("Label", out var p)) p.ParameterCurrentValue = _label; else NodeProperties["Label"] = new ParameterInfo { ParameterName = "Label", ParameterType = typeof(string), DefaultParameterValue = _label, ParameterCurrentValue = _label, Description = "Display label" };
+                    InvalidateVisual();
+                }
+            }
+        }
+
         public ExternalData()
         {
             Width = 110;
             Height = 60;
-            Name = "External Data";
+            Name = _label;
             ComponentType = BusinessComponentType.ExternalData;
+            NodeProperties["Label"] = new ParameterInfo { ParameterName = "Label", ParameterType = typeof(string), DefaultParameterValue = _label, ParameterCurrentValue = _label, Description = "Display label" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

@@ -21,6 +21,24 @@ namespace Beep.Skia.Flowchart
             ShowDisplayText = true;
             TextPosition = TextPosition.Below;
             EnsurePortCounts(1, 1);
+
+            // Seed common Flowchart metadata for editors
+            NodeProperties["InPortCount"] = new ParameterInfo
+            {
+                ParameterName = "InPortCount",
+                ParameterType = typeof(int),
+                DefaultParameterValue = InPortCount,
+                ParameterCurrentValue = InPortCount,
+                Description = "Number of input ports (left side)."
+            };
+            NodeProperties["OutPortCount"] = new ParameterInfo
+            {
+                ParameterName = "OutPortCount",
+                ParameterType = typeof(int),
+                DefaultParameterValue = OutPortCount,
+                ParameterCurrentValue = OutPortCount,
+                Description = "Number of output ports (right side)."
+            };
         }
 
         // Public port count properties so editors can adjust counts at runtime
@@ -31,6 +49,11 @@ namespace Beep.Skia.Flowchart
             {
                 int v = Math.Max(0, value);
                 EnsurePortCounts(v, OutPortCount);
+                // Keep NodeProperties in sync for editor round-trip
+                if (NodeProperties.TryGetValue("InPortCount", out var piIn))
+                {
+                    piIn.ParameterCurrentValue = v;
+                }
                 InvalidateVisual();
             }
         }
@@ -42,6 +65,10 @@ namespace Beep.Skia.Flowchart
             {
                 int v = Math.Max(0, value);
                 EnsurePortCounts(InPortCount, v);
+                if (NodeProperties.TryGetValue("OutPortCount", out var piOut))
+                {
+                    piOut.ParameterCurrentValue = v;
+                }
                 InvalidateVisual();
             }
         }
@@ -58,7 +85,13 @@ namespace Beep.Skia.Flowchart
             while (OutConnectionPoints.Count > outputs)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
-            LayoutPorts();
+            // Keep editor metadata aligned when counts change programmatically
+            if (NodeProperties.TryGetValue("InPortCount", out var piIn))
+                piIn.ParameterCurrentValue = InConnectionPoints.Count;
+            if (NodeProperties.TryGetValue("OutPortCount", out var piOut))
+                piOut.ParameterCurrentValue = OutConnectionPoints.Count;
+
+            MarkPortsDirty();
             try { OnBoundsChanged(Bounds); } catch { }
         }
 
@@ -195,6 +228,17 @@ namespace Beep.Skia.Flowchart
             cp.IsAvailable = true;
         }
 
+        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        {
+            // Ensure ports are laid out before any derived drawing logic uses them
+            EnsurePortLayout(() => LayoutPorts());
+            // Defer actual content to derived controls via a template method
+            DrawFlowchartContent(canvas, context);
+        }
+
+        // Derived flowchart nodes should override this instead of DrawContent
+        protected virtual void DrawFlowchartContent(SKCanvas canvas, DrawingContext context) { }
+
         protected void PlacePortsAcrossTwoSegments(IList<IConnectionPoint> ports, SKPoint a, SKPoint b, SKPoint c, float outwardSign)
         {
             if (ports == null || ports.Count == 0) return;
@@ -216,7 +260,7 @@ namespace Beep.Skia.Flowchart
 
         protected override void OnBoundsChanged(SKRect bounds)
         {
-            LayoutPorts();
+            MarkPortsDirty();
             base.OnBoundsChanged(bounds);
         }
     }

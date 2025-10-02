@@ -13,9 +13,50 @@ namespace Beep.Skia.Business
     public class Group : BusinessControl
     {
         public List<BusinessControl> GroupedComponents { get; set; } = new List<BusinessControl>();
-        public string GroupName { get; set; } = "Group";
-    public SKColor GroupColor { get; set; } = MaterialColors.Tertiary;
-        public GroupType GroupType { get; set; } = GroupType.Process;
+        private string _groupName = "Group";
+        private SKColor _groupColor = MaterialColors.Tertiary;
+        private GroupType _groupType = GroupType.Process;
+        public string GroupName
+        {
+            get => _groupName;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_groupName != v)
+                {
+                    _groupName = v;
+                    if (NodeProperties.TryGetValue("GroupName", out var p)) p.ParameterCurrentValue = _groupName; else NodeProperties["GroupName"] = new ParameterInfo { ParameterName = "GroupName", ParameterType = typeof(string), DefaultParameterValue = _groupName, ParameterCurrentValue = _groupName, Description = "Group name" };
+                    Name = _groupName;
+                    InvalidateVisual();
+                }
+            }
+        }
+        public SKColor GroupColor
+        {
+            get => _groupColor;
+            set
+            {
+                if (_groupColor != value)
+                {
+                    _groupColor = value;
+                    if (NodeProperties.TryGetValue("GroupColor", out var p)) p.ParameterCurrentValue = _groupColor; else NodeProperties["GroupColor"] = new ParameterInfo { ParameterName = "GroupColor", ParameterType = typeof(SKColor), DefaultParameterValue = _groupColor, ParameterCurrentValue = _groupColor, Description = "Group color" };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public GroupType GroupType
+        {
+            get => _groupType;
+            set
+            {
+                if (_groupType != value)
+                {
+                    _groupType = value;
+                    if (NodeProperties.TryGetValue("GroupType", out var p)) p.ParameterCurrentValue = _groupType; else NodeProperties["GroupType"] = new ParameterInfo { ParameterName = "GroupType", ParameterType = typeof(GroupType), DefaultParameterValue = _groupType, ParameterCurrentValue = _groupType, Description = "Group type", Choices = Enum.GetNames(typeof(GroupType)) };
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public Group()
         {
@@ -24,6 +65,9 @@ namespace Beep.Skia.Business
             Name = "Group";
             ComponentType = BusinessComponentType.Task;
             BackgroundColor = MaterialColors.Surface;
+            NodeProperties["GroupName"] = new ParameterInfo { ParameterName = "GroupName", ParameterType = typeof(string), DefaultParameterValue = _groupName, ParameterCurrentValue = _groupName, Description = "Group name" };
+            NodeProperties["GroupColor"] = new ParameterInfo { ParameterName = "GroupColor", ParameterType = typeof(SKColor), DefaultParameterValue = _groupColor, ParameterCurrentValue = _groupColor, Description = "Group color" };
+            NodeProperties["GroupType"] = new ParameterInfo { ParameterName = "GroupType", ParameterType = typeof(GroupType), DefaultParameterValue = _groupType, ParameterCurrentValue = _groupType, Description = "Group type", Choices = Enum.GetNames(typeof(GroupType)) };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)
@@ -122,6 +166,8 @@ namespace Beep.Skia.Business
         public void AddComponent(BusinessControl component)
         {
             GroupedComponents.Add(component);
+            if (!string.IsNullOrEmpty(component.Name))
+                ChildNodes[component.Name] = component;
             UpdateBounds();
         }
 
@@ -131,6 +177,8 @@ namespace Beep.Skia.Business
         public void RemoveComponent(BusinessControl component)
         {
             GroupedComponents.Remove(component);
+            if (!string.IsNullOrEmpty(component.Name))
+                ChildNodes.Remove(component.Name);
             UpdateBounds();
         }
 

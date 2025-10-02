@@ -14,12 +14,14 @@ namespace Beep.Skia.UML
         /// <summary>
         /// Gets or sets the data source type (Database, API, File, etc.).
         /// </summary>
-        public string DataSourceType { get; set; } = "Database";
+    private string _dataSourceType = "Database";
+    public string DataSourceType { get => _dataSourceType; set { if (_dataSourceType == value) return; _dataSourceType = value ?? string.Empty; if (NodeProperties.TryGetValue("DataSourceType", out var pi)) pi.ParameterCurrentValue = _dataSourceType; InvalidateVisual(); } }
 
         /// <summary>
         /// Gets or sets the data source name or endpoint.
         /// </summary>
-        public string DataSourceName { get; set; } = "";
+    private string _dataSourceName = "";
+    public string DataSourceName { get => _dataSourceName; set { if (_dataSourceName == value) return; _dataSourceName = value ?? string.Empty; if (NodeProperties.TryGetValue("DataSourceName", out var pi)) pi.ParameterCurrentValue = _dataSourceName; InvalidateVisual(); } }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UMLDataSourceNode"/> class.
@@ -31,6 +33,10 @@ namespace Beep.Skia.UML
             Name = "DataSourceNode";
             Stereotype = "<<dataSource>>";
             BackgroundColor = SKColors.LightCyan;
+
+            // Seed NodeProperties
+            NodeProperties["DataSourceType"] = new ParameterInfo { ParameterName = "DataSourceType", ParameterType = typeof(string), DefaultParameterValue = _dataSourceType, ParameterCurrentValue = _dataSourceType, Description = "Type of data source (e.g., Database, API)" };
+            NodeProperties["DataSourceName"] = new ParameterInfo { ParameterName = "DataSourceName", ParameterType = typeof(string), DefaultParameterValue = _dataSourceName, ParameterCurrentValue = _dataSourceName, Description = "Name/endpoint of the data source" };
         }
 
         /// <summary>
@@ -38,10 +44,8 @@ namespace Beep.Skia.UML
         /// </summary>
         /// <param name="canvas">The canvas to draw on.</param>
         /// <param name="context">The drawing context.</param>
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawUMLContent(SKCanvas canvas, DrawingContext context)
         {
-            LayoutPorts();
-            
             // Base top-left for absolute drawing
             float left = X;
             float top = Y;

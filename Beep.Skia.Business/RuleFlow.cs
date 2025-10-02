@@ -11,9 +11,49 @@ namespace Beep.Skia.Business
     /// </summary>
     public class RuleFlow : BusinessControl
     {
-        public string FlowLabel { get; set; } = "";
-        public FlowDirection Direction { get; set; } = FlowDirection.True;
-        public bool IsActive { get; set; } = false;
+        private string _flowLabel = "";
+        private FlowDirection _direction = FlowDirection.True;
+        private bool _isActive = false;
+        public string FlowLabel
+        {
+            get => _flowLabel;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_flowLabel != v)
+                {
+                    _flowLabel = v;
+                    if (NodeProperties.TryGetValue("FlowLabel", out var p)) p.ParameterCurrentValue = _flowLabel; else NodeProperties["FlowLabel"] = new ParameterInfo { ParameterName = "FlowLabel", ParameterType = typeof(string), DefaultParameterValue = _flowLabel, ParameterCurrentValue = _flowLabel, Description = "Flow label" };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public FlowDirection Direction
+        {
+            get => _direction;
+            set
+            {
+                if (_direction != value)
+                {
+                    _direction = value;
+                    if (NodeProperties.TryGetValue("Direction", out var p)) p.ParameterCurrentValue = _direction; else NodeProperties["Direction"] = new ParameterInfo { ParameterName = "Direction", ParameterType = typeof(FlowDirection), DefaultParameterValue = _direction, ParameterCurrentValue = _direction, Description = "Flow direction", Choices = Enum.GetNames(typeof(FlowDirection)) };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public bool IsActive
+        {
+            get => _isActive;
+            set
+            {
+                if (_isActive != value)
+                {
+                    _isActive = value;
+                    if (NodeProperties.TryGetValue("IsActive", out var p)) p.ParameterCurrentValue = _isActive; else NodeProperties["IsActive"] = new ParameterInfo { ParameterName = "IsActive", ParameterType = typeof(bool), DefaultParameterValue = _isActive, ParameterCurrentValue = _isActive, Description = "Active state" };
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public RuleFlow()
         {
@@ -21,6 +61,9 @@ namespace Beep.Skia.Business
             Height = 40;
             Name = "Rule Flow";
             ComponentType = BusinessComponentType.Task;
+            NodeProperties["FlowLabel"] = new ParameterInfo { ParameterName = "FlowLabel", ParameterType = typeof(string), DefaultParameterValue = _flowLabel, ParameterCurrentValue = _flowLabel, Description = "Flow label" };
+            NodeProperties["Direction"] = new ParameterInfo { ParameterName = "Direction", ParameterType = typeof(FlowDirection), DefaultParameterValue = _direction, ParameterCurrentValue = _direction, Description = "Flow direction", Choices = Enum.GetNames(typeof(FlowDirection)) };
+            NodeProperties["IsActive"] = new ParameterInfo { ParameterName = "IsActive", ParameterType = typeof(bool), DefaultParameterValue = _isActive, ParameterCurrentValue = _isActive, Description = "Active state" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

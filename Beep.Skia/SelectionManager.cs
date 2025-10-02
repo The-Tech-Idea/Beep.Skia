@@ -143,8 +143,8 @@ namespace Beep.Skia
 
         private static bool LineIntersectsRect(IConnectionLine line, SKRect rect)
         {
-            var a = line.Start.Position;
-            var b = line.End.Position;
+            var a = line.Start != null ? line.Start.Position : line.EndPoint;
+            var b = line.End != null ? line.End.Position : line.EndPoint;
 
             // If either endpoint is inside the rect, count it
             if (rect.Contains(a) || rect.Contains(b)) return true;

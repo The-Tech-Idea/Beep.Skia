@@ -11,11 +11,80 @@ namespace Beep.Skia.Business
     /// </summary>
     public class EventNode : BusinessControl
     {
-        public string EventName { get; set; } = "Event";
-        public EventType EventType { get; set; } = EventType.Start;
-        public string TriggerCondition { get; set; } = "";
-        public bool IsTriggered { get; set; } = false;
-        public DateTime? TriggerTime { get; set; }
+        private string _eventName = "Event";
+        private EventType _eventType = EventType.Start;
+        private string _triggerCondition = "";
+        private bool _isTriggered = false;
+        private DateTime? _triggerTime;
+        public string EventName
+        {
+            get => _eventName;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_eventName != v)
+                {
+                    _eventName = v;
+                    if (NodeProperties.TryGetValue("EventName", out var p)) p.ParameterCurrentValue = _eventName; else NodeProperties["EventName"] = new ParameterInfo { ParameterName = "EventName", ParameterType = typeof(string), DefaultParameterValue = _eventName, ParameterCurrentValue = _eventName, Description = "Event name" };
+                    Name = _eventName;
+                    InvalidateVisual();
+                }
+            }
+        }
+        public EventType EventType
+        {
+            get => _eventType;
+            set
+            {
+                if (_eventType != value)
+                {
+                    _eventType = value;
+                    if (NodeProperties.TryGetValue("EventType", out var p)) p.ParameterCurrentValue = _eventType; else NodeProperties["EventType"] = new ParameterInfo { ParameterName = "EventType", ParameterType = typeof(EventType), DefaultParameterValue = _eventType, ParameterCurrentValue = _eventType, Description = "Event type", Choices = Enum.GetNames(typeof(EventType)) };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public string TriggerCondition
+        {
+            get => _triggerCondition;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_triggerCondition != v)
+                {
+                    _triggerCondition = v;
+                    if (NodeProperties.TryGetValue("TriggerCondition", out var p)) p.ParameterCurrentValue = _triggerCondition; else NodeProperties["TriggerCondition"] = new ParameterInfo { ParameterName = "TriggerCondition", ParameterType = typeof(string), DefaultParameterValue = _triggerCondition, ParameterCurrentValue = _triggerCondition, Description = "Trigger condition" };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public bool IsTriggered
+        {
+            get => _isTriggered;
+            set
+            {
+                if (_isTriggered != value)
+                {
+                    _isTriggered = value;
+                    if (NodeProperties.TryGetValue("IsTriggered", out var p)) p.ParameterCurrentValue = _isTriggered; else NodeProperties["IsTriggered"] = new ParameterInfo { ParameterName = "IsTriggered", ParameterType = typeof(bool), DefaultParameterValue = _isTriggered, ParameterCurrentValue = _isTriggered, Description = "Triggered state" };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public DateTime? TriggerTime
+        {
+            get => _triggerTime;
+            set
+            {
+                if (_triggerTime != value)
+                {
+                    _triggerTime = value;
+                    var iso = _triggerTime?.ToString("o");
+                    if (NodeProperties.TryGetValue("TriggerTime", out var p)) p.ParameterCurrentValue = iso; else NodeProperties["TriggerTime"] = new ParameterInfo { ParameterName = "TriggerTime", ParameterType = typeof(string), DefaultParameterValue = iso, ParameterCurrentValue = iso, Description = "Trigger timestamp (ISO 8601)" };
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public EventNode()
         {
@@ -23,6 +92,11 @@ namespace Beep.Skia.Business
             Height = 70;
             Name = "Event";
             ComponentType = BusinessComponentType.StartEvent; // Default to start event
+            NodeProperties["EventName"] = new ParameterInfo { ParameterName = "EventName", ParameterType = typeof(string), DefaultParameterValue = _eventName, ParameterCurrentValue = _eventName, Description = "Event name" };
+            NodeProperties["EventType"] = new ParameterInfo { ParameterName = "EventType", ParameterType = typeof(EventType), DefaultParameterValue = _eventType, ParameterCurrentValue = _eventType, Description = "Event type", Choices = Enum.GetNames(typeof(EventType)) };
+            NodeProperties["TriggerCondition"] = new ParameterInfo { ParameterName = "TriggerCondition", ParameterType = typeof(string), DefaultParameterValue = _triggerCondition, ParameterCurrentValue = _triggerCondition, Description = "Trigger condition" };
+            NodeProperties["IsTriggered"] = new ParameterInfo { ParameterName = "IsTriggered", ParameterType = typeof(bool), DefaultParameterValue = _isTriggered, ParameterCurrentValue = _isTriggered, Description = "Triggered state" };
+            NodeProperties["TriggerTime"] = new ParameterInfo { ParameterName = "TriggerTime", ParameterType = typeof(string), DefaultParameterValue = _triggerTime?.ToString("o"), ParameterCurrentValue = _triggerTime?.ToString("o"), Description = "Trigger timestamp (ISO 8601)" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

@@ -7,8 +7,33 @@ namespace Beep.Skia.MindMap
 {
     public class NoteNode : MindMapControl
     {
-        public string Title { get; set; } = "Note";
-        public string? Notes { get; set; }
+        private string _title = "Note";
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_title == v) return;
+                _title = v;
+                if (NodeProperties.TryGetValue("Title", out var pi)) pi.ParameterCurrentValue = _title;
+                InvalidateVisual();
+            }
+        }
+
+        private string? _notes;
+        public string? Notes
+        {
+            get => _notes;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_notes == v) return;
+                _notes = v;
+                if (NodeProperties.TryGetValue("Notes", out var pi)) pi.ParameterCurrentValue = _notes;
+                InvalidateVisual();
+            }
+        }
 
         public NoteNode()
         {
@@ -16,7 +41,11 @@ namespace Beep.Skia.MindMap
             BackgroundColor = MaterialColors.TertiaryContainer;
             BorderColor = MaterialColors.Tertiary;
             TextColor = MaterialColors.OnTertiaryContainer;
+            if (NodeProperties.TryGetValue("TextColor", out var piTxt)) piTxt.ParameterCurrentValue = TextColor;
             EnsurePortCounts(1, 0);
+
+            NodeProperties["Title"] = new ParameterInfo { ParameterName = "Title", ParameterType = typeof(string), DefaultParameterValue = _title, ParameterCurrentValue = _title, Description = "Note title" };
+            NodeProperties["Notes"] = new ParameterInfo { ParameterName = "Notes", ParameterType = typeof(string), DefaultParameterValue = _notes ?? string.Empty, ParameterCurrentValue = _notes ?? string.Empty, Description = "Notes content" };
         }
 
         protected override void LayoutPorts()
@@ -31,7 +60,7 @@ namespace Beep.Skia.MindMap
                 LayoutPortsRightEdge(topInset: 6f, bottomInset: 6f);
         }
 
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawMindMapContent(SKCanvas canvas, DrawingContext context)
         {
             using var fill = new SKPaint { Color = BackgroundColor, Style = SKPaintStyle.Fill, IsAntialias = true };
             using var stroke = new SKPaint { Color = BorderColor, Style = SKPaintStyle.Stroke, StrokeWidth = BorderThickness, IsAntialias = true };

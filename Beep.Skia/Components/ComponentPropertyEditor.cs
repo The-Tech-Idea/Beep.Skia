@@ -4,9 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Beep.Skia.Model;
+using System.Windows.Forms;
 
 namespace Beep.Skia.Components
 {
+    // Minimal key enumeration for property editor keyboard navigation/editing
+    public enum PropertyEditorKey
+    {
+        Left,
+        Right,
+        Back,
+        Delete,
+        Home,
+        End
+    }
+
     /// <summary>
     /// Generic property editor for any SkiaComponent, providing a comprehensive interface
     /// for editing component properties, configuration, and display settings.
@@ -26,6 +38,8 @@ namespace Beep.Skia.Components
         private Button _cancelButton;
         private bool _isDirty = false;
         private float _currentY = 10; // Current Y position for layout
+    // Focused input tracking
+    private TextBox _focusedTextBox;
         #endregion
 
         #region Events
@@ -38,6 +52,11 @@ namespace Beep.Skia.Components
         /// Event raised when editing is cancelled.
         /// </summary>
         public event EventHandler<ComponentPropertiesCancelledEventArgs> PropertiesCancelled;
+
+        /// <summary>
+        /// Event raised whenever a property value changes via the editor controls.
+        /// </summary>
+        public event EventHandler PropertyValueChanged;
         #endregion
 
         #region Properties
@@ -113,6 +132,8 @@ namespace Beep.Skia.Components
                 Width = this.Width - 20,
                 Height = 30
             };
+            try { _titleLabel.IsStatic = true; } catch { }
+            _titleLabel.Tag = "section";
             _childComponents.Add(_titleLabel);
 
             // Create buttons
@@ -123,6 +144,7 @@ namespace Beep.Skia.Components
                 Height = 32
             };
             _saveButton.Clicked += SaveButton_Clicked;
+            try { _saveButton.IsStatic = true; } catch { }
 
             _cancelButton = new Button
             {
@@ -131,6 +153,7 @@ namespace Beep.Skia.Components
                 Height = 32
             };
             _cancelButton.Clicked += CancelButton_Clicked;
+            try { _cancelButton.IsStatic = true; } catch { }
 
             _childComponents.Add(_saveButton);
             _childComponents.Add(_cancelButton);
@@ -199,20 +222,89 @@ namespace Beep.Skia.Components
         {
             _currentY = 50; // Start below title
 
-            foreach (var component in _childComponents.Where(c => c != _titleLabel && c != _saveButton && c != _cancelButton))
+            // Place children inside the editor panel with absolute coordinates (screen space)
+            float absLeft = this.X;
+            float absTop = this.Y;
+            float contentWidth = Math.Max(0, this.Width - 20);
+
+            // Ensure title header is positioned at top inside panel
+            if (_titleLabel != null)
             {
-                component.X = 10;
-                component.Y = _currentY;
-                component.Width = this.Width - 20;
-                _currentY += component.Height + 10;
+                _titleLabel.X = absLeft + 10;
+                _titleLabel.Y = absTop + 10;
+                _titleLabel.Width = contentWidth;
             }
 
-            // Position buttons at bottom
-            _saveButton.X = this.Width - 180;
-            _saveButton.Y = this.Height - 50;
+            // Layout sequence: headers (Tag=="section") and property rows as label/value pairs
+            // Build a working list excluding title and buttons
+            var body = _childComponents.Where(c => c != _titleLabel && c != _saveButton && c != _cancelButton).ToList();
+            int i = 0;
+            while (i < body.Count)
+            {
+                var c = body[i];
+                if (Equals(c?.Tag, "section"))
+                {
+                    // Section header spans full width
+                    c.X = absLeft + 10;
+                    c.Y = absTop + _currentY;
+                    c.Width = contentWidth;
+                    c.Height = 25;
+                    _currentY += 35;
+                    i++;
+                    continue;
+                }
 
-            _cancelButton.X = this.Width - 90;
-            _cancelButton.Y = this.Height - 50;
+                // Property row expects label then input
+                var label = c as Label;
+                SkiaComponent valueCtrl = null;
+                if (i + 1 < body.Count)
+                {
+                    valueCtrl = body[i + 1];
+                }
+
+                // Label
+                if (label != null)
+                {
+                    label.X = absLeft + 10;
+                    label.Y = absTop + _currentY;
+                    label.Width = 100;
+                    label.Height = 25;
+                }
+                else
+                {
+                    // Non-label first item: treat as full-width control
+                    c.X = absLeft + 10;
+                    c.Y = absTop + _currentY;
+                    c.Width = contentWidth;
+                    _currentY += c.Height + 10;
+                    i++;
+                    continue;
+                }
+
+                // Value control
+                if (valueCtrl != null)
+                {
+                    valueCtrl.X = absLeft + 120;
+                    valueCtrl.Y = absTop + _currentY;
+                    valueCtrl.Width = Math.Max(80, this.Width - 130);
+                    valueCtrl.Height = Math.Max(25, valueCtrl.Height);
+                }
+
+                _currentY += ((valueCtrl?.Height) ?? 25) + 10;
+                i += 2; // advance past the pair
+            }
+
+            // Position buttons at bottom, inside panel
+            if (_saveButton != null)
+            {
+                _saveButton.X = absLeft + Math.Max(10, this.Width - 180);
+                _saveButton.Y = absTop + Math.Max(10, this.Height - 50);
+            }
+            if (_cancelButton != null)
+            {
+                _cancelButton.X = absLeft + Math.Max(10, this.Width - 90);
+                _cancelButton.Y = absTop + Math.Max(10, this.Height - 50);
+            }
         }
 
         /// <summary>
@@ -227,6 +319,8 @@ namespace Beep.Skia.Components
             }
             _propertyControls.Clear();
             _currentY = 50;
+            // Clear focused input if it was removed
+            _focusedTextBox = null;
         }
         #endregion
 
@@ -257,7 +351,136 @@ namespace Beep.Skia.Components
             AddSectionHeader("Component Properties");
             AddComponentSpecificPropertyControls();
 
+            // Add NodeProperties if present on the selected component
+            if (_selectedComponent.NodeProperties != null && _selectedComponent.NodeProperties.Count > 0)
+            {
+                AddSectionHeader("Node Properties");
+                AddNodeProperties(_selectedComponent);
+            }
+
             UpdateLayout();
+        }
+
+        /// <summary>
+        /// Adds editors for NodeProperties on the selected component.
+        /// </summary>
+        private void AddNodeProperties(SkiaComponent component)
+        {
+            foreach (var kv in component.NodeProperties.OrderBy(k => k.Key))
+            {
+                var key = kv.Key;
+                var p = kv.Value;
+                if (p == null)
+                {
+                    AddTextProperty(key, string.Empty, v =>
+                    {
+                        component.NodeProperties[key] = new Beep.Skia.Model.ParameterInfo { ParameterName = key, ParameterCurrentValue = v, DefaultParameterValue = v, ParameterType = typeof(string) };
+                        _isDirty = true;
+                    });
+                    continue;
+                }
+
+                var type = p.ParameterType ?? p.ParameterCurrentValue?.GetType() ?? p.DefaultParameterValue?.GetType() ?? typeof(string);
+                var value = p.ParameterCurrentValue ?? p.DefaultParameterValue;
+
+                if (type == typeof(string))
+                {
+                    var choices = p.Choices;
+                    if (choices != null && choices.Length > 0)
+                    {
+                        // Render a dropdown with provided choices
+                        var dd = new Dropdown { Width = this.Width - 120, Height = 28 };
+                        try { dd.IsStatic = true; } catch { }
+                        foreach (var ch in choices)
+                            dd.Items.Add(new Dropdown.DropdownItem(ch, ch));
+                        dd.SelectedValue = Convert.ToString(value) ?? string.Empty;
+                        // label
+                        var labelCtrl = new Label { Text = key + ":", Width = 100, Height = 25, X = 10, Y = _currentY };
+                        try { labelCtrl.IsStatic = true; } catch { }
+                        labelCtrl.Tag = "prop-label";
+                        dd.Tag = "prop-value";
+                        dd.SelectedItemChanged += (s, item) => { p.ParameterCurrentValue = item?.Value; _isDirty = true; };
+                        _childComponents.Add(labelCtrl);
+                        _childComponents.Add(dd);
+                        _propertyControls[key] = dd;
+                        _currentY += 35;
+                    }
+                    else
+                    {
+                        AddTextProperty(key, Convert.ToString(value) ?? string.Empty, v => { p.ParameterCurrentValue = v; _isDirty = true; });
+                    }
+                }
+                else if (type == typeof(bool))
+                {
+                    AddBooleanProperty(key, Convert.ToBoolean(value ?? false), v => { p.ParameterCurrentValue = v; _isDirty = true; });
+                }
+                else if (type == typeof(int))
+                {
+                    AddNumericProperty(key, value != null ? Convert.ToSingle(value) : 0f, v => { p.ParameterCurrentValue = (int)MathF.Round(v); _isDirty = true; });
+                }
+                else if (type == typeof(float))
+                {
+                    AddNumericProperty(key, value != null ? Convert.ToSingle(value) : 0f, v => { p.ParameterCurrentValue = v; _isDirty = true; });
+                }
+                else if (type == typeof(double))
+                {
+                    AddNumericProperty(key, value != null ? Convert.ToSingle(value) : 0f, v => { p.ParameterCurrentValue = (double)v; _isDirty = true; });
+                }
+                else if (type.IsEnum)
+                {
+                    // If Choices not provided, populate from enum names for dropdowns elsewhere
+                    try
+                    {
+                        if ((p.Choices == null || p.Choices.Length == 0) && type != null)
+                        {
+                            var names = System.Enum.GetNames(type);
+                            if (names != null && names.Length > 0) p.Choices = names;
+                        }
+                    }
+                    catch { }
+                    var current = value ?? Activator.CreateInstance(type);
+                    AddEnumProperty(key, current, type, nv => { p.ParameterCurrentValue = nv; _isDirty = true; });
+                }
+                else if (type == typeof(System.TimeSpan))
+                {
+                    var ts = value is System.TimeSpan tsv ? tsv : System.TimeSpan.Zero;
+                    AddTextProperty(key, ts.ToString(), s =>
+                    {
+                        if (System.TimeSpan.TryParse(s, out var parsed))
+                        {
+                            p.ParameterCurrentValue = parsed;
+                            _isDirty = true;
+                        }
+                    });
+                }
+                else if (type == typeof(SkiaSharp.SKColor))
+                {
+                    var c = value is SkiaSharp.SKColor sc ? sc : SkiaSharp.SKColors.Black;
+                    AddColorProperty(key, c, col => { p.ParameterCurrentValue = col; _isDirty = true; });
+                }
+                else
+                {
+                    // Use JSON as a fallback for complex types
+                    try
+                    {
+                        var json = System.Text.Json.JsonSerializer.Serialize(value);
+                        AddTextProperty(key + " (JSON)", json, s =>
+                        {
+                            try
+                            {
+                                var obj = System.Text.Json.JsonSerializer.Deserialize(s, type);
+                                p.ParameterCurrentValue = obj;
+                                _isDirty = true;
+                            }
+                            catch { }
+                        });
+                    }
+                    catch
+                    {
+                        AddTextProperty(key, Convert.ToString(value) ?? string.Empty, v => { p.ParameterCurrentValue = v; _isDirty = true; });
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -275,6 +498,8 @@ namespace Beep.Skia.Components
                 Width = this.Width - 20,
                 Height = 25
             };
+            try { header.IsStatic = true; } catch { }
+            header.Tag = "section";
             _childComponents.Add(header);
             _currentY += 35;
         }
@@ -289,6 +514,7 @@ namespace Beep.Skia.Components
             {
                 _selectedComponent.Name = value;
                 _isDirty = true;
+                OnPropertyValueChanged();
             });
 
             // Position X
@@ -296,6 +522,7 @@ namespace Beep.Skia.Components
             {
                 _selectedComponent.X = value;
                 _isDirty = true;
+                OnPropertyValueChanged();
             });
 
             // Position Y
@@ -303,6 +530,7 @@ namespace Beep.Skia.Components
             {
                 _selectedComponent.Y = value;
                 _isDirty = true;
+                OnPropertyValueChanged();
             });
 
             // Width
@@ -310,6 +538,7 @@ namespace Beep.Skia.Components
             {
                 _selectedComponent.Width = value;
                 _isDirty = true;
+                OnPropertyValueChanged();
             });
 
             // Height
@@ -317,6 +546,7 @@ namespace Beep.Skia.Components
             {
                 _selectedComponent.Height = value;
                 _isDirty = true;
+                OnPropertyValueChanged();
             });
 
             // Display Text
@@ -324,6 +554,7 @@ namespace Beep.Skia.Components
             {
                 _selectedComponent.DisplayText = value;
                 _isDirty = true;
+                OnPropertyValueChanged();
             });
 
             // Show Display Text
@@ -331,6 +562,7 @@ namespace Beep.Skia.Components
             {
                 _selectedComponent.ShowDisplayText = value;
                 _isDirty = true;
+                OnPropertyValueChanged();
             });
 
             // Text Position
@@ -338,6 +570,7 @@ namespace Beep.Skia.Components
             {
                 _selectedComponent.TextPosition = (TextPosition)value;
                 _isDirty = true;
+                OnPropertyValueChanged();
             });
 
             // Text Font Size
@@ -345,6 +578,7 @@ namespace Beep.Skia.Components
             {
                 _selectedComponent.TextFontSize = value;
                 _isDirty = true;
+                OnPropertyValueChanged();
             });
 
             // Is Visible
@@ -352,6 +586,7 @@ namespace Beep.Skia.Components
             {
                 _selectedComponent.IsVisible = value;
                 _isDirty = true;
+                OnPropertyValueChanged();
             });
 
             // Is Enabled
@@ -359,6 +594,7 @@ namespace Beep.Skia.Components
             {
                 _selectedComponent.IsEnabled = value;
                 _isDirty = true;
+                OnPropertyValueChanged();
             });
         }
 
@@ -629,6 +865,11 @@ namespace Beep.Skia.Components
                 Height = 25,
                 IsReadOnly = readOnly
             };
+            try { textBox.IsStatic = true; } catch { }
+
+            // When any textbox gains focus, make it the active input for keyboard routing
+            textBox.GotFocus += (s, e) => { _focusedTextBox = (TextBox)s; };
+            textBox.LostFocus += (s, e) => { if (ReferenceEquals(_focusedTextBox, s)) _focusedTextBox = null; };
 
             if (!readOnly && onChanged != null)
             {
@@ -643,9 +884,12 @@ namespace Beep.Skia.Components
                 X = 10,
                 Y = _currentY
             };
+            try { labelControl.IsStatic = true; } catch { }
+            labelControl.Tag = "prop-label";
 
-            textBox.X = 120;
-            textBox.Y = _currentY;
+            textBox.Tag = "prop-value";
+
+            // X/Y will be positioned in UpdateLayout relative to the editor panel
 
             _childComponents.Add(labelControl);
             _childComponents.Add(textBox);
@@ -664,6 +908,10 @@ namespace Beep.Skia.Components
                 Width = this.Width - 120,
                 Height = 25
             };
+            try { textBox.IsStatic = true; } catch { }
+
+            textBox.GotFocus += (s, e) => { _focusedTextBox = (TextBox)s; };
+            textBox.LostFocus += (s, e) => { if (ReferenceEquals(_focusedTextBox, s)) _focusedTextBox = null; };
 
             textBox.TextChanged += (s, e) =>
             {
@@ -681,9 +929,11 @@ namespace Beep.Skia.Components
                 X = 10,
                 Y = _currentY
             };
+            try { labelControl.IsStatic = true; } catch { }
+            labelControl.Tag = "prop-label";
+            textBox.Tag = "prop-value";
 
-            textBox.X = 120;
-            textBox.Y = _currentY;
+            // Positioned in UpdateLayout
 
             _childComponents.Add(labelControl);
             _childComponents.Add(textBox);
@@ -696,19 +946,17 @@ namespace Beep.Skia.Components
         /// </summary>
         private void AddBooleanProperty(string label, bool value, Action<bool> onChanged)
         {
-            var textBox = new TextBox
+            var checkbox = new Checkbox
             {
-                Text = value.ToString(),
-                Width = this.Width - 120,
-                Height = 25
+                IsChecked = value,
+                Width = 24,
+                Height = 24
             };
+            try { checkbox.IsStatic = true; } catch { }
 
-            textBox.TextChanged += (s, e) =>
+            checkbox.CheckStateChanged += (s, e) =>
             {
-                if (bool.TryParse(textBox.Text, out bool newValue))
-                {
-                    onChanged(newValue);
-                }
+                onChanged?.Invoke(checkbox.IsChecked);
             };
 
             var labelControl = new Label
@@ -719,13 +967,13 @@ namespace Beep.Skia.Components
                 X = 10,
                 Y = _currentY
             };
-
-            textBox.X = 120;
-            textBox.Y = _currentY;
+            try { labelControl.IsStatic = true; } catch { }
+            labelControl.Tag = "prop-label";
+            checkbox.Tag = "prop-value";
 
             _childComponents.Add(labelControl);
-            _childComponents.Add(textBox);
-            _propertyControls[label] = textBox;
+            _childComponents.Add(checkbox);
+            _propertyControls[label] = checkbox;
             _currentY += 35;
         }
 
@@ -734,18 +982,28 @@ namespace Beep.Skia.Components
         /// </summary>
         private void AddEnumProperty(string label, object value, Type enumType, Action<object> onChanged)
         {
-            var textBox = new TextBox
+            var dropdown = new Dropdown
             {
-                Text = value.ToString(),
                 Width = this.Width - 120,
-                Height = 25
+                Height = 28
             };
+            try { dropdown.IsStatic = true; } catch { }
 
-            textBox.TextChanged += (s, e) =>
+            // Populate items from enum names
+            foreach (var name in Enum.GetNames(enumType))
             {
-                if (Enum.TryParse(enumType, textBox.Text, out var newValue))
+                dropdown.Items.Add(new Dropdown.DropdownItem(name, name));
+            }
+
+            dropdown.SelectedValue = value?.ToString();
+            dropdown.Tag = "prop-value";
+            dropdown.SelectedItemChanged += (s, item) =>
+            {
+                if (item?.Value == null) return;
+                if (Enum.TryParse(enumType, item.Value, true, out var parsed))
                 {
-                    onChanged(newValue);
+                    onChanged?.Invoke(parsed);
+                    OnPropertyValueChanged();
                 }
             };
 
@@ -757,17 +1015,14 @@ namespace Beep.Skia.Components
                 X = 10,
                 Y = _currentY
             };
-
-            textBox.X = 120;
-            textBox.Y = _currentY;
+            try { labelControl.IsStatic = true; } catch { }
+            labelControl.Tag = "prop-label";
 
             _childComponents.Add(labelControl);
-            _childComponents.Add(textBox);
-            _propertyControls[label] = textBox;
+            _childComponents.Add(dropdown);
+            _propertyControls[label] = dropdown;
             _currentY += 35;
         }
-
-        /// <summary>
         /// Adds a color property control using hex (#RRGGBB or #AARRGGBB) or R,G,B[,A].
         /// </summary>
         private void AddColorProperty(string label, SKColor value, Action<SKColor> onChanged)
@@ -778,12 +1033,17 @@ namespace Beep.Skia.Components
                 Width = this.Width - 120,
                 Height = 25
             };
+            try { textBox.IsStatic = true; } catch { }
+
+            textBox.GotFocus += (s, e) => { _focusedTextBox = (TextBox)s; };
+            textBox.LostFocus += (s, e) => { if (ReferenceEquals(_focusedTextBox, s)) _focusedTextBox = null; };
 
             textBox.TextChanged += (s, e) =>
             {
                 if (TryParseColor(textBox.Text, out var c))
                 {
                     onChanged(c);
+                    OnPropertyValueChanged();
                 }
             };
 
@@ -795,9 +1055,11 @@ namespace Beep.Skia.Components
                 X = 10,
                 Y = _currentY
             };
+            try { labelControl.IsStatic = true; } catch { }
+            labelControl.Tag = "prop-label";
+            textBox.Tag = "prop-value";
 
-            textBox.X = 120;
-            textBox.Y = _currentY;
+            // Positioned in UpdateLayout
 
             _childComponents.Add(labelControl);
             _childComponents.Add(textBox);
@@ -883,6 +1145,11 @@ namespace Beep.Skia.Components
             _isDirty = false;
         }
 
+        private void OnPropertyValueChanged()
+        {
+            try { PropertyValueChanged?.Invoke(this, EventArgs.Empty); } catch { }
+        }
+
         /// <summary>
         /// Cancels the current editing session.
         /// </summary>
@@ -915,10 +1182,128 @@ namespace Beep.Skia.Components
             };
             canvas.DrawRect(new SKRect(X, Y, X + Width, Y + Height), borderPaint);
 
-            // Draw child components
+            // Draw child components; render expanded dropdowns last so their popup list stays on top
             foreach (var component in _childComponents)
             {
+                if (component is Dropdown dd && dd.IsExpanded)
+                {
+                    continue; // defer
+                }
                 component.Draw(canvas, context);
+            }
+            // Now draw any expanded dropdowns on top
+            foreach (var dd in _childComponents.OfType<Dropdown>())
+            {
+                if (dd.IsExpanded)
+                {
+                    dd.Draw(canvas, context);
+                }
+            }
+        }
+
+        // --- Input routing for embedded controls ---
+        public override bool HandleMouseDown(SKPoint point, InteractionContext context)
+        {
+            // Forward to children in reverse order (topmost first)
+            for (int i = _childComponents.Count - 1; i >= 0; i--)
+            {
+                var child = _childComponents[i];
+                if (!child.IsVisible || !child.IsEnabled) continue;
+                // Use the child's own hit test to support controls with dynamic bounds (e.g., expanded dropdown)
+                if (child.ContainsPoint(point))
+                {
+                    if (child.HandleMouseDown(point, context)) return true;
+                }
+            }
+            // If the click is inside the editor panel itself, consume it to prevent canvas selection/drag.
+            if (new SKRect(X, Y, X + Width, Y + Height).Contains(point))
+            {
+                // If click is inside the editor but no child handled it,
+                // close any expanded dropdowns to commit/cancel their state.
+                foreach (var dd in _childComponents.OfType<Dropdown>())
+                {
+                    if (dd.IsExpanded)
+                    {
+                        dd.CloseDropdown();
+                    }
+                }
+                return true;
+            }
+            return base.HandleMouseDown(point, context);
+        }
+
+        public override bool HandleMouseMove(SKPoint point, InteractionContext context)
+        {
+            for (int i = _childComponents.Count - 1; i >= 0; i--)
+            {
+                var child = _childComponents[i];
+                if (!child.IsVisible || !child.IsEnabled) continue;
+                if (child.ContainsPoint(point))
+                {
+                    if (child.HandleMouseMove(point, context)) return true;
+                }
+            }
+            // Consume hover within editor to avoid unintended canvas hover effects
+            if (new SKRect(X, Y, X + Width, Y + Height).Contains(point))
+            {
+                return true;
+            }
+            return base.HandleMouseMove(point, context);
+        }
+
+        public override bool HandleMouseUp(SKPoint point, InteractionContext context)
+        {
+            for (int i = _childComponents.Count - 1; i >= 0; i--)
+            {
+                var child = _childComponents[i];
+                if (!child.IsVisible || !child.IsEnabled) continue;
+                if (child.ContainsPoint(point))
+                {
+                    if (child.HandleMouseUp(point, context)) return true;
+                }
+            }
+            if (new SKRect(X, Y, X + Width, Y + Height).Contains(point))
+            {
+                return true;
+            }
+            return base.HandleMouseUp(point, context);
+        }
+
+        // Receive keyboard input from host and route to focused textbox
+        public void HandleKeyChar(char ch)
+        {
+            if (_focusedTextBox == null) return;
+            if (ch == '\r' || ch == '\n') return; // ignore enter in single-line
+            if (ch == '\b')
+            {
+                _focusedTextBox.DeleteText(forward: false);
+            }
+            else if (!char.IsControl(ch))
+            {
+                _focusedTextBox.InsertText(ch.ToString());
+            }
+        }
+
+        public void HandleKeyDown(PropertyEditorKey key)
+        {
+            if (_focusedTextBox == null) return;
+            switch (key)
+            {
+                case PropertyEditorKey.Left:
+                    _focusedTextBox.MoveCursor(-1); break;
+                case PropertyEditorKey.Right:
+                    _focusedTextBox.MoveCursor(1); break;
+                case PropertyEditorKey.Back:
+                    _focusedTextBox.DeleteText(false); break;
+                case PropertyEditorKey.Delete:
+                    _focusedTextBox.DeleteText(true); break;
+                case PropertyEditorKey.Home:
+                    // move to start
+                    while (_focusedTextBox.HasFocus) { _focusedTextBox.MoveCursor(-10000); break; }
+                    break;
+                case PropertyEditorKey.End:
+                    while (_focusedTextBox.HasFocus) { _focusedTextBox.MoveCursor(10000); break; }
+                    break;
             }
         }
         #endregion

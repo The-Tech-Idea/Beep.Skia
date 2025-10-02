@@ -21,6 +21,8 @@ namespace Beep.Skia.PM
                 if (!string.Equals(_title, v, System.StringComparison.Ordinal))
                 {
                     _title = v;
+                    if (NodeProperties.TryGetValue("Title", out var pi))
+                        pi.ParameterCurrentValue = _title;
                     InvalidateVisual();
                 }
             }
@@ -33,6 +35,15 @@ namespace Beep.Skia.PM
             Height = 50;
             InPortCount = 1;
             OutPortCount = 1;
+
+            NodeProperties["Title"] = new Beep.Skia.Model.ParameterInfo
+            {
+                ParameterName = "Title",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _title,
+                ParameterCurrentValue = _title,
+                Description = "Summary title"
+            };
         }
 
         protected override void LayoutPorts()
@@ -41,7 +52,7 @@ namespace Beep.Skia.PM
             LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
         }
 
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawPMContent(SKCanvas canvas, DrawingContext context)
         {
             var r = Bounds;
             using var stroke = new SKPaint { Color = MaterialColors.Secondary, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 3 };

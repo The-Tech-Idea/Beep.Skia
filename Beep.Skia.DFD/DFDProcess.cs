@@ -7,12 +7,37 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDProcess : DFDControl
     {
+        private string _label = "Process";
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (!string.Equals(_label, v, System.StringComparison.Ordinal))
+                {
+                    _label = v;
+                    if (NodeProperties.TryGetValue("Label", out var pi))
+                        pi.ParameterCurrentValue = _label;
+                    InvalidateVisual();
+                }
+            }
+        }
         public DFDProcess()
         {
             Name = "Process";
             DisplayText = "Process";
             TextPosition = Beep.Skia.TextPosition.Below;
             EnsurePortCounts(1, 1);
+
+            NodeProperties["Label"] = new Beep.Skia.Model.ParameterInfo
+            {
+                ParameterName = "Label",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _label,
+                ParameterCurrentValue = _label,
+                Description = "Text label shown with the process."
+            };
         }
 
         protected override void LayoutPorts()
@@ -21,11 +46,9 @@ namespace Beep.Skia.DFD
             LayoutPortsVerticalSegments(topInset: CornerRadius, bottomInset: CornerRadius);
         }
 
-    protected override void DrawContent(SKCanvas canvas, Beep.Skia.Model.DrawingContext context)
+    protected override void DrawDFDContent(SKCanvas canvas, Beep.Skia.Model.DrawingContext context)
         {
             if (!context.Bounds.IntersectsWith(Bounds)) return;
-
-            LayoutPorts();
 
             var rect = Bounds;
             using var fill = new SKPaint { Color = MaterialColors.Surface, IsAntialias = true };

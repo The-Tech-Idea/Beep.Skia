@@ -16,6 +16,35 @@ namespace Beep.Skia.Components
     /// </summary>
     public class DataInputNode : AutomationNode
     {
+        public DataInputNode()
+        {
+            // Seed typical editable properties into NodeProperties for the property editor
+            UpsertNodeProperty("InputMode", typeof(string), _inputMode);
+            UpsertNodeProperty("JsonData", typeof(string), _jsonData);
+            UpsertNodeProperty("AllowMultipleEntries", typeof(bool), _allowMultipleEntries);
+            UpsertNodeProperty("ValidateInput", typeof(bool), _validateInput);
+            UpsertNodeProperty("DataSchema", typeof(string), _dataSchema);
+        }
+
+        private void UpsertNodeProperty(string key, Type type, object value)
+        {
+            if (!NodeProperties.TryGetValue(key, out var p) || p == null)
+            {
+                NodeProperties[key] = new Beep.Skia.Model.ParameterInfo
+                {
+                    ParameterName = key,
+                    ParameterType = type,
+                    DefaultParameterValue = value,
+                    ParameterCurrentValue = value
+                };
+            }
+            else
+            {
+                if (p.ParameterType == null) p.ParameterType = type;
+                p.ParameterCurrentValue = value;
+                if (p.DefaultParameterValue == null) p.DefaultParameterValue = value;
+            }
+        }
         #region Private Fields
         private string _inputMode = "JSON";
         private string _jsonData = "{}";
@@ -40,6 +69,7 @@ namespace Beep.Skia.Components
                 {
                     _inputMode = value ?? "JSON";
                     Configuration["InputMode"] = _inputMode;
+                    UpsertNodeProperty("InputMode", typeof(string), _inputMode);
                 }
             }
         }
@@ -56,6 +86,7 @@ namespace Beep.Skia.Components
                 {
                     _jsonData = value ?? "{}";
                     Configuration["JsonData"] = _jsonData;
+                    UpsertNodeProperty("JsonData", typeof(string), _jsonData);
                 }
             }
         }
@@ -98,6 +129,7 @@ namespace Beep.Skia.Components
                 {
                     _allowMultipleEntries = value;
                     Configuration["AllowMultipleEntries"] = value;
+                    UpsertNodeProperty("AllowMultipleEntries", typeof(bool), _allowMultipleEntries);
                 }
             }
         }
@@ -127,6 +159,7 @@ namespace Beep.Skia.Components
                 {
                     _dataSchema = value ?? "";
                     Configuration["DataSchema"] = _dataSchema;
+                    UpsertNodeProperty("DataSchema", typeof(string), _dataSchema);
                 }
             }
         }
@@ -143,6 +176,7 @@ namespace Beep.Skia.Components
                 {
                     _validateInput = value;
                     Configuration["ValidateInput"] = value;
+                    UpsertNodeProperty("ValidateInput", typeof(bool), _validateInput);
                 }
             }
         }

@@ -1,5 +1,7 @@
 using SkiaSharp;
 using Beep.Skia;
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using Beep.Skia.Model;
 namespace Beep.Skia.UML
@@ -22,6 +24,9 @@ namespace Beep.Skia.UML
                 {
                     _className = value;
                     DisplayText = value;
+                    if (NodeProperties.TryGetValue("ClassName", out var pi))
+                        pi.ParameterCurrentValue = _className ?? string.Empty;
+                    InvalidateVisual();
                 }
             }
         }
@@ -32,15 +37,63 @@ namespace Beep.Skia.UML
         /// </summary>
         public List<string> Attributes { get; set; } = new List<string>();
 
+        // Editor-friendly comma/newline separated attributes string (one per line recommended)
+        public string AttributesText
+        {
+            get => string.Join("\n", Attributes ?? Enumerable.Empty<string>());
+            set
+            {
+                var list = (value ?? string.Empty)
+                    .Split(new[] { "\r\n", "\n", ";" }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim())
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .ToList();
+                Attributes = list;
+                if (NodeProperties.TryGetValue("AttributesText", out var pi))
+                    pi.ParameterCurrentValue = AttributesText;
+                InvalidateVisual();
+            }
+        }
+
         /// <summary>
         /// Gets or sets the list of operations for this class.
         /// </summary>
         public List<string> Operations { get; set; } = new List<string>();
 
+        // Editor-friendly operations string
+        public string OperationsText
+        {
+            get => string.Join("\n", Operations ?? Enumerable.Empty<string>());
+            set
+            {
+                var list = (value ?? string.Empty)
+                    .Split(new[] { "\r\n", "\n", ";" }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim())
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .ToList();
+                Operations = list;
+                if (NodeProperties.TryGetValue("OperationsText", out var pi))
+                    pi.ParameterCurrentValue = OperationsText;
+                InvalidateVisual();
+            }
+        }
+
         /// <summary>
         /// Gets or sets whether this is an abstract class.
         /// </summary>
-        public bool IsAbstract { get; set; }
+        private bool _isAbstract;
+        public bool IsAbstract
+        {
+            get => _isAbstract;
+            set
+            {
+                if (_isAbstract == value) return;
+                _isAbstract = value;
+                if (NodeProperties.TryGetValue("IsAbstract", out var pi))
+                    pi.ParameterCurrentValue = _isAbstract;
+                InvalidateVisual();
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UMLClass"/> class.
@@ -54,12 +107,50 @@ namespace Beep.Skia.UML
             TextPosition = TextPosition.Inside;
             ShowDisplayText = true;
 
+            // Seed NodeProperties for editor integration
+            NodeProperties["ClassName"] = new ParameterInfo
+            {
+                ParameterName = "ClassName",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _className,
+                ParameterCurrentValue = _className,
+                Description = "Name of the class"
+            };
+            NodeProperties["IsAbstract"] = new ParameterInfo
+            {
+                ParameterName = "IsAbstract",
+                ParameterType = typeof(bool),
+                DefaultParameterValue = _isAbstract,
+                ParameterCurrentValue = _isAbstract,
+                Description = "Whether the class is abstract"
+            };
+            NodeProperties["AttributesText"] = new ParameterInfo
+            {
+                ParameterName = "AttributesText",
+                ParameterType = typeof(string),
+                DefaultParameterValue = string.Empty,
+                ParameterCurrentValue = AttributesText,
+                Description = "Attributes (one per line)"
+            };
+            NodeProperties["OperationsText"] = new ParameterInfo
+            {
+                ParameterName = "OperationsText",
+                ParameterType = typeof(string),
+                DefaultParameterValue = string.Empty,
+                ParameterCurrentValue = OperationsText,
+                Description = "Operations (one per line)"
+            };
+
             // Add some default attributes and operations for demonstration
             Attributes.Add("+attribute1: string");
             Attributes.Add("-attribute2: int");
 
             Operations.Add("+operation1(): void");
             Operations.Add("-operation2(param: string): bool");
+
+            // Keep NodeProperties in sync with defaults
+            if (NodeProperties.TryGetValue("AttributesText", out var pAttr)) pAttr.ParameterCurrentValue = AttributesText;
+            if (NodeProperties.TryGetValue("OperationsText", out var pOps)) pOps.ParameterCurrentValue = OperationsText;
         }
 
         /// <summary>
@@ -114,10 +205,8 @@ namespace Beep.Skia.UML
         /// </summary>
         /// <param name="canvas">The canvas to draw on.</param>
         /// <param name="context">The drawing context.</param>
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawUMLContent(SKCanvas canvas, DrawingContext context)
         {
-            LayoutPorts();
-            
             // Draw background and border using shape method
             DrawBackground(canvas, context);
 

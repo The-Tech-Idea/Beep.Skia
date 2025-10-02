@@ -21,6 +21,51 @@ namespace Beep.Skia.DFD
             ShowDisplayText = true;
             TextPosition = TextPosition.Below;
             EnsurePortCounts(1, 1);
+
+            // Seed common DFD metadata for editors
+            NodeProperties["InPortCount"] = new ParameterInfo
+            {
+                ParameterName = "InPortCount",
+                ParameterType = typeof(int),
+                DefaultParameterValue = InPortCount,
+                ParameterCurrentValue = InPortCount,
+                Description = "Number of input ports (left)."
+            };
+            NodeProperties["OutPortCount"] = new ParameterInfo
+            {
+                ParameterName = "OutPortCount",
+                ParameterType = typeof(int),
+                DefaultParameterValue = OutPortCount,
+                ParameterCurrentValue = OutPortCount,
+                Description = "Number of output ports (right)."
+            };
+        }
+
+        // Public port count properties for runtime editor changes
+        public int InPortCount
+        {
+            get => InConnectionPoints?.Count ?? 0;
+            set
+            {
+                int v = Math.Max(0, value);
+                EnsurePortCounts(v, OutPortCount);
+                if (NodeProperties.TryGetValue("InPortCount", out var pi))
+                    pi.ParameterCurrentValue = v;
+                InvalidateVisual();
+            }
+        }
+
+        public int OutPortCount
+        {
+            get => OutConnectionPoints?.Count ?? 0;
+            set
+            {
+                int v = Math.Max(0, value);
+                EnsurePortCounts(InPortCount, v);
+                if (NodeProperties.TryGetValue("OutPortCount", out var pi))
+                    pi.ParameterCurrentValue = v;
+                InvalidateVisual();
+            }
         }
 
         protected void EnsurePortCounts(int inputs, int outputs)
@@ -35,7 +80,13 @@ namespace Beep.Skia.DFD
             while (OutConnectionPoints.Count > outputs)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
-            LayoutPorts();
+            // Keep NodeProperties aligned with programmatic changes
+            if (NodeProperties.TryGetValue("InPortCount", out var piIn))
+                piIn.ParameterCurrentValue = InConnectionPoints.Count;
+            if (NodeProperties.TryGetValue("OutPortCount", out var piOut))
+                piOut.ParameterCurrentValue = OutConnectionPoints.Count;
+
+            MarkPortsDirty();
             try { OnBoundsChanged(Bounds); } catch { }
         }
 
@@ -183,8 +234,8 @@ namespace Beep.Skia.DFD
 
         protected override void OnBoundsChanged(SKRect bounds)
         {
-            // Keep ports aligned to the current shape geometry whenever the bounds change
-            LayoutPorts();
+            // Defer ports re-layout to draw using EnsurePortLayout pattern
+            MarkPortsDirty();
             base.OnBoundsChanged(bounds);
         }
 
@@ -195,5 +246,13 @@ namespace Beep.Skia.DFD
             foreach (var p in InConnectionPoints) canvas.DrawCircle(p.Center, PortRadius, inPaint);
             foreach (var p in OutConnectionPoints) canvas.DrawCircle(p.Center, PortRadius, outPaint);
         }
+
+        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        {
+            EnsurePortLayout(() => LayoutPorts());
+            DrawDFDContent(canvas, context);
+        }
+
+        protected virtual void DrawDFDContent(SKCanvas canvas, DrawingContext context) { }
     }
 }

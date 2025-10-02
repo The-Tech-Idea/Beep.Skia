@@ -2,50 +2,100 @@
 using Beep.Skia;
 using System.Collections.Generic;
 using Beep.Skia.Model;
+using Beep.Skia.Components;
 namespace Beep.Skia.UML
 {
     /// <summary>
     /// Base class for all UML diagram elements in the Beep.Skia.UML framework.
     /// Provides common functionality for UML-specific controls.
     /// </summary>
-    public abstract class UMLControl : SkiaComponent
+    public abstract class UMLControl : MaterialControl
     {
         // Persisted connection points (shared for In/Out in UML)
         private readonly List<IConnectionPoint> _points = new List<IConnectionPoint>();
+        private string _stereotype = string.Empty;
+        private SKColor _backgroundColor = SKColors.White;
+        private SKColor _borderColor = SKColors.Black;
+        private float _borderThickness = 1.0f;
+        private SKColor _selectionColor = SKColors.LightBlue;
+
         /// <summary>
         /// Gets or sets the stereotype of this UML element (e.g., "<<interface>>", "<<abstract>>").
         /// </summary>
-        public string Stereotype { get; set; }
+        public string Stereotype
+        {
+            get => _stereotype;
+            set
+            {
+                if (_stereotype == value) return;
+                _stereotype = value ?? string.Empty;
+                if (NodeProperties.TryGetValue("Stereotype", out var pi))
+                    pi.ParameterCurrentValue = _stereotype;
+                InvalidateVisual();
+            }
+        }
 
         /// <summary>
         /// Gets or sets the background color of this UML element.
         /// </summary>
-        public SKColor BackgroundColor { get; set; } = SKColors.White;
+        public SKColor BackgroundColor
+        {
+            get => _backgroundColor;
+            set
+            {
+                if (_backgroundColor == value) return;
+                _backgroundColor = value;
+                if (NodeProperties.TryGetValue("BackgroundColor", out var pi))
+                    pi.ParameterCurrentValue = _backgroundColor;
+                InvalidateVisual();
+            }
+        }
 
         /// <summary>
         /// Gets or sets the border color of this UML element.
         /// </summary>
-        public SKColor BorderColor { get; set; } = SKColors.Black;
-
-        /// <summary>
-        /// Gets or sets the text color for this UML element.
-        /// </summary>
-        public new SKColor TextColor { get; set; } = SKColors.Black;
+        public SKColor BorderColor
+        {
+            get => _borderColor;
+            set
+            {
+                if (_borderColor == value) return;
+                _borderColor = value;
+                if (NodeProperties.TryGetValue("BorderColor", out var pi))
+                    pi.ParameterCurrentValue = _borderColor;
+                InvalidateVisual();
+            }
+        }
 
         /// <summary>
         /// Gets or sets the border thickness.
         /// </summary>
-        public float BorderThickness { get; set; } = 1.0f;
-
-        /// <summary>
-        /// Gets or sets whether this element is selected in the diagram.
-        /// </summary>
-        public new bool IsSelected { get; set; }
+        public float BorderThickness
+        {
+            get => _borderThickness;
+            set
+            {
+                if (System.Math.Abs(_borderThickness - value) < 0.0001f) return;
+                _borderThickness = value;
+                if (NodeProperties.TryGetValue("BorderThickness", out var pi))
+                    pi.ParameterCurrentValue = _borderThickness;
+                InvalidateVisual();
+            }
+        }
 
         /// <summary>
         /// Gets or sets the selection color.
         /// </summary>
-        public SKColor SelectionColor { get; set; } = SKColors.LightBlue;
+        public SKColor SelectionColor
+        {
+            get => _selectionColor;
+            set
+            {
+                if (_selectionColor == value) return;
+                _selectionColor = value;
+                InvalidateVisual();
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UMLControl"/> class.
@@ -59,9 +109,56 @@ namespace Beep.Skia.UML
             // Enable palette visibility by default
             ShowInPalette = true;
 
+            // Ensure base text color default and seed NodeProperties metadata for editor
+            // Use base TextColor (from SkiaComponent) to avoid hiding
+            TextColor = SKColors.Black;
+
+            // Seed NodeProperties
+            NodeProperties["Stereotype"] = new ParameterInfo
+            {
+                ParameterName = "Stereotype",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _stereotype,
+                ParameterCurrentValue = _stereotype,
+                Description = "Optional UML stereotype, e.g., <<interface>>"
+            };
+            NodeProperties["BackgroundColor"] = new ParameterInfo
+            {
+                ParameterName = "BackgroundColor",
+                ParameterType = typeof(SKColor),
+                DefaultParameterValue = _backgroundColor,
+                ParameterCurrentValue = _backgroundColor,
+                Description = "Background color"
+            };
+            NodeProperties["BorderColor"] = new ParameterInfo
+            {
+                ParameterName = "BorderColor",
+                ParameterType = typeof(SKColor),
+                DefaultParameterValue = _borderColor,
+                ParameterCurrentValue = _borderColor,
+                Description = "Border color"
+            };
+            NodeProperties["BorderThickness"] = new ParameterInfo
+            {
+                ParameterName = "BorderThickness",
+                ParameterType = typeof(float),
+                DefaultParameterValue = _borderThickness,
+                ParameterCurrentValue = _borderThickness,
+                Description = "Border thickness"
+            };
+            NodeProperties["TextColor"] = new ParameterInfo
+            {
+                ParameterName = "TextColor",
+                ParameterType = typeof(SKColor),
+                DefaultParameterValue = this.TextColor,
+                ParameterCurrentValue = this.TextColor,
+                Description = "Text color"
+            };
+
             // Initialize persisted connection points (shared In/Out positions)
             InitializeConnectionPoints();
-            LayoutPorts();
+            // Defer initial port layout; will be computed lazily on first draw
+            MarkPortsDirty();
         }
 
         /// <summary>
@@ -244,14 +341,35 @@ namespace Beep.Skia.UML
         protected override void UpdateBounds()
         {
             base.UpdateBounds();
-            LayoutPorts();
+            MarkPortsDirty();
         }
 
         protected override void OnBoundsChanged(SKRect bounds)
         {
-            LayoutPorts();
+            MarkPortsDirty();
             base.OnBoundsChanged(bounds);
         }
+
+        /// <summary>
+        /// Centralized draw wrapper to ensure ports are laid out lazily, then delegate to UML visuals.
+        /// Derived UML nodes should override DrawUMLContent instead of DrawContent.
+        /// </summary>
+        /// <param name="canvas">The canvas to draw on.</param>
+        /// <param name="context">The drawing context.</param>
+        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        {
+            if (ArePortsDirty)
+            {
+                try { LayoutPorts(); }
+                finally { ClearPortsDirty(); }
+            }
+            DrawUMLContent(canvas, context);
+        }
+
+        /// <summary>
+        /// Derived UML nodes implement their visuals here. Base DrawContent handles port layout.
+        /// </summary>
+        protected virtual void DrawUMLContent(SKCanvas canvas, DrawingContext context) { }
 
         /// <summary>
         /// Draws the connection points for this UML control.

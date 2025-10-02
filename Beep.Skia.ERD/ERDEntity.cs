@@ -25,11 +25,71 @@ namespace Beep.Skia.ERD
         }
 
         private string _entityName = "Entity";
-        public string EntityName { get => _entityName; set { if (_entityName == value) return; _entityName = value ?? string.Empty; InvalidateVisual(); } }
+        public string EntityName
+        {
+            get => _entityName;
+            set
+            {
+                if (_entityName == value) return;
+                _entityName = value ?? string.Empty;
+                // Sync NodeProperties for editor/serialization
+                if (NodeProperties != null)
+                {
+                    if (!NodeProperties.TryGetValue("EntityName", out var p) || p == null)
+                    {
+                        NodeProperties["EntityName"] = new Beep.Skia.Model.ParameterInfo
+                        {
+                            ParameterName = "EntityName",
+                            ParameterType = typeof(string),
+                            DefaultParameterValue = _entityName,
+                            ParameterCurrentValue = _entityName,
+                            Description = "Entity name/title"
+                        };
+                    }
+                    else
+                    {
+                        p.ParameterType = typeof(string);
+                        p.ParameterCurrentValue = _entityName;
+                        if (p.DefaultParameterValue == null) p.DefaultParameterValue = _entityName;
+                    }
+                }
+                InvalidateVisual();
+            }
+        }
 
         // Multiline or comma-separated rows; parsed into _rows for rendering/persistence
         private string _rowsText = "Id\nName";
-        public string RowsText { get => _rowsText; set { if (_rowsText == value) return; _rowsText = value ?? string.Empty; ParseRows(); InvalidateVisual(); } }
+        public string RowsText
+        {
+            get => _rowsText;
+            set
+            {
+                if (_rowsText == value) return;
+                _rowsText = value ?? string.Empty;
+                if (NodeProperties != null)
+                {
+                    if (!NodeProperties.TryGetValue("RowsText", out var p) || p == null)
+                    {
+                        NodeProperties["RowsText"] = new Beep.Skia.Model.ParameterInfo
+                        {
+                            ParameterName = "RowsText",
+                            ParameterType = typeof(string),
+                            DefaultParameterValue = _rowsText,
+                            ParameterCurrentValue = _rowsText,
+                            Description = "One row name per line or comma-separated"
+                        };
+                    }
+                    else
+                    {
+                        p.ParameterType = typeof(string);
+                        p.ParameterCurrentValue = _rowsText;
+                        if (p.DefaultParameterValue == null) p.DefaultParameterValue = _rowsText;
+                    }
+                }
+                ParseRows();
+                InvalidateVisual();
+            }
+        }
 
         // Stable rows with IDs to keep CPs attached across reorders
         private readonly List<RowEntry> _rowEntries = new List<RowEntry>
@@ -86,6 +146,23 @@ namespace Beep.Skia.ERD
         {
             Name = "ERD Entity";
             DisplayText = string.Empty;
+            // Seed NodeProperties for SetProperties/GetProperties flows
+            NodeProperties["EntityName"] = new Beep.Skia.Model.ParameterInfo
+            {
+                ParameterName = "EntityName",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _entityName,
+                ParameterCurrentValue = _entityName,
+                Description = "Entity name/title"
+            };
+            NodeProperties["RowsText"] = new Beep.Skia.Model.ParameterInfo
+            {
+                ParameterName = "RowsText",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _rowsText,
+                ParameterCurrentValue = _rowsText,
+                Description = "One row name per line or comma-separated"
+            };
             // initialize CPs for default rows
             SyncConnectionPointsWithRows();
             AdjustHeightToRows();
@@ -237,10 +314,9 @@ namespace Beep.Skia.ERD
             }
         }
 
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawERDContent(SKCanvas canvas, DrawingContext context)
         {
             if (!context.Bounds.IntersectsWith(Bounds)) return;
-            LayoutPorts();
 
             var rect = Bounds;
             float titleHeight = TitleHeight;

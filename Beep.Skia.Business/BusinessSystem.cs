@@ -10,7 +10,21 @@ namespace Beep.Skia.Business
     /// </summary>
     public class BusinessSystem : BusinessControl
     {
-        public string SystemName { get; set; } = "System";
+        private string _systemName = "System";
+        public string SystemName
+        {
+            get => _systemName;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_systemName != v)
+                {
+                    _systemName = v;
+                    if (NodeProperties.TryGetValue("SystemName", out var p)) p.ParameterCurrentValue = _systemName; else NodeProperties["SystemName"] = new ParameterInfo { ParameterName = "SystemName", ParameterType = typeof(string), DefaultParameterValue = _systemName, ParameterCurrentValue = _systemName, Description = "System name" };
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public BusinessSystem()
         {
@@ -18,6 +32,8 @@ namespace Beep.Skia.Business
             Height = 120;
             Name = "System";
             ComponentType = BusinessComponentType.System;
+            // Seed NodeProperties
+            NodeProperties["SystemName"] = new ParameterInfo { ParameterName = "SystemName", ParameterType = typeof(string), DefaultParameterValue = _systemName, ParameterCurrentValue = _systemName, Description = "System name" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

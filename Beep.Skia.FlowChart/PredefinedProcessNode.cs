@@ -18,6 +18,8 @@ namespace Beep.Skia.Flowchart
                 if (!string.Equals(_label, v, System.StringComparison.Ordinal))
                 {
                     _label = v;
+                    if (NodeProperties.TryGetValue("Label", out var pi))
+                        pi.ParameterCurrentValue = _label;
                     InvalidateVisual();
                 }
             }
@@ -29,6 +31,15 @@ namespace Beep.Skia.Flowchart
             Width = 160;
             Height = 70;
             EnsurePortCounts(1, 1);
+
+            NodeProperties["Label"] = new ParameterInfo
+            {
+                ParameterName = "Label",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _label,
+                ParameterCurrentValue = _label,
+                Description = "Text shown inside the predefined process rectangle."
+            };
         }
 
         protected override void LayoutPorts()
@@ -39,10 +50,9 @@ namespace Beep.Skia.Flowchart
             PlacePortsAlongVerticalEdge(OutConnectionPoints, r.Right, r.Top + 10f, r.Bottom - 10f, outwardSign: +1f);
         }
 
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
         {
             if (!context.Bounds.IntersectsWith(Bounds)) return;
-            LayoutPorts();
 
             var r = Bounds;
             using var fill = new SKPaint { Color = new SKColor(0xE1, 0xF5, 0xFE), IsAntialias = true };

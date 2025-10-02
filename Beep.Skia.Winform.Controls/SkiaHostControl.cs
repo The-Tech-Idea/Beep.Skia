@@ -146,6 +146,16 @@ namespace Beep.Skia.Winform.Controls
                                     category = "PM";
                                 else if (ns.Contains(".StateMachine", StringComparison.OrdinalIgnoreCase))
                                     category = "StateMachine";
+                                else if (ns.Contains(".Cloud", StringComparison.OrdinalIgnoreCase))
+                                    category = "Cloud";
+                                else if (ns.Contains(".ECAD", StringComparison.OrdinalIgnoreCase))
+                                    category = "ECAD";
+                                else if (ns.Contains(".ML", StringComparison.OrdinalIgnoreCase))
+                                    category = "ML";
+                                else if (ns.Contains(".Security", StringComparison.OrdinalIgnoreCase))
+                                    category = "Security";
+                                else if (ns.Contains(".Quantitative", StringComparison.OrdinalIgnoreCase))
+                                    category = "Quantitative";
                             }
                             if (!string.IsNullOrWhiteSpace(compType))
                             {
@@ -259,8 +269,21 @@ namespace Beep.Skia.Winform.Controls
                         catch { }
                     };
 
-                    // Invalidate canvas on save/cancel for immediate visual feedback
-                    _propertyEditor.PropertiesSaved += (s3, e3) => { try { _skControl?.Invalidate(); } catch { } };
+                    // On Save: apply NodeProperties back to nodes then invalidate for visual feedback
+                    _propertyEditor.PropertiesSaved += (s3, e3) =>
+                    {
+                        try
+                        {
+                            if (e3?.Component is Beep.Skia.Components.AutomationNode an)
+                            {
+                                an.ApplyNodeProperties();
+                            }
+                        }
+                        catch { }
+                        try { _skControl?.Invalidate(); } catch { }
+                    };
+                    // Redraw live when editor values change
+                    _propertyEditor.PropertyValueChanged += (s3, e3) => { try { _skControl?.Invalidate(); } catch { } };
                     _propertyEditor.PropertiesCancelled += (s3, e3) => { try { _skControl?.Invalidate(); } catch { } };
 
                     _drawingManager?.AddComponent(_propertyEditor);
@@ -726,6 +749,11 @@ namespace Beep.Skia.Winform.Controls
             _skControl.MouseMove += SkControl_MouseMove;
             _skControl.MouseUp += SkControl_MouseUp;
             _skControl.MouseWheel += SkControl_MouseWheel;
+            // Keyboard routing to property editor
+            _skControl.KeyDown += SkControl_KeyDown;
+            _skControl.KeyPress += SkControl_KeyPress;
+            _skControl.TabStop = true;
+            _skControl.Focus();
             this.Controls.Add(_skControl);
         }
 
@@ -741,6 +769,7 @@ namespace Beep.Skia.Winform.Controls
         private void SkControl_MouseDown(object sender, MouseEventArgs e)
         {
             var pt = new SKPoint(e.X, e.Y);
+            try { _skControl.Focus(); } catch { }
             // Route all input to the DrawingManager
             _drawingManager.HandleMouseDown(pt, GetModifiers());
 
@@ -768,13 +797,8 @@ namespace Beep.Skia.Winform.Controls
                             _dragStartCanvas = canvasPoint;
                             _dragComponentStartX = c.X;
                             _dragComponentStartY = c.Y;
-                            // Bring to front by re-adding at end (optional)
-                            try
-                            {
-                                _drawingManager.RemoveComponent(c);
-                                _drawingManager.AddComponent(c);
-                            }
-                            catch { }
+                            // Bring to front without removing lines
+                            try { _drawingManager.BringToFront(c); } catch { }
                             break;
                         }
                     }
@@ -822,6 +846,41 @@ namespace Beep.Skia.Winform.Controls
             // Windows Forms mouse wheel Delta is in e.Delta
             // ComponentManager currently doesn't expose a wheel handler; fall back to drawing manager
             _drawingManager.HandleMouseWheel(new SKPoint(e.X, e.Y), e.Delta);
+        }
+
+        private void SkControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (_propertyEditor == null) return;
+                Beep.Skia.Components.PropertyEditorKey? key = e.KeyCode switch
+                {
+                    Keys.Left => Beep.Skia.Components.PropertyEditorKey.Left,
+                    Keys.Right => Beep.Skia.Components.PropertyEditorKey.Right,
+                    Keys.Back => Beep.Skia.Components.PropertyEditorKey.Back,
+                    Keys.Delete => Beep.Skia.Components.PropertyEditorKey.Delete,
+                    Keys.Home => Beep.Skia.Components.PropertyEditorKey.Home,
+                    Keys.End => Beep.Skia.Components.PropertyEditorKey.End,
+                    _ => null
+                };
+                if (key.HasValue)
+                {
+                    _propertyEditor.HandleKeyDown(key.Value);
+                    _skControl.Invalidate();
+                }
+            }
+            catch { }
+        }
+
+        private void SkControl_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            try
+            {
+                if (_propertyEditor == null) return;
+                _propertyEditor.HandleKeyChar(e.KeyChar);
+                _skControl.Invalidate();
+            }
+            catch { }
         }
 
         private void SkControl_PaintSurface(object sender, SKPaintSurfaceEventArgs e)

@@ -47,10 +47,9 @@ namespace Beep.Skia.ERD
             }
         }
 
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawERDContent(SKCanvas canvas, DrawingContext context)
         {
             if (!context.Bounds.IntersectsWith(Bounds)) return;
-            LayoutPorts();
 
             var b = Bounds;
             var pTop = new SKPoint(b.MidX, b.Top);

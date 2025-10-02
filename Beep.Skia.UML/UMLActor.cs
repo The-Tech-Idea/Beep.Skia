@@ -21,6 +21,9 @@ namespace Beep.Skia.UML
                 {
                     _actorName = value;
                     DisplayText = value;
+                    if (NodeProperties.TryGetValue("ActorName", out var pi))
+                        pi.ParameterCurrentValue = _actorName ?? string.Empty;
+                    InvalidateVisual();
                 }
             }
         }
@@ -40,6 +43,16 @@ namespace Beep.Skia.UML
 
             // Actors typically don't need connection points for use case diagrams
             // but we'll keep them for consistency with the framework
+
+            // Seed NodeProperties for editor integration
+            NodeProperties["ActorName"] = new Beep.Skia.Model.ParameterInfo
+            {
+                ParameterName = "ActorName",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _actorName,
+                ParameterCurrentValue = _actorName,
+                Description = "Name of the actor"
+            };
         }
 
         /// <summary>
@@ -58,10 +71,8 @@ namespace Beep.Skia.UML
         /// </summary>
         /// <param name="canvas">The canvas to draw on.</param>
         /// <param name="context">The drawing context.</param>
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawUMLContent(SKCanvas canvas, DrawingContext context)
         {
-            LayoutPorts();
-            
             // Draw the enhanced stick figure
             DrawEnhancedStickFigure(canvas);
 
@@ -78,62 +89,7 @@ namespace Beep.Skia.UML
             DrawSelection(canvas, context);
         }
 
-        /// <summary>
-        /// Draws connection points positioned around the stick figure.
-        /// </summary>
-        protected override void DrawConnectionPoints(SKCanvas canvas, DrawingContext context)
-        {
-            float centerX = Width / 2;
-            float figureTop = 15;
-            float headRadius = 12;
-            float headCenterY = figureTop + headRadius;
-            float bodyLength = 35;
-            float bodyBottom = headCenterY + headRadius + bodyLength;
-            float armY = headCenterY + headRadius + 12;
-            float armLength = 25;
-
-            // Position connection points around the stick figure
-            var points = new List<(SKPoint position, SKColor color)>
-            {
-                // Above head (input)
-                (new SKPoint(centerX, figureTop - 5), SKColors.Blue),
-                // Left arm end (output)
-                (new SKPoint(centerX - armLength, armY), SKColors.Green),
-                // Right arm end (output)
-                (new SKPoint(centerX + armLength, armY), SKColors.Green),
-                // Below feet (input)
-                (new SKPoint(centerX, bodyBottom + 10), SKColors.Blue)
-            };
-
-            foreach (var (position, color) in points)
-            {
-                DrawConnectionPoint(canvas, position, color);
-            }
-        }
-
-        /// <summary>
-        /// Draws a single connection point.
-        /// </summary>
-        private void DrawConnectionPoint(SKCanvas canvas, SKPoint position, SKColor color)
-        {
-            using var paint = new SKPaint
-            {
-                Color = color,
-                Style = SKPaintStyle.Fill,
-                IsAntialias = true
-            };
-
-            using var borderPaint = new SKPaint
-            {
-                Color = SKColors.White,
-                StrokeWidth = 1,
-                Style = SKPaintStyle.Stroke,
-                IsAntialias = true
-            };
-
-            canvas.DrawCircle(position.X, position.Y, 6, paint);
-            canvas.DrawCircle(position.X, position.Y, 6, borderPaint);
-        }
+        // Use base DrawConnectionPoints which draws persisted port positions laid out by UMLControl
 
         /// <summary>
         /// Draws an enhanced stick figure representation of the actor.

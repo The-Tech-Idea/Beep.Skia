@@ -6,26 +6,35 @@ using Beep.Skia.Components;
 namespace Beep.Skia.Network
 {
     // Simple network node component; discoverable via SkiaComponentRegistry
-    public class NetworkNode : SkiaComponent
+    public class NetworkNode : MaterialControl
     {
-    public SKColor FillColor { get; set; } = MaterialDesignColors.Surface;
-    public SKColor StrokeColor { get; set; } = MaterialDesignColors.Outline;
-        public float StrokeWidth { get; set; } = 1.5f;
-        public float CornerRadius { get; set; } = 6f;
+        private SKColor _fillColor = MaterialDesignColors.Surface;
+        public SKColor FillColor { get => _fillColor; set { if (_fillColor == value) return; _fillColor = value; if (NodeProperties.TryGetValue("FillColor", out var pi)) pi.ParameterCurrentValue = _fillColor; InvalidateVisual(); } }
+        private SKColor _strokeColor = MaterialDesignColors.Outline;
+        public SKColor StrokeColor { get => _strokeColor; set { if (_strokeColor == value) return; _strokeColor = value; if (NodeProperties.TryGetValue("StrokeColor", out var pi)) pi.ParameterCurrentValue = _strokeColor; InvalidateVisual(); } }
+        private float _strokeWidth = 1.5f;
+        public float StrokeWidth { get => _strokeWidth; set { if (System.Math.Abs(_strokeWidth - value) < 0.0001f) return; _strokeWidth = value; if (NodeProperties.TryGetValue("StrokeWidth", out var pi)) pi.ParameterCurrentValue = _strokeWidth; InvalidateVisual(); } }
+        private float _cornerRadius = 6f;
+        public float CornerRadius { get => _cornerRadius; set { if (System.Math.Abs(_cornerRadius - value) < 0.0001f) return; _cornerRadius = value; if (NodeProperties.TryGetValue("CornerRadius", out var pi)) pi.ParameterCurrentValue = _cornerRadius; InvalidateVisual(); } }
 
         // Additional properties for advanced network functionality
-        public string NodeType { get; set; } = "Default";
-    public bool IsHighlighted { get; set; } = false;
-        public float Scale { get; set; } = 1.0f;
-        public SKColor CentralityColor { get; set; } = SKColors.Transparent;
-        public SKColor CommunityColor { get; set; } = SKColors.Transparent;
+        private string _nodeType = "Default";
+        public string NodeType { get => _nodeType; set { if (_nodeType == value) return; _nodeType = value ?? string.Empty; if (NodeProperties.TryGetValue("NodeType", out var pi)) pi.ParameterCurrentValue = _nodeType; InvalidateVisual(); } }
+        private bool _isHighlighted = false;
+        public bool IsHighlighted { get => _isHighlighted; set { if (_isHighlighted == value) return; _isHighlighted = value; if (NodeProperties.TryGetValue("IsHighlighted", out var pi)) pi.ParameterCurrentValue = _isHighlighted; InvalidateVisual(); } }
+        private float _scale = 1.0f;
+        public float Scale { get => _scale; set { if (System.Math.Abs(_scale - value) < 0.0001f) return; _scale = value; if (NodeProperties.TryGetValue("Scale", out var pi)) pi.ParameterCurrentValue = _scale; MarkPortsDirty(); InvalidateVisual(); } }
+        private SKColor _centralityColor = SKColors.Transparent;
+        public SKColor CentralityColor { get => _centralityColor; set { if (_centralityColor == value) return; _centralityColor = value; if (NodeProperties.TryGetValue("CentralityColor", out var pi)) pi.ParameterCurrentValue = _centralityColor; InvalidateVisual(); } }
+        private SKColor _communityColor = SKColors.Transparent;
+        public SKColor CommunityColor { get => _communityColor; set { if (_communityColor == value) return; _communityColor = value; if (NodeProperties.TryGetValue("CommunityColor", out var pi)) pi.ParameterCurrentValue = _communityColor; InvalidateVisual(); } }
         public int CommunityId { get; set; } = 0;
 
         // Ports configuration
         private const float PortRadius = 5f;
         private const float PortPadding = 8f;
-        private int _inputPortCount = 1;
-        private int _outputPortCount = 1;
+    private int _inputPortCount = 1;
+    private int _outputPortCount = 1;
 
         public int InputPortCount
         {
@@ -37,6 +46,8 @@ namespace Beep.Skia.Network
                 {
                     _inputPortCount = v;
                     EnsurePortCounts(_inputPortCount, _outputPortCount);
+                    if (NodeProperties.TryGetValue("InputPortCount", out var pi)) pi.ParameterCurrentValue = _inputPortCount;
+                    InvalidateVisual();
                 }
             }
         }
@@ -51,6 +62,8 @@ namespace Beep.Skia.Network
                 {
                     _outputPortCount = v;
                     EnsurePortCounts(_inputPortCount, _outputPortCount);
+                    if (NodeProperties.TryGetValue("OutputPortCount", out var pi)) pi.ParameterCurrentValue = _outputPortCount;
+                    InvalidateVisual();
                 }
             }
         }
@@ -62,12 +75,33 @@ namespace Beep.Skia.Network
             Name = "Node";
             // Default one-in/one-out
             EnsurePortCounts(_inputPortCount, _outputPortCount);
+
+            // Seed NodeProperties
+            NodeProperties["FillColor"] = new ParameterInfo { ParameterName = "FillColor", ParameterType = typeof(SKColor), DefaultParameterValue = _fillColor, ParameterCurrentValue = _fillColor, Description = "Node fill color" };
+            NodeProperties["StrokeColor"] = new ParameterInfo { ParameterName = "StrokeColor", ParameterType = typeof(SKColor), DefaultParameterValue = _strokeColor, ParameterCurrentValue = _strokeColor, Description = "Node border color" };
+            NodeProperties["StrokeWidth"] = new ParameterInfo { ParameterName = "StrokeWidth", ParameterType = typeof(float), DefaultParameterValue = _strokeWidth, ParameterCurrentValue = _strokeWidth, Description = "Border thickness" };
+            NodeProperties["CornerRadius"] = new ParameterInfo { ParameterName = "CornerRadius", ParameterType = typeof(float), DefaultParameterValue = _cornerRadius, ParameterCurrentValue = _cornerRadius, Description = "Corner radius" };
+            NodeProperties["NodeType"] = new ParameterInfo { ParameterName = "NodeType", ParameterType = typeof(string), DefaultParameterValue = _nodeType, ParameterCurrentValue = _nodeType, Description = "Classification of node" };
+            NodeProperties["IsHighlighted"] = new ParameterInfo { ParameterName = "IsHighlighted", ParameterType = typeof(bool), DefaultParameterValue = _isHighlighted, ParameterCurrentValue = _isHighlighted, Description = "Highlight state" };
+            NodeProperties["Scale"] = new ParameterInfo { ParameterName = "Scale", ParameterType = typeof(float), DefaultParameterValue = _scale, ParameterCurrentValue = _scale, Description = "Visual scale factor" };
+            NodeProperties["CentralityColor"] = new ParameterInfo { ParameterName = "CentralityColor", ParameterType = typeof(SKColor), DefaultParameterValue = _centralityColor, ParameterCurrentValue = _centralityColor, Description = "Centrality-based color" };
+            NodeProperties["CommunityColor"] = new ParameterInfo { ParameterName = "CommunityColor", ParameterType = typeof(SKColor), DefaultParameterValue = _communityColor, ParameterCurrentValue = _communityColor, Description = "Community color" };
+            NodeProperties["InputPortCount"] = new ParameterInfo { ParameterName = "InputPortCount", ParameterType = typeof(int), DefaultParameterValue = _inputPortCount, ParameterCurrentValue = _inputPortCount, Description = "Number of input ports" };
+            NodeProperties["OutputPortCount"] = new ParameterInfo { ParameterName = "OutputPortCount", ParameterType = typeof(int), DefaultParameterValue = _outputPortCount, ParameterCurrentValue = _outputPortCount, Description = "Number of output ports" };
         }
 
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            LayoutPorts();
-            
+            // Ensure ports layout lazily, then delegate to visuals
+            EnsurePortLayout(() => LayoutPorts());
+            DrawNetworkContent(canvas, context);
+        }
+
+        /// <summary>
+        /// Template method for drawing network visuals. Ports are laid out by the base wrapper.
+        /// </summary>
+        protected virtual void DrawNetworkContent(SKCanvas canvas, DrawingContext context)
+        {
             // Apply scaling
             float scaledWidth = Width * Scale;
             float scaledHeight = Height * Scale;
@@ -129,7 +163,8 @@ namespace Beep.Skia.Network
             while (OutConnectionPoints.Count > outCount)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
-            LayoutPorts();
+            // mark for lazy layout on next draw
+            MarkPortsDirty();
         }
 
         private void LayoutPorts()
@@ -172,7 +207,7 @@ namespace Beep.Skia.Network
 
         protected override void OnBoundsChanged(SKRect bounds)
         {
-            LayoutPorts();
+            // base marks ports dirty; layout will occur lazily on next draw
             base.OnBoundsChanged(bounds);
         }
     }

@@ -12,10 +12,63 @@ namespace Beep.Skia.Business
     /// </summary>
     public class Annotation : BusinessControl
     {
-        public string AnnotationText { get; set; } = "Annotation text";
-        public AnnotationType AnnotationType { get; set; } = AnnotationType.Note;
-        public bool ShowBorder { get; set; } = true;
-        public bool ShowBackground { get; set; } = true;
+        private string _annotationText = "Annotation text";
+        private AnnotationType _annotationType = AnnotationType.Note;
+        private bool _showBorder = true;
+        private bool _showBackground = true;
+        public string AnnotationText
+        {
+            get => _annotationText;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_annotationText != v)
+                {
+                    _annotationText = v;
+                    if (NodeProperties.TryGetValue("AnnotationText", out var p)) p.ParameterCurrentValue = _annotationText; else NodeProperties["AnnotationText"] = new ParameterInfo { ParameterName = "AnnotationText", ParameterType = typeof(string), DefaultParameterValue = _annotationText, ParameterCurrentValue = _annotationText, Description = "Annotation text" };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public AnnotationType AnnotationType
+        {
+            get => _annotationType;
+            set
+            {
+                if (_annotationType != value)
+                {
+                    _annotationType = value;
+                    if (NodeProperties.TryGetValue("AnnotationType", out var p)) p.ParameterCurrentValue = _annotationType; else NodeProperties["AnnotationType"] = new ParameterInfo { ParameterName = "AnnotationType", ParameterType = typeof(AnnotationType), DefaultParameterValue = _annotationType, ParameterCurrentValue = _annotationType, Description = "Annotation type", Choices = Enum.GetNames(typeof(AnnotationType)) };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public bool ShowBorder
+        {
+            get => _showBorder;
+            set
+            {
+                if (_showBorder != value)
+                {
+                    _showBorder = value;
+                    if (NodeProperties.TryGetValue("ShowBorder", out var p)) p.ParameterCurrentValue = _showBorder; else NodeProperties["ShowBorder"] = new ParameterInfo { ParameterName = "ShowBorder", ParameterType = typeof(bool), DefaultParameterValue = _showBorder, ParameterCurrentValue = _showBorder, Description = "Show border" };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public bool ShowBackground
+        {
+            get => _showBackground;
+            set
+            {
+                if (_showBackground != value)
+                {
+                    _showBackground = value;
+                    if (NodeProperties.TryGetValue("ShowBackground", out var p)) p.ParameterCurrentValue = _showBackground; else NodeProperties["ShowBackground"] = new ParameterInfo { ParameterName = "ShowBackground", ParameterType = typeof(bool), DefaultParameterValue = _showBackground, ParameterCurrentValue = _showBackground, Description = "Show background" };
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public Annotation()
         {
@@ -24,6 +77,10 @@ namespace Beep.Skia.Business
             Name = "Annotation";
             ComponentType = BusinessComponentType.Task;
             BackgroundColor = MaterialColors.SurfaceContainer;
+            NodeProperties["AnnotationText"] = new ParameterInfo { ParameterName = "AnnotationText", ParameterType = typeof(string), DefaultParameterValue = _annotationText, ParameterCurrentValue = _annotationText, Description = "Annotation text" };
+            NodeProperties["AnnotationType"] = new ParameterInfo { ParameterName = "AnnotationType", ParameterType = typeof(AnnotationType), DefaultParameterValue = _annotationType, ParameterCurrentValue = _annotationType, Description = "Annotation type", Choices = Enum.GetNames(typeof(AnnotationType)) };
+            NodeProperties["ShowBorder"] = new ParameterInfo { ParameterName = "ShowBorder", ParameterType = typeof(bool), DefaultParameterValue = _showBorder, ParameterCurrentValue = _showBorder, Description = "Show border" };
+            NodeProperties["ShowBackground"] = new ParameterInfo { ParameterName = "ShowBackground", ParameterType = typeof(bool), DefaultParameterValue = _showBackground, ParameterCurrentValue = _showBackground, Description = "Show background" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

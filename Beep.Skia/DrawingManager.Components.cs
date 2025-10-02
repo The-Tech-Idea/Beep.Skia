@@ -7,6 +7,21 @@ namespace Beep.Skia
     public partial class DrawingManager
     {
         /// <summary>
+        /// Brings the specified component to the front of the draw order without removing it or its lines.
+        /// </summary>
+        /// <param name="component">The component to bring to front.</param>
+        public void BringToFront(SkiaComponent component)
+        {
+            if (component == null) return;
+            int idx = _components.IndexOf(component);
+            if (idx < 0) return;
+            if (idx == _components.Count - 1) return; // already on top
+            _components.RemoveAt(idx);
+            _components.Add(component);
+            DrawSurface?.Invoke(this, null);
+        }
+
+        /// <summary>
         /// Adds a workflow component to the drawing manager.
         /// </summary>
         /// <param name="component">The component to add.</param>
@@ -212,7 +227,7 @@ namespace Beep.Skia
                 {
                     if (component.IsStatic)
                     {
-                        // Screen-space hit-test
+                        // Screen-space hit-test for overlays (palette/property editor) so they can handle input.
                         var rect = new SKRect(component.X, component.Y, component.X + component.Width, component.Y + component.Height);
                         if (rect.Contains(screenPoint)) return component;
                     }

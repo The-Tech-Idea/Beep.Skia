@@ -11,8 +11,35 @@ namespace Beep.Skia.Business
     /// </summary>
     public class ActionNode : BusinessControl
     {
-        public string ActionText { get; set; } = "Action";
-        public ActionType ActionType { get; set; } = ActionType.Execute;
+        private string _actionText = "Action";
+        private ActionType _actionType = ActionType.Execute;
+        public string ActionText
+        {
+            get => _actionText;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_actionText != v)
+                {
+                    _actionText = v;
+                    if (NodeProperties.TryGetValue("ActionText", out var p)) p.ParameterCurrentValue = _actionText; else NodeProperties["ActionText"] = new ParameterInfo { ParameterName = "ActionText", ParameterType = typeof(string), DefaultParameterValue = _actionText, ParameterCurrentValue = _actionText, Description = "Action text" };
+                    InvalidateVisual();
+                }
+            }
+        }
+        public ActionType ActionType
+        {
+            get => _actionType;
+            set
+            {
+                if (_actionType != value)
+                {
+                    _actionType = value;
+                    if (NodeProperties.TryGetValue("ActionType", out var p)) p.ParameterCurrentValue = _actionType; else NodeProperties["ActionType"] = new ParameterInfo { ParameterName = "ActionType", ParameterType = typeof(ActionType), DefaultParameterValue = _actionType, ParameterCurrentValue = _actionType, Description = "Action type", Choices = Enum.GetNames(typeof(ActionType)) };
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public ActionNode()
         {
@@ -20,6 +47,8 @@ namespace Beep.Skia.Business
             Height = 60;
             Name = "Action";
             ComponentType = BusinessComponentType.Task;
+            NodeProperties["ActionText"] = new ParameterInfo { ParameterName = "ActionText", ParameterType = typeof(string), DefaultParameterValue = _actionText, ParameterCurrentValue = _actionText, Description = "Action text" };
+            NodeProperties["ActionType"] = new ParameterInfo { ParameterName = "ActionType", ParameterType = typeof(ActionType), DefaultParameterValue = _actionType, ParameterCurrentValue = _actionType, Description = "Action type", Choices = Enum.GetNames(typeof(ActionType)) };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

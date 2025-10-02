@@ -1,5 +1,7 @@
 using SkiaSharp;
 using Beep.Skia;
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using Beep.Skia.Model;
 
@@ -23,6 +25,9 @@ namespace Beep.Skia.UML
                 {
                     _interfaceName = value;
                     DisplayText = value;
+                    if (NodeProperties.TryGetValue("InterfaceName", out var pi))
+                        pi.ParameterCurrentValue = _interfaceName ?? string.Empty;
+                    InvalidateVisual();
                 }
             }
         }
@@ -32,6 +37,23 @@ namespace Beep.Skia.UML
         /// Gets or sets the list of operations for this interface.
         /// </summary>
         public List<string> Operations { get; set; } = new List<string>();
+
+        public string OperationsText
+        {
+            get => string.Join("\n", Operations ?? Enumerable.Empty<string>());
+            set
+            {
+                var list = (value ?? string.Empty)
+                    .Split(new[] { "\r\n", "\n", ";" }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim())
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .ToList();
+                Operations = list;
+                if (NodeProperties.TryGetValue("OperationsText", out var pi))
+                    pi.ParameterCurrentValue = OperationsText;
+                InvalidateVisual();
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UMLInterface"/> class.
@@ -45,9 +67,28 @@ namespace Beep.Skia.UML
             TextPosition = TextPosition.Inside;
             ShowDisplayText = true;
 
+            // Seed NodeProperties for editor integration
+            NodeProperties["InterfaceName"] = new ParameterInfo
+            {
+                ParameterName = "InterfaceName",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _interfaceName,
+                ParameterCurrentValue = _interfaceName,
+                Description = "Name of the interface"
+            };
+            NodeProperties["OperationsText"] = new ParameterInfo
+            {
+                ParameterName = "OperationsText",
+                ParameterType = typeof(string),
+                DefaultParameterValue = string.Empty,
+                ParameterCurrentValue = OperationsText,
+                Description = "Operations (one per line)"
+            };
+
             // Add some default operations for demonstration
             Operations.Add("+operation1(): void");
             Operations.Add("+operation2(param: string): bool");
+            if (NodeProperties.TryGetValue("OperationsText", out var pOps)) pOps.ParameterCurrentValue = OperationsText;
         }
 
         /// <summary>
@@ -119,10 +160,8 @@ namespace Beep.Skia.UML
         /// </summary>
         /// <param name="canvas">The canvas to draw on.</param>
         /// <param name="context">The drawing context.</param>
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawUMLContent(SKCanvas canvas, DrawingContext context)
         {
-            LayoutPorts();
-            
             // Draw background using shape method
             DrawBackground(canvas, context);
 

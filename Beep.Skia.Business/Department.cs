@@ -10,8 +10,37 @@ namespace Beep.Skia.Business
     /// </summary>
     public class Department : BusinessControl
     {
-        public string DepartmentName { get; set; } = "Department";
-        public int EmployeeCount { get; set; } = 0;
+        private string _departmentName = "Department";
+        private int _employeeCount = 0;
+        public string DepartmentName
+        {
+            get => _departmentName;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_departmentName != v)
+                {
+                    _departmentName = v;
+                    if (NodeProperties.TryGetValue("DepartmentName", out var p)) p.ParameterCurrentValue = _departmentName; else NodeProperties["DepartmentName"] = new ParameterInfo { ParameterName = "DepartmentName", ParameterType = typeof(string), DefaultParameterValue = _departmentName, ParameterCurrentValue = _departmentName, Description = "Department name" };
+                    Name = _departmentName;
+                    InvalidateVisual();
+                }
+            }
+        }
+        public int EmployeeCount
+        {
+            get => _employeeCount;
+            set
+            {
+                var v = Math.Max(0, value);
+                if (_employeeCount != v)
+                {
+                    _employeeCount = v;
+                    if (NodeProperties.TryGetValue("EmployeeCount", out var p)) p.ParameterCurrentValue = _employeeCount; else NodeProperties["EmployeeCount"] = new ParameterInfo { ParameterName = "EmployeeCount", ParameterType = typeof(int), DefaultParameterValue = _employeeCount, ParameterCurrentValue = _employeeCount, Description = "Employees count" };
+                    InvalidateVisual();
+                }
+            }
+        }
 
         public Department()
         {
@@ -19,6 +48,8 @@ namespace Beep.Skia.Business
             Height = 80;
             Name = "Department";
             ComponentType = BusinessComponentType.Department;
+            NodeProperties["DepartmentName"] = new ParameterInfo { ParameterName = "DepartmentName", ParameterType = typeof(string), DefaultParameterValue = _departmentName, ParameterCurrentValue = _departmentName, Description = "Department name" };
+            NodeProperties["EmployeeCount"] = new ParameterInfo { ParameterName = "EmployeeCount", ParameterType = typeof(int), DefaultParameterValue = _employeeCount, ParameterCurrentValue = _employeeCount, Description = "Employees count" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

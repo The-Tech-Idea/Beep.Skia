@@ -12,23 +12,23 @@ namespace Beep.Skia.ETL
     public abstract class ETLControl : MaterialControl
     {
         private string _title = "ETL";
-        public string Title { get => _title; set { if (_title == value) return; _title = value ?? string.Empty; InvalidateVisual(); } }
+        public string Title { get => _title; set { if (_title == value) return; _title = value ?? string.Empty; if (NodeProperties.TryGetValue("Title", out var pi)) pi.ParameterCurrentValue = _title; InvalidateVisual(); } }
 
         private string _subtitle = string.Empty;
-        public string Subtitle { get => _subtitle; set { if (_subtitle == value) return; _subtitle = value ?? string.Empty; InvalidateVisual(); } }
+    public string Subtitle { get => _subtitle; set { if (_subtitle == value) return; _subtitle = value ?? string.Empty; if (NodeProperties.TryGetValue("Subtitle", out var pi)) pi.ParameterCurrentValue = _subtitle; InvalidateVisual(); } }
 
         // Adopt Material Design tokens for consistent theming
         private SKColor _background = MaterialColors.Surface;
-        public SKColor Background { get => _background; set { if (_background == value) return; _background = value; InvalidateVisual(); } }
+    public SKColor Background { get => _background; set { if (_background == value) return; _background = value; if (NodeProperties.TryGetValue("Background", out var pi)) pi.ParameterCurrentValue = _background; InvalidateVisual(); } }
 
         private SKColor _stroke = MaterialColors.Outline;
-        public SKColor Stroke { get => _stroke; set { if (_stroke == value) return; _stroke = value; InvalidateVisual(); } }
+    public SKColor Stroke { get => _stroke; set { if (_stroke == value) return; _stroke = value; if (NodeProperties.TryGetValue("Stroke", out var pi)) pi.ParameterCurrentValue = _stroke; InvalidateVisual(); } }
 
         private SKColor _headerColor = MaterialColors.PrimaryContainer;
-        public SKColor HeaderColor { get => _headerColor; set { if (_headerColor == value) return; _headerColor = value; InvalidateVisual(); } }
+    public SKColor HeaderColor { get => _headerColor; set { if (_headerColor == value) return; _headerColor = value; if (NodeProperties.TryGetValue("HeaderColor", out var pi)) pi.ParameterCurrentValue = _headerColor; InvalidateVisual(); } }
 
         private SKColor _headerTextColor = MaterialColors.OnPrimaryContainer;
-        public SKColor HeaderTextColor { get => _headerTextColor; set { if (_headerTextColor == value) return; _headerTextColor = value; InvalidateVisual(); } }
+    public SKColor HeaderTextColor { get => _headerTextColor; set { if (_headerTextColor == value) return; _headerTextColor = value; if (NodeProperties.TryGetValue("HeaderTextColor", out var pi)) pi.ParameterCurrentValue = _headerTextColor; InvalidateVisual(); } }
 
         // Layout constants
         protected const float CornerRadius = 8f;
@@ -40,25 +40,38 @@ namespace Beep.Skia.ETL
         {
             Width = Math.Max(120, Width);
             Height = Math.Max(64, Height);
+            // Seed common editable metadata
+            NodeProperties["Title"] = new ParameterInfo { ParameterName = "Title", ParameterType = typeof(string), DefaultParameterValue = _title, ParameterCurrentValue = _title, Description = "Header title" };
+            NodeProperties["Subtitle"] = new ParameterInfo { ParameterName = "Subtitle", ParameterType = typeof(string), DefaultParameterValue = _subtitle, ParameterCurrentValue = _subtitle, Description = "Sub header text" };
+            NodeProperties["Background"] = new ParameterInfo { ParameterName = "Background", ParameterType = typeof(SKColor), DefaultParameterValue = _background, ParameterCurrentValue = _background, Description = "Body background color" };
+            NodeProperties["Stroke"] = new ParameterInfo { ParameterName = "Stroke", ParameterType = typeof(SKColor), DefaultParameterValue = _stroke, ParameterCurrentValue = _stroke, Description = "Border color" };
+            NodeProperties["HeaderColor"] = new ParameterInfo { ParameterName = "HeaderColor", ParameterType = typeof(SKColor), DefaultParameterValue = _headerColor, ParameterCurrentValue = _headerColor, Description = "Header background color" };
+            NodeProperties["HeaderTextColor"] = new ParameterInfo { ParameterName = "HeaderTextColor", ParameterType = typeof(SKColor), DefaultParameterValue = _headerTextColor, ParameterCurrentValue = _headerTextColor, Description = "Header text color" };
+            NodeProperties["InPortCount"] = new ParameterInfo { ParameterName = "InPortCount", ParameterType = typeof(int), DefaultParameterValue = InPortCount, ParameterCurrentValue = InPortCount, Description = "Number of inputs" };
+            NodeProperties["OutPortCount"] = new ParameterInfo { ParameterName = "OutPortCount", ParameterType = typeof(int), DefaultParameterValue = OutPortCount, ParameterCurrentValue = OutPortCount, Description = "Number of outputs" };
         }
 
         // Allow runtime adjustment via property editor
         public int InPortCount
         {
             get => InConnectionPoints?.Count ?? 0;
-            set { int v = Math.Max(0, value); EnsurePortCounts(v, OutPortCount); InvalidateVisual(); }
+            set { int v = Math.Max(0, value); EnsurePortCounts(v, OutPortCount); if (NodeProperties.TryGetValue("InPortCount", out var pi)) pi.ParameterCurrentValue = v; InvalidateVisual(); }
         }
 
         public int OutPortCount
         {
             get => OutConnectionPoints?.Count ?? 0;
-            set { int v = Math.Max(0, value); EnsurePortCounts(InPortCount, v); InvalidateVisual(); }
+            set { int v = Math.Max(0, value); EnsurePortCounts(InPortCount, v); if (NodeProperties.TryGetValue("OutPortCount", out var pi)) pi.ParameterCurrentValue = v; InvalidateVisual(); }
         }
 
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
-            LayoutPorts();
-            
+            EnsurePortLayout(() => LayoutPorts());
+            DrawETLContent(canvas, context);
+        }
+
+        protected virtual void DrawETLContent(SKCanvas canvas, DrawingContext context)
+        {
             // Draw the shape (virtual method for customization)
             DrawShape(canvas);
 
@@ -109,7 +122,10 @@ namespace Beep.Skia.ETL
             while (OutConnectionPoints.Count > outCount)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
-            LayoutPorts();
+            if (NodeProperties.TryGetValue("InPortCount", out var piIn)) piIn.ParameterCurrentValue = InConnectionPoints.Count;
+            if (NodeProperties.TryGetValue("OutPortCount", out var piOut)) piOut.ParameterCurrentValue = OutConnectionPoints.Count;
+
+            MarkPortsDirty();
             InvalidateVisual();
         }
 
@@ -162,7 +178,7 @@ namespace Beep.Skia.ETL
 
         protected override void OnBoundsChanged(SKRect bounds)
         {
-            LayoutPorts();
+            MarkPortsDirty();
             base.OnBoundsChanged(bounds);
         }
 

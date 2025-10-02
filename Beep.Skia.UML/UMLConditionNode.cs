@@ -38,10 +38,8 @@ namespace Beep.Skia.UML
         /// </summary>
         /// <param name="canvas">The canvas to draw on.</param>
         /// <param name="context">The drawing context.</param>
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawUMLContent(SKCanvas canvas, DrawingContext context)
         {
-            LayoutPorts();
-            
             // Draw diamond shape
             using (var paint = new SKPaint())
             {

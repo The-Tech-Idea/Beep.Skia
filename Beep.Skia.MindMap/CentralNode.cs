@@ -7,8 +7,33 @@ namespace Beep.Skia.MindMap
 {
     public class CentralNode : MindMapControl
     {
-        public string Title { get; set; } = "Central Topic";
-        public string? Notes { get; set; }
+        private string _title = "Central Topic";
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_title == v) return;
+                _title = v;
+                if (NodeProperties.TryGetValue("Title", out var pi)) pi.ParameterCurrentValue = _title;
+                InvalidateVisual();
+            }
+        }
+
+        private string? _notes;
+        public string? Notes
+        {
+            get => _notes;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_notes == v) return;
+                _notes = v;
+                if (NodeProperties.TryGetValue("Notes", out var pi)) pi.ParameterCurrentValue = _notes;
+                InvalidateVisual();
+            }
+        }
 
         public CentralNode()
         {
@@ -16,7 +41,12 @@ namespace Beep.Skia.MindMap
             BackgroundColor = MaterialColors.PrimaryContainer;
             BorderColor = MaterialColors.Primary;
             TextColor = MaterialColors.OnPrimaryContainer;
+            if (NodeProperties.TryGetValue("TextColor", out var piTxt)) piTxt.ParameterCurrentValue = TextColor;
             EnsurePortCounts(0, 6);
+
+            // Seed editable metadata
+            NodeProperties["Title"] = new ParameterInfo { ParameterName = "Title", ParameterType = typeof(string), DefaultParameterValue = _title, ParameterCurrentValue = _title, Description = "Topic title" };
+            NodeProperties["Notes"] = new ParameterInfo { ParameterName = "Notes", ParameterType = typeof(string), DefaultParameterValue = _notes ?? string.Empty, ParameterCurrentValue = _notes ?? string.Empty, Description = "Optional notes" };
         }
 
         protected override void LayoutPorts()
@@ -24,7 +54,7 @@ namespace Beep.Skia.MindMap
             LayoutOutputsOnEllipse();
         }
 
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawMindMapContent(SKCanvas canvas, DrawingContext context)
         {
             using var fill = new SKPaint { Color = BackgroundColor, Style = SKPaintStyle.Fill, IsAntialias = true };
             using var stroke = new SKPaint { Color = BorderColor, Style = SKPaintStyle.Stroke, StrokeWidth = BorderThickness, IsAntialias = true };

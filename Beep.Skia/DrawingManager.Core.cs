@@ -129,6 +129,11 @@ namespace Beep.Skia
         /// </summary>
         public event EventHandler<ComponentDropEventArgs> ComponentDropped;
 
+        internal void RaiseComponentDropped(ComponentDropEventArgs args)
+        {
+            ComponentDropped?.Invoke(this, args);
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DrawingManager"/> class.
         /// </summary>

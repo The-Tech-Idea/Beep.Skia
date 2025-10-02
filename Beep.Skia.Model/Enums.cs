@@ -7,6 +7,24 @@ using System.Threading.Tasks;
 namespace Beep.Skia.Model
 {
     /// <summary>
+    /// Timer trigger mode for TimerTriggerNode.
+    /// </summary>
+    public enum TimerTriggerMode
+    {
+        Interval,
+        Cron,
+        OneTime
+    }
+
+    /// <summary>
+    /// Logical operator for combining conditions in ConditionalNode.
+    /// </summary>
+    public enum LogicalOperator
+    {
+        AND,
+        OR
+    }
+    /// <summary>
     /// Specifies the shape of a workflow component.
     /// </summary>
     public enum ComponentShape

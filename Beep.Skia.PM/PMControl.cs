@@ -21,6 +21,24 @@ namespace Beep.Skia.PM
             ShowDisplayText = true;
             TextPosition = TextPosition.Below;
             EnsurePortCounts(1, 1);
+
+            // Seed common PM metadata for editors
+            NodeProperties["InPortCount"] = new ParameterInfo
+            {
+                ParameterName = "InPortCount",
+                ParameterType = typeof(int),
+                DefaultParameterValue = InPortCount,
+                ParameterCurrentValue = InPortCount,
+                Description = "Number of input ports (left)."
+            };
+            NodeProperties["OutPortCount"] = new ParameterInfo
+            {
+                ParameterName = "OutPortCount",
+                ParameterType = typeof(int),
+                DefaultParameterValue = OutPortCount,
+                ParameterCurrentValue = OutPortCount,
+                Description = "Number of output ports (right)."
+            };
         }
 
         public int InPortCount
@@ -30,6 +48,8 @@ namespace Beep.Skia.PM
             {
                 int v = Math.Max(0, value);
                 EnsurePortCounts(v, OutPortCount);
+                if (NodeProperties.TryGetValue("InPortCount", out var pi))
+                    pi.ParameterCurrentValue = v;
                 InvalidateVisual();
             }
         }
@@ -41,6 +61,8 @@ namespace Beep.Skia.PM
             {
                 int v = Math.Max(0, value);
                 EnsurePortCounts(InPortCount, v);
+                if (NodeProperties.TryGetValue("OutPortCount", out var pi))
+                    pi.ParameterCurrentValue = v;
                 InvalidateVisual();
             }
         }
@@ -57,7 +79,13 @@ namespace Beep.Skia.PM
             while (OutConnectionPoints.Count > outputs)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
-            LayoutPorts();
+            // Keep NodeProperties aligned with programmatic changes
+            if (NodeProperties.TryGetValue("InPortCount", out var piIn))
+                piIn.ParameterCurrentValue = InConnectionPoints.Count;
+            if (NodeProperties.TryGetValue("OutPortCount", out var piOut))
+                piOut.ParameterCurrentValue = OutConnectionPoints.Count;
+
+            MarkPortsDirty();
             try { OnBoundsChanged(Bounds); } catch { }
         }
 
@@ -115,9 +143,17 @@ namespace Beep.Skia.PM
             foreach (var p in OutConnectionPoints) canvas.DrawCircle(p.Center, PortRadius, outPaint);
         }
 
+        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        {
+            EnsurePortLayout(() => LayoutPorts());
+            DrawPMContent(canvas, context);
+        }
+
+        protected virtual void DrawPMContent(SKCanvas canvas, DrawingContext context) { }
+
         protected override void OnBoundsChanged(SKRect bounds)
         {
-            LayoutPorts();
+            MarkPortsDirty();
             base.OnBoundsChanged(bounds);
         }
     }

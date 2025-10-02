@@ -14,12 +14,14 @@ namespace Beep.Skia.UML
         /// <summary>
         /// Gets or sets the transform operation type (Filter, Sort, Aggregate, etc.).
         /// </summary>
-        public string TransformType { get; set; } = "Transform";
+    private string _transformType = "Transform";
+    public string TransformType { get => _transformType; set { if (_transformType == value) return; _transformType = value ?? string.Empty; if (NodeProperties.TryGetValue("TransformType", out var pi)) pi.ParameterCurrentValue = _transformType; InvalidateVisual(); } }
 
         /// <summary>
         /// Gets or sets the transform description or expression.
         /// </summary>
-        public string TransformDescription { get; set; } = "";
+    private string _transformDescription = "";
+    public string TransformDescription { get => _transformDescription; set { if (_transformDescription == value) return; _transformDescription = value ?? string.Empty; if (NodeProperties.TryGetValue("TransformDescription", out var pi)) pi.ParameterCurrentValue = _transformDescription; InvalidateVisual(); } }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UMLTransformNode"/> class.
@@ -31,6 +33,10 @@ namespace Beep.Skia.UML
             Name = "TransformNode";
             Stereotype = "<<transform>>";
             BackgroundColor = SKColors.LightGreen;
+
+            // Seed NodeProperties
+            NodeProperties["TransformType"] = new ParameterInfo { ParameterName = "TransformType", ParameterType = typeof(string), DefaultParameterValue = _transformType, ParameterCurrentValue = _transformType, Description = "Operation type (Filter, Sort, etc.)" };
+            NodeProperties["TransformDescription"] = new ParameterInfo { ParameterName = "TransformDescription", ParameterType = typeof(string), DefaultParameterValue = _transformDescription, ParameterCurrentValue = _transformDescription, Description = "Short description/expression" };
         }
 
         /// <summary>
@@ -38,10 +44,8 @@ namespace Beep.Skia.UML
         /// </summary>
         /// <param name="canvas">The canvas to draw on.</param>
         /// <param name="context">The drawing context.</param>
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawUMLContent(SKCanvas canvas, DrawingContext context)
         {
-            LayoutPorts();
-            
             // Draw hexagon shape
             using (var paint = new SKPaint())
             {

@@ -18,6 +18,8 @@ namespace Beep.Skia.Flowchart
                 if (!string.Equals(_label, v, System.StringComparison.Ordinal))
                 {
                     _label = v;
+                    if (NodeProperties.TryGetValue("Label", out var pi))
+                        pi.ParameterCurrentValue = _label;
                     InvalidateVisual();
                 }
             }
@@ -29,6 +31,15 @@ namespace Beep.Skia.Flowchart
             Width = 160;
             Height = 70;
             EnsurePortCounts(1, 1);
+
+            NodeProperties["Label"] = new ParameterInfo
+            {
+                ParameterName = "Label",
+                ParameterType = typeof(string),
+                DefaultParameterValue = _label,
+                ParameterCurrentValue = _label,
+                Description = "Text shown inside the parallelogram."
+            };
         }
 
         protected override void LayoutPorts()
@@ -45,10 +56,9 @@ namespace Beep.Skia.Flowchart
             PlacePortsOnSegment(OutConnectionPoints, b1, c, outwardSign: +1f);
         }
 
-        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
         {
             if (!context.Bounds.IntersectsWith(Bounds)) return;
-            LayoutPorts();
 
             var b = Bounds;
             float slant = 16f;

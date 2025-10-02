@@ -11,12 +11,29 @@ namespace Beep.Skia.Business
     /// </summary>
     public class DataStore : BusinessControl
     {
+        private string _label = "Data Store";
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                if (_label != value)
+                {
+                    _label = value ?? string.Empty;
+                    Name = _label;
+                    if (NodeProperties.TryGetValue("Label", out var p)) p.ParameterCurrentValue = _label; else NodeProperties["Label"] = new ParameterInfo { ParameterName = "Label", ParameterType = typeof(string), DefaultParameterValue = _label, ParameterCurrentValue = _label, Description = "Display label" };
+                    InvalidateVisual();
+                }
+            }
+        }
+
         public DataStore()
         {
             Width = 90;
             Height = 70;
-            Name = "Data Store";
+            Name = _label;
             ComponentType = BusinessComponentType.DataStore;
+            NodeProperties["Label"] = new ParameterInfo { ParameterName = "Label", ParameterType = typeof(string), DefaultParameterValue = _label, ParameterCurrentValue = _label, Description = "Display label" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

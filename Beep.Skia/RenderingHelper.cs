@@ -348,9 +348,12 @@ namespace Beep.Skia
                 line.Draw(canvas);
 
                 // If selected, draw endpoint handles to indicate editability
-                if (line.IsSelected && line.Start != null && line.End != null)
+                if (line.IsSelected)
                 {
-                    DrawLineEndpointHandles(canvas, line.Start.Position, line.End.Position, zoom);
+                    // Use available endpoints; when End is null (preview), use EndPoint
+                    var a = line.Start != null ? line.Start.Position : line.EndPoint;
+                    var b = line.End != null ? line.End.Position : line.EndPoint;
+                    DrawLineEndpointHandles(canvas, a, b, zoom);
                 }
             }
             finally
@@ -420,7 +423,7 @@ namespace Beep.Skia
         /// <returns>"start", "end", or null if no arrow is at the point.</returns>
         public string GetArrowAt(IConnectionLine line, SKPoint point)
         {
-            if (line == null || line.Start == null || line.End == null)
+            if (line == null)
                 return null;
 
             // Use zoom-aware arrow hit-testing to match drawn size
@@ -444,14 +447,21 @@ namespace Beep.Skia
                 return new SKRect(left, top, right, bottom);
             }
 
-            if (line.ShowStartArrow)
+            var hasStart = line.Start != null || (line.EndPoint != default);
+            var hasEnd = line.End != null || (line.EndPoint != default);
+
+            if (line.ShowStartArrow && hasStart)
             {
-                var r = ArrowBounds(line.Start.Position, line.End.Position, arrow);
+                var tip = (line.Start != null ? line.Start.Position : line.EndPoint);
+                var tail = (line.End != null ? line.End.Position : line.EndPoint);
+                var r = ArrowBounds(tip, tail, arrow);
                 if (r.Contains(point)) return "start";
             }
-            if (line.ShowEndArrow)
+            if (line.ShowEndArrow && hasEnd)
             {
-                var r = ArrowBounds(line.End.Position, line.Start.Position, arrow);
+                var tip = (line.End != null ? line.End.Position : line.EndPoint);
+                var tail = (line.Start != null ? line.Start.Position : line.EndPoint);
+                var r = ArrowBounds(tip, tail, arrow);
                 if (r.Contains(point)) return "end";
             }
             return null;
@@ -462,11 +472,10 @@ namespace Beep.Skia
         /// </summary>
         public bool LineContainsPoint(IConnectionLine line, SKPoint point)
         {
-            if (line == null || line.Start == null || line.End == null)
+            if (line == null)
                 return false;
-
-            var a = line.Start.Position;
-            var b = line.End.Position;
+            var a = line.Start != null ? line.Start.Position : line.EndPoint;
+            var b = line.End != null ? line.End.Position : line.EndPoint;
             float zoom = Math.Max(0.0001f, _drawingManager.Zoom);
             // Tolerance ~ 5 device px plus half stroke width, mapped into canvas space
             float tol = Math.Max(3f, 5f / zoom);

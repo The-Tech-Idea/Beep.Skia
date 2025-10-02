@@ -353,6 +353,8 @@ namespace Beep.Skia
             if (line != null && !_lines.Contains(line))
             {
                 _lines.Add(line);
+                // Ensure the surface redraws so the newly added line appears immediately
+                DrawSurface?.Invoke(this, null);
             }
         }
 
@@ -362,7 +364,12 @@ namespace Beep.Skia
         /// <param name="line">The line to remove.</param>
         internal void RemoveLine(IConnectionLine line)
         {
-            _lines.Remove(line);
+            if (line == null) return;
+            if (_lines.Remove(line))
+            {
+                // Redraw to reflect the removal right away
+                DrawSurface?.Invoke(this, null);
+            }
         }
 
         /// <summary>

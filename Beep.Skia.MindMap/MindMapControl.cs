@@ -16,23 +16,118 @@ namespace Beep.Skia.MindMap
         /// <summary>
         /// Default background color for Mind Map nodes.
         /// </summary>
-        public SKColor BackgroundColor { get; set; } = MaterialColors.Surface;
+        private SKColor _backgroundColor = MaterialColors.Surface;
+        public SKColor BackgroundColor
+        {
+            get => _backgroundColor;
+            set
+            {
+                if (_backgroundColor != value)
+                {
+                    _backgroundColor = value;
+                    if (NodeProperties.TryGetValue("BackgroundColor", out var pi))
+                        pi.ParameterCurrentValue = value;
+                    InvalidateVisual();
+                }
+            }
+        }
 
         /// <summary>
         /// Default border color for Mind Map nodes.
         /// </summary>
-        public SKColor BorderColor { get; set; } = MaterialColors.Outline;
+        private SKColor _borderColor = MaterialColors.Outline;
+        public SKColor BorderColor
+        {
+            get => _borderColor;
+            set
+            {
+                if (_borderColor != value)
+                {
+                    _borderColor = value;
+                    if (NodeProperties.TryGetValue("BorderColor", out var pi))
+                        pi.ParameterCurrentValue = value;
+                    InvalidateVisual();
+                }
+            }
+        }
 
         /// <summary>
         /// Border thickness.
         /// </summary>
-        public float BorderThickness { get; set; } = 2.0f;
+        private float _borderThickness = 2.0f;
+        public float BorderThickness
+        {
+            get => _borderThickness;
+            set
+            {
+                float v = Math.Max(0f, value);
+                if (Math.Abs(_borderThickness - v) > 1e-3f)
+                {
+                    _borderThickness = v;
+                    if (NodeProperties.TryGetValue("BorderThickness", out var pi))
+                        pi.ParameterCurrentValue = v;
+                    InvalidateVisual();
+                }
+            }
+        }
+
+        // Note: TextColor is declared in SkiaComponent. We only seed metadata for it below.
 
         protected MindMapControl()
         {
             TextColor = MaterialColors.OnSurface;
             Width = 140;
             Height = 56;
+
+            // Seed common MindMap metadata for editors
+            NodeProperties["InPortCount"] = new ParameterInfo
+            {
+                ParameterName = "InPortCount",
+                ParameterType = typeof(int),
+                DefaultParameterValue = InPortCount,
+                ParameterCurrentValue = InPortCount,
+                Description = "Number of input ports (left)."
+            };
+            NodeProperties["OutPortCount"] = new ParameterInfo
+            {
+                ParameterName = "OutPortCount",
+                ParameterType = typeof(int),
+                DefaultParameterValue = OutPortCount,
+                ParameterCurrentValue = OutPortCount,
+                Description = "Number of output ports (right)."
+            };
+            NodeProperties["BackgroundColor"] = new ParameterInfo
+            {
+                ParameterName = "BackgroundColor",
+                ParameterType = typeof(SKColor),
+                DefaultParameterValue = BackgroundColor,
+                ParameterCurrentValue = BackgroundColor,
+                Description = "Fill color of the node"
+            };
+            NodeProperties["BorderColor"] = new ParameterInfo
+            {
+                ParameterName = "BorderColor",
+                ParameterType = typeof(SKColor),
+                DefaultParameterValue = BorderColor,
+                ParameterCurrentValue = BorderColor,
+                Description = "Stroke color of the node border"
+            };
+            NodeProperties["BorderThickness"] = new ParameterInfo
+            {
+                ParameterName = "BorderThickness",
+                ParameterType = typeof(float),
+                DefaultParameterValue = BorderThickness,
+                ParameterCurrentValue = BorderThickness,
+                Description = "Stroke thickness for the border"
+            };
+            NodeProperties["TextColor"] = new ParameterInfo
+            {
+                ParameterName = "TextColor",
+                ParameterType = typeof(SKColor),
+                DefaultParameterValue = this.TextColor,
+                ParameterCurrentValue = this.TextColor,
+                Description = "Primary text color"
+            };
         }
 
         /// <summary>
@@ -42,13 +137,27 @@ namespace Beep.Skia.MindMap
         public int InPortCount
         {
             get => InConnectionPoints.Count;
-            set => EnsurePortCounts(Math.Max(0, value), OutConnectionPoints.Count);
+            set
+            {
+                int v = Math.Max(0, value);
+                EnsurePortCounts(v, OutConnectionPoints.Count);
+                if (NodeProperties.TryGetValue("InPortCount", out var piIn))
+                    piIn.ParameterCurrentValue = v;
+                InvalidateVisual();
+            }
         }
 
         public int OutPortCount
         {
             get => OutConnectionPoints.Count;
-            set => EnsurePortCounts(InConnectionPoints.Count, Math.Max(0, value));
+            set
+            {
+                int v = Math.Max(0, value);
+                EnsurePortCounts(InConnectionPoints.Count, v);
+                if (NodeProperties.TryGetValue("OutPortCount", out var piOut))
+                    piOut.ParameterCurrentValue = v;
+                InvalidateVisual();
+            }
         }
 
         /// <summary>
@@ -66,7 +175,14 @@ namespace Beep.Skia.MindMap
             while (OutConnectionPoints.Count > outputs)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
-            LayoutPorts();
+            // keep editor metadata aligned when counts change programmatically
+            if (NodeProperties.TryGetValue("InPortCount", out var piIn))
+                piIn.ParameterCurrentValue = InConnectionPoints.Count;
+            if (NodeProperties.TryGetValue("OutPortCount", out var piOut))
+                piOut.ParameterCurrentValue = OutConnectionPoints.Count;
+
+            MarkPortsDirty();
+            try { OnBoundsChanged(Bounds); } catch { }
         }
 
         /// <summary>
@@ -196,9 +312,17 @@ namespace Beep.Skia.MindMap
             }
         }
 
+        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+        {
+            EnsurePortLayout(() => LayoutPorts());
+            DrawMindMapContent(canvas, context);
+        }
+
+        protected virtual void DrawMindMapContent(SKCanvas canvas, DrawingContext context) { }
+
         protected override void OnBoundsChanged(SKRect bounds)
         {
-            LayoutPorts();
+            MarkPortsDirty();
             base.OnBoundsChanged(bounds);
         }
     }

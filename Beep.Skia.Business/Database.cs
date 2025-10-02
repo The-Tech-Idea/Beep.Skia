@@ -11,12 +11,29 @@ namespace Beep.Skia.Business
     /// </summary>
     public class Database : BusinessControl
     {
+        private string _label = "Database";
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                if (_label != value)
+                {
+                    _label = value ?? string.Empty;
+                    Name = _label;
+                    if (NodeProperties.TryGetValue("Label", out var p)) p.ParameterCurrentValue = _label; else NodeProperties["Label"] = new ParameterInfo { ParameterName = "Label", ParameterType = typeof(string), DefaultParameterValue = _label, ParameterCurrentValue = _label, Description = "Display label" };
+                    InvalidateVisual();
+                }
+            }
+        }
+
         public Database()
         {
             Width = 80;
             Height = 100;
-            Name = "Database";
+            Name = _label;
             ComponentType = BusinessComponentType.Database;
+            NodeProperties["Label"] = new ParameterInfo { ParameterName = "Label", ParameterType = typeof(string), DefaultParameterValue = _label, ParameterCurrentValue = _label, Description = "Display label" };
         }
 
         protected override void DrawShape(SKCanvas canvas, DrawingContext context)

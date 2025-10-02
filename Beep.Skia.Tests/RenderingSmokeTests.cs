@@ -1,6 +1,7 @@
 using System.Linq;
 using SkiaSharp;
 using Xunit;
+using Beep.Skia.Model;
 
 namespace Beep.Skia.Tests
 {
