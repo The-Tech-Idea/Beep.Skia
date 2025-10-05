@@ -1,6 +1,7 @@
 using SkiaSharp;
 using Beep.Skia.ETL;
 using Beep.Skia.Components;
+using Beep.Skia.Model; // DrawingContext lives in Beep.Skia.Model
 
 namespace Beep.Skia.ETL
 {
@@ -10,6 +11,37 @@ namespace Beep.Skia.ETL
     /// </summary>
     public class ETLSource : ETLControl
     {
+        // Optional schema for outputs
+        private System.Collections.Generic.List<Beep.Skia.Model.ColumnDefinition> _outputColumns = new();
+
+        public enum SourceKind { Database, File, Api, Queue, Stream }
+
+        private SourceKind _kind = SourceKind.Database;
+        public SourceKind Kind
+        {
+            get => _kind;
+            set
+            {
+                if (_kind == value) return; _kind = value;
+                if (NodeProperties.TryGetValue("Kind", out var p)) p.ParameterCurrentValue = _kind; else NodeProperties["Kind"] = new Beep.Skia.Model.ParameterInfo { ParameterName = "Kind", ParameterType = typeof(SourceKind), DefaultParameterValue = _kind, ParameterCurrentValue = _kind, Description = "Source kind", Choices = System.Enum.GetNames(typeof(SourceKind)) };
+                InvalidateVisual();
+            }
+        }
+
+        private string _connectionString = string.Empty;
+        public string ConnectionString
+        {
+            get => _connectionString;
+            set { var v = value ?? string.Empty; if (_connectionString == v) return; _connectionString = v; if (NodeProperties.TryGetValue("ConnectionString", out var p)) p.ParameterCurrentValue = _connectionString; else NodeProperties["ConnectionString"] = new Beep.Skia.Model.ParameterInfo { ParameterName = "ConnectionString", ParameterType = typeof(string), DefaultParameterValue = _connectionString, ParameterCurrentValue = _connectionString, Description = "Source connection (masked)" }; InvalidateVisual(); }
+        }
+
+        private string _path = string.Empty;
+        public string Path
+        {
+            get => _path;
+            set { var v = value ?? string.Empty; if (_path == v) return; _path = v; if (NodeProperties.TryGetValue("Path", out var p)) p.ParameterCurrentValue = _path; else NodeProperties["Path"] = new Beep.Skia.Model.ParameterInfo { ParameterName = "Path", ParameterType = typeof(string), DefaultParameterValue = _path, ParameterCurrentValue = _path, Description = "Table/File/Endpoint path" }; InvalidateVisual(); }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ETLSource"/> class.
         /// </summary>
@@ -23,6 +55,24 @@ namespace Beep.Skia.ETL
             TextPosition = TextPosition.Below;
             ShowDisplayText = true;
             EnsurePortCounts(inCount: 0, outCount: 1);
+
+            // Seed NodeProperty for OutputSchema (JSON) to interop with ERD entities/lines
+            try
+            {
+                var json = System.Text.Json.JsonSerializer.Serialize(_outputColumns);
+                NodeProperties["OutputSchema"] = new Beep.Skia.Model.ParameterInfo
+                {
+                    ParameterName = "OutputSchema",
+                    ParameterType = typeof(string),
+                    DefaultParameterValue = json,
+                    ParameterCurrentValue = json,
+                    Description = "Output schema (JSON array of ColumnDefinition)"
+                };
+                NodeProperties["Kind"] = new Beep.Skia.Model.ParameterInfo { ParameterName = "Kind", ParameterType = typeof(SourceKind), DefaultParameterValue = _kind, ParameterCurrentValue = _kind, Description = "Source kind", Choices = System.Enum.GetNames(typeof(SourceKind)) };
+                NodeProperties["ConnectionString"] = new Beep.Skia.Model.ParameterInfo { ParameterName = "ConnectionString", ParameterType = typeof(string), DefaultParameterValue = _connectionString, ParameterCurrentValue = _connectionString, Description = "Source connection (masked)" };
+                NodeProperties["Path"] = new Beep.Skia.Model.ParameterInfo { ParameterName = "Path", ParameterType = typeof(string), DefaultParameterValue = _path, ParameterCurrentValue = _path, Description = "Table/File/Endpoint path" };
+            }
+            catch { }
         }
 
         /// <summary>
@@ -60,6 +110,35 @@ namespace Beep.Skia.ETL
             canvas.DrawLine(rect.Right, rect.Top + 8, rect.Right, rect.Bottom - 8, border);
             canvas.DrawOval(new SKRect(rect.Left, rect.Top, rect.Right, rect.Top + 16), border);
             canvas.DrawOval(new SKRect(rect.Left, rect.Bottom - 16, rect.Right, rect.Bottom), border);
+        }
+
+        protected override void DrawETLContent(SKCanvas canvas, DrawingContext context)
+        {
+            base.DrawETLContent(canvas, context);
+
+            // Optional: render first few output columns inside the body as a hint
+            try
+            {
+                if (NodeProperties != null && NodeProperties.TryGetValue("OutputSchema", out var p) && p?.ParameterCurrentValue is string js && !string.IsNullOrWhiteSpace(js))
+                {
+                    _outputColumns = System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.List<Beep.Skia.Model.ColumnDefinition>>(js) ?? new();
+                }
+            }
+            catch { }
+
+            if (_outputColumns != null && _outputColumns.Count > 0)
+            {
+                using var font = new SKFont { Size = 11 };
+                using var paint = new SKPaint { Color = new SKColor(70, 70, 70), IsAntialias = true };
+                float top = Y + HeaderHeight + 22f;
+                int max = System.Math.Min(4, _outputColumns.Count);
+                for (int i = 0; i < max; i++)
+                {
+                    var c = _outputColumns[i];
+                    var line = string.IsNullOrEmpty(c.DataType) ? c.Name : $"{c.Name}: {c.DataType}";
+                    canvas.DrawText(line, X + 8, top + i * 14, SKTextAlign.Left, font, paint);
+                }
+            }
         }
 
         /// <summary>

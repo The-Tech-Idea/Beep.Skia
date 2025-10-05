@@ -80,6 +80,12 @@ namespace Beep.Skia.Model
         /// </summary>
         string DataType { get; set; }
 
+    /// <summary>
+    /// Optional stable identifier for a logical row/attribute this port represents (e.g., ERD row ID).
+    /// When set, lines can capture row-level semantics for propagation.
+    /// </summary>
+    Guid? RowId { get; set; }
+
         /// <summary>
         /// Event raised when a connection is made to this connection point.
         /// </summary>

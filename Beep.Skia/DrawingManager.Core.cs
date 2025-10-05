@@ -135,6 +135,16 @@ namespace Beep.Skia
         }
 
         /// <summary>
+        /// Requests a redraw of the drawing surface. This is the safe, public way for
+        /// helpers (interaction/rendering/etc.) to trigger a repaint without invoking
+        /// the DrawSurface event from outside this type.
+        /// </summary>
+        public void RequestRedraw()
+        {
+            try { DrawSurface?.Invoke(this, null); } catch { }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DrawingManager"/> class.
         /// </summary>
         public DrawingManager()
@@ -162,6 +172,164 @@ namespace Beep.Skia
         /// Occurs when the undo/redo history changes.
         /// </summary>
         public event EventHandler HistoryChanged;
+
+        // ========== Interaction Events (LinkedIn-style infographic support) ==========
+
+        /// <summary>
+        /// Occurs when a component (node) is clicked.
+        /// Use this for external handling like property panels, navigation, etc.
+        /// </summary>
+        public event EventHandler<ComponentInteractionEventArgs> ComponentClicked;
+
+        /// <summary>
+        /// Occurs when a component is double-clicked.
+        /// Use this for opening property dialogs, editors, or detailed views.
+        /// </summary>
+        public event EventHandler<ComponentInteractionEventArgs> ComponentDoubleClicked;
+
+        /// <summary>
+        /// Occurs when a component is right-clicked.
+        /// Use this for showing context menus with component-specific actions.
+        /// </summary>
+        public event EventHandler<ComponentInteractionEventArgs> ComponentRightClicked;
+
+        /// <summary>
+        /// Occurs when a component's hover state changes.
+        /// Use this for showing tooltips, previews, or highlighting related components.
+        /// </summary>
+        public event EventHandler<ComponentInteractionEventArgs> ComponentHoverChanged;
+
+        /// <summary>
+        /// Occurs when a connection line is clicked.
+        /// Use this for selecting lines, showing line properties, or editing connections.
+        /// </summary>
+        public event EventHandler<LineInteractionEventArgs> LineClicked;
+
+        /// <summary>
+        /// Occurs when a connection line is double-clicked.
+        /// Use this for editing line properties, labels, or routing.
+        /// </summary>
+        public event EventHandler<LineInteractionEventArgs> LineDoubleClicked;
+
+        /// <summary>
+        /// Occurs when a connection line is right-clicked.
+        /// Use this for showing context menus with line-specific actions (delete, reroute, etc.).
+        /// </summary>
+        public event EventHandler<LineInteractionEventArgs> LineRightClicked;
+
+        /// <summary>
+        /// Occurs when a connection line's hover state changes.
+        /// Use this for showing schema tooltips, data flow info, or highlighting.
+        /// </summary>
+        public event EventHandler<LineInteractionEventArgs> LineHoverChanged;
+
+        /// <summary>
+        /// Occurs when the empty canvas/diagram area is clicked.
+        /// Use this for deselecting, showing diagram-level context menus, or canvas actions.
+        /// </summary>
+        public event EventHandler<DiagramInteractionEventArgs> DiagramClicked;
+
+        /// <summary>
+        /// Occurs when the empty canvas/diagram area is double-clicked.
+        /// Use this for adding new nodes at the clicked position or canvas-level actions.
+        /// </summary>
+        public event EventHandler<DiagramInteractionEventArgs> DiagramDoubleClicked;
+
+        /// <summary>
+        /// Occurs when the empty canvas/diagram area is right-clicked.
+        /// Use this for showing diagram-level context menus (add node, paste, etc.).
+        /// </summary>
+        public event EventHandler<DiagramInteractionEventArgs> DiagramRightClicked;
+
+        // ========== Event Raisers ==========
+
+        /// <summary>
+        /// Raises the ComponentClicked event.
+        /// </summary>
+        internal void RaiseComponentClicked(ComponentInteractionEventArgs args)
+        {
+            ComponentClicked?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Raises the ComponentDoubleClicked event.
+        /// </summary>
+        internal void RaiseComponentDoubleClicked(ComponentInteractionEventArgs args)
+        {
+            ComponentDoubleClicked?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Raises the ComponentRightClicked event.
+        /// </summary>
+        internal void RaiseComponentRightClicked(ComponentInteractionEventArgs args)
+        {
+            ComponentRightClicked?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Raises the ComponentHoverChanged event.
+        /// </summary>
+        internal void RaiseComponentHoverChanged(ComponentInteractionEventArgs args)
+        {
+            ComponentHoverChanged?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Raises the LineClicked event.
+        /// </summary>
+        internal void RaiseLineClicked(LineInteractionEventArgs args)
+        {
+            LineClicked?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Raises the LineDoubleClicked event.
+        /// </summary>
+        internal void RaiseLineDoubleClicked(LineInteractionEventArgs args)
+        {
+            LineDoubleClicked?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Raises the LineRightClicked event.
+        /// </summary>
+        internal void RaiseLineRightClicked(LineInteractionEventArgs args)
+        {
+            LineRightClicked?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Raises the LineHoverChanged event.
+        /// </summary>
+        internal void RaiseLineHoverChanged(LineInteractionEventArgs args)
+        {
+            LineHoverChanged?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Raises the DiagramClicked event.
+        /// </summary>
+        internal void RaiseDiagramClicked(DiagramInteractionEventArgs args)
+        {
+            DiagramClicked?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Raises the DiagramDoubleClicked event.
+        /// </summary>
+        internal void RaiseDiagramDoubleClicked(DiagramInteractionEventArgs args)
+        {
+            DiagramDoubleClicked?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Raises the DiagramRightClicked event.
+        /// </summary>
+        internal void RaiseDiagramRightClicked(DiagramInteractionEventArgs args)
+        {
+            DiagramRightClicked?.Invoke(this, args);
+        }
 
         /// <summary>
         /// Builds a serializable DTO representing the current diagram state.
@@ -398,7 +566,11 @@ namespace Beep.Skia
 
                     // ERD multiplicity
                     StartMultiplicity = (int)l.StartMultiplicity,
-                    EndMultiplicity = (int)l.EndMultiplicity
+                    EndMultiplicity = (int)l.EndMultiplicity,
+
+                    // Schema
+                    SchemaJson = (l as ConnectionLine)?.SchemaJson,
+                    ExpectedSchemaJson = (l as ConnectionLine)?.ExpectedSchemaJson
                 };
                 dto.Lines.Add(line);
             }
@@ -610,7 +782,7 @@ namespace Beep.Skia
                 var start = GetConnectionPoint(line.StartPointId);
                 var end = GetConnectionPoint(line.EndPointId);
                 if (start == null || end == null) continue;
-                var l = new ConnectionLine(start, end, () => DrawSurface?.Invoke(this, null))
+                var l = new ConnectionLine(start, end, () => RequestRedraw())
                 {
                     ShowStartArrow = line.ShowStartArrow,
                     ShowEndArrow = line.ShowEndArrow,
@@ -640,6 +812,9 @@ namespace Beep.Skia
                 // ERD multiplicity
                 l.StartMultiplicity = (ERDMultiplicity)line.StartMultiplicity;
                 l.EndMultiplicity = (ERDMultiplicity)line.EndMultiplicity;
+                // Schema
+                if (!string.IsNullOrWhiteSpace(line.SchemaJson)) l.SchemaJson = line.SchemaJson;
+                if (!string.IsNullOrWhiteSpace(line.ExpectedSchemaJson)) l.ExpectedSchemaJson = line.ExpectedSchemaJson;
                 AddLine(l);
             }
 

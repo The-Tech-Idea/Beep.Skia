@@ -338,6 +338,7 @@ Implementation/
 ├── Concrete implementations
 ├── Helper classes
 └── Extension methods
+Never create summary or documentation comments for these files until i tell you.
 ```
 
 ## Quality Assurance

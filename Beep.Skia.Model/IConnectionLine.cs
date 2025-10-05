@@ -49,6 +49,47 @@ namespace Beep.Skia.Model
     }
 
     /// <summary>
+    /// Animation style for data flow visualization (LinkedIn infographic style).
+    /// </summary>
+    public enum FlowAnimationStyle
+    {
+        /// <summary>
+        /// Classic animated dots flowing along the line.
+        /// </summary>
+        Dots,
+        
+        /// <summary>
+        /// Animated dashes moving along the line.
+        /// </summary>
+        Dashes,
+        
+        /// <summary>
+        /// Pulsing wave effect along the line.
+        /// </summary>
+        Wave,
+        
+        /// <summary>
+        /// Gradient that moves along the line.
+        /// </summary>
+        Gradient,
+        
+        /// <summary>
+        /// Particles with trail effect.
+        /// </summary>
+        Particles,
+        
+        /// <summary>
+        /// Glowing pulse that travels along the line.
+        /// </summary>
+        Pulse,
+        
+        /// <summary>
+        /// Arrow shapes moving along the line.
+        /// </summary>
+        Arrows
+    }
+
+    /// <summary>
     /// Status indicator shown on the line (e.g., spinner at midpoint).
     /// </summary>
     public enum LineStatus
@@ -89,6 +130,12 @@ namespace Beep.Skia.Model
         /// Gets or sets a value indicating whether the connection line is currently selected.
         /// </summary>
         bool IsSelected { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the connection line is currently hovered.
+    /// Used for showing transient UI like tooltips.
+    /// </summary>
+    bool IsHovered { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the connection line should be animated.
@@ -149,6 +196,11 @@ namespace Beep.Skia.Model
     /// Direction of animated data flow particles.
     /// </summary>
     DataFlowDirection FlowDirection { get; set; }
+
+    /// <summary>
+    /// Animation style for data flow visualization (infographic style).
+    /// </summary>
+    FlowAnimationStyle AnimationStyle { get; set; }
 
     /// <summary>
     /// Placement for labels relative to the line.

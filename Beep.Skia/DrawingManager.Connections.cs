@@ -2,6 +2,9 @@ using SkiaSharp;
 using System.Linq;
 using Beep.Skia.Model;
 using Beep.Skia.Components;
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
 namespace Beep.Skia
 {
     public partial class DrawingManager
@@ -48,8 +51,42 @@ namespace Beep.Skia
             IConnectionPoint connectionPoint2 = component2.InConnectionPoints.FirstOrDefault();
             if (connectionPoint1 != null && connectionPoint2 != null)
             {
-                var line = new ConnectionLine(connectionPoint1, connectionPoint2, () => { /* InvalidateSurface callback */ });
+                var line = new ConnectionLine(connectionPoint1, connectionPoint2, () => RequestRedraw());
+                // Row-level mapping if ports expose RowId
+                try { if (connectionPoint1 is ConnectionPoint ocp) line.SourceRowId = ocp.RowId; } catch { }
+                try { if (connectionPoint2 is ConnectionPoint icp) line.TargetRowId = icp.RowId; } catch { }
                 ApplyPendingLinePreset(line);
+                // Simple PK/FK validation for ERD-style connections
+                TryValidatePkFk(line);
+                // ETL: propagate OutputSchema from ETLSource/Transform if present
+                try
+                {
+                    string schema = TryGetOutputSchema(component1);
+                    if (string.IsNullOrWhiteSpace(schema)) schema = TryGetOutputSchema(component2);
+                    if (!string.IsNullOrWhiteSpace(schema)) line.SchemaJson = schema;
+
+                    // If either endpoint exposes ExpectedSchema (ETLTarget), validate against the actual schema on the line
+                    // Prefer validating component2 as the typical sink; fallback to component1 if component2 has none
+                    string expected = null;
+                    try { if (component2?.NodeProperties != null && component2.NodeProperties.TryGetValue("ExpectedSchema", out var ep2) && ep2?.ParameterCurrentValue is string e2 && !string.IsNullOrWhiteSpace(e2)) expected = e2; } catch { }
+                    if (string.IsNullOrWhiteSpace(expected))
+                    {
+                        try { if (component1?.NodeProperties != null && component1.NodeProperties.TryGetValue("ExpectedSchema", out var ep1) && ep1?.ParameterCurrentValue is string e1 && !string.IsNullOrWhiteSpace(e1)) expected = e1; } catch { }
+                    }
+                    if (!string.IsNullOrWhiteSpace(expected) && !string.IsNullOrWhiteSpace(line.SchemaJson))
+                    {
+                        line.ExpectedSchemaJson = expected;
+                        if (!SchemasCompatible(expected, line.SchemaJson))
+                        {
+                            line.Status = LineStatus.Warning;
+                            line.StatusColor = new SKColor(255, 152, 0); // Amber
+                            line.ShowStatusIndicator = true;
+                        }
+                    }
+                }
+                catch { }
+                // Auto-infer transform output when applicable
+                try { TryInferTransformSchema(component1); TryInferTransformSchema(component2); } catch { }
                 // Default line behavior
                 line.FlowDirection = DataFlowDirection.Forward;
                 _lines.Add(line);
@@ -82,11 +119,40 @@ namespace Beep.Skia
             }
 
             // Create the connection
-            var line = new ConnectionLine(outputPoint, inputPoint, () => DrawSurface?.Invoke(this, null));
+            var line = new ConnectionLine(outputPoint, inputPoint, () => RequestRedraw());
+            // Row-level mapping if ports expose RowId
+            try { if (outputPoint is ConnectionPoint ocp) line.SourceRowId = ocp.RowId; } catch { }
+            try { if (inputPoint is ConnectionPoint icp) line.TargetRowId = icp.RowId; } catch { }
             ApplyPendingLinePreset(line);
             line.IsDataFlowAnimated = true; // Enable data flow animation by default
             line.FlowDirection = DataFlowDirection.Forward; // Default flow direction
             line.DataFlowColor = GetDataFlowColor(outputPoint.DataType); // Set color based on data type
+            // Propagate ETL schema if the source node exposes OutputSchema NodeProperty
+            try
+            {
+                if (node1?.NodeProperties != null && node1.NodeProperties.TryGetValue("OutputSchema", out var p) && p?.ParameterCurrentValue is string js && !string.IsNullOrWhiteSpace(js))
+                {
+                    line.SchemaJson = js;
+                }
+            }
+            catch { }
+            // If node2 is an ETLTarget with ExpectedSchema, validate
+            try
+            {
+                if (node2?.NodeProperties != null && node2.NodeProperties.TryGetValue("ExpectedSchema", out var ep) && ep?.ParameterCurrentValue is string exp && !string.IsNullOrWhiteSpace(exp) && !string.IsNullOrWhiteSpace(line.SchemaJson))
+                {
+                    line.ExpectedSchemaJson = exp;
+                    if (!SchemasCompatible(exp, line.SchemaJson))
+                    {
+                        line.Status = LineStatus.Warning;
+                        line.StatusColor = new SKColor(255, 152, 0); // Amber
+                        line.ShowStatusIndicator = true;
+                    }
+                }
+            }
+            catch { }
+            // Auto-infer transform output when applicable
+            try { TryInferTransformSchema(node1); TryInferTransformSchema(node2); } catch { }
             _lines.Add(line);
 
             // Mark points as connected
@@ -97,6 +163,246 @@ namespace Beep.Skia
 
             _historyManager.ExecuteAction(new ConnectAutomationNodesAction(this, node1, node2, line, outputPoint, inputPoint));
             DrawSurface?.Invoke(this, null);
+        }
+
+        private string TryGetOutputSchema(SkiaComponent c)
+        {
+            try
+            {
+                if (c?.NodeProperties != null && c.NodeProperties.TryGetValue("OutputSchema", out var p) && p?.ParameterCurrentValue is string js)
+                    return js;
+            }
+            catch { }
+            return null;
+        }
+
+        private bool SchemasCompatible(string expectedJson, string actualJson)
+        {
+            try
+            {
+                var exp = System.Text.Json.JsonSerializer.Deserialize<List<Beep.Skia.Model.ColumnDefinition>>(expectedJson) ?? new();
+                var act = System.Text.Json.JsonSerializer.Deserialize<List<Beep.Skia.Model.ColumnDefinition>>(actualJson) ?? new();
+                // simple compatibility: expected columns must exist in actual (by name) with same DataType when both provided
+                foreach (var e in exp)
+                {
+                    var a = act.Find(x => string.Equals(x.Name, e.Name, StringComparison.OrdinalIgnoreCase));
+                    if (a == null) return false;
+                    if (!string.IsNullOrEmpty(e.DataType) && !string.IsNullOrEmpty(a.DataType) && !string.Equals(e.DataType, a.DataType, StringComparison.OrdinalIgnoreCase))
+                        return false;
+                }
+                return true;
+            }
+            catch { return false; }
+        }
+
+        /// <summary>
+        /// Public entry to attempt schema inference for a component, if supported.
+        /// </summary>
+        public void InferOutputSchemaForComponent(SkiaComponent component) => TryInferTransformSchema(component);
+
+        /// <summary>
+        /// Reflection-based inference: call component.InferOutputSchemaFromUpstreams(Func<int,string>) if present,
+        /// and if NodeProperties indicate a Join, validate join keys exist and are type-compatible.
+        /// </summary>
+        private void TryInferTransformSchema(SkiaComponent component)
+        {
+            if (component == null) return;
+            try
+            {
+                string InputSchema(int index)
+                {
+                    var inputs = _lines.Where(l => l.End?.Component == component).ToList();
+                    if (index < 0 || index >= inputs.Count) return null;
+                    return (inputs[index] as ConnectionLine)?.SchemaJson;
+                }
+
+                var mi = component.GetType().GetMethod("InferOutputSchemaFromUpstreams", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance, binder: null, types: new[] { typeof(Func<int, string>) }, modifiers: null);
+                if (mi != null)
+                {
+                    mi.Invoke(component, new object[] { new Func<int, string>(InputSchema) });
+                }
+
+                if (component.NodeProperties != null && component.NodeProperties.TryGetValue("Kind", out var kindPi))
+                {
+                    var kindVal = Convert.ToString(kindPi?.ParameterCurrentValue ?? kindPi?.DefaultParameterValue) ?? string.Empty;
+                    if (string.Equals(kindVal, "Join", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var leftJson = InputSchema(0);
+                        var rightJson = InputSchema(1);
+                        if (!string.IsNullOrWhiteSpace(leftJson) && !string.IsNullOrWhiteSpace(rightJson))
+                        {
+                            var left = System.Text.Json.JsonSerializer.Deserialize<List<Beep.Skia.Model.ColumnDefinition>>(leftJson) ?? new();
+                            var right = System.Text.Json.JsonSerializer.Deserialize<List<Beep.Skia.Model.ColumnDefinition>>(rightJson) ?? new();
+                            string lk = null, rk = null;
+                            try { if (component.NodeProperties.TryGetValue("JoinKeyLeft", out var pl)) lk = Convert.ToString(pl?.ParameterCurrentValue ?? pl?.DefaultParameterValue); } catch { }
+                            try { if (component.NodeProperties.TryGetValue("JoinKeyRight", out var pr)) rk = Convert.ToString(pr?.ParameterCurrentValue ?? pr?.DefaultParameterValue); } catch { }
+                            lk = (lk ?? string.Empty).Trim();
+                            rk = (rk ?? string.Empty).Trim();
+                            var lc = string.IsNullOrWhiteSpace(lk) ? null : left.FirstOrDefault(c => string.Equals(c.Name, lk, StringComparison.OrdinalIgnoreCase));
+                            var rc = string.IsNullOrWhiteSpace(rk) ? null : right.FirstOrDefault(c => string.Equals(c.Name, rk, StringComparison.OrdinalIgnoreCase));
+                            bool hasBoth = lc != null && rc != null;
+                            bool typeOk = hasBoth && (string.IsNullOrWhiteSpace(lc.DataType) || string.IsNullOrWhiteSpace(rc.DataType) || string.Equals(lc.DataType, rc.DataType, StringComparison.OrdinalIgnoreCase));
+
+                            foreach (var l in _lines.Where(l => l.End?.Component == component))
+                            {
+                                if (!hasBoth || !typeOk)
+                                {
+                                    l.Status = LineStatus.Warning;
+                                    l.StatusColor = new SKColor(255, 152, 0);
+                                    l.ShowStatusIndicator = true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                RequestRedraw();
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    // Light telemetry: write to temp log and console without crashing the UI
+                    var msg = $"[InferenceError] Component={component?.GetType()?.FullName} Name={component?.Name} Error={ex.Message}";
+                    Console.WriteLine(msg);
+                    try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { }
+                }
+                catch { }
+            }
+        }
+
+        /// <summary>
+        /// Sets a warning status on the line if the endpoints' selected rows don't form a valid PK/FK pair.
+        /// Now checks declared ForeignKeys definitions from ERDEntity for enterprise-grade validation.
+        /// Rule: Valid when one side is FK and the other is PK, OR connection matches a declared FK.
+        /// Applies mainly to ERD entities exposing Columns and ForeignKeys JSON NodeProperties.
+        /// </summary>
+        private void TryValidatePkFk(ConnectionLine line)
+        {
+            try
+            {
+                if (line == null) return;
+                if (line.SourceRowId == null || line.TargetRowId == null) return;
+                var srcComp = line.Start?.Component as SkiaComponent;
+                var tgtComp = line.End?.Component as SkiaComponent;
+                if (srcComp == null || tgtComp == null) return;
+
+                var srcCol = FindColumnByRowId(srcComp, line.SourceRowId.Value);
+                var tgtCol = FindColumnByRowId(tgtComp, line.TargetRowId.Value);
+                if (srcCol == null || tgtCol == null) return;
+
+                // Simple flag-based check (legacy)
+                bool flagOk = (srcCol.IsForeignKey && tgtCol.IsPrimaryKey) || (srcCol.IsPrimaryKey && tgtCol.IsForeignKey);
+                
+                // Enhanced: check if connection matches a declared FK from source or target
+                bool fkDeclared = false;
+                try
+                {
+                    // Check if srcComp declares an FK pointing to tgtComp entity
+                    var srcFks = ParseForeignKeys(srcComp);
+                    var tgtEntityName = GetEntityName(tgtComp);
+                    foreach (var fk in srcFks)
+                    {
+                        if (string.Equals(fk.ReferencedEntity, tgtEntityName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Check if srcCol is in FK columns and tgtCol is in referenced columns at same index
+                            var fkCols = fk.Columns ?? new System.Collections.Generic.List<string>();
+                            var refCols = fk.ReferencedColumns ?? new System.Collections.Generic.List<string>();
+                            for (int i = 0; i < fkCols.Count && i < refCols.Count; i++)
+                            {
+                                if (string.Equals(fkCols[i], srcCol.Name, StringComparison.OrdinalIgnoreCase) &&
+                                    string.Equals(refCols[i], tgtCol.Name, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    fkDeclared = true;
+                                    break;
+                                }
+                            }
+                            if (fkDeclared) break;
+                        }
+                    }
+                    
+                    // Check reverse: tgtComp declares FK pointing to srcComp
+                    if (!fkDeclared)
+                    {
+                        var tgtFks = ParseForeignKeys(tgtComp);
+                        var srcEntityName = GetEntityName(srcComp);
+                        foreach (var fk in tgtFks)
+                        {
+                            if (string.Equals(fk.ReferencedEntity, srcEntityName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                var fkCols = fk.Columns ?? new System.Collections.Generic.List<string>();
+                                var refCols = fk.ReferencedColumns ?? new System.Collections.Generic.List<string>();
+                                for (int i = 0; i < fkCols.Count && i < refCols.Count; i++)
+                                {
+                                    if (string.Equals(fkCols[i], tgtCol.Name, StringComparison.OrdinalIgnoreCase) &&
+                                        string.Equals(refCols[i], srcCol.Name, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        fkDeclared = true;
+                                        break;
+                                    }
+                                }
+                                if (fkDeclared) break;
+                            }
+                        }
+                    }
+                }
+                catch { }
+
+                // Accept if either flag-based or FK declaration matches
+                bool ok = flagOk || fkDeclared;
+                if (!ok)
+                {
+                    line.ShowStatusIndicator = true;
+                    line.Status = LineStatus.Warning;
+                    line.StatusColor = SKColors.Orange;
+                }
+            }
+            catch { }
+        }
+
+        private System.Collections.Generic.List<ForeignKeyDefinition> ParseForeignKeys(SkiaComponent comp)
+        {
+            try
+            {
+                if (comp?.NodeProperties != null && comp.NodeProperties.TryGetValue("ForeignKeys", out var p) && p != null)
+                {
+                    var json = p.ParameterCurrentValue as string ?? p.DefaultParameterValue as string;
+                    if (!string.IsNullOrWhiteSpace(json))
+                    {
+                        return JsonSerializer.Deserialize<System.Collections.Generic.List<ForeignKeyDefinition>>(json) ?? new System.Collections.Generic.List<ForeignKeyDefinition>();
+                    }
+                }
+            }
+            catch { }
+            return new System.Collections.Generic.List<ForeignKeyDefinition>();
+        }
+
+        private string GetEntityName(SkiaComponent comp)
+        {
+            try
+            {
+                if (comp?.NodeProperties != null && comp.NodeProperties.TryGetValue("EntityName", out var p) && p != null)
+                {
+                    return p.ParameterCurrentValue as string ?? p.DefaultParameterValue as string ?? comp.Name ?? string.Empty;
+                }
+            }
+            catch { }
+            return comp?.Name ?? string.Empty;
+        }
+
+        private ColumnDefinition FindColumnByRowId(SkiaComponent comp, Guid rowId)
+        {
+            try
+            {
+                if (comp?.NodeProperties == null) return null;
+                if (!comp.NodeProperties.TryGetValue("Columns", out var p) || p == null) return null;
+                var raw = p.ParameterCurrentValue ?? p.DefaultParameterValue;
+                var js = raw as string ?? raw?.ToString();
+                if (string.IsNullOrWhiteSpace(js)) return null;
+                var list = JsonSerializer.Deserialize<List<ColumnDefinition>>(js);
+                return list?.FirstOrDefault(c => c.Id == rowId);
+            }
+            catch { return null; }
         }
 
         /// <summary>
@@ -294,6 +600,8 @@ namespace Beep.Skia
                 _lines.Remove(lineToRemove);
                 _historyManager.ExecuteAction(new DisconnectComponentsAction(this, component1, component2, lineToRemove));
             }
+            // Re-infer on both endpoints if they support inference
+            try { TryInferTransformSchema(component1); TryInferTransformSchema(component2); } catch { }
             DrawSurface?.Invoke(this, null);
         }
 
@@ -341,6 +649,8 @@ namespace Beep.Skia
             }
 
             _historyManager.ExecuteAction(new MoveLineAction(this, line, oldStartPoint, oldEndPoint, newStartPoint, newEndPoint));
+            // Re-infer on components connected to this line
+            try { TryInferTransformSchema(line.Start?.Component as SkiaComponent); TryInferTransformSchema(line.End?.Component as SkiaComponent); } catch { }
             DrawSurface?.Invoke(this, null);
         }
 

@@ -25,6 +25,8 @@ namespace Beep.Skia.Components
     /// </summary>
     public class ComponentPropertyEditor : SkiaComponent
     {
+        // Owning DrawingManager (set by host) to enable actions like schema inference
+        public DrawingManager Manager { get; set; }
         // Hide this infrastructure component from the palette/toolbox
         public override bool ShowInPalette { get; set; } = false;
         // Note: Render as an overlay; do not move/scale with canvas pan/zoom
@@ -370,12 +372,19 @@ namespace Beep.Skia.Components
             {
                 var key = kv.Key;
                 var p = kv.Value;
+                // Provide a structured editor for common schema keys
+                if (TryAddSchemaGridEditor(component, key, p))
+                {
+                    continue;
+                }
                 if (p == null)
                 {
                     AddTextProperty(key, string.Empty, v =>
                     {
                         component.NodeProperties[key] = new Beep.Skia.Model.ParameterInfo { ParameterName = key, ParameterCurrentValue = v, DefaultParameterValue = v, ParameterType = typeof(string) };
                         _isDirty = true;
+                        OnPropertyValueChanged();
+                        MaybeTriggerInference(component, key);
                     });
                     continue;
                 }
@@ -385,6 +394,9 @@ namespace Beep.Skia.Components
 
                 if (type == typeof(string))
                 {
+                    // Prefer multiline editor for schema/JSON and row lists
+                    var keyLower = key?.ToLowerInvariant() ?? string.Empty;
+                    bool preferMultiline = keyLower.Contains("json") || keyLower.Contains("schema") || keyLower == "rows" || keyLower == "rowstext" || keyLower == "columns" || keyLower == "outputschema";
                     var choices = p.Choices;
                     if (choices != null && choices.Length > 0)
                     {
@@ -399,7 +411,7 @@ namespace Beep.Skia.Components
                         try { labelCtrl.IsStatic = true; } catch { }
                         labelCtrl.Tag = "prop-label";
                         dd.Tag = "prop-value";
-                        dd.SelectedItemChanged += (s, item) => { p.ParameterCurrentValue = item?.Value; _isDirty = true; };
+                        dd.SelectedItemChanged += (s, item) => { p.ParameterCurrentValue = item?.Value; _isDirty = true; OnPropertyValueChanged(); MaybeTriggerInference(component, key); };
                         _childComponents.Add(labelCtrl);
                         _childComponents.Add(dd);
                         _propertyControls[key] = dd;
@@ -407,24 +419,28 @@ namespace Beep.Skia.Components
                     }
                     else
                     {
-                        AddTextProperty(key, Convert.ToString(value) ?? string.Empty, v => { p.ParameterCurrentValue = v; _isDirty = true; });
+                        var textVal = Convert.ToString(value) ?? string.Empty;
+                        if (preferMultiline)
+                            AddMultilineTextProperty(key, textVal, v => { p.ParameterCurrentValue = v; _isDirty = true; OnPropertyValueChanged(); }, lines: 6);
+                        else
+                            AddTextProperty(key, textVal, v => { p.ParameterCurrentValue = v; _isDirty = true; OnPropertyValueChanged(); MaybeTriggerInference(component, key); });
                     }
                 }
                 else if (type == typeof(bool))
                 {
-                    AddBooleanProperty(key, Convert.ToBoolean(value ?? false), v => { p.ParameterCurrentValue = v; _isDirty = true; });
+                    AddBooleanProperty(key, Convert.ToBoolean(value ?? false), v => { p.ParameterCurrentValue = v; _isDirty = true; OnPropertyValueChanged(); });
                 }
                 else if (type == typeof(int))
                 {
-                    AddNumericProperty(key, value != null ? Convert.ToSingle(value) : 0f, v => { p.ParameterCurrentValue = (int)MathF.Round(v); _isDirty = true; });
+                    AddNumericProperty(key, value != null ? Convert.ToSingle(value) : 0f, v => { p.ParameterCurrentValue = (int)MathF.Round(v); _isDirty = true; OnPropertyValueChanged(); });
                 }
                 else if (type == typeof(float))
                 {
-                    AddNumericProperty(key, value != null ? Convert.ToSingle(value) : 0f, v => { p.ParameterCurrentValue = v; _isDirty = true; });
+                    AddNumericProperty(key, value != null ? Convert.ToSingle(value) : 0f, v => { p.ParameterCurrentValue = v; _isDirty = true; OnPropertyValueChanged(); });
                 }
                 else if (type == typeof(double))
                 {
-                    AddNumericProperty(key, value != null ? Convert.ToSingle(value) : 0f, v => { p.ParameterCurrentValue = (double)v; _isDirty = true; });
+                    AddNumericProperty(key, value != null ? Convert.ToSingle(value) : 0f, v => { p.ParameterCurrentValue = (double)v; _isDirty = true; OnPropertyValueChanged(); });
                 }
                 else if (type.IsEnum)
                 {
@@ -439,7 +455,7 @@ namespace Beep.Skia.Components
                     }
                     catch { }
                     var current = value ?? Activator.CreateInstance(type);
-                    AddEnumProperty(key, current, type, nv => { p.ParameterCurrentValue = nv; _isDirty = true; });
+                    AddEnumProperty(key, current, type, nv => { p.ParameterCurrentValue = nv; _isDirty = true; OnPropertyValueChanged(); MaybeTriggerInference(component, key); });
                 }
                 else if (type == typeof(System.TimeSpan))
                 {
@@ -450,13 +466,15 @@ namespace Beep.Skia.Components
                         {
                             p.ParameterCurrentValue = parsed;
                             _isDirty = true;
+                            OnPropertyValueChanged();
+                            MaybeTriggerInference(component, key);
                         }
                     });
                 }
                 else if (type == typeof(SkiaSharp.SKColor))
                 {
                     var c = value is SkiaSharp.SKColor sc ? sc : SkiaSharp.SKColors.Black;
-                    AddColorProperty(key, c, col => { p.ParameterCurrentValue = col; _isDirty = true; });
+                    AddColorProperty(key, c, col => { p.ParameterCurrentValue = col; _isDirty = true; OnPropertyValueChanged(); MaybeTriggerInference(component, key); });
                 }
                 else
                 {
@@ -471,14 +489,527 @@ namespace Beep.Skia.Components
                                 var obj = System.Text.Json.JsonSerializer.Deserialize(s, type);
                                 p.ParameterCurrentValue = obj;
                                 _isDirty = true;
+                                OnPropertyValueChanged();
+                                MaybeTriggerInference(component, key);
                             }
                             catch { }
                         });
                     }
                     catch
                     {
-                        AddTextProperty(key, Convert.ToString(value) ?? string.Empty, v => { p.ParameterCurrentValue = v; _isDirty = true; });
+                        AddTextProperty(key, Convert.ToString(value) ?? string.Empty, v => { p.ParameterCurrentValue = v; _isDirty = true; OnPropertyValueChanged(); MaybeTriggerInference(component, key); });
                     }
+                }
+            }
+        }
+
+        private void MaybeTriggerInference(SkiaComponent component, string key)
+        {
+            try
+            {
+                if (component == null || Manager == null) return;
+                var ns = component.GetType().Namespace ?? string.Empty;
+                if (!string.Equals(ns, "Beep.Skia.ETL", StringComparison.Ordinal)) return;
+                if (string.IsNullOrWhiteSpace(key)) return;
+                var k = key.Trim();
+                // Only trigger on relevant keys
+                if (k.Equals("GroupBy", StringComparison.OrdinalIgnoreCase) ||
+                    k.Equals("JoinKeyLeft", StringComparison.OrdinalIgnoreCase) ||
+                    k.Equals("JoinKeyRight", StringComparison.OrdinalIgnoreCase) ||
+                    k.Equals("Kind", StringComparison.OrdinalIgnoreCase))
+                {
+                    Manager.InferOutputSchemaForComponent(component);
+                }
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// Attempts to render a simple grid-like editor for schema JSON NodeProperties such as Columns/OutputSchema.
+        /// Returns true if handled.
+        /// </summary>
+        private bool TryAddSchemaGridEditor(SkiaComponent component, string key, ParameterInfo p)
+        {
+            if (p == null) return false;
+            var k = key?.ToLowerInvariant() ?? string.Empty;
+
+            // 1) Column-based schemas (Columns/OutputSchema/ExpectedSchema)
+            if (k == "columns" || k == "outputschema" || k == "expectedschema")
+            {
+                var cols = new List<Beep.Skia.Model.ColumnDefinition>();
+                try
+                {
+                    var raw = p.ParameterCurrentValue as string ?? p.DefaultParameterValue as string;
+                    if (!string.IsNullOrWhiteSpace(raw))
+                    {
+                        cols = System.Text.Json.JsonSerializer.Deserialize<List<Beep.Skia.Model.ColumnDefinition>>(raw) ?? new();
+                    }
+                }
+                catch { }
+
+                var labelCtrl = new Label { Text = key + ":", Width = 100, Height = 25, X = 10, Y = _currentY };
+                try { labelCtrl.IsStatic = true; } catch { }
+                labelCtrl.Tag = "prop-label";
+                _childComponents.Add(labelCtrl);
+
+                var extraChoices = new List<string>();
+                try
+                {
+                    if (p.Choices is IEnumerable<string> chs)
+                    {
+                        foreach (var ch in chs)
+                            if (!string.IsNullOrWhiteSpace(ch)) extraChoices.Add(ch.Trim());
+                    }
+                }
+                catch { }
+
+                var gridContainer = new SkiaComponentGrid(cols, updatedList =>
+                {
+                    try
+                    {
+                        p.ParameterCurrentValue = System.Text.Json.JsonSerializer.Serialize(updatedList);
+                        _isDirty = true;
+                        OnPropertyValueChanged();
+                    }
+                    catch { }
+                }, extraChoices)
+                { Width = this.Width - 120, Height = 160 };
+                try { gridContainer.IsStatic = true; } catch { }
+                gridContainer.Tag = "prop-value";
+                _childComponents.Add(gridContainer);
+                _propertyControls[key] = gridContainer;
+                _currentY += gridContainer.Height + 10;
+                return true;
+            }
+
+            // 2) Indexes (array of IndexDefinition)
+            if (k == "indexes")
+            {
+                var header = new Label { Text = "Indexes:", Width = 100, Height = 25, X = 10, Y = _currentY };
+                try { header.IsStatic = true; } catch { }
+                header.Tag = "section";
+                _childComponents.Add(header);
+
+                var items = new List<Beep.Skia.Model.IndexDefinition>();
+                try
+                {
+                    var raw = p.ParameterCurrentValue as string ?? p.DefaultParameterValue as string;
+                    if (!string.IsNullOrWhiteSpace(raw))
+                        items = System.Text.Json.JsonSerializer.Deserialize<List<Beep.Skia.Model.IndexDefinition>>(raw) ?? new();
+                }
+                catch { }
+
+                var panel = new SimpleListEditor<Beep.Skia.Model.IndexDefinition>(items,
+                    drawHeader: "Name | Unique | Columns (comma) | Where",
+                    onRenderRow: (row, y, setDirty) =>
+                    {
+                        float x = 0;
+                        var tbName = new TextBox { Text = row.Name, Width = 140, Height = 24, X = x, Y = y }; x += 150;
+                        tbName.TextChanged += (s, e) => { row.Name = tbName.Text; setDirty(); };
+                        var cbUnique = new Checkbox { IsChecked = row.IsUnique, Width = 24, Height = 24, X = x, Y = y }; x += 40;
+                        cbUnique.CheckStateChanged += (s, e) => { row.IsUnique = cbUnique.IsChecked; setDirty(); };
+                        var tbCols = new TextBox { Text = string.Join(",", row.Columns ?? new List<string>()), Width = 180, Height = 24, X = x, Y = y }; x += 190;
+                        tbCols.TextChanged += (s, e) => { row.Columns = (tbCols.Text ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s1 => s1.Trim()).ToList(); setDirty(); };
+                        var tbWhere = new TextBox { Text = row.Where, Width = 120, Height = 24, X = x, Y = y };
+                        tbWhere.TextChanged += (s, e) => { row.Where = tbWhere.Text; setDirty(); };
+                        return new SkiaComponent[] { tbName, cbUnique, tbCols, tbWhere };
+                    },
+                    onCommit: list =>
+                    {
+                        try { p.ParameterCurrentValue = System.Text.Json.JsonSerializer.Serialize(list); _isDirty = true; OnPropertyValueChanged(); } catch { }
+                    })
+                { Width = this.Width - 120, Height = 150 };
+                try { panel.IsStatic = true; } catch { }
+                _childComponents.Add(panel);
+                _propertyControls[key] = panel;
+                _currentY += panel.Height + 10;
+                return true;
+            }
+
+            // 3) Foreign keys (array of ForeignKeyDefinition)
+            if (k == "foreignkeys")
+            {
+                var header = new Label { Text = "Foreign Keys:", Width = 100, Height = 25, X = 10, Y = _currentY };
+                try { header.IsStatic = true; } catch { }
+                header.Tag = "section";
+                _childComponents.Add(header);
+
+                var items = new List<Beep.Skia.Model.ForeignKeyDefinition>();
+                try
+                {
+                    var raw = p.ParameterCurrentValue as string ?? p.DefaultParameterValue as string;
+                    if (!string.IsNullOrWhiteSpace(raw))
+                        items = System.Text.Json.JsonSerializer.Deserialize<List<Beep.Skia.Model.ForeignKeyDefinition>>(raw) ?? new();
+                }
+                catch { }
+
+                var panel = new SimpleListEditor<Beep.Skia.Model.ForeignKeyDefinition>(items,
+                    drawHeader: "Name | Columns (comma) | Ref Entity | Ref Columns | OnDelete | OnUpdate",
+                    onRenderRow: (row, y, setDirty) =>
+                    {
+                        float x = 0;
+                        var tbName = new TextBox { Text = row.Name, Width = 120, Height = 24, X = x, Y = y }; x += 130;
+                        tbName.TextChanged += (s, e) => { row.Name = tbName.Text; setDirty(); };
+                        var tbCols = new TextBox { Text = string.Join(",", row.Columns ?? new List<string>()), Width = 160, Height = 24, X = x, Y = y }; x += 170;
+                        tbCols.TextChanged += (s, e) => { row.Columns = (tbCols.Text ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s1 => s1.Trim()).ToList(); setDirty(); };
+                        var tbRefEntity = new TextBox { Text = row.ReferencedEntity, Width = 120, Height = 24, X = x, Y = y }; x += 130;
+                        tbRefEntity.TextChanged += (s, e) => { row.ReferencedEntity = tbRefEntity.Text; setDirty(); };
+                        var tbRefCols = new TextBox { Text = string.Join(",", row.ReferencedColumns ?? new List<string>()), Width = 160, Height = 24, X = x, Y = y }; x += 170;
+                        tbRefCols.TextChanged += (s, e) => { row.ReferencedColumns = (tbRefCols.Text ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s1 => s1.Trim()).ToList(); setDirty(); };
+                        var tbOnDelete = new TextBox { Text = row.OnDelete, Width = 90, Height = 24, X = x, Y = y }; x += 100;
+                        tbOnDelete.TextChanged += (s, e) => { row.OnDelete = tbOnDelete.Text; setDirty(); };
+                        var tbOnUpdate = new TextBox { Text = row.OnUpdate, Width = 90, Height = 24, X = x, Y = y };
+                        tbOnUpdate.TextChanged += (s, e) => { row.OnUpdate = tbOnUpdate.Text; setDirty(); };
+                        return new SkiaComponent[] { tbName, tbCols, tbRefEntity, tbRefCols, tbOnDelete, tbOnUpdate };
+                    },
+                    onCommit: list =>
+                    {
+                        try { p.ParameterCurrentValue = System.Text.Json.JsonSerializer.Serialize(list); _isDirty = true; OnPropertyValueChanged(); } catch { }
+                    })
+                { Width = this.Width - 120, Height = 180 };
+                try { panel.IsStatic = true; } catch { }
+                _childComponents.Add(panel);
+                _propertyControls[key] = panel;
+                _currentY += panel.Height + 10;
+                return true;
+            }
+
+            // 4) Derived Columns (array of DerivedColumnDefinition)
+            if (k == "derivedcolumns")
+            {
+                var header = new Label { Text = "Derived Columns:", Width = 100, Height = 25, X = 10, Y = _currentY };
+                try { header.IsStatic = true; } catch { }
+                header.Tag = "section";
+                _childComponents.Add(header);
+
+                var items = new List<Beep.Skia.Model.DerivedColumnDefinition>();
+                try
+                {
+                    var raw = p.ParameterCurrentValue as string ?? p.DefaultParameterValue as string;
+                    if (!string.IsNullOrWhiteSpace(raw))
+                        items = System.Text.Json.JsonSerializer.Deserialize<List<Beep.Skia.Model.DerivedColumnDefinition>>(raw) ?? new();
+                }
+                catch { }
+
+                var panel = new SimpleListEditor<Beep.Skia.Model.DerivedColumnDefinition>(items,
+                    drawHeader: "Name | Expression | DataType | Description",
+                    onRenderRow: (row, y, setDirty) =>
+                    {
+                        float x = 0;
+                        var tbName = new TextBox { Text = row.Name, Width = 120, Height = 24, X = x, Y = y }; x += 130;
+                        tbName.TextChanged += (s, e) => { row.Name = tbName.Text; setDirty(); };
+                        var tbExpr = new TextBox { Text = row.Expression, Width = 200, Height = 24, X = x, Y = y }; x += 210;
+                        tbExpr.TextChanged += (s, e) => { row.Expression = tbExpr.Text; setDirty(); };
+                        var tbType = new TextBox { Text = row.DataType, Width = 80, Height = 24, X = x, Y = y }; x += 90;
+                        tbType.TextChanged += (s, e) => { row.DataType = tbType.Text; setDirty(); };
+                        var tbDesc = new TextBox { Text = row.Description, Width = 160, Height = 24, X = x, Y = y };
+                        tbDesc.TextChanged += (s, e) => { row.Description = tbDesc.Text; setDirty(); };
+                        return new SkiaComponent[] { tbName, tbExpr, tbType, tbDesc };
+                    },
+                    onCommit: list =>
+                    {
+                        try { p.ParameterCurrentValue = System.Text.Json.JsonSerializer.Serialize(list); _isDirty = true; OnPropertyValueChanged(); } catch { }
+                    })
+                { Width = this.Width - 120, Height = 150 };
+                try { panel.IsStatic = true; } catch { }
+                _childComponents.Add(panel);
+                _propertyControls[key] = panel;
+                _currentY += panel.Height + 10;
+                return true;
+            }
+
+            // 5) Split Conditions (array of SplitCondition)
+            if (k == "conditions")
+            {
+                var header = new Label { Text = "Split Conditions:", Width = 100, Height = 25, X = 10, Y = _currentY };
+                try { header.IsStatic = true; } catch { }
+                header.Tag = "section";
+                _childComponents.Add(header);
+
+                var items = new List<Beep.Skia.Model.SplitCondition>();
+                try
+                {
+                    var raw = p.ParameterCurrentValue as string ?? p.DefaultParameterValue as string;
+                    if (!string.IsNullOrWhiteSpace(raw))
+                        items = System.Text.Json.JsonSerializer.Deserialize<List<Beep.Skia.Model.SplitCondition>>(raw) ?? new();
+                }
+                catch { }
+
+                var panel = new SimpleListEditor<Beep.Skia.Model.SplitCondition>(items,
+                    drawHeader: "Name | Expression | Order | Description",
+                    onRenderRow: (row, y, setDirty) =>
+                    {
+                        float x = 0;
+                        var tbName = new TextBox { Text = row.Name, Width = 120, Height = 24, X = x, Y = y }; x += 130;
+                        tbName.TextChanged += (s, e) => { row.Name = tbName.Text; setDirty(); };
+                        var tbExpr = new TextBox { Text = row.Expression, Width = 200, Height = 24, X = x, Y = y }; x += 210;
+                        tbExpr.TextChanged += (s, e) => { row.Expression = tbExpr.Text; setDirty(); };
+                        var tbOrder = new TextBox { Text = row.Order.ToString(), Width = 50, Height = 24, X = x, Y = y }; x += 60;
+                        tbOrder.TextChanged += (s, e) => { if (int.TryParse(tbOrder.Text, out var ord)) { row.Order = ord; setDirty(); } };
+                        var tbDesc = new TextBox { Text = row.Description, Width = 180, Height = 24, X = x, Y = y };
+                        tbDesc.TextChanged += (s, e) => { row.Description = tbDesc.Text; setDirty(); };
+                        return new SkiaComponent[] { tbName, tbExpr, tbOrder, tbDesc };
+                    },
+                    onCommit: list =>
+                    {
+                        try { p.ParameterCurrentValue = System.Text.Json.JsonSerializer.Serialize(list); _isDirty = true; OnPropertyValueChanged(); } catch { }
+                    })
+                { Width = this.Width - 120, Height = 150 };
+                try { panel.IsStatic = true; } catch { }
+                _childComponents.Add(panel);
+                _propertyControls[key] = panel;
+                _currentY += panel.Height + 10;
+                return true;
+            }
+
+            // 6) Data Quality Rules (array of DataQualityRule)
+            if (k == "dataqualityrules")
+            {
+                var header = new Label { Text = "Data Quality Rules:", Width = 100, Height = 25, X = 10, Y = _currentY };
+                try { header.IsStatic = true; } catch { }
+                header.Tag = "section";
+                _childComponents.Add(header);
+
+                var items = new List<Beep.Skia.Model.DataQualityRule>();
+                try
+                {
+                    var raw = p.ParameterCurrentValue as string ?? p.DefaultParameterValue as string;
+                    if (!string.IsNullOrWhiteSpace(raw))
+                        items = System.Text.Json.JsonSerializer.Deserialize<List<Beep.Skia.Model.DataQualityRule>>(raw) ?? new();
+                }
+                catch { }
+
+                var panel = new SimpleListEditor<Beep.Skia.Model.DataQualityRule>(items,
+                    drawHeader: "Name | Column | Type | Expression | Error Message",
+                    onRenderRow: (row, y, setDirty) =>
+                    {
+                        float x = 0;
+                        var tbName = new TextBox { Text = row.Name, Width = 100, Height = 24, X = x, Y = y }; x += 110;
+                        tbName.TextChanged += (s, e) => { row.Name = tbName.Text; setDirty(); };
+                        var tbColumn = new TextBox { Text = row.ColumnName, Width = 100, Height = 24, X = x, Y = y }; x += 110;
+                        tbColumn.TextChanged += (s, e) => { row.ColumnName = tbColumn.Text; setDirty(); };
+                        var tbType = new TextBox { Text = row.Type.ToString(), Width = 80, Height = 24, X = x, Y = y }; x += 90;
+                        tbType.TextChanged += (s, e) => { if (Enum.TryParse<Beep.Skia.Model.RuleType>(tbType.Text, true, out var rt)) { row.Type = rt; setDirty(); } };
+                        var tbExpr = new TextBox { Text = row.Expression, Width = 140, Height = 24, X = x, Y = y }; x += 150;
+                        tbExpr.TextChanged += (s, e) => { row.Expression = tbExpr.Text; setDirty(); };
+                        var tbErr = new TextBox { Text = row.ErrorMessage, Width = 140, Height = 24, X = x, Y = y };
+                        tbErr.TextChanged += (s, e) => { row.ErrorMessage = tbErr.Text; setDirty(); };
+                        return new SkiaComponent[] { tbName, tbColumn, tbType, tbExpr, tbErr };
+                    },
+                    onCommit: list =>
+                    {
+                        try { p.ParameterCurrentValue = System.Text.Json.JsonSerializer.Serialize(list); _isDirty = true; OnPropertyValueChanged(); } catch { }
+                    })
+                { Width = this.Width - 120, Height = 180 };
+                try { panel.IsStatic = true; } catch { }
+                _childComponents.Add(panel);
+                _propertyControls[key] = panel;
+                _currentY += panel.Height + 10;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// A very lightweight grid-like component rendering rows of ColumnDefinition with inline editing using TextBoxes and Dropdowns.
+        /// </summary>
+    private class SkiaComponentGrid : SkiaComponent
+        {
+            private readonly List<Beep.Skia.Model.ColumnDefinition> _columns;
+            private readonly Action<List<Beep.Skia.Model.ColumnDefinition>> _onChanged;
+            private readonly List<string> _typeChoices;
+
+            public SkiaComponentGrid(List<Beep.Skia.Model.ColumnDefinition> columns, Action<List<Beep.Skia.Model.ColumnDefinition>> onChanged, IEnumerable<string> extraTypeChoices = null)
+            {
+                ShowInPalette = false;
+                _columns = columns ?? new List<Beep.Skia.Model.ColumnDefinition>();
+                _onChanged = onChanged;
+                var baseTypes = new[] { "string", "int", "long", "float", "double", "decimal", "bool", "datetime", "date", "time", "guid", "binary", "json" };
+                _typeChoices = new List<string>(baseTypes);
+                if (extraTypeChoices != null)
+                {
+                    foreach (var t in extraTypeChoices)
+                    {
+                        if (!string.IsNullOrWhiteSpace(t) && !_typeChoices.Contains(t, StringComparer.OrdinalIgnoreCase))
+                            _typeChoices.Add(t);
+                    }
+                }
+                BuildChildren();
+            }
+
+            private void BuildChildren()
+            {
+                Children.Clear();
+                ChildNodes.Clear();
+                float rowY = Y;
+                float rowH = 28;
+
+                // Header row
+                var hdr = new Label { Text = "Name | Type | PK | FK | Null", Height = rowH, Width = Width };
+                try { hdr.IsStatic = true; } catch { }
+                Children.Add(hdr);
+                rowY += rowH + 4;
+
+                // Rows
+                for (int i = 0; i < _columns.Count; i++)
+                {
+                    var col = _columns[i];
+                    float x = 0;
+
+                    var nameTb = new TextBox { Text = col.Name, Width = 140, Height = 24, X = x, Y = rowY };
+                    try { nameTb.IsStatic = true; } catch { }
+                    nameTb.TextChanged += (s, e) => { col.Name = nameTb.Text; _onChanged?.Invoke(_columns); };
+                    Children.Add(nameTb); x += 150;
+
+                    // DataType dropdown with common choices + merged extras and "+ Custom…"
+                    var typeDd = new Dropdown { Width = 110, Height = 24, X = x, Y = rowY };
+                    try { typeDd.IsStatic = true; } catch { }
+                    foreach (var t in _typeChoices)
+                        typeDd.Items.Add(new Dropdown.DropdownItem(t, t));
+                    // Allow existing custom type to be preserved/selectable
+                    if (!string.IsNullOrWhiteSpace(col.DataType) && !_typeChoices.Contains(col.DataType, StringComparer.OrdinalIgnoreCase))
+                        typeDd.Items.Add(new Dropdown.DropdownItem(col.DataType, col.DataType));
+                    // Append + Custom… sentinel
+                    typeDd.Items.Add(new Dropdown.DropdownItem("+ Custom…", "__custom__"));
+                    typeDd.SelectedValue = col.DataType;
+                    typeDd.SelectedItemChanged += (s, item) =>
+                    {
+                        if (item?.Value == "__custom__")
+                        {
+                            // Inline textbox to enter custom type
+                            var customTb = new TextBox { Text = string.IsNullOrWhiteSpace(col.DataType) ? string.Empty : col.DataType, Width = 110, Height = 24, X = x, Y = rowY };
+                            try { customTb.IsStatic = true; } catch { }
+                            customTb.LostFocus += (s2, e2) => { col.DataType = customTb.Text?.Trim() ?? string.Empty; BuildChildren(); _onChanged?.Invoke(_columns); };
+                            Children.Add(customTb);
+                        }
+                        else
+                        {
+                            col.DataType = item?.Value ?? string.Empty; _onChanged?.Invoke(_columns);
+                        }
+                    };
+                    Children.Add(typeDd); x += 120;
+
+                    var pkCb = new Checkbox { IsChecked = col.IsPrimaryKey, Width = 24, Height = 24, X = x, Y = rowY };
+                    try { pkCb.IsStatic = true; } catch { }
+                    pkCb.CheckStateChanged += (s, e) => { col.IsPrimaryKey = pkCb.IsChecked; _onChanged?.Invoke(_columns); };
+                    Children.Add(pkCb); x += 40;
+
+                    var fkCb = new Checkbox { IsChecked = col.IsForeignKey, Width = 24, Height = 24, X = x, Y = rowY };
+                    try { fkCb.IsStatic = true; } catch { }
+                    fkCb.CheckStateChanged += (s, e) => { col.IsForeignKey = fkCb.IsChecked; _onChanged?.Invoke(_columns); };
+                    Children.Add(fkCb); x += 40;
+
+                    var nullCb = new Checkbox { IsChecked = col.IsNullable, Width = 24, Height = 24, X = x, Y = rowY };
+                    try { nullCb.IsStatic = true; } catch { }
+                    nullCb.CheckStateChanged += (s, e) => { col.IsNullable = nullCb.IsChecked; _onChanged?.Invoke(_columns); };
+                    Children.Add(nullCb); x += 40;
+
+                    // Remove button
+                    var removeBtn = new Button { Text = "Delete", Width = 70, Height = 24, X = x, Y = rowY };
+                    try { removeBtn.IsStatic = true; } catch { }
+                    int idx = i;
+                    removeBtn.Clicked += (s, e) => { if (idx >= 0 && idx < _columns.Count) { _columns.RemoveAt(idx); BuildChildren(); _onChanged?.Invoke(_columns); } };
+                    Children.Add(removeBtn);
+
+                    rowY += rowH + 4;
+                }
+
+                // Add button
+                var addBtn = new Button { Text = "+ Add Column", Width = 120, Height = 26, X = 0, Y = rowY };
+                try { addBtn.IsStatic = true; } catch { }
+                addBtn.Clicked += (s, e) =>
+                {
+                    _columns.Add(new Beep.Skia.Model.ColumnDefinition { Name = "NewColumn", DataType = "string" });
+                    BuildChildren();
+                    _onChanged?.Invoke(_columns);
+                };
+                Children.Add(addBtn);
+            }
+
+            protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+            {
+                // Background box
+                using var bg = new SKPaint { Color = new SKColor(245, 245, 245), Style = SKPaintStyle.Fill, IsAntialias = true };
+                canvas.DrawRect(new SKRect(X, Y, X + Width, Y + Height), bg);
+
+                // Let children render; Update positions relative to this container
+                foreach (var child in Children)
+                {
+                    // Ensure child is placed relative to panel origin
+                    child.X = this.X + child.X; // absolute placement retained by consumers
+                    child.Y = this.Y + child.Y;
+                    child.Draw(canvas, context);
+                    // Reset to logical positions to avoid drift on next layout
+                    child.X -= this.X;
+                    child.Y -= this.Y;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Lightweight list editor panel for simple arrays of objects. Renders rows using callbacks.
+        /// </summary>
+        private class SimpleListEditor<T> : SkiaComponent
+        {
+            private readonly List<T> _items;
+            private readonly string _header;
+            private readonly Func<T, float, Action, IEnumerable<SkiaComponent>> _renderRow;
+            private readonly Action<List<T>> _commit;
+
+            public SimpleListEditor(List<T> items, string drawHeader, Func<T, float, Action, IEnumerable<SkiaComponent>> onRenderRow, Action<List<T>> onCommit)
+            {
+                ShowInPalette = false;
+                _items = items ?? new List<T>();
+                _header = drawHeader ?? string.Empty;
+                _renderRow = onRenderRow;
+                _commit = onCommit;
+                Build();
+            }
+
+            private void Build()
+            {
+                Children.Clear();
+                float y = 0f;
+                var hdr = new Label { Text = _header, Height = 24, Width = this.Width };
+                try { hdr.IsStatic = true; } catch { }
+                Children.Add(hdr);
+                y += 28f;
+
+                for (int i = 0; i < _items.Count; i++)
+                {
+                    var item = _items[i];
+                    void SetDirty()
+                    {
+                        try { _commit?.Invoke(_items); } catch { }
+                    }
+                    var rowControls = _renderRow(item, y, SetDirty) ?? Array.Empty<SkiaComponent>();
+                    foreach (var c in rowControls) { try { c.IsStatic = true; } catch { } Children.Add(c); }
+                    // Delete button
+                    var del = new Button { Text = "Delete", Width = 70, Height = 24, X = this.Width - 80, Y = y };
+                    try { del.IsStatic = true; } catch { }
+                    int idx = i;
+                    del.Clicked += (s, e) => { if (idx >= 0 && idx < _items.Count) { _items.RemoveAt(idx); Build(); try { _commit?.Invoke(_items); } catch { } } };
+                    Children.Add(del);
+                    y += 28f;
+                }
+
+                var add = new Button { Text = "+ Add", Width = 80, Height = 26, X = 0, Y = y };
+                try { add.IsStatic = true; } catch { }
+                add.Clicked += (s, e) => { try { _items.Add(Activator.CreateInstance<T>()); Build(); _commit?.Invoke(_items); } catch { } };
+                Children.Add(add);
+            }
+
+            protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+            {
+                using var bg = new SKPaint { Color = new SKColor(245, 245, 245), Style = SKPaintStyle.Fill, IsAntialias = true };
+                canvas.DrawRect(new SKRect(X, Y, X + Width, Y + Height), bg);
+                foreach (var child in Children)
+                {
+                    child.X = this.X + child.X;
+                    child.Y = this.Y + child.Y;
+                    child.Draw(canvas, context);
+                    child.X -= this.X; child.Y -= this.Y;
                 }
             }
         }
@@ -581,6 +1112,14 @@ namespace Beep.Skia.Components
                 OnPropertyValueChanged();
             });
 
+            // Text Color (hex or R,G,B[,A])
+            AddColorProperty("Text Color", _selectedComponent.TextColor, value =>
+            {
+                _selectedComponent.TextColor = value;
+                _isDirty = true;
+                OnPropertyValueChanged();
+            });
+
             // Is Visible
             AddBooleanProperty("Visible", _selectedComponent.IsVisible, value =>
             {
@@ -610,6 +1149,13 @@ namespace Beep.Skia.Components
             if (componentType.Namespace == "Beep.Skia.ETL")
             {
                 AddETLProperties(_selectedComponent);
+                // Add special property grids for specific ETL components
+                AddETLSpecialProperties(_selectedComponent);
+            }
+            // Check for ERD components
+            else if (componentType.Namespace == "Beep.Skia.ERD")
+            {
+                AddERDProperties(_selectedComponent);
             }
             // Check for UML components
             else if (componentType.Namespace == "Beep.Skia.UML")
@@ -663,6 +1209,28 @@ namespace Beep.Skia.Components
                 var currentValue = subtitleProperty.GetValue(component) as string ?? "";
                 AddTextProperty("Subtitle", currentValue, value => subtitleProperty.SetValue(component, value));
             }
+
+            // Add an on-demand inference button when the component supports inference
+            try
+            {
+                var hasInference = component.GetType().GetMethod("InferOutputSchemaFromUpstreams", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance, binder: null, types: new[] { typeof(Func<int, string>) }, modifiers: null) != null;
+                if (hasInference)
+                {
+                    var inferBtnLabel = new Label { Text = "", Width = 100, Height = 25, X = 10, Y = _currentY };
+                    try { inferBtnLabel.IsStatic = true; } catch { }
+                    inferBtnLabel.Tag = "prop-label";
+
+                    var inferBtn = new Button { Text = "Infer Output Schema", Width = Math.Max(140, this.Width - 120), Height = 28 };
+                    try { inferBtn.IsStatic = true; } catch { }
+                    inferBtn.Tag = "prop-value";
+                    inferBtn.Clicked += (s, e) => { try { this.Manager?.InferOutputSchemaForComponent(component); } catch { } };
+
+                    _childComponents.Add(inferBtnLabel);
+                    _childComponents.Add(inferBtn);
+                    _currentY += 35;
+                }
+            }
+            catch { }
         }
 
         /// <summary>
@@ -676,6 +1244,109 @@ namespace Beep.Skia.Components
             {
                 var currentValue = stereotypeProperty.GetValue(component) as string ?? "";
                 AddTextProperty("Stereotype", currentValue, value => stereotypeProperty.SetValue(component, value));
+            }
+        }
+
+        /// <summary>
+        /// Adds special property editors for ETL components (DerivedColumns, Conditions, DataQualityRules).
+        /// </summary>
+        private void AddETLSpecialProperties(SkiaComponent component)
+        {
+            var type = component.GetType();
+
+            // ETLDerivedColumn: DerivedColumns grid
+            if (type.Name == "ETLDerivedColumn")
+            {
+                if (component.NodeProperties.TryGetValue("DerivedColumns", out var dcProp))
+                {
+                    TryAddSchemaGridEditor(component, "derivedcolumns", dcProp);
+                }
+            }
+
+            // ETLConditionalSplit: Conditions grid
+            if (type.Name == "ETLConditionalSplit")
+            {
+                if (component.NodeProperties.TryGetValue("Conditions", out var condProp))
+                {
+                    TryAddSchemaGridEditor(component, "conditions", condProp);
+                }
+            }
+
+            // ETLTarget: DataQualityRules grid
+            if (type.Name == "ETLTarget")
+            {
+                if (component.NodeProperties.TryGetValue("DataQualityRules", out var dqProp))
+                {
+                    TryAddSchemaGridEditor(component, "dataqualityrules", dqProp);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds properties for ERD components.
+        /// </summary>
+        private void AddERDProperties(SkiaComponent component)
+        {
+            var type = component.GetType();
+            
+            // ERDEntity: DDL Export button (stores DDL in LastGeneratedDDL property)
+            if (type.Name == "ERDEntity")
+            {
+                var exportLabel = new Label { Text = "", Width = 100, Height = 25, X = 10, Y = _currentY };
+                try { exportLabel.IsStatic = true; } catch { }
+                exportLabel.Tag = "prop-label";
+
+                var exportBtn = new Button { Text = "Export DDL", Width = Math.Max(140, this.Width - 120), Height = 28 };
+                try { exportBtn.IsStatic = true; } catch { }
+                exportBtn.Tag = "prop-value";
+                exportBtn.Clicked += (s, e) =>
+                {
+                    try
+                    {
+                        // Use reflection to avoid direct type dependency
+                        var exporterType = Type.GetType("Beep.Skia.ERD.DDLExporter, Beep.Skia.ERD");
+                        if (exporterType != null)
+                        {
+                            var dialectType = exporterType.GetNestedType("SQLDialect");
+                            var ansiValue = dialectType?.GetField("ANSI")?.GetValue(null);
+                            var exporter = Activator.CreateInstance(exporterType, ansiValue);
+                            var exportMethod = exporterType.GetMethod("ExportEntity");
+                            var ddl = exportMethod?.Invoke(exporter, new[] { component }) as string;
+                            
+                            // Store DDL in component's Tag for retrieval by host
+                            if (!string.IsNullOrWhiteSpace(ddl))
+                            {
+                                component.Tag = new { DDL = ddl, GeneratedAt = DateTime.UtcNow };
+                                // Host can listen to component.PropertyChanged or check Tag after button click
+                                // For now, just mark as dirty to trigger save
+                                _isDirty = true;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Store error in Tag for host to handle
+                        component.Tag = new { Error = ex.Message };
+                    }
+                };
+
+                _childComponents.Add(exportLabel);
+                _childComponents.Add(exportBtn);
+                _currentY += 35;
+            }
+            
+            // ERDRelationship: Identifying checkbox
+            if (type.Name == "ERDRelationship")
+            {
+                var identProp = type.GetProperty("Identifying");
+                if (identProp != null)
+                {
+                    AddBooleanProperty("Identifying", (bool)(identProp.GetValue(component) ?? false), value =>
+                    {
+                        identProp.SetValue(component, value);
+                        _isDirty = true;
+                    });
+                }
             }
         }
 
@@ -895,6 +1566,43 @@ namespace Beep.Skia.Components
             _childComponents.Add(textBox);
             _propertyControls[label] = textBox;
             _currentY += 35;
+        }
+
+        /// <summary>
+        /// Adds a multiline text property control (useful for JSON or row lists).
+        /// </summary>
+        private void AddMultilineTextProperty(string label, string value, Action<string> onChanged, int lines = 5)
+        {
+            var textBox = new TextBox
+            {
+                Text = value ?? "",
+                Width = this.Width - 120,
+                Height = Math.Max(25 * lines, 60),
+                IsMultiline = true
+            };
+            try { textBox.IsStatic = true; } catch { }
+
+            textBox.GotFocus += (s, e) => { _focusedTextBox = (TextBox)s; };
+            textBox.LostFocus += (s, e) => { if (ReferenceEquals(_focusedTextBox, s)) _focusedTextBox = null; };
+            textBox.TextChanged += (s, e) => onChanged?.Invoke(textBox.Text);
+
+            var labelControl = new Label
+            {
+                Text = label + ":",
+                Width = 100,
+                Height = 25,
+                X = 10,
+                Y = _currentY
+            };
+            try { labelControl.IsStatic = true; } catch { }
+            labelControl.Tag = "prop-label";
+
+            textBox.Tag = "prop-value";
+
+            _childComponents.Add(labelControl);
+            _childComponents.Add(textBox);
+            _propertyControls[label] = textBox;
+            _currentY += textBox.Height + 10;
         }
 
         /// <summary>
@@ -1141,6 +1849,24 @@ namespace Beep.Skia.Components
         /// </summary>
         private void SaveProperties()
         {
+            try
+            {
+                // Apply NodeProperties back to the selected component's public setters (generic flow)
+                if (_selectedComponent != null && _selectedComponent.NodeProperties != null && _selectedComponent.NodeProperties.Count > 0)
+                {
+                    var dict = new System.Collections.Generic.Dictionary<string, object>(System.StringComparer.OrdinalIgnoreCase);
+                    foreach (var kv in _selectedComponent.NodeProperties)
+                    {
+                        var p = kv.Value;
+                        var val = p?.ParameterCurrentValue ?? p?.DefaultParameterValue;
+                        dict[kv.Key] = val;
+                    }
+                    // applyToPublicSetters: true, updateNodeProperties: false (we're the source of truth here)
+                    _selectedComponent.SetProperties(dict, updateNodeProperties: false, applyToPublicSetters: true);
+                }
+            }
+            catch { }
+
             PropertiesSaved?.Invoke(this, new ComponentPropertiesSavedEventArgs(_selectedComponent));
             _isDirty = false;
         }

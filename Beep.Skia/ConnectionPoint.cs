@@ -103,6 +103,11 @@ namespace Beep.Skia
         /// </summary>
         public string DataType { get; set; }
 
+    /// <summary>
+    /// Optional stable identifier for a logical row/attribute this port represents (e.g., ERD row ID).
+    /// </summary>
+    public Guid? RowId { get; set; }
+
         /// <summary>
         /// Occurs when a connection is made from this connection point to another connection point.
         /// </summary>

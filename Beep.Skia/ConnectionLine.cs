@@ -1,6 +1,9 @@
 ﻿using SkiaSharp;
 using System.Timers;
 using Beep.Skia.Model;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 namespace Beep.Skia
 {
     /// <summary>
@@ -73,6 +76,11 @@ namespace Beep.Skia
         /// </summary>
         public bool IsSelected { get; set; }
 
+    /// <summary>
+    /// Indicates the line is currently hovered by the mouse (set by interaction layer).
+    /// </summary>
+    public bool IsHovered { get; set; }
+
         /// <summary>
         /// Gets or sets a value indicating whether this connection line should be animated.
         /// </summary>
@@ -134,6 +142,28 @@ namespace Beep.Skia
         /// </summary>
         public string DataTypeLabel { get; set; }
 
+    // --- Schema/row-level semantics ---
+    /// <summary>
+    /// Optional source row/column identifier when connecting ERD rows or similar row-based ports.
+    /// </summary>
+    public System.Guid? SourceRowId { get; set; }
+
+    /// <summary>
+    /// Optional target row/column identifier when connecting ERD rows or similar row-based ports.
+    /// </summary>
+    public System.Guid? TargetRowId { get; set; }
+
+    /// <summary>
+    /// Optional JSON payload for schema flowing across this line (e.g., ETL OutputSchema).
+    /// </summary>
+    public string SchemaJson { get; set; }
+
+    /// <summary>
+    /// Optional JSON payload for an expected schema used to validate the actual SchemaJson (e.g., ETLTarget.ExpectedSchema).
+    /// When provided, tooltip will show concrete differences on hover.
+    /// </summary>
+    public string ExpectedSchemaJson { get; set; }
+
     /// <summary>
     /// Size of arrowheads in pixels.
     /// </summary>
@@ -153,6 +183,11 @@ namespace Beep.Skia
     /// Data flow animation direction.
     /// </summary>
     public DataFlowDirection FlowDirection { get; set; } = DataFlowDirection.None;
+
+    /// <summary>
+    /// Animation style for data flow visualization (infographic style).
+    /// </summary>
+    public FlowAnimationStyle AnimationStyle { get; set; } = FlowAnimationStyle.Dots;
 
     public LabelPlacement Label1Placement { get; set; } = LabelPlacement.Above;
     public LabelPlacement Label2Placement { get; set; } = LabelPlacement.Above;
@@ -266,7 +301,21 @@ namespace Beep.Skia
             var lineEnd = (End != null) ? End.Position : EndPoint;
             Paint.Color = LineColor;
 
-            // Configure dash pattern if provided
+            // Determine if this is an identifying relationship (check endpoints)
+            bool isIdentifying = true; // default to solid (identifying)
+            try
+            {
+                // Check if either endpoint component has IsIdentifying NodeProperty set to false
+                var startComp = Start?.Component as SkiaComponent;
+                var endComp = End?.Component as SkiaComponent;
+                if (startComp?.NodeProperties != null && startComp.NodeProperties.TryGetValue("IsIdentifying", out var p1) && p1?.ParameterCurrentValue is bool b1)
+                    isIdentifying = b1;
+                else if (endComp?.NodeProperties != null && endComp.NodeProperties.TryGetValue("IsIdentifying", out var p2) && p2?.ParameterCurrentValue is bool b2)
+                    isIdentifying = b2;
+            }
+            catch { }
+
+            // Configure dash pattern if provided OR if non-identifying ERD relationship
             using var stroke = new SKPaint
             {
                 Color = Paint.Color,
@@ -279,6 +328,11 @@ namespace Beep.Skia
             if (DashPattern != null && DashPattern.Length >= 2)
             {
                 stroke.PathEffect = SKPathEffect.CreateDash(DashPattern, 0);
+            }
+            else if (!isIdentifying && (Start?.Component?.GetType()?.Namespace == "Beep.Skia.ERD" || End?.Component?.GetType()?.Namespace == "Beep.Skia.ERD"))
+            {
+                // Non-identifying ERD relationships: use dashed line
+                stroke.PathEffect = SKPathEffect.CreateDash(new float[] { 8, 4 }, 0);
             }
 
             switch (RoutingMode)
@@ -358,6 +412,118 @@ namespace Beep.Skia
                 DrawStatusIndicator(canvas, lineStart, lineEnd);
             }
 
+            // Schema-derived label and tooltip
+            TryDrawSchemaLabelAndTooltip(canvas, lineStart, lineEnd);
+            // Hover badge (small "i") to hint details availability
+            TryDrawInfoBadge(canvas, lineStart, lineEnd);
+
+        }
+
+        private void TryDrawSchemaLabelAndTooltip(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd)
+        {
+            if (string.IsNullOrWhiteSpace(SchemaJson)) return;
+            List<ColumnDefinition> cols = null;
+            try { cols = System.Text.Json.JsonSerializer.Deserialize<List<ColumnDefinition>>(SchemaJson); } catch { }
+            if (cols == null) return;
+
+            int n = cols.Count;
+            if (n > 0)
+            {
+                string small = $"cols: {n}";
+                var pos = GetMidLabelPosition(lineStart, lineEnd, LabelPlacement.Above, small);
+                using var paint = new SKPaint { IsAntialias = true, Color = SKColors.DimGray, Style = SKPaintStyle.Fill };
+                canvas.DrawText(small, pos.X, pos.Y, SKTextAlign.Center, _textFont, paint);
+            }
+
+            // Show tooltip when hovered
+            if (IsHovered && n > 0)
+            {
+                var lines = new List<string>(16);
+
+                // If an expected schema is available, compute concrete differences and prepend them to the tooltip
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(ExpectedSchemaJson))
+                    {
+                        var expected = System.Text.Json.JsonSerializer.Deserialize<List<ColumnDefinition>>(ExpectedSchemaJson) ?? new();
+                        var diff = Beep.Skia.Model.SchemaDiffUtil.Compute(expected, cols);
+                        if (diff.HasDifferences())
+                        {
+                            lines.Add("Schema differences:");
+                            int maxShow = 5;
+                            foreach (var m in diff.MissingColumns.Take(maxShow)) lines.Add($"- Missing: {m}");
+                            if (diff.MissingColumns.Count > maxShow) lines.Add($"  … +{diff.MissingColumns.Count - maxShow} more missing");
+                            foreach (var td in diff.TypeDifferences.Take(maxShow)) lines.Add($"- Type: {td.Name} expected {td.ExpectedType}, actual {td.ActualType}");
+                            if (diff.TypeDifferences.Count > maxShow) lines.Add($"  … +{diff.TypeDifferences.Count - maxShow} more type differences");
+                            foreach (var nd in diff.NullabilityDifferences.Take(maxShow))
+                                lines.Add($"- Nullability: {nd.Name} expected {(nd.ExpectedNullable ? "nullable" : "not nullable")}, actual {(nd.ActualNullable ? "nullable" : "not nullable")}");
+                            if (diff.NullabilityDifferences.Count > maxShow) lines.Add($"  … +{diff.NullabilityDifferences.Count - maxShow} more nullability differences");
+                            foreach (var dd in diff.DefaultDifferences.Take(maxShow))
+                                lines.Add($"- Default: {dd.Name} expected '{dd.ExpectedDefault}', actual '{dd.ActualDefault}'");
+                            if (diff.DefaultDifferences.Count > maxShow) lines.Add($"  … +{diff.DefaultDifferences.Count - maxShow} more default differences");
+                            lines.Add(" "); // spacer before listing columns
+                        }
+                    }
+                }
+                catch { }
+
+                // Append a compact columns preview: up to 8 columns (Name:Type), ellipsis if more
+                int max = Math.Min(8, n);
+                for (int i = 0; i < max; i++)
+                {
+                    var c = cols[i];
+                    var name = c?.Name ?? "";
+                    var type = c?.DataType ?? "";
+                    var flags = (c?.IsPrimaryKey == true ? " [PK]" : "") + (c?.IsForeignKey == true ? " [FK]" : "");
+                    lines.Add(string.IsNullOrWhiteSpace(type) ? name + flags : $"{name}: {type}{flags}");
+                }
+                if (n > max) lines.Add($"… +{n - max} more");
+
+                // Measure tooltip box
+                float padding = 6f;
+                float lineH = _textFont.Size + 4;
+                float width = 0f;
+                using var tp = new SKPaint { IsAntialias = true, Color = SKColors.Black, Style = SKPaintStyle.Fill };
+                foreach (var s in lines)
+                {
+                    width = Math.Max(width, _textFont.MeasureText(s));
+                }
+                float height = lineH * lines.Count + padding * 2;
+                width += padding * 2;
+                var mid = new SKPoint((lineStart.X + lineEnd.X) / 2, (lineStart.Y + lineEnd.Y) / 2);
+                var box = new SKRect(mid.X - width / 2, mid.Y - height - 24, mid.X + width / 2, mid.Y - 24);
+
+                // Draw background and border
+                using var bg = new SKPaint { IsAntialias = true, Color = SKColors.White.WithAlpha(230), Style = SKPaintStyle.Fill };
+                using var border = new SKPaint { IsAntialias = true, Color = SKColors.Gray, Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
+                canvas.DrawRoundRect(box, 6, 6, bg);
+                canvas.DrawRoundRect(box, 6, 6, border);
+
+                // Draw text lines
+                float y = box.Top + padding + _textFont.Size;
+                foreach (var s in lines)
+                {
+                    canvas.DrawText(s, box.Left + padding, y, SKTextAlign.Left, _textFont, tp);
+                    y += lineH;
+                }
+            }
+        }
+
+        private void TryDrawInfoBadge(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd)
+        {
+            // Draw a subtle info badge near midpoint if schema exists
+            if (string.IsNullOrWhiteSpace(SchemaJson)) return;
+            var mid = new SKPoint((lineStart.X + lineEnd.X) / 2, (lineStart.Y + lineEnd.Y) / 2);
+            var center = new SKPoint(mid.X + 16, mid.Y - 16);
+            float r = 7f;
+            using var fill = new SKPaint { IsAntialias = true, Color = SKColors.SkyBlue.WithAlpha(200), Style = SKPaintStyle.Fill };
+            using var stroke = new SKPaint { IsAntialias = true, Color = SKColors.DarkSlateBlue, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
+            using var txt = new SKPaint { IsAntialias = true, Color = SKColors.White, Style = SKPaintStyle.Fill };
+            canvas.DrawCircle(center, r, fill);
+            canvas.DrawCircle(center, r, stroke);
+            // Draw a tiny 'i'
+            var font = _textFont ?? new SKFont { Size = 12 };
+            canvas.DrawText("i", center.X - font.MeasureText("i") / 2, center.Y + font.Size * 0.35f, SKTextAlign.Left, font, txt);
         }
 
         /// <summary>
@@ -490,15 +656,40 @@ namespace Beep.Skia
             bool drawForward = directionMode == DataFlowDirection.Forward || directionMode == DataFlowDirection.Bidirectional;
             bool drawBackward = directionMode == DataFlowDirection.Backward || directionMode == DataFlowDirection.Bidirectional;
 
-            // Create paint for particles
-            using var particlePaint = new SKPaint
+            // Draw based on selected animation style
+            switch (AnimationStyle)
             {
-                Style = SKPaintStyle.Fill,
-                Color = DataFlowColor,
-                IsAntialias = true
-            };
+                case FlowAnimationStyle.Dots:
+                    DrawDotsAnimation(canvas, lineStart, lineEnd, direction, length, drawForward, drawBackward);
+                    break;
+                case FlowAnimationStyle.Dashes:
+                    DrawDashesAnimation(canvas, lineStart, lineEnd, direction, length, drawForward, drawBackward);
+                    break;
+                case FlowAnimationStyle.Wave:
+                    DrawWaveAnimation(canvas, lineStart, lineEnd, direction, length, drawForward, drawBackward);
+                    break;
+                case FlowAnimationStyle.Gradient:
+                    DrawGradientAnimation(canvas, lineStart, lineEnd, direction, length, drawForward, drawBackward);
+                    break;
+                case FlowAnimationStyle.Particles:
+                    DrawParticlesAnimation(canvas, lineStart, lineEnd, direction, length, drawForward, drawBackward);
+                    break;
+                case FlowAnimationStyle.Pulse:
+                    DrawPulseAnimation(canvas, lineStart, lineEnd, direction, length, drawForward, drawBackward);
+                    break;
+                case FlowAnimationStyle.Arrows:
+                    DrawArrowsAnimation(canvas, lineStart, lineEnd, direction, length, drawForward, drawBackward);
+                    break;
+                default:
+                    DrawDotsAnimation(canvas, lineStart, lineEnd, direction, length, drawForward, drawBackward);
+                    break;
+            }
+        }
 
-            // Draw multiple particles along the line
+        private void DrawDotsAnimation(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd, SKPoint direction, float length, bool drawForward, bool drawBackward)
+        {
+            using var particlePaint = new SKPaint { Style = SKPaintStyle.Fill, Color = DataFlowColor, IsAntialias = true };
+
             void drawAlong(SKPoint s, SKPoint e, bool reverse)
             {
                 var dir = reverse ? new SKPoint(-direction.X, -direction.Y) : direction;
@@ -507,18 +698,206 @@ namespace Beep.Skia
                 {
                     if (currentOffset >= 0)
                     {
-                        var particlePos = new SKPoint(
-                            s.X + dir.X * currentOffset,
-                            s.Y + dir.Y * currentOffset
-                        );
+                        var particlePos = new SKPoint(s.X + dir.X * currentOffset, s.Y + dir.Y * currentOffset);
                         canvas.DrawCircle(particlePos, DataFlowParticleSize, particlePaint);
-                        using var glowPaint = new SKPaint
-                        {
-                            Style = SKPaintStyle.Fill,
-                            Color = DataFlowColor.WithAlpha(100),
-                            IsAntialias = true
-                        };
+                        using var glowPaint = new SKPaint { Style = SKPaintStyle.Fill, Color = DataFlowColor.WithAlpha(100), IsAntialias = true };
                         canvas.DrawCircle(particlePos, DataFlowParticleSize * 2, glowPaint);
+                    }
+                    currentOffset += dataFlowSpacing;
+                }
+            }
+
+            if (drawForward) drawAlong(lineStart, lineEnd, reverse: false);
+            if (drawBackward) drawAlong(lineEnd, lineStart, reverse: true);
+        }
+
+        private void DrawDashesAnimation(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd, SKPoint direction, float length, bool drawForward, bool drawBackward)
+        {
+            using var dashPaint = new SKPaint { Style = SKPaintStyle.Stroke, Color = DataFlowColor, IsAntialias = true, StrokeWidth = 3, StrokeCap = SKStrokeCap.Round };
+
+            void drawAlong(SKPoint s, SKPoint e, bool reverse)
+            {
+                var dir = reverse ? new SKPoint(-direction.X, -direction.Y) : direction;
+                float currentOffset = -dataFlowOffset;
+                float dashLength = 15f;
+                while (currentOffset < length)
+                {
+                    if (currentOffset >= 0 && currentOffset + dashLength <= length)
+                    {
+                        var dashStart = new SKPoint(s.X + dir.X * currentOffset, s.Y + dir.Y * currentOffset);
+                        var dashEnd = new SKPoint(s.X + dir.X * (currentOffset + dashLength), s.Y + dir.Y * (currentOffset + dashLength));
+                        canvas.DrawLine(dashStart, dashEnd, dashPaint);
+                    }
+                    currentOffset += dataFlowSpacing;
+                }
+            }
+
+            if (drawForward) drawAlong(lineStart, lineEnd, reverse: false);
+            if (drawBackward) drawAlong(lineEnd, lineStart, reverse: true);
+        }
+
+        private void DrawWaveAnimation(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd, SKPoint direction, float length, bool drawForward, bool drawBackward)
+        {
+            using var wavePaint = new SKPaint { Style = SKPaintStyle.Stroke, Color = DataFlowColor, IsAntialias = true, StrokeWidth = 2 };
+
+            void drawAlong(SKPoint s, SKPoint e, bool reverse)
+            {
+                var dir = reverse ? new SKPoint(-direction.X, -direction.Y) : direction;
+                var perpDir = new SKPoint(-dir.Y, dir.X); // Perpendicular for wave
+                float currentOffset = -dataFlowOffset;
+                float waveAmplitude = 6f;
+                float waveFrequency = 20f;
+
+                while (currentOffset < length)
+                {
+                    if (currentOffset >= 0 && currentOffset + waveFrequency <= length)
+                    {
+                        using var path = new SKPath();
+                        bool first = true;
+                        for (float t = 0; t <= waveFrequency; t += 2f)
+                        {
+                            float offset = currentOffset + t;
+                            float wave = waveAmplitude * (float)Math.Sin((offset / waveFrequency) * Math.PI * 2);
+                            var pos = new SKPoint(
+                                s.X + dir.X * offset + perpDir.X * wave,
+                                s.Y + dir.Y * offset + perpDir.Y * wave
+                            );
+                            if (first) { path.MoveTo(pos); first = false; } else { path.LineTo(pos); }
+                        }
+                        canvas.DrawPath(path, wavePaint);
+                    }
+                    currentOffset += dataFlowSpacing * 2;
+                }
+            }
+
+            if (drawForward) drawAlong(lineStart, lineEnd, reverse: false);
+            if (drawBackward) drawAlong(lineEnd, lineStart, reverse: true);
+        }
+
+        private void DrawGradientAnimation(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd, SKPoint direction, float length, bool drawForward, bool drawBackward)
+        {
+            void drawAlong(SKPoint s, SKPoint e, bool reverse)
+            {
+                var dir = reverse ? new SKPoint(-direction.X, -direction.Y) : direction;
+                float gradientLength = 40f;
+                float currentOffset = -dataFlowOffset;
+
+                while (currentOffset < length)
+                {
+                    if (currentOffset >= 0 && currentOffset + gradientLength <= length)
+                    {
+                        var gradStart = new SKPoint(s.X + dir.X * currentOffset, s.Y + dir.Y * currentOffset);
+                        var gradEnd = new SKPoint(s.X + dir.X * (currentOffset + gradientLength), s.Y + dir.Y * (currentOffset + gradientLength));
+                        
+                        using var shader = SKShader.CreateLinearGradient(
+                            gradStart, gradEnd,
+                            new[] { SKColors.Transparent, DataFlowColor, SKColors.Transparent },
+                            new[] { 0f, 0.5f, 1f },
+                            SKShaderTileMode.Clamp
+                        );
+                        using var gradPaint = new SKPaint { Style = SKPaintStyle.Stroke, Shader = shader, IsAntialias = true, StrokeWidth = 4, StrokeCap = SKStrokeCap.Round };
+                        canvas.DrawLine(gradStart, gradEnd, gradPaint);
+                    }
+                    currentOffset += dataFlowSpacing * 2;
+                }
+            }
+
+            if (drawForward) drawAlong(lineStart, lineEnd, reverse: false);
+            if (drawBackward) drawAlong(lineEnd, lineStart, reverse: true);
+        }
+
+        private void DrawParticlesAnimation(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd, SKPoint direction, float length, bool drawForward, bool drawBackward)
+        {
+            using var particlePaint = new SKPaint { Style = SKPaintStyle.Fill, Color = DataFlowColor, IsAntialias = true };
+
+            void drawAlong(SKPoint s, SKPoint e, bool reverse)
+            {
+                var dir = reverse ? new SKPoint(-direction.X, -direction.Y) : direction;
+                float currentOffset = -dataFlowOffset;
+                var random = new Random((int)dataFlowOffset);
+
+                while (currentOffset < length)
+                {
+                    if (currentOffset >= 0)
+                    {
+                        // Main particle
+                        var particlePos = new SKPoint(s.X + dir.X * currentOffset, s.Y + dir.Y * currentOffset);
+                        canvas.DrawCircle(particlePos, DataFlowParticleSize, particlePaint);
+
+                        // Trail particles
+                        for (int i = 1; i <= 3; i++)
+                        {
+                            float trailOffset = currentOffset - (i * 5);
+                            if (trailOffset >= 0)
+                            {
+                                var trailPos = new SKPoint(s.X + dir.X * trailOffset, s.Y + dir.Y * trailOffset);
+                                byte alpha = (byte)(255 - (i * 70));
+                                using var trailPaint = new SKPaint { Style = SKPaintStyle.Fill, Color = DataFlowColor.WithAlpha(alpha), IsAntialias = true };
+                                canvas.DrawCircle(trailPos, DataFlowParticleSize * (1 - i * 0.2f), trailPaint);
+                            }
+                        }
+                    }
+                    currentOffset += dataFlowSpacing;
+                }
+            }
+
+            if (drawForward) drawAlong(lineStart, lineEnd, reverse: false);
+            if (drawBackward) drawAlong(lineEnd, lineStart, reverse: true);
+        }
+
+        private void DrawPulseAnimation(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd, SKPoint direction, float length, bool drawForward, bool drawBackward)
+        {
+            void drawAlong(SKPoint s, SKPoint e, bool reverse)
+            {
+                var dir = reverse ? new SKPoint(-direction.X, -direction.Y) : direction;
+                float currentOffset = -dataFlowOffset;
+
+                while (currentOffset < length)
+                {
+                    if (currentOffset >= 0)
+                    {
+                        var pulseCenter = new SKPoint(s.X + dir.X * currentOffset, s.Y + dir.Y * currentOffset);
+                        
+                        // Draw expanding rings
+                        for (int ring = 0; ring < 3; ring++)
+                        {
+                            float ringRadius = DataFlowParticleSize * (1 + ring * 1.5f);
+                            byte alpha = (byte)(200 - ring * 60);
+                            using var pulsePaint = new SKPaint { Style = SKPaintStyle.Stroke, Color = DataFlowColor.WithAlpha(alpha), IsAntialias = true, StrokeWidth = 2 };
+                            canvas.DrawCircle(pulseCenter, ringRadius, pulsePaint);
+                        }
+                    }
+                    currentOffset += dataFlowSpacing * 2;
+                }
+            }
+
+            if (drawForward) drawAlong(lineStart, lineEnd, reverse: false);
+            if (drawBackward) drawAlong(lineEnd, lineStart, reverse: true);
+        }
+
+        private void DrawArrowsAnimation(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd, SKPoint direction, float length, bool drawForward, bool drawBackward)
+        {
+            using var arrowPaint = new SKPaint { Style = SKPaintStyle.Fill, Color = DataFlowColor, IsAntialias = true };
+
+            void drawAlong(SKPoint s, SKPoint e, bool reverse)
+            {
+                var dir = reverse ? new SKPoint(-direction.X, -direction.Y) : direction;
+                float currentOffset = -dataFlowOffset;
+                float arrowSize = DataFlowParticleSize * 2;
+
+                while (currentOffset < length)
+                {
+                    if (currentOffset >= 0)
+                    {
+                        var arrowPos = new SKPoint(s.X + dir.X * currentOffset, s.Y + dir.Y * currentOffset);
+                        
+                        using var path = new SKPath();
+                        // Arrow pointing in movement direction
+                        path.MoveTo(arrowPos.X + dir.X * arrowSize, arrowPos.Y + dir.Y * arrowSize);
+                        path.LineTo(arrowPos.X - dir.Y * arrowSize * 0.5f, arrowPos.Y + dir.X * arrowSize * 0.5f);
+                        path.LineTo(arrowPos.X + dir.Y * arrowSize * 0.5f, arrowPos.Y - dir.X * arrowSize * 0.5f);
+                        path.Close();
+                        canvas.DrawPath(path, arrowPaint);
                     }
                     currentOffset += dataFlowSpacing;
                 }

@@ -21,6 +21,15 @@ namespace Beep.Skia.ERD
             Name = "ERD Relationship";
             DisplayText = string.Empty;
             EnsurePortCounts(1, 1);
+            // Seed NodeProperties for IsIdentifying
+            NodeProperties["IsIdentifying"] = new Beep.Skia.Model.ParameterInfo
+            {
+                ParameterName = "IsIdentifying",
+                ParameterType = typeof(bool),
+                DefaultParameterValue = false,
+                ParameterCurrentValue = false,
+                Description = "Whether this is an identifying relationship (child PK includes parent PK)"
+            };
         }
 
         protected override void LayoutPorts()

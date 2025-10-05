@@ -22,6 +22,10 @@ namespace Beep.Skia.ERD
         {
             public Guid Id { get; set; }
             public string Text { get; set; } = string.Empty;
+            public string DataType { get; set; } = "string";
+            public bool IsPrimaryKey { get; set; }
+            public bool IsForeignKey { get; set; }
+            public bool IsNullable { get; set; } = true;
         }
 
         private string _entityName = "Entity";
@@ -58,7 +62,7 @@ namespace Beep.Skia.ERD
         }
 
         // Multiline or comma-separated rows; parsed into _rows for rendering/persistence
-        private string _rowsText = "Id\nName";
+    private string _rowsText = "Id\nName";
         public string RowsText
         {
             get => _rowsText;
@@ -94,8 +98,8 @@ namespace Beep.Skia.ERD
         // Stable rows with IDs to keep CPs attached across reorders
         private readonly List<RowEntry> _rowEntries = new List<RowEntry>
         {
-            new RowEntry { Id = Guid.NewGuid(), Text = "Id" },
-            new RowEntry { Id = Guid.NewGuid(), Text = "Name" }
+            new RowEntry { Id = Guid.NewGuid(), Text = "Id", DataType = "int", IsPrimaryKey = true, IsNullable = false },
+            new RowEntry { Id = Guid.NewGuid(), Text = "Name", DataType = "string", IsNullable = false }
         };
 
         public IReadOnlyList<string> Rows => _rowEntries.Select(r => r.Text).ToList();
@@ -155,6 +159,23 @@ namespace Beep.Skia.ERD
                 ParameterCurrentValue = _entityName,
                 Description = "Entity name/title"
             };
+            // Enterprise: optional database schema and comment/description
+            NodeProperties["Schema"] = new Beep.Skia.Model.ParameterInfo
+            {
+                ParameterName = "Schema",
+                ParameterType = typeof(string),
+                DefaultParameterValue = string.Empty,
+                ParameterCurrentValue = string.Empty,
+                Description = "Database schema name (e.g., dbo)"
+            };
+            NodeProperties["Comment"] = new Beep.Skia.Model.ParameterInfo
+            {
+                ParameterName = "Comment",
+                ParameterType = typeof(string),
+                DefaultParameterValue = string.Empty,
+                ParameterCurrentValue = string.Empty,
+                Description = "Entity/table comment"
+            };
             NodeProperties["RowsText"] = new Beep.Skia.Model.ParameterInfo
             {
                 ParameterName = "RowsText",
@@ -166,6 +187,40 @@ namespace Beep.Skia.ERD
             // initialize CPs for default rows
             SyncConnectionPointsWithRows();
             AdjustHeightToRows();
+
+            // Seed a structured Columns NodeProperty for advanced editors (JSON serialized)
+            try
+            {
+                var columnsJson = System.Text.Json.JsonSerializer.Serialize(ToColumns());
+                NodeProperties["Columns"] = new ParameterInfo
+                {
+                    ParameterName = "Columns",
+                    ParameterType = typeof(string),
+                    DefaultParameterValue = columnsJson,
+                    ParameterCurrentValue = columnsJson,
+                    Description = "Structured column list (JSON array of ColumnDefinition)"
+                };
+                // Enterprise: seed Indexes and ForeignKeys NodeProperties as JSON arrays
+                var emptyIndexes = System.Text.Json.JsonSerializer.Serialize(new System.Collections.Generic.List<Beep.Skia.Model.IndexDefinition>());
+                NodeProperties["Indexes"] = new ParameterInfo
+                {
+                    ParameterName = "Indexes",
+                    ParameterType = typeof(string),
+                    DefaultParameterValue = emptyIndexes,
+                    ParameterCurrentValue = emptyIndexes,
+                    Description = "Indexes (JSON array of IndexDefinition)"
+                };
+                var emptyFks = System.Text.Json.JsonSerializer.Serialize(new System.Collections.Generic.List<Beep.Skia.Model.ForeignKeyDefinition>());
+                NodeProperties["ForeignKeys"] = new ParameterInfo
+                {
+                    ParameterName = "ForeignKeys",
+                    ParameterType = typeof(string),
+                    DefaultParameterValue = emptyFks,
+                    ParameterCurrentValue = emptyFks,
+                    Description = "Foreign keys (JSON array of ForeignKeyDefinition)"
+                };
+            }
+            catch { }
         }
 
         private void ParseRows()
@@ -186,6 +241,8 @@ namespace Beep.Skia.ERD
             ReconcileRows(texts);
             AdjustHeightToRows();
             SyncConnectionPointsWithRows();
+            // keep Columns JSON in sync with simple rows
+            TrySyncColumnsFromRows();
         }
 
         private void ReconcileRows(List<string> newTexts)
@@ -224,6 +281,8 @@ namespace Beep.Skia.ERD
 
             _rowEntries.Clear();
             _rowEntries.AddRange(nextEntries);
+            // sync Columns JSON when structure changes
+            TrySyncColumnsFromRows();
         }
 
         private void SyncConnectionPointsWithRows()
@@ -234,12 +293,14 @@ namespace Beep.Skia.ERD
                 if (!_rowToInCp.ContainsKey(entry.Id))
                 {
                     var cp = new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius };
+                    cp.RowId = entry.Id;
                     _rowToInCp[entry.Id] = cp;
                     InConnectionPoints.Add(cp);
                 }
                 if (!_rowToOutCp.ContainsKey(entry.Id))
                 {
                     var cp = new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius };
+                    cp.RowId = entry.Id;
                     _rowToOutCp[entry.Id] = cp;
                     OutConnectionPoints.Add(cp);
                 }
@@ -354,7 +415,10 @@ namespace Beep.Skia.ERD
                 var a = e.Text;
                 if (string.IsNullOrEmpty(a)) continue;
                 var tx = rect.Left + 10;
-                canvas.DrawText(a, tx, y, SKTextAlign.Left, font, textPaint);
+                // prefix PK/FK markers
+                string prefix = e.IsPrimaryKey ? "🔑 " : (e.IsForeignKey ? "🔗 " : string.Empty);
+                string rowText = string.IsNullOrEmpty(e.DataType) ? a : $"{a}: {e.DataType}";
+                canvas.DrawText(prefix + rowText, tx, y, SKTextAlign.Left, font, textPaint);
                 y += RowHeight;
                 if (y > rect.Bottom - 8) break;
             }
@@ -367,5 +431,190 @@ namespace Beep.Skia.ERD
         public new int InPortCount { get => base.InPortCount; set => base.InPortCount = value; }
         [Browsable(false)]
         public new int OutPortCount { get => base.OutPortCount; set => base.OutPortCount = value; }
+
+        // --- Columns <-> Rows synchronization helpers ---
+        private System.Collections.Generic.List<Beep.Skia.Model.ColumnDefinition> ToColumns()
+        {
+            var list = new System.Collections.Generic.List<Beep.Skia.Model.ColumnDefinition>(_rowEntries.Count);
+            foreach (var r in _rowEntries)
+            {
+                list.Add(new Beep.Skia.Model.ColumnDefinition
+                {
+                    Id = r.Id,
+                    Name = r.Text ?? string.Empty,
+                    DataType = r.DataType ?? "string",
+                    IsPrimaryKey = r.IsPrimaryKey,
+                    IsForeignKey = r.IsForeignKey,
+                    IsNullable = r.IsNullable,
+                    Description = string.Empty
+                });
+            }
+            return list;
+        }
+
+        private void TrySyncColumnsFromRows()
+        {
+            try
+            {
+                if (NodeProperties != null && NodeProperties.TryGetValue("Columns", out var p) && p != null)
+                {
+                    p.ParameterCurrentValue = System.Text.Json.JsonSerializer.Serialize(ToColumns());
+                }
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// Public JSON property exposing columns in a structured form for enterprise editors.
+        /// On set, updates the internal rows and connection points.
+        /// </summary>
+        [Browsable(true)]
+        public string Columns
+        {
+            get
+            {
+                try { return System.Text.Json.JsonSerializer.Serialize(ToColumns()); } catch { return "[]"; }
+            }
+            set
+            {
+                try
+                {
+                    var newCols = System.Text.Json.JsonSerializer.Deserialize<List<Beep.Skia.Model.ColumnDefinition>>(value ?? "[]") ?? new();
+                    // Build lookup by Id when present, else by Name
+                    var byId = new Dictionary<Guid, Beep.Skia.Model.ColumnDefinition>();
+                    foreach (var c in newCols)
+                    {
+                        if (c.Id != Guid.Empty && !byId.ContainsKey(c.Id)) byId[c.Id] = c;
+                    }
+                    var next = new List<RowEntry>(newCols.Count);
+                    foreach (var c in newCols)
+                    {
+                        RowEntry? e = null;
+                        if (c.Id != Guid.Empty)
+                        {
+                            var existing = _rowEntries.FirstOrDefault(r => r.Id == c.Id);
+                            if (existing != null) e = existing;
+                        }
+                        if (e == null && !string.IsNullOrWhiteSpace(c.Name))
+                        {
+                            e = _rowEntries.FirstOrDefault(r => string.Equals(r.Text, c.Name, StringComparison.OrdinalIgnoreCase));
+                        }
+                        if (e == null)
+                        {
+                            e = new RowEntry { Id = c.Id != Guid.Empty ? c.Id : Guid.NewGuid() };
+                        }
+                        e.Text = c.Name ?? string.Empty;
+                        e.DataType = c.DataType ?? (e.DataType ?? "string");
+                        e.IsPrimaryKey = c.IsPrimaryKey;
+                        e.IsForeignKey = c.IsForeignKey;
+                        e.IsNullable = c.IsNullable;
+                        next.Add(e);
+                    }
+
+                    // Remove CPs for rows that no longer exist
+                    var removedIds = _rowEntries.Select(r => r.Id).Except(next.Select(r => r.Id)).ToList();
+                    foreach (var rid in removedIds)
+                    {
+                        if (_rowToInCp.TryGetValue(rid, out var inCp)) InConnectionPoints.Remove(inCp);
+                        if (_rowToOutCp.TryGetValue(rid, out var outCp)) OutConnectionPoints.Remove(outCp);
+                        _rowToInCp.Remove(rid);
+                        _rowToOutCp.Remove(rid);
+                    }
+
+                    _rowEntries.Clear();
+                    _rowEntries.AddRange(next);
+
+                    // Keep NodeProperties[Columns] in sync
+                    try
+                    {
+                        var json = System.Text.Json.JsonSerializer.Serialize(ToColumns());
+                        if (NodeProperties.ContainsKey("Columns"))
+                        {
+                            NodeProperties["Columns"].ParameterCurrentValue = json;
+                        }
+                        else
+                        {
+                            NodeProperties["Columns"] = new ParameterInfo { ParameterName = "Columns", ParameterType = typeof(string), DefaultParameterValue = json, ParameterCurrentValue = json };
+                        }
+                    }
+                    catch { }
+
+                    SyncConnectionPointsWithRows();
+                    AdjustHeightToRows();
+                    InvalidateVisual();
+                }
+                catch { }
+            }
+        }
+
+        /// <summary>
+        /// Public JSON property exposing table indexes. Mirrors NodeProperties["Indexes"].
+        /// </summary>
+        [Browsable(true)]
+        public string Indexes
+        {
+            get
+            {
+                try
+                {
+                    if (NodeProperties != null && NodeProperties.TryGetValue("Indexes", out var p) && p != null)
+                    {
+                        return p.ParameterCurrentValue as string ?? p.DefaultParameterValue as string ?? "[]";
+                    }
+                }
+                catch { }
+                return "[]";
+            }
+            set
+            {
+                try
+                {
+                    if (NodeProperties != null)
+                    {
+                        if (!NodeProperties.ContainsKey("Indexes"))
+                        {
+                            NodeProperties["Indexes"] = new ParameterInfo { ParameterName = "Indexes", ParameterType = typeof(string) };
+                        }
+                        NodeProperties["Indexes"].ParameterCurrentValue = value ?? "[]";
+                    }
+                }
+                catch { }
+            }
+        }
+
+        /// <summary>
+        /// Public JSON property exposing foreign keys. Mirrors NodeProperties["ForeignKeys"].
+        /// </summary>
+        [Browsable(true)]
+        public string ForeignKeys
+        {
+            get
+            {
+                try
+                {
+                    if (NodeProperties != null && NodeProperties.TryGetValue("ForeignKeys", out var p) && p != null)
+                    {
+                        return p.ParameterCurrentValue as string ?? p.DefaultParameterValue as string ?? "[]";
+                    }
+                }
+                catch { }
+                return "[]";
+            }
+            set
+            {
+                try
+                {
+                    if (NodeProperties != null)
+                    {
+                        if (!NodeProperties.ContainsKey("ForeignKeys"))
+                        {
+                            NodeProperties["ForeignKeys"] = new ParameterInfo { ParameterName = "ForeignKeys", ParameterType = typeof(string) };
+                        }
+                        NodeProperties["ForeignKeys"].ParameterCurrentValue = value ?? "[]";
+                    }
+                }
+                catch { }
+            }
+        }
     }
 }

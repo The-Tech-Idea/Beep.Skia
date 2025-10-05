@@ -73,5 +73,9 @@ namespace Beep.Skia.Serialization
         // ERD multiplicity markers
         public int StartMultiplicity { get; set; } // Beep.Skia.Model.ERDMultiplicity
         public int EndMultiplicity { get; set; }   // Beep.Skia.Model.ERDMultiplicity
+
+        // Schema persistence
+        public string SchemaJson { get; set; }
+        public string ExpectedSchemaJson { get; set; }
     }
 }

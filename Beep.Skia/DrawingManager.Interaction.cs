@@ -9,9 +9,10 @@ namespace Beep.Skia
         /// </summary>
         /// <param name="point">The point where the mouse down occurred.</param>
         /// <param name="modifiers">Keyboard modifiers (Ctrl, Shift, Alt).</param>
-        public void HandleMouseDown(SKPoint point, SKKeyModifiers modifiers = SKKeyModifiers.None)
+        /// <param name="mouseButton">Mouse button pressed (0=left, 1=right, 2=middle).</param>
+        public void HandleMouseDown(SKPoint point, SKKeyModifiers modifiers = SKKeyModifiers.None, int mouseButton = 0)
         {
-            _interactionHelper.HandleMouseDown(point, modifiers);
+            _interactionHelper.HandleMouseDown(point, modifiers, mouseButton);
             DrawSurface?.Invoke(this, null);
         }
 
@@ -20,9 +21,10 @@ namespace Beep.Skia
         /// </summary>
         /// <param name="point">The point where the mouse up occurred.</param>
         /// <param name="modifiers">Keyboard modifiers (Ctrl, Shift, Alt).</param>
-        public void HandleMouseUp(SKPoint point, SKKeyModifiers modifiers = SKKeyModifiers.None)
+        /// <param name="mouseButton">Mouse button released (0=left, 1=right, 2=middle).</param>
+        public void HandleMouseUp(SKPoint point, SKKeyModifiers modifiers = SKKeyModifiers.None, int mouseButton = 0)
         {
-            _interactionHelper.HandleMouseUp(point, modifiers);
+            _interactionHelper.HandleMouseUp(point, modifiers, mouseButton);
             DrawSurface?.Invoke(this, null);
         }
 

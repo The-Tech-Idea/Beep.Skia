@@ -21,6 +21,9 @@ namespace Beep.Skia
         private SKPoint _selectionStart;
         private SKRect _selectionRect;
         private IConnectionPoint _sourcePoint;
+    // Hover tracking
+    private IConnectionLine _hoveredLine;
+    private SkiaComponent _hoveredComponent;
     // resizing state
     private bool _isResizing;
     private string _resizeHandle;
@@ -28,6 +31,14 @@ namespace Beep.Skia
     private SKPoint _mouseDownCanvas;
     // Component that has consumed the current mouse interaction (child components can handle their own drag)
     private SkiaComponent _componentHandlingMouse;
+
+    // Double-click detection
+    private DateTime _lastClickTime = DateTime.MinValue;
+    private SKPoint _lastClickPosition;
+    private SkiaComponent _lastClickedComponent;
+    private IConnectionLine _lastClickedLine;
+    private const double DoubleClickThresholdMs = 500; // 500ms for double-click
+    private const float DoubleClickDistanceThreshold = 5f; // 5 pixels tolerance
 
         /// <summary>
         /// Gets a value indicating whether a component is being dragged.
@@ -88,7 +99,8 @@ namespace Beep.Skia
         /// </summary>
         /// <param name="point">The point where the mouse down occurred.</param>
         /// <param name="modifiers">Keyboard modifiers.</param>
-        public void HandleMouseDown(SKPoint point, SKKeyModifiers modifiers = SKKeyModifiers.None)
+        /// <param name="mouseButton">Mouse button pressed (0=left, 1=right, 2=middle).</param>
+        public void HandleMouseDown(SKPoint point, SKKeyModifiers modifiers = SKKeyModifiers.None, int mouseButton = 0)
         {
             // Convert screen point to canvas point (world space)
             var canvasPoint = ScreenToCanvas(point);
@@ -224,7 +236,8 @@ namespace Beep.Skia
         /// </summary>
         /// <param name="point">The point where the mouse up occurred.</param>
         /// <param name="modifiers">Keyboard modifiers.</param>
-        public void HandleMouseUp(SKPoint point, SKKeyModifiers modifiers = SKKeyModifiers.None)
+        /// <param name="mouseButton">Mouse button released (0=left, 1=right, 2=middle).</param>
+        public void HandleMouseUp(SKPoint point, SKKeyModifiers modifiers = SKKeyModifiers.None, int mouseButton = 0)
         {
             var canvasPoint = ScreenToCanvas(point);
 
@@ -236,6 +249,9 @@ namespace Beep.Skia
                 _componentHandlingMouse = null;
                 return;
             }
+
+            // Track whether this was a simple click (not a drag)
+            bool wasSimpleClick = !_isDragging && !_isDraggingLine && !_isResizing && !_isDrawingLine && !_isSelecting;
 
             if (_isDraggingLine && _draggingLine != null)
             {
@@ -354,6 +370,135 @@ namespace Beep.Skia
                 // Select components within selection rectangle
                 _drawingManager.SelectionManager.SelectComponentsInRect(_selectionRect, _drawingManager.Components, modifiers.HasFlag(SKKeyModifiers.Control));
             }
+
+            // ========== Click/DoubleClick/RightClick Detection ==========
+            // Only fire click events for simple clicks (not drags/draws/selections)
+            if (wasSimpleClick)
+            {
+                var now = DateTime.Now;
+                var timeSinceLastClick = (now - _lastClickTime).TotalMilliseconds;
+                var distanceFromLastClick = Distance(canvasPoint, _lastClickPosition);
+                bool isDoubleClick = timeSinceLastClick < DoubleClickThresholdMs && distanceFromLastClick < DoubleClickDistanceThreshold;
+
+                // Check what was clicked
+                var clickedComponent = GetComponentAt(canvasPoint);
+                var clickedLine = GetLineAt(canvasPoint);
+                
+                if (clickedComponent != null)
+                {
+                    // Component was clicked
+                    var args = new ComponentInteractionEventArgs(
+                        clickedComponent,
+                        canvasPoint,
+                        point,
+                        mouseButton,
+                        modifiers,
+                        isDoubleClick ? InteractionType.DoubleClick : InteractionType.Click
+                    );
+
+                    if (mouseButton == 1) // Right-click
+                    {
+                        var rightClickArgs = new ComponentInteractionEventArgs(
+                            clickedComponent, canvasPoint, point, mouseButton, modifiers, InteractionType.RightClick);
+                        _drawingManager.RaiseComponentRightClicked(rightClickArgs);
+                    }
+                    else if (isDoubleClick && _lastClickedComponent == clickedComponent)
+                    {
+                        _drawingManager.RaiseComponentDoubleClicked(args);
+                        // Reset double-click tracker
+                        _lastClickTime = DateTime.MinValue;
+                        _lastClickedComponent = null;
+                    }
+                    else
+                    {
+                        _drawingManager.RaiseComponentClicked(args);
+                        // Track for potential double-click
+                        _lastClickTime = now;
+                        _lastClickPosition = canvasPoint;
+                        _lastClickedComponent = clickedComponent;
+                        _lastClickedLine = null;
+                    }
+                }
+                else if (clickedLine != null)
+                {
+                    // Line was clicked
+                    var args = new LineInteractionEventArgs(
+                        clickedLine,
+                        canvasPoint,
+                        point,
+                        mouseButton,
+                        modifiers,
+                        isDoubleClick ? InteractionType.DoubleClick : InteractionType.Click,
+                        false // isArrowClick - could enhance to detect arrow clicks
+                    );
+
+                    if (mouseButton == 1) // Right-click
+                    {
+                        var rightClickArgs = new LineInteractionEventArgs(
+                            clickedLine, canvasPoint, point, mouseButton, modifiers, InteractionType.RightClick, false);
+                        _drawingManager.RaiseLineRightClicked(rightClickArgs);
+                    }
+                    else if (isDoubleClick && _lastClickedLine == clickedLine)
+                    {
+                        _drawingManager.RaiseLineDoubleClicked(args);
+                        // Reset double-click tracker
+                        _lastClickTime = DateTime.MinValue;
+                        _lastClickedLine = null;
+                    }
+                    else
+                    {
+                        _drawingManager.RaiseLineClicked(args);
+                        // Track for potential double-click
+                        _lastClickTime = now;
+                        _lastClickPosition = canvasPoint;
+                        _lastClickedLine = clickedLine;
+                        _lastClickedComponent = null;
+                    }
+                }
+                else
+                {
+                    // Empty canvas was clicked
+                    var args = new DiagramInteractionEventArgs(
+                        canvasPoint,
+                        point,
+                        mouseButton,
+                        modifiers,
+                        isDoubleClick ? InteractionType.DoubleClick : InteractionType.Click
+                    );
+
+                    if (mouseButton == 1) // Right-click
+                    {
+                        var rightClickArgs = new DiagramInteractionEventArgs(
+                            canvasPoint, point, mouseButton, modifiers, InteractionType.RightClick);
+                        _drawingManager.RaiseDiagramRightClicked(rightClickArgs);
+                    }
+                    else if (isDoubleClick)
+                    {
+                        _drawingManager.RaiseDiagramDoubleClicked(args);
+                        // Reset double-click tracker
+                        _lastClickTime = DateTime.MinValue;
+                    }
+                    else
+                    {
+                        _drawingManager.RaiseDiagramClicked(args);
+                        // Track for potential double-click
+                        _lastClickTime = now;
+                        _lastClickPosition = canvasPoint;
+                        _lastClickedComponent = null;
+                        _lastClickedLine = null;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calculates distance between two points.
+        /// </summary>
+        private float Distance(SKPoint a, SKPoint b)
+        {
+            var dx = a.X - b.X;
+            var dy = a.Y - b.Y;
+            return (float)Math.Sqrt(dx * dx + dy * dy);
         }
 
         /// <summary>
@@ -459,6 +604,104 @@ namespace Beep.Skia
                     Math.Max(_selectionStart.X, canvasPoint.X),
                     Math.Max(_selectionStart.Y, canvasPoint.Y)
                 );
+            }
+
+            // Update hovered line state (when not dragging drawing/resizing)
+            if (!_isDragging && !_isDraggingLine && !_isResizing && !_isDrawingLine)
+            {
+                // Track line hover changes
+                var newHoveredLine = GetLineAt(canvasPoint);
+                if (!ReferenceEquals(newHoveredLine, _hoveredLine))
+                {
+                    // Line hover leave
+                    if (_hoveredLine != null)
+                    {
+                        try 
+                        { 
+                            _hoveredLine.IsHovered = false;
+                            var leaveArgs = new LineInteractionEventArgs(
+                                _hoveredLine,
+                                canvasPoint,
+                                point,
+                                0,
+                                modifiers,
+                                InteractionType.HoverLeave
+                            );
+                            _drawingManager.RaiseLineHoverChanged(leaveArgs);
+                        } 
+                        catch { }
+                    }
+                    
+                    _hoveredLine = newHoveredLine;
+                    
+                    // Line hover enter
+                    if (_hoveredLine != null)
+                    {
+                        try 
+                        { 
+                            _hoveredLine.IsHovered = true;
+                            var enterArgs = new LineInteractionEventArgs(
+                                _hoveredLine,
+                                canvasPoint,
+                                point,
+                                0,
+                                modifiers,
+                                InteractionType.HoverEnter
+                            );
+                            _drawingManager.RaiseLineHoverChanged(enterArgs);
+                        } 
+                        catch { }
+                    }
+                    
+                    // Request redraw to reflect hover change
+                    try { _drawingManager.RequestRedraw(); } catch { }
+                }
+
+                // Track component hover changes (if no line is hovered)
+                if (_hoveredLine == null)
+                {
+                    var newHoveredComponent = GetComponentAt(canvasPoint);
+                    if (!ReferenceEquals(newHoveredComponent, _hoveredComponent))
+                    {
+                        // Component hover leave
+                        if (_hoveredComponent != null)
+                        {
+                            try
+                            {
+                                var leaveArgs = new ComponentInteractionEventArgs(
+                                    _hoveredComponent,
+                                    canvasPoint,
+                                    point,
+                                    0,
+                                    modifiers,
+                                    InteractionType.HoverLeave
+                                );
+                                _drawingManager.RaiseComponentHoverChanged(leaveArgs);
+                            }
+                            catch { }
+                        }
+
+                        _hoveredComponent = newHoveredComponent;
+
+                        // Component hover enter
+                        if (_hoveredComponent != null)
+                        {
+                            try
+                            {
+                                var enterArgs = new ComponentInteractionEventArgs(
+                                    _hoveredComponent,
+                                    canvasPoint,
+                                    point,
+                                    0,
+                                    modifiers,
+                                    InteractionType.HoverEnter
+                                );
+                                _drawingManager.RaiseComponentHoverChanged(enterArgs);
+                            }
+                            catch { }
+                        }
+                    }
+                }
             }
         }
 

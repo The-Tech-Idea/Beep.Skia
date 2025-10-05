@@ -17,6 +17,29 @@ namespace Beep.Skia.ETL
         private string _subtitle = string.Empty;
     public string Subtitle { get => _subtitle; set { if (_subtitle == value) return; _subtitle = value ?? string.Empty; if (NodeProperties.TryGetValue("Subtitle", out var pi)) pi.ParameterCurrentValue = _subtitle; InvalidateVisual(); } }
 
+        private bool _hasErrorOutput = false;
+        public bool HasErrorOutput
+        {
+            get => _hasErrorOutput;
+            set
+            {
+                if (_hasErrorOutput == value) return;
+                _hasErrorOutput = value;
+                if (NodeProperties.TryGetValue("HasErrorOutput", out var pi))
+                    pi.ParameterCurrentValue = _hasErrorOutput;
+                else
+                    NodeProperties["HasErrorOutput"] = new ParameterInfo
+                    {
+                        ParameterName = "HasErrorOutput",
+                        ParameterType = typeof(bool),
+                        DefaultParameterValue = _hasErrorOutput,
+                        ParameterCurrentValue = _hasErrorOutput,
+                        Description = "Enable error output port for rejected rows"
+                    };
+                InvalidateVisual();
+            }
+        }
+
         // Adopt Material Design tokens for consistent theming
         private SKColor _background = MaterialColors.Surface;
     public SKColor Background { get => _background; set { if (_background == value) return; _background = value; if (NodeProperties.TryGetValue("Background", out var pi)) pi.ParameterCurrentValue = _background; InvalidateVisual(); } }

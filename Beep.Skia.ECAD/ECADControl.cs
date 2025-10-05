@@ -1,6 +1,7 @@
 using SkiaSharp;
 using Beep.Skia;
 using Beep.Skia.Model;
+using Beep.Skia.Components;
 using System;
 
 namespace Beep.Skia.ECAD
@@ -89,6 +90,20 @@ namespace Beep.Skia.ECAD
                 cp.Position = cp.Center;
                 cp.Bounds = new SKRect(cx - PortRadius, cy - PortRadius, cx + PortRadius, cy + PortRadius);
                 cp.Rect = cp.Bounds; cp.Index = i; cp.Component = this; cp.IsAvailable = true;
+            }
+        }
+
+        protected void DrawPorts(SKCanvas canvas)
+        {
+            using var inFill = new SKPaint { Color = MaterialColors.SecondaryContainer, Style = SKPaintStyle.Fill, IsAntialias = true };
+            using var outFill = new SKPaint { Color = MaterialColors.Primary, Style = SKPaintStyle.Fill, IsAntialias = true };
+            foreach (var p in InConnectionPoints)
+            {
+                canvas.DrawCircle(p.Center, PortRadius, inFill);
+            }
+            foreach (var p in OutConnectionPoints)
+            {
+                canvas.DrawCircle(p.Center, PortRadius, outFill);
             }
         }
 

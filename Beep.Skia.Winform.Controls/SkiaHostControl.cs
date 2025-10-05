@@ -74,6 +74,8 @@ namespace Beep.Skia.Winform.Controls
                     else if (sm.SelectedComponents != null && sm.SelectedComponents.Count == 1)
                     {
                         _propertyEditor.SelectedComponent = sm.SelectedComponents[0];
+                        // Check if DDL was generated (ERD entity export)
+                        CheckForDDLExport(sm.SelectedComponents[0]);
                     }
                     else
                     {
@@ -252,7 +254,8 @@ namespace Beep.Skia.Winform.Controls
                         X = Math.Max(8, this.Width - 340),
                         Y = 40,
                         Width = 330,
-                        Height = Math.Max(200, this.Height - 80)
+                        Height = Math.Max(200, this.Height - 80),
+                        Manager = _drawingManager
                     };
                     // Keep it aligned to the right on resize
                     this.SizeChanged += (s2, e2) =>
@@ -742,6 +745,46 @@ namespace Beep.Skia.Winform.Controls
             return false;
         }
 
+        /// <summary>
+        /// Checks if DDL export was triggered for an ERD entity and shows a dialog with the result.
+        /// </summary>
+        private void CheckForDDLExport(Beep.Skia.SkiaComponent component)
+        {
+            try
+            {
+                if (component?.Tag is { } tag)
+                {
+                    var tagType = tag.GetType();
+                    var ddlProp = tagType.GetProperty("DDL");
+                    var errorProp = tagType.GetProperty("Error");
+                    
+                    if (ddlProp != null)
+                    {
+                        var ddl = ddlProp.GetValue(tag) as string;
+                        if (!string.IsNullOrWhiteSpace(ddl))
+                        {
+                            // Show dialog with DDL and copy to clipboard
+                            Clipboard.SetText(ddl);
+                            MessageBox.Show("DDL copied to clipboard!", "Export DDL", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            // Clear Tag after showing
+                            component.Tag = null;
+                        }
+                    }
+                    else if (errorProp != null)
+                    {
+                        var error = errorProp.GetValue(tag) as string;
+                        if (!string.IsNullOrWhiteSpace(error))
+                        {
+                            MessageBox.Show($"Export failed: {error}", "Export DDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            // Clear Tag after showing
+                            component.Tag = null;
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
+
         private void InitializeSkiaSurface()
         {
             _skControl = new SKControl { Dock = DockStyle.Fill };
@@ -770,8 +813,16 @@ namespace Beep.Skia.Winform.Controls
         {
             var pt = new SKPoint(e.X, e.Y);
             try { _skControl.Focus(); } catch { }
+            // Convert WinForms button to int (0=left, 1=right, 2=middle)
+            int mouseButton = e.Button switch
+            {
+                MouseButtons.Left => 0,
+                MouseButtons.Right => 1,
+                MouseButtons.Middle => 2,
+                _ => 0
+            };
             // Route all input to the DrawingManager
-            _drawingManager.HandleMouseDown(pt, GetModifiers());
+            _drawingManager.HandleMouseDown(pt, GetModifiers(), mouseButton);
 
             if (!AllowComponentDragging || e.Button != MouseButtons.Left)
                 return;
@@ -832,7 +883,15 @@ namespace Beep.Skia.Winform.Controls
         private void SkControl_MouseUp(object sender, MouseEventArgs e)
         {
             var pt = new SKPoint(e.X, e.Y);
-            _drawingManager.HandleMouseUp(pt, GetModifiers());
+            // Convert WinForms button to int (0=left, 1=right, 2=middle)
+            int mouseButton = e.Button switch
+            {
+                MouseButtons.Left => 0,
+                MouseButtons.Right => 1,
+                MouseButtons.Middle => 2,
+                _ => 0
+            };
+            _drawingManager.HandleMouseUp(pt, GetModifiers(), mouseButton);
 
             if (e.Button == MouseButtons.Left && _isDraggingComponent)
             {

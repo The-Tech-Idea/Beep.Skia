@@ -14,6 +14,64 @@ namespace Beep.Skia.Flowchart
         protected const float PortRadius = 4f;
         protected const float CornerRadius = 8f;
 
+        private SKColor? _customFillColor = null;
+        private SKColor? _customStrokeColor = null;
+        private SKColor? _customTextColor = null;
+
+        /// <summary>
+        /// Optional custom fill color (overrides default node color). Set to null to use default.
+        /// </summary>
+        public SKColor? CustomFillColor
+        {
+            get => _customFillColor;
+            set
+            {
+                if (_customFillColor != value)
+                {
+                    _customFillColor = value;
+                    if (NodeProperties.TryGetValue("CustomFillColor", out var pi))
+                        pi.ParameterCurrentValue = value?.ToString() ?? "";
+                    InvalidateVisual();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Optional custom stroke color (overrides default border color). Set to null to use default.
+        /// </summary>
+        public SKColor? CustomStrokeColor
+        {
+            get => _customStrokeColor;
+            set
+            {
+                if (_customStrokeColor != value)
+                {
+                    _customStrokeColor = value;
+                    if (NodeProperties.TryGetValue("CustomStrokeColor", out var pi))
+                        pi.ParameterCurrentValue = value?.ToString() ?? "";
+                    InvalidateVisual();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Optional custom text color (overrides default text color). Set to null to use default.
+        /// </summary>
+        public SKColor? CustomTextColor
+        {
+            get => _customTextColor;
+            set
+            {
+                if (_customTextColor != value)
+                {
+                    _customTextColor = value;
+                    if (NodeProperties.TryGetValue("CustomTextColor", out var pi))
+                        pi.ParameterCurrentValue = value?.ToString() ?? "";
+                    InvalidateVisual();
+                }
+            }
+        }
+
         protected FlowchartControl()
         {
             Width = Math.Max(120, Width);
@@ -38,6 +96,30 @@ namespace Beep.Skia.Flowchart
                 DefaultParameterValue = OutPortCount,
                 ParameterCurrentValue = OutPortCount,
                 Description = "Number of output ports (right side)."
+            };
+            NodeProperties["CustomFillColor"] = new ParameterInfo
+            {
+                ParameterName = "CustomFillColor",
+                ParameterType = typeof(string),
+                DefaultParameterValue = "",
+                ParameterCurrentValue = "",
+                Description = "Custom fill color (hex format: #RRGGBB or #AARRGGBB). Leave empty for default."
+            };
+            NodeProperties["CustomStrokeColor"] = new ParameterInfo
+            {
+                ParameterName = "CustomStrokeColor",
+                ParameterType = typeof(string),
+                DefaultParameterValue = "",
+                ParameterCurrentValue = "",
+                Description = "Custom border color (hex format). Leave empty for default."
+            };
+            NodeProperties["CustomTextColor"] = new ParameterInfo
+            {
+                ParameterName = "CustomTextColor",
+                ParameterType = typeof(string),
+                DefaultParameterValue = "",
+                ParameterCurrentValue = "",
+                Description = "Custom text color (hex format). Leave empty for default."
             };
         }
 
