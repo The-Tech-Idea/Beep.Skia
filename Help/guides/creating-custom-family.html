@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creating Custom Diagram Families | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="creating-custom-family.html">Guides</a><span>&rsaquo;</span> <span>Creating Custom Diagram Families</span></nav>
+<div class="page-header"><h1>Creating Custom Diagram Families</h1><p class="page-subtitle">Step-by-step guide to building your own domain-specific diagram family</p></div>
+
+<p>Beep.Skia ships with 18 built-in diagram families covering business processes, data modeling, engineering, and analytics. When your domain requires visual representations not covered by the built-in families, you can create a custom diagram family that plugs directly into the Skia rendering pipeline, the component palette, and the serialization system.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#step-1">Step 1: Create the Project</a></li>
+    <li><a href="#step-2">Step 2: Create the Base Control</a></li>
+    <li><a href="#step-3">Step 3: Create Node Classes</a></li>
+    <li><a href="#step-4">Step 4: Register with SkiaComponentRegistry</a></li>
+    <li><a href="#step-5">Step 5: Add to ComponentPalette</a></li>
+    <li><a href="#complete-example">Complete Example: P&amp;ID Diagram Family</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p>Every diagram family in Beep.Skia follows the same architectural pattern:</p>
+
+  <div class="inheritance-diagram">
+    <div class="inheritance-level">
+      <div class="inheritance-card interface">IDrawableComponent</div>
+      <div class="inheritance-arrow">&darr;</div>
+    </div>
+    <div class="inheritance-level">
+      <div class="inheritance-card abstract">SkiaComponent</div>
+      <div class="inheritance-subtitle">Position, size, NodeProperties, ConnectionPoints</div>
+      <div class="inheritance-arrow">&darr;</div>
+    </div>
+    <div class="inheritance-level">
+      <div class="inheritance-card abstract">MaterialControl</div>
+      <div class="inheritance-subtitle">Material Design 3.0 theming, elevation, state layers</div>
+      <div class="inheritance-arrow">&darr;</div>
+    </div>
+    <div class="inheritance-level">
+      <div class="inheritance-card abstract" style="border-color:#e07b00;background:#fff4e5;">FamilyBaseControl</div>
+      <div class="inheritance-subtitle">Your custom base class &mdash; shared rendering, ports, behavior</div>
+      <div class="inheritance-arrow">&darr;</div>
+    </div>
+    <div class="inheritance-level">
+      <div class="inheritance-card">Concrete Node Classes</div>
+      <div class="inheritance-subtitle">ValveNode, PumpNode, TankNode, PipeNode, etc.</div>
+    </div>
+  </div>
+
+  <p>Each family lives in its own <code>.csproj</code> project, typically named <code>Beep.Skia.Chart.&lt;FamilyName&gt;</code>. This isolation allows families to be loaded independently via the AssemblyHandler plugin system, keeping application startup lean and enabling NuGet distribution.</p>
+
+  <table>
+    <thead>
+      <tr><th>Layer</th><th>Responsibility</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Project</strong></td><td>Class library targeting <code>net8.0;net9.0</code>, references <code>Beep.Skia</code></td><td><code>Beep.Skia.Chart.PnID.csproj</code></td></tr>
+      <tr><td><strong>Base Control</strong></td><td>Inherits <code>MaterialControl</code>, overrides template methods, manages ports</td><td><code>PnIDNodeBase</code></td></tr>
+      <tr><td><strong>Concrete Nodes</strong></td><td>Inherit from base control, implement <code>DrawContent()</code>, define connection points</td><td><code>ValveNode</code>, <code>PumpNode</code></td></tr>
+      <tr><td><strong>Registry</strong></td><td>Mark with <code>[AddinAttribute]</code> for discovery, register in <code>SkiaComponentRegistry</code></td><td><code>[Addin("PnID", "1.0")]</code></td></tr>
+      <tr><td><strong>Palette</strong></td><td>Category entry in <code>ComponentPalette</code> for toolbox visibility</td><td><code>Piping &amp; Instrumentation</code> category</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="step-1">
+  <h2>Step 1: Create the Project</h2>
+  <p>Create a new class library project that targets .NET 8.0 and .NET 9.0, and add a reference to the <code>Beep.Skia</code> package:</p>
+
+  <div class="code-example">
+    <h3>Project File: Beep.Skia.Chart.PnID.csproj</h3>
+    <pre><code class="language-xml">&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+
+  &lt;PropertyGroup&gt;
+    &lt;TargetFrameworks&gt;net8.0;net9.0&lt;/TargetFrameworks&gt;
+    &lt;RootNamespace&gt;Beep.Skia.Chart.PnID&lt;/RootNamespace&gt;
+    &lt;AssemblyName&gt;Beep.Skia.Chart.PnID&lt;/AssemblyName&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+  &lt;/PropertyGroup&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;PackageReference Include="Beep.Skia" Version="3.119.0" /&gt;
+    &lt;PackageReference Include="SkiaSharp" Version="2.88.*" /&gt;
+  &lt;/ItemGroup&gt;
+
+&lt;/Project&gt;</code></pre>
+  </div>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Tip</p>
+    <p>Use the naming convention <code>Beep.Skia.Chart.&lt;FamilyName&gt;</code> for your project. This aligns with the existing 18 families and ensures the AssemblyHandler can resolve type names predictably.</p>
+  </div>
+
+  <p>Create the project directory structure:</p>
+
+  <div class="code-example">
+    <h3>Recommended Directory Layout</h3>
+    <pre><code class="language-text">Beep.Skia.Chart.PnID/
+&#x251C;&#x2500;&#x2500; Beep.Skia.Chart.PnID.csproj
+&#x251C;&#x2500;&#x2500; Nodes/
+&#x2502;   &#x251C;&#x2500;&#x2500; PnIDNodeBase.cs
+&#x2502;   &#x251C;&#x2500;&#x2500; ValveNode.cs
+&#x2502;   &#x251C;&#x2500;&#x2500; PumpNode.cs
+&#x2502;   &#x251C;&#x2500;&#x2500; TankNode.cs
+&#x2502;   &#x2514;&#x2500;&#x2500; PipeNode.cs
+&#x251C;&#x2500;&#x2500; Connections/
+&#x2502;   &#x2514;&#x2500;&#x2500; PnIDConnectionLine.cs  (optional custom connection)
+&#x2514;&#x2500;&#x2500; Palette/
+    &#x2514;&#x2500;&#x2500; PnIDPaletteProvider.cs</code></pre>
+  </div>
+</section>
+
+<section class="section" id="step-2">
+  <h2>Step 2: Create the Base Control</h2>
+  <p>The base control is the heart of your diagram family. It inherits from <code>MaterialControl</code> and provides shared rendering, port management, and property defaults for all concrete nodes in the family.</p>
+
+  <p>Your base class should override these key template methods:</p>
+
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Purpose</th><th>Override?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>DrawContent(SKCanvas)</code></td><td>Core visual rendering of the node</td><td>Usually in concrete classes, shared logic here</td></tr>
+      <tr><td><code>DrawBackgroundContent(SKCanvas)</code></td><td>Background fill, shadow, border before foreground</td><td>Yes &mdash; family-specific shape</td></tr>
+      <tr><td><code>DrawForegroundContent(SKCanvas)</code></td><td>Text labels, icons, overlays after background</td><td>Yes &mdash; family-specific text/icons</td></tr>
+      <tr><td><code>DrawSelectionContent(SKCanvas)</code></td><td>Selection highlight and resize handles</td><td>Optional &mdash; falls back to default</td></tr>
+      <tr><td><code>EnsurePortLayout()</code></td><td>Recompute port positions</td><td>Yes &mdash; define where ports appear</td></tr>
+      <tr><td><code>Initialize()</code></td><td>Set up paints, NodeProperties, default size</td><td>Yes &mdash; call <code>base.Initialize()</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Base Control: PnIDNodeBase.cs</h3>
+    <pre><code class="language-csharp">using Beep.Skia;
+using SkiaSharp;
+
+namespace Beep.Skia.Chart.PnID.Nodes;
+
+public abstract class PnIDNodeBase : MaterialControl
+{
+    protected SKPaint FillPaint { get; set; }
+    protected SKPaint StrokePaint { get; set; }
+    protected SKPaint TextPaint { get; set; }
+    protected string NodeLabel { get; set; } = "";
+
+    protected override void Initialize()
+    {
+        base.Initialize();
+
+        Width = 80f;
+        Height = 80f;
+
+        FillPaint = new SKPaint
+        {
+            Style = SKPaintStyle.Fill,
+            IsAntialias = true,
+            Color = SurfaceColor
+        };
+
+        StrokePaint = new SKPaint
+        {
+            Style = SKPaintStyle.Stroke,
+            IsAntialias = true,
+            StrokeWidth = 2f,
+            Color = OutlineColor
+        };
+
+        TextPaint = new SKPaint
+        {
+            IsAntialias = true,
+            TextSize = 11f,
+            TextAlign = SKTextAlign.Center,
+            Color = OnSurfaceColor
+        };
+
+        NodeProperties["Label"] = new ParameterInfo
+        {
+            Name = "Label",
+            DisplayName = "Label",
+            Value = "",
+            DataType = typeof(string),
+            Category = "Content",
+            EditorHint = "TextBox"
+        };
+
+        NodeProperties["EquipmentTag"] = new ParameterInfo
+        {
+            Name = "EquipmentTag",
+            DisplayName = "Equipment Tag",
+            Value = "V-001",
+            DataType = typeof(string),
+            Category = "Engineering",
+            EditorHint = "TextBox"
+        };
+    }
+
+    protected override void EnsurePortLayout()
+    {
+        if (!PortsDirty) return;
+
+        InPoints.Clear();
+        OutPoints.Clear();
+
+        float cx = X + Width / 2;
+        float cy = Y + Height / 2;
+
+        // Input ports: left and top
+        InPoints.Add(new ConnectionPoint
+        {
+            Type = PortType.In,
+            Position = new SKPoint(X, cy),
+            DataType = typeof(object),
+            Owner = this
+        });
+
+        InPoints.Add(new ConnectionPoint
+        {
+            Type = PortType.In,
+            Position = new SKPoint(cx, Y),
+            DataType = typeof(object),
+            Owner = this
+        });
+
+        // Output ports: right and bottom
+        OutPoints.Add(new ConnectionPoint
+        {
+            Type = PortType.Out,
+            Position = new SKPoint(X + Width, cy),
+            DataType = typeof(object),
+            Owner = this
+        });
+
+        OutPoints.Add(new ConnectionPoint
+        {
+            Type = PortType.Out,
+            Position = new SKPoint(cx, Y + Height),
+            DataType = typeof(object),
+            Owner = this
+        });
+
+        MarkPortsClean();
+    }
+
+    protected override void DrawBackgroundContent(SKCanvas canvas)
+    {
+        var rect = new SKRect(X, Y, X + Width, Y + Height);
+        canvas.DrawRoundRect(rect, 4f, 4f, FillPaint);
+        canvas.DrawRoundRect(rect, 4f, 4f, StrokePaint);
+    }
+
+    protected override void DrawForegroundContent(SKCanvas canvas)
+    {
+        if (string.IsNullOrEmpty(NodeLabel)) return;
+
+        float textY = Y + Height / 2 + TextPaint.TextSize / 3;
+        canvas.DrawText(NodeLabel, X + Width / 2, textY, TextPaint);
+    }
+
+    public override void Dispose()
+    {
+        FillPaint?.Dispose();
+        StrokePaint?.Dispose();
+        TextPaint?.Dispose();
+        base.Dispose();
+    }
+}</code></pre>
+  </div>
+
+  <div class="admonition note">
+    <p class="admonition-title">Port Management Best Practice</p>
+    <p>Always guard <code>EnsurePortLayout()</code> with a <code>PortsDirty</code> check and call <code>MarkPortsClean()</code> after recomputing positions. Override <code>MarkPortsDirty()</code> to set your dirty flag and call <code>base.MarkPortsDirty()</code>. This lazy-evaluation pattern avoids recomputing port geometry on every frame during drag operations.</p>
+  </div>
+</section>
+
+<section class="section" id="step-3">
+  <h2>Step 3: Create Node Classes</h2>
+  <p>Concrete node classes inherit from your base control and implement the family-specific visual representation and <code>DrawContent()</code> method. Each node type should define its own default size, visual shape, and port layout.</p>
+
+  <div class="code-example">
+    <h3>Concrete Node: ValveNode.cs</h3>
+    <pre><code class="language-csharp">using SkiaSharp;
+
+namespace Beep.Skia.Chart.PnID.Nodes;
+
+public class ValveNode : PnIDNodeBase
+{
+    public ValveNode() : base()
+    {
+        NodeLabel = "Valve";
+        Width = 60f;
+        Height = 80f;
+    }
+
+    public override void DrawContent(SKCanvas canvas)
+    {
+        DrawBackgroundContent(canvas);
+
+        // Draw valve-specific shape: bowtie
+        float cx = X + Width / 2;
+        float cy = Y + Height / 2;
+        float hw = Width / 2;
+        float hh = Height / 2;
+
+        using var path = new SKPath();
+        path.MoveTo(cx, Y);           // top center
+        path.LineTo(X + Width, cy);   // right center
+        path.LineTo(cx, Y + Height);  // bottom center
+        path.LineTo(X, cy);           // left center
+        path.Close();
+
+        canvas.DrawPath(path, FillPaint);
+        canvas.DrawPath(path, StrokePaint);
+
+        DrawForegroundContent(canvas);
+    }
+}</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Concrete Node: PumpNode.cs</h3>
+    <pre><code class="language-csharp">using SkiaSharp;
+
+namespace Beep.Skia.Chart.PnID.Nodes;
+
+public class PumpNode : PnIDNodeBase
+{
+    public PumpNode() : base()
+    {
+        NodeLabel = "Pump";
+        Width = 70f;
+        Height = 70f;
+    }
+
+    public override void DrawContent(SKCanvas canvas)
+    {
+        DrawBackgroundContent(canvas);
+
+        float cx = X + Width / 2;
+        float cy = Y + Height / 2;
+        float radius = Math.Min(Width, Height) / 2 - 4f;
+
+        // Draw circle
+        canvas.DrawCircle(cx, cy, radius, FillPaint);
+        canvas.DrawCircle(cx, cy, radius, StrokePaint);
+
+        // Draw pump triangle inside
+        using var trianglePath = new SKPath();
+        float r = radius * 0.5f;
+        trianglePath.MoveTo(cx + r, cy);
+        trianglePath.LineTo(cx - r * 0.5f, cy - r * 0.866f);
+        trianglePath.LineTo(cx - r * 0.5f, cy + r * 0.866f);
+        trianglePath.Close();
+
+        using var trianglePaint = new SKPaint
+        {
+            Style = SKPaintStyle.Fill,
+            IsAntialias = true,
+            Color = OutlineColor
+        };
+        canvas.DrawPath(trianglePath, trianglePaint);
+
+        DrawForegroundContent(canvas);
+    }
+}</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Concrete Node: TankNode.cs</h3>
+    <pre><code class="language-csharp">using SkiaSharp;
+
+namespace Beep.Skia.Chart.PnID.Nodes;
+
+public class TankNode : PnIDNodeBase
+{
+    public TankNode() : base()
+    {
+        NodeLabel = "Tank";
+        Width = 100f;
+        Height = 120f;
+    }
+
+    public override void DrawContent(SKCanvas canvas)
+    {
+        DrawBackgroundContent(canvas);
+
+        float bx = X + 4f;
+        float bw = Width - 8f;
+        float topSection = Y + Height * 0.15f;
+        float bottomSection = Y + Height * 0.85f;
+
+        using var path = new SKPath();
+
+        // Tank body (rectangle with rounded bottom)
+        path.MoveTo(bx, topSection);
+        path.LineTo(bx, bottomSection);
+
+        // Bottom arc
+        var bottomRect = new SKRect(bx, bottomSection - bw / 2, bx + bw, bottomSection + bw / 2);
+        path.ArcTo(bottomRect, 180f, 180f, false);
+
+        path.LineTo(bx + bw, topSection);
+        path.Close();
+
+        canvas.DrawPath(path, FillPaint);
+        canvas.DrawPath(path, StrokePaint);
+
+        // Top rim
+        canvas.DrawLine(bx - 4f, topSection, bx + bw + 4f, topSection, StrokePaint);
+
+        DrawForegroundContent(canvas);
+    }
+}</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Concrete Node: PipeNode.cs</h3>
+    <pre><code class="language-csharp">using SkiaSharp;
+
+namespace Beep.Skia.Chart.PnID.Nodes;
+
+public class PipeNode : PnIDNodeBase
+{
+    public float PipeDiameter { get; set; } = 8f;
+
+    public PipeNode() : base()
+    {
+        NodeLabel = "Pipe";
+        Width = 120f;
+        Height = PipeDiameter + 4f;
+    }
+
+    public override void DrawContent(SKCanvas canvas)
+    {
+        float midY = Y + Height / 2;
+        float startX = X + 4f;
+        float endX = X + Width - 4f;
+
+        using var thickPaint = new SKPaint
+        {
+            Style = SKPaintStyle.Stroke,
+            StrokeWidth = PipeDiameter,
+            IsAntialias = true,
+            Color = OutlineColor,
+            StrokeCap = SKStrokeCap.Round
+        };
+
+        canvas.DrawLine(startX, midY, endX, midY, thickPaint);
+
+        // Flow direction arrow
+        float arrowX = X + Width * 0.65f;
+        using var arrowPaint = new SKPaint
+        {
+            Style = SKPaintStyle.Fill,
+            IsAntialias = true,
+            Color = OnSurfaceColor
+        };
+
+        using var arrowPath = new SKPath();
+        arrowPath.MoveTo(arrowX + 8f, midY);
+        arrowPath.LineTo(arrowX - 4f, midY - 6f);
+        arrowPath.LineTo(arrowX - 4f, midY + 6f);
+        arrowPath.Close();
+        canvas.DrawPath(arrowPath, arrowPaint);
+
+        DrawForegroundContent(canvas);
+    }
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="step-4">
+  <h2>Step 4: Register with SkiaComponentRegistry</h2>
+  <p>Use the <code>[AddinAttribute]</code> to mark your assembly for automatic discovery by the <code>AssemblyHandler</code> and <code>SkiaComponentRegistry</code>. The registry scans all loaded assemblies for <code>SkiaComponent</code> subclasses and makes them available for palette integration and serialization.</p>
+
+  <div class="code-example">
+    <h3>Assembly-Level Registration</h3>
+    <pre><code class="language-csharp">using Beep.Skia;
+
+[assembly: Addin(
+    Name = "Beep.Skia.Chart.PnID",
+    Description = "Piping & Instrumentation Diagram family for process engineering",
+    Version = "1.0.0",
+    Category = "Engineering",
+    Author = "Your Company",
+    TargetFramework = "net8.0;net9.0"
+)]</code></pre>
+  </div>
+
+  <p>The <code>SkiaComponentRegistry</code> (661 lines of registration and discovery logic) uses reflection to find all types decorated with <code>[AddinAttribute]</code>. Once discovered, components are available for:</p>
+  <ul>
+    <li><strong>Palette Registration:</strong> Appear as draggable toolbox items in <code>ComponentPalette</code></li>
+    <li><strong>Serialization:</strong> Full type-name resolution for save/load round-trips</li>
+    <li><strong>Dynamic Instantiation:</strong> <code>Activator.CreateInstance()</code> with type safety via the registry</li>
+    <li><strong>NuGet Loading:</strong> Types resolved from NuGet packages are registered automatically upon load</li>
+  </ul>
+
+  <div class="code-example">
+    <h3>Manual Registration (when not using AddinAttribute)</h3>
+    <pre><code class="language-csharp">var registry = SkiaComponentRegistry.Instance;
+
+registry.RegisterComponent&lt;ValveNode&gt;("P&ID", "Valve");
+registry.RegisterComponent&lt;PumpNode&gt;("P&ID", "Pump");
+registry.RegisterComponent&lt;TankNode&gt;("P&ID", "Tank");
+registry.RegisterComponent&lt;PipeNode&gt;("P&ID", "Pipe");</code></pre>
+  </div>
+
+  <div class="admonition warning">
+    <p class="admonition-title">Type Resolution</p>
+    <p>The registry resolves component types by their fully-qualified assembly name during deserialization. Ensure your assembly name and type names are stable across versions. Avoid renaming node classes in released versions without providing a type-migration map.</p>
+  </div>
+</section>
+
+<section class="section" id="step-5">
+  <h2>Step 5: Add to ComponentPalette</h2>
+  <p>The <code>ComponentPalette</code> is the visual toolbox that users drag-and-drop from to create diagram elements. After registering with the <code>SkiaComponentRegistry</code>, create a palette provider to define how your components appear in the toolbox.</p>
+
+  <div class="code-example">
+    <h3>Palette Provider: PnIDPaletteProvider.cs</h3>
+    <pre><code class="language-csharp">using Beep.Skia.UI;
+
+namespace Beep.Skia.Chart.PnID.Palette;
+
+public class PnIDPaletteProvider : IPaletteProvider
+{
+    public string CategoryName => "Piping & Instrumentation";
+    public string CategoryIcon => "bi bi-droplet";
+    public int DisplayOrder => 25;
+
+    public IEnumerable&lt;PaletteItem&gt; GetPaletteItems()
+    {
+        yield return new PaletteItem
+        {
+            DisplayName = "Valve",
+            ComponentType = typeof(ValveNode),
+            IconGlyph = "&#x2B24;",
+            Tooltip = "Control valve (gate, globe, ball, butterfly)",
+            DefaultWidth = 60f,
+            DefaultHeight = 80f
+        };
+
+        yield return new PaletteItem
+        {
+            DisplayName = "Pump",
+            ComponentType = typeof(PumpNode),
+            IconGlyph = "&#x25EF;",
+            Tooltip = "Centrifugal or positive-displacement pump",
+            DefaultWidth = 70f,
+            DefaultHeight = 70f
+        };
+
+        yield return new PaletteItem
+        {
+            DisplayName = "Tank",
+            ComponentType = typeof(TankNode),
+            IconGlyph = "&#x25B3;",
+            Tooltip = "Storage tank or pressure vessel",
+            DefaultWidth = 100f,
+            DefaultHeight = 120f
+        };
+
+        yield return new PaletteItem
+        {
+            DisplayName = "Pipe",
+            ComponentType = typeof(PipeNode),
+            IconGlyph = "&#x2501;",
+            Tooltip = "Process pipe with flow direction",
+            DefaultWidth = 120f,
+            DefaultHeight = 12f
+        };
+    }
+}</code></pre>
+  </div>
+
+  <p>Register the provider with <code>ComponentPalette</code>:</p>
+
+  <div class="code-example">
+    <h3>Registering the Palette Provider</h3>
+    <pre><code class="language-csharp">var palette = new ComponentPalette();
+palette.RegisterProvider(new PnIDPaletteProvider());
+
+// The palette now shows "Piping & Instrumentation" as a category
+// with Valve, Pump, Tank, and Pipe as draggable items.</code></pre>
+  </div>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Palette Organization</p>
+    <p>Group related node types under a single <code>IPaletteProvider</code> to create a collapsible category in the toolbox. Use <code>DisplayOrder</code> to control category ordering. Categories appear sorted ascending by <code>DisplayOrder</code>, then alphabetically by <code>CategoryName</code>.</p>
+  </div>
+</section>
+
+<section class="section" id="complete-example">
+  <h2>Complete Example: P&amp;ID Diagram Family</h2>
+  <p>The following table summarizes the full Piping &amp; Instrumentation Diagram (P&amp;ID) family we just built. This family enables process engineers to create instrumentation diagrams with standard ISA S5.1 symbols:</p>
+
+  <table>
+    <thead>
+      <tr><th>Component</th><th>Class</th><th>Shape</th><th>Ports</th><th>Use Case</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Valve</strong></td><td><code>ValveNode</code></td><td>Bowtie (two opposing triangles)</td><td>2 in (left, top), 2 out (right, bottom)</td><td>Control valves, isolation valves, check valves</td></tr>
+      <tr><td><strong>Pump</strong></td><td><code>PumpNode</code></td><td>Circle with direction triangle</td><td>2 in (left, top), 2 out (right, bottom)</td><td>Centrifugal pumps, positive-displacement pumps</td></tr>
+      <tr><td><strong>Tank</strong></td><td><code>TankNode</code></td><td>Rectangular body with rounded bottom</td><td>2 in (left, top), 2 out (right, bottom)</td><td>Storage tanks, pressure vessels, reactors</td></tr>
+      <tr><td><strong>Pipe</strong></td><td><code>PipeNode</code></td><td>Horizontal line with direction arrow</td><td>1 in (left), 1 out (right)</td><td>Process piping, flow direction indicators</td></tr>
+    </tbody>
+  </table>
+
+  <p>With these four node types, a process engineer can compose complete P&amp;ID diagrams by connecting pipes between equipment nodes, creating a directed graph that represents material flow through a process plant.</p>
+
+  <div class="admonition note">
+    <p class="admonition-title">Extending the Family</p>
+    <p>This example shows the minimum viable product. A production P&amp;ID family would include additional nodes (heat exchangers, compressors, distillation columns, instruments) and custom connection validation rules (e.g., pipes can only connect valves to tanks, not valves to valves). See <a href="extensibility.html">Extensibility &amp; Plugins</a> for advanced extension patterns.</p>
+  </div>
+
+  <h3>Serialization Support</h3>
+  <p>Your family automatically supports serialization because all nodes extend <code>SkiaComponent</code>, which implements <code>IDrawableComponent</code>. The <code>SkiaComponentRegistry</code> handles type name resolution, and the <code>DrawingManager</code> serializer saves and restores all component properties, connections, and positions. No additional code is required &mdash; just ensure your NodeProperties are populated in <code>Initialize()</code> and that you call <code>base.Initialize()</code>.</p>
+
+  <h3>Testing Your Family</h3>
+  <div class="code-example">
+    <h3>Smoke Test</h3>
+    <pre><code class="language-csharp">[Test]
+public void PnIDFamily_RenderSmokeTest()
+{
+    var surface = SKSurface.Create(new SKImageInfo(800, 600));
+    var canvas = surface.Canvas;
+
+    var nodes = new PnIDNodeBase[]
+    {
+        new TankNode { X = 50, Y = 200, NodeLabel = "TK-101" },
+        new PumpNode { X = 250, Y = 220 },
+        new ValveNode { X = 420, Y = 200 },
+        new PipeNode { X = 160, Y = 235 }
+    };
+
+    foreach (var node in nodes)
+    {
+        node.Initialize();
+        node.DrawContent(canvas);
+        node.Dispose();
+    }
+
+    // Verify surface has non-empty pixels
+    using var image = surface.Snapshot();
+    Assert.That(image.Width, Is.EqualTo(800));
+    Assert.That(image.Height, Is.EqualTo(600));
+
+    surface.Dispose();
+}</code></pre>
+  </div>
+</section>
+
+<style>
+.inheritance-diagram { margin: 1.5rem 0; font-family: var(--font-mono, 'Cascadia Code', 'Fira Code', monospace); }
+.inheritance-level { text-align: center; margin-bottom: 0; }
+.inheritance-card { display: inline-block; padding: 0.5rem 1.5rem; border-radius: var(--border-radius); border: 2px solid var(--color-brand-content); background: var(--color-code-background); color: var(--color-foreground-primary); font-weight: 600; font-size: 0.95rem; }
+.inheritance-card.interface { border-style: dashed; border-color: var(--color-foreground-muted); }
+.inheritance-card.abstract { border-color: var(--color-brand-content); background: #eef2ff; }
+[data-theme="dark"] .inheritance-card.abstract { background: #1a2040; }
+.inheritance-subtitle { font-size: 0.8rem; color: var(--color-foreground-muted); margin-top: 0.2rem; margin-bottom: 0; }
+.inheritance-arrow { font-size: 1.5rem; font-weight: 700; color: var(--color-brand-content); margin: 0.1rem 0; }
+</style>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

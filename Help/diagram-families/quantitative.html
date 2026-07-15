@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantitative/Financial Diagram Family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="diagram-families/flowchart.html">Diagram Families</a><span>&rsaquo;</span> <span>Quantitative/Financial Diagram Family</span></nav><div class="page-header"><h1>Quantitative/Financial Diagram Family</h1><p class="page-subtitle">Quantitative finance and trading diagrams with time series, technical indicators, statistical nodes, and strategy visualization.</p></div>
+<div class="toc"><h3>Table of Contents</h3><ul><li><a href="#overview">Overview</a></li><li><a href="#node-types">Node Types</a></li><li><a href="#ports">Connection Points</a></li><li><a href="#conventions">Connection Conventions</a></li><li><a href="#example">Usage Example</a></li></ul></div><section class="section" id="overview"><h2>Overview</h2><p><strong>Base Control:</strong> <code>QuantControl : MaterialControl</code><br><strong>Namespace:</strong> <code>Beep.Ski.Quantitative</code></p><p>The <strong>QuantControl</strong> is the root control for this diagram family. It inherits <code>MaterialControl</code> and provides shared port management, styling, and template methods for all nodes in the family.</p><p>This family contains <strong>6 node types</strong>.</p></section><section class="section" id="node-types"><h2>Node Types</h2><table><thead><tr><th>Node Class</th><th>Shape</th><th>Description</th></tr></thead><tbody><tr><td><code>TimeSeriesNode</code></td><td>Chart/candlestick</td><td>OHLCV time series with symbol, interval, and date range.</td></tr>
+<tr><td><code>IndicatorNode</code></td><td>Indicator panel</td><td>Technical indicator: SMA, EMA, RSI, MACD, Bollinger, Stochastic.</td></tr>
+<tr><td><code>DataNodes</code></td><td>Data block</td><td>Input/transformed data including fundamentals and alternative data.</td></tr>
+<tr><td><code>IndicatorNodes</code></td><td>Multi-indicator</td><td>Composite indicator combining multiple signals.</td></tr>
+<tr><td><code>StatisticalNodes</code></td><td>Statistics icon</td><td>Statistical analysis: correlation, regression, distribution tests.</td></tr>
+<tr><td><code>StrategyNodes</code></td><td>Strategy cog/icon</td><td>Trading strategy with entry/exit rules and position sizing.</td></tr></tbody></table></section><div id="timeseriesnode"><h3>TimeSeriesNode</h3><p>OHLCV time series with symbol, interval, and date range.</p><table><tr><th style="width:30%">Shape</th><td>Chart/candlestick</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>1+</td></tr></table></div><div id="indicatornode"><h3>IndicatorNode</h3><p>Technical indicator: SMA, EMA, RSI, MACD, Bollinger, Stochastic.</p><table><tr><th style="width:30%">Shape</th><td>Indicator panel</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="datanodes"><h3>DataNodes</h3><p>Input/transformed data including fundamentals and alternative data.</p><table><tr><th style="width:30%">Shape</th><td>Data block</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="indicatornodes"><h3>IndicatorNodes</h3><p>Composite indicator combining multiple signals.</p><table><tr><th style="width:30%">Shape</th><td>Multi-indicator</td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="statisticalnodes"><h3>StatisticalNodes</h3><p>Statistical analysis: correlation, regression, distribution tests.</p><table><tr><th style="width:30%">Shape</th><td>Statistics icon</td></tr><tr><th>Input Ports</th><td>1+</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="strategynodes"><h3>StrategyNodes</h3><p>Trading strategy with entry/exit rules and position sizing.</p><table><tr><th style="width:30%">Shape</th><td>Strategy cog/icon</td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty when the node moves or resizes.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>TimeSeriesNode</code></td><td>0</td><td>1+</td><td>—</td></tr>
+<tr><td><code>IndicatorNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>DataNodes</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>IndicatorNodes</code></td><td>2+</td><td>1</td><td>—</td></tr>
+<tr><td><code>StatisticalNodes</code></td><td>1+</td><td>1</td><td>—</td></tr>
+<tr><td><code>StrategyNodes</code></td><td>2+</td><td>1</td><td>—</td></tr></tbody></table></section><section class="section" id="conventions"><h2>Connection Conventions</h2><p>When building diagrams with this family, follow these conventions:</p><ul><li>TimeSeries is always the data source (no inputs)</li><li>Indicators chain left-to-right from data to strategy</li><li>Strategies may output to backtesting or execution nodes</li></ul></section><section class="section" id="example"><h2>Usage Example</h2><p>Complete example showing creation, node placement, and connection:</p><div class="code-example"><h3>C# Example</h3>
+<pre><code class="language-csharp">var quant = new QuantControl
+{
+    X = 50, Y = 50,
+    Width = 700, Height = 500
+};
+drawingManager.AddComponent(quant);
+
+var ts = new TimeSeriesNode
+{
+    X = 100, Y = 150,
+    Symbol = "AAPL",
+    Interval = "1d"
+};
+var sma = new IndicatorNode
+{
+    X = 280, Y = 150,
+    IndicatorType = "SMA",
+    Period = 20
+};
+var strategy = new StrategyNode
+{
+    X = 460, Y = 150,
+    StrategyType = "MovingAverageCrossover"
+};
+
+drawingManager.AddComponent(ts);
+drawingManager.AddComponent(sma);
+drawingManager.AddComponent(strategy);
+
+drawingManager.Connect(ts.OutPoints[0], sma.InPoints[0]);
+drawingManager.Connect(sma.OutPoints[0], strategy.InPoints[0]);</code></pre></div></section>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

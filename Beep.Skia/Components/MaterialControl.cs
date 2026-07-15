@@ -15,45 +15,34 @@ namespace Beep.Skia.Components
         /// </summary>
         public event EventHandler<EventArgs> Clicked;
 
-        // Material Design 3.0 Color Tokens
+        // Material Design 3.0 Color Tokens — now reads from ThemeManager.Current
         protected static class MaterialColors
         {
-            // Primary colors
-            public static readonly SKColor Primary = new SKColor(0x67, 0x50, 0xA4); // Purple
-            public static readonly SKColor OnPrimary = SKColors.White;
-            public static readonly SKColor PrimaryContainer = new SKColor(0xE9, 0xDD, 0xFF);
-            public static readonly SKColor OnPrimaryContainer = new SKColor(0x21, 0x00, 0x51);
-
-            // Secondary colors
-            public static readonly SKColor Secondary = new SKColor(0x62, 0x5B, 0x71);
-            public static readonly SKColor OnSecondary = SKColors.White;
-            public static readonly SKColor SecondaryContainer = new SKColor(0xE8, 0xDE, 0xF8);
-            public static readonly SKColor OnSecondaryContainer = new SKColor(0x1D, 0x19, 0x23);
-
-            // Tertiary colors
-            public static readonly SKColor Tertiary = new SKColor(0x7D, 0x52, 0x60);
-            public static readonly SKColor OnTertiary = SKColors.White;
-            public static readonly SKColor TertiaryContainer = new SKColor(0xFF, 0xD8, 0xE4);
-            public static readonly SKColor OnTertiaryContainer = new SKColor(0x31, 0x10, 0x1D);
-
-            // Error colors
-            public static readonly SKColor Error = new SKColor(0xBA, 0x1A, 0x1A);
-            public static readonly SKColor OnError = SKColors.White;
-            public static readonly SKColor ErrorContainer = new SKColor(0xFF, 0xDA, 0xD6);
-            public static readonly SKColor OnErrorContainer = new SKColor(0x41, 0x00, 0x0D);
-
-            // Surface colors
-            public static readonly SKColor Surface = new SKColor(0xFF, 0xFB, 0xFE);
-            public static readonly SKColor OnSurface = new SKColor(0x1C, 0x1B, 0x1F);
-            public static readonly SKColor SurfaceVariant = new SKColor(0xE7, 0xE0, 0xEC);
-            public static readonly SKColor OnSurfaceVariant = new SKColor(0x49, 0x45, 0x4F);
-            // Container tiers (add base container token used by components)
-            public static readonly SKColor SurfaceContainer = new SKColor(0xF3, 0xED, 0xF4); // Align with high container tint
-            public static readonly SKColor SurfaceContainerHigh = new SKColor(0xF3, 0xED, 0xF4);
-
-            // Outline
-            public static readonly SKColor Outline = new SKColor(0x79, 0x75, 0x7E);
-            public static readonly SKColor OutlineVariant = new SKColor(0xCA, 0xC4, 0xD0);
+            private static SkiaTheme T => ThemeManager.Current;
+            public static SKColor Primary => T.Primary;
+            public static SKColor OnPrimary => T.OnPrimary;
+            public static SKColor PrimaryContainer => T.PrimaryContainer;
+            public static SKColor OnPrimaryContainer => T.OnPrimaryContainer;
+            public static SKColor Secondary => T.Secondary;
+            public static SKColor OnSecondary => T.OnSecondary;
+            public static SKColor SecondaryContainer => T.SecondaryContainer;
+            public static SKColor OnSecondaryContainer => T.OnSecondaryContainer;
+            public static SKColor Tertiary => T.Tertiary;
+            public static SKColor OnTertiary => T.OnTertiary;
+            public static SKColor TertiaryContainer => T.TertiaryContainer;
+            public static SKColor OnTertiaryContainer => T.OnTertiaryContainer;
+            public static SKColor Error => T.Error;
+            public static SKColor OnError => T.OnError;
+            public static SKColor ErrorContainer => T.ErrorContainer;
+            public static SKColor OnErrorContainer => T.OnErrorContainer;
+            public static SKColor Surface => T.Surface;
+            public static SKColor OnSurface => T.OnSurface;
+            public static SKColor SurfaceVariant => T.SurfaceVariant;
+            public static SKColor OnSurfaceVariant => T.OnSurfaceVariant;
+            public static SKColor SurfaceContainer => T.SurfaceContainer;
+            public static SKColor SurfaceContainerHigh => T.SurfaceContainerHigh;
+            public static SKColor Outline => T.Outline;
+            public static SKColor OutlineVariant => T.OutlineVariant;
         }
 
         // Material Design 3.0 State Layer Opacities

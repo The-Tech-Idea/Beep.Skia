@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Layout Engines Architecture | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="../architecture/component-registry.html">Architecture & Internals</a><span>&rsaquo;</span> <span>Layout Engines Architecture</span></nav><div class="page-header"><h1>Layout Engines Architecture</h1><p class="page-subtitle">FlowLayout, GridLayout, StackLayout, and ILayoutManager for automatic component positioning.</p></div>
+<p>The layout subsystem provides automatic positioning of components within containers.</p>
+<h3>Available Layouts</h3>
+<ul>
+<li><strong>FlowLayout:</strong> Left-to-right, top-to-bottom wrapping (like HTML inline flow)</li>
+<li><strong>GridLayout:</strong> Fixed column count grid with configurable cell sizes</li>
+<li><strong>StackLayout:</strong> Vertical or horizontal stacking with spacing and alignment</li>
+</ul>
+<p>All layout engines implement <code>ILayoutManager</code> which exposes <code>Layout(List<SkiaComponent>)</code>. Layouts recalculate positions on component add/remove/resize events.</p>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

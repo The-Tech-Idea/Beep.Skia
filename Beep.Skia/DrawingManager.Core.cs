@@ -19,12 +19,30 @@ namespace Beep.Skia
         private readonly Dictionary<IConnectionPoint, SkiaComponent> _ownerByConnectionPoint = new Dictionary<IConnectionPoint, SkiaComponent>();
         private SKPoint _panOffset = SKPoint.Empty;
         private float _zoom = 1.0f;
+        private string _clipboardData;
 
         // Helper classes
         private SelectionManager _selectionManager;
         private InteractionHelper _interactionHelper;
         private RenderingHelper _renderingHelper;
         private HistoryManager _historyManager;
+        private DiagramValidator _diagramValidator;
+
+        /// <summary>
+        /// Gets the diagram validator. Call AddRule() to customize, then ValidateDiagram() to run.
+        /// </summary>
+        public DiagramValidator DiagramValidator
+        {
+            get
+            {
+                if (_diagramValidator == null)
+                {
+                    _diagramValidator = new DiagramValidator();
+                    _diagramValidator.AddDefaultRules();
+                }
+                return _diagramValidator;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the Skia canvas used for drawing.
@@ -161,6 +179,9 @@ namespace Beep.Skia
             // Wire up events
             _selectionManager.SelectionChanged += (s, e) => SelectionChanged?.Invoke(this, e);
             _historyManager.HistoryChanged += (s, e) => HistoryChanged?.Invoke(this, e);
+
+            // Subscribe to theme changes for redraw
+            ThemeManager.ThemeChanged += (s, e) => DrawSurface?.Invoke(this, null);
         }
 
         /// <summary>
@@ -349,174 +370,18 @@ namespace Beep.Skia
                     Height = c.Height,
                     Name = c.Name
                 };
-                // Persist MindMap-specific options via PropertyBag
+                // Persist all NodeProperties generically — covers ALL diagram families
                 try
                 {
-                    if (c.GetType().Namespace == "Beep.Skia.MindMap")
+                    var props = c.GetProperties(includeCommon: false, includeNodeProperties: true);
+                    foreach (var kvp in props)
                     {
-                        var t = c.GetType();
-                        var title = t.GetProperty("Title");
-                        var notes = t.GetProperty("Notes");
-                        var inCount = t.GetProperty("InPortCount");
-                        var outCount = t.GetProperty("OutPortCount");
-                        if (title != null)
+                        try
                         {
-                            var val = title.GetValue(c) as string;
-                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["Title"] = val;
+                            if (kvp.Value != null)
+                                comp.PropertyBag[kvp.Key] = Convert.ToString(kvp.Value);
                         }
-                        if (notes != null)
-                        {
-                            var val = notes.GetValue(c) as string;
-                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["Notes"] = val;
-                        }
-                        if (inCount != null)
-                        {
-                            var val = inCount.GetValue(c);
-                            if (val != null) comp.PropertyBag["InPortCount"] = Convert.ToString(val);
-                        }
-                        if (outCount != null)
-                        {
-                            var val = outCount.GetValue(c);
-                            if (val != null) comp.PropertyBag["OutPortCount"] = Convert.ToString(val);
-                        }
-                    }
-                }
-                catch { }
-                // Persist StateMachine-specific options via PropertyBag
-                try
-                {
-                    if (c.GetType().Namespace == "Beep.Skia.StateMachine")
-                    {
-                        var t = c.GetType();
-                        var title = t.GetProperty("Title");
-                        var inCount = t.GetProperty("InPortCount");
-                        var outCount = t.GetProperty("OutPortCount");
-                        if (title != null)
-                        {
-                            var val = title.GetValue(c) as string;
-                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["Title"] = val;
-                        }
-                        if (inCount != null)
-                        {
-                            var val = inCount.GetValue(c);
-                            if (val != null) comp.PropertyBag["InPortCount"] = Convert.ToString(val);
-                        }
-                        if (outCount != null)
-                        {
-                            var val = outCount.GetValue(c);
-                            if (val != null) comp.PropertyBag["OutPortCount"] = Convert.ToString(val);
-                        }
-                    }
-                }
-                catch { }
-                // Persist Flowchart-specific options via PropertyBag (counts/flags)
-                try
-                {
-                    if (c.GetType().Namespace == "Beep.Skia.Flowchart")
-                    {
-                        var t = c.GetType();
-                        var inCount = t.GetProperty("InPortCount");
-                        var outCount = t.GetProperty("OutPortCount");
-                        var showTB = t.GetProperty("ShowTopBottomPorts");
-                        var outOnTop = t.GetProperty("OutPortsOnTop");
-                        if (inCount != null)
-                        {
-                            var val = inCount.GetValue(c);
-                            if (val != null) comp.PropertyBag["InPortCount"] = Convert.ToString(val);
-                        }
-                        if (outCount != null)
-                        {
-                            var val = outCount.GetValue(c);
-                            if (val != null) comp.PropertyBag["OutPortCount"] = Convert.ToString(val);
-                        }
-                        if (showTB != null)
-                        {
-                            var val = showTB.GetValue(c);
-                            if (val != null) comp.PropertyBag["ShowTopBottomPorts"] = Convert.ToString(val).ToLowerInvariant();
-                        }
-                        if (outOnTop != null)
-                        {
-                            var val = outOnTop.GetValue(c);
-                            if (val != null) comp.PropertyBag["OutPortsOnTop"] = Convert.ToString(val).ToLowerInvariant();
-                        }
-                    }
-                }
-                catch { }
-                // Persist PM-specific options via PropertyBag (counts and common fields)
-                try
-                {
-                    if (c.GetType().Namespace == "Beep.Skia.PM")
-                    {
-                        var t = c.GetType();
-                        var inCount = t.GetProperty("InPortCount");
-                        var outCount = t.GetProperty("OutPortCount");
-                        var title = t.GetProperty("Title");
-                        var label = t.GetProperty("Label");
-                        var percent = t.GetProperty("PercentComplete");
-                        if (inCount != null)
-                        {
-                            var val = inCount.GetValue(c);
-                            if (val != null) comp.PropertyBag["InPortCount"] = Convert.ToString(val);
-                        }
-                        if (outCount != null)
-                        {
-                            var val = outCount.GetValue(c);
-                            if (val != null) comp.PropertyBag["OutPortCount"] = Convert.ToString(val);
-                        }
-                        if (title != null)
-                        {
-                            var val = title.GetValue(c) as string;
-                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["Title"] = val;
-                        }
-                        if (label != null)
-                        {
-                            var val = label.GetValue(c) as string;
-                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["Label"] = val;
-                        }
-                        if (percent != null)
-                        {
-                            var val = percent.GetValue(c);
-                            if (val != null) comp.PropertyBag["PercentComplete"] = Convert.ToString(val);
-                        }
-                    }
-                }
-                catch { }
-                // Persist ERD-specific options via PropertyBag (entity rows and name)
-                try
-                {
-                    if (c.GetType().Namespace == "Beep.Skia.ERD")
-                    {
-                        var t = c.GetType();
-                        var entityName = t.GetProperty("EntityName");
-                        var rowsText = t.GetProperty("RowsText");
-                        var rowIdsCsv = t.GetProperty("RowIdsCsv");
-                        var inCount = t.GetProperty("InPortCount");
-                        var outCount = t.GetProperty("OutPortCount");
-                        if (entityName != null)
-                        {
-                            var val = entityName.GetValue(c) as string;
-                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["EntityName"] = val;
-                        }
-                        if (rowsText != null)
-                        {
-                            var val = rowsText.GetValue(c) as string;
-                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["RowsText"] = val;
-                        }
-                        if (rowIdsCsv != null)
-                        {
-                            var val = rowIdsCsv.GetValue(c) as string;
-                            if (!string.IsNullOrEmpty(val)) comp.PropertyBag["RowIdsCsv"] = val;
-                        }
-                        if (inCount != null)
-                        {
-                            var val = inCount.GetValue(c);
-                            if (val != null) comp.PropertyBag["InPortCount"] = Convert.ToString(val);
-                        }
-                        if (outCount != null)
-                        {
-                            var val = outCount.GetValue(c);
-                            if (val != null) comp.PropertyBag["OutPortCount"] = Convert.ToString(val);
-                        }
+                        catch { }
                     }
                 }
                 catch { }
@@ -600,156 +465,16 @@ namespace Beep.Skia
                         instance.Width = comp.Width;
                         instance.Height = comp.Height;
                         instance.Name = comp.Name;
-                        // Apply MindMap-specific options BEFORE assigning connection point IDs
+                        // Apply all persisted NodeProperties BEFORE assigning connection point IDs
+                        // (InPortCount/OutPortCount must be set first so CP arrays match)
                         try
                         {
-                            if (type.Namespace == "Beep.Skia.MindMap" && comp.PropertyBag != null)
+                            if (comp.PropertyBag != null && comp.PropertyBag.Count > 0)
                             {
-                                var t = type;
-                                if (comp.PropertyBag.TryGetValue("Title", out var titleStr))
-                                {
-                                    var prop = t.GetProperty("Title");
-                                    prop?.SetValue(instance, titleStr);
-                                }
-                                if (comp.PropertyBag.TryGetValue("Notes", out var notesStr))
-                                {
-                                    var prop = t.GetProperty("Notes");
-                                    prop?.SetValue(instance, notesStr);
-                                }
-                                if (comp.PropertyBag.TryGetValue("InPortCount", out var inCountStr) && int.TryParse(inCountStr, out var inCount))
-                                {
-                                    var prop = t.GetProperty("InPortCount");
-                                    prop?.SetValue(instance, inCount);
-                                }
-                                if (comp.PropertyBag.TryGetValue("OutPortCount", out var outCountStr) && int.TryParse(outCountStr, out var outCount))
-                                {
-                                    var prop = t.GetProperty("OutPortCount");
-                                    prop?.SetValue(instance, outCount);
-                                }
-                            }
-                        }
-                        catch { }
-                        // Apply StateMachine-specific options BEFORE assigning connection point IDs
-                        try
-                        {
-                            if (type.Namespace == "Beep.Skia.StateMachine" && comp.PropertyBag != null)
-                            {
-                                var t = type;
-                                if (comp.PropertyBag.TryGetValue("InPortCount", out var inCountStr) && int.TryParse(inCountStr, out var inCount))
-                                {
-                                    var prop = t.GetProperty("InPortCount");
-                                    prop?.SetValue(instance, inCount);
-                                }
-                                if (comp.PropertyBag.TryGetValue("OutPortCount", out var outCountStr) && int.TryParse(outCountStr, out var outCount))
-                                {
-                                    var prop = t.GetProperty("OutPortCount");
-                                    prop?.SetValue(instance, outCount);
-                                }
-                                if (comp.PropertyBag.TryGetValue("Title", out var titleStr))
-                                {
-                                    var prop = t.GetProperty("Title");
-                                    prop?.SetValue(instance, titleStr);
-                                }
-                            }
-                        }
-                        catch { }
-                        // Apply Flowchart-specific persisted options BEFORE assigning connection point IDs
-                        try
-                        {
-                            if (type.Namespace == "Beep.Skia.Flowchart" && comp.PropertyBag != null)
-                            {
-                                var t = type;
-                                // Adjust counts first to ensure CP arrays match
-                                if (comp.PropertyBag.TryGetValue("InPortCount", out var inCountStr) && int.TryParse(inCountStr, out var inCount))
-                                {
-                                    var prop = t.GetProperty("InPortCount");
-                                    prop?.SetValue(instance, inCount);
-                                }
-                                if (comp.PropertyBag.TryGetValue("OutPortCount", out var outCountStr) && int.TryParse(outCountStr, out var outCount))
-                                {
-                                    var prop = t.GetProperty("OutPortCount");
-                                    prop?.SetValue(instance, outCount);
-                                }
-                                // Placement flags
-                                if (comp.PropertyBag.TryGetValue("ShowTopBottomPorts", out var showTBStr) && bool.TryParse(showTBStr, out var showTB))
-                                {
-                                    var prop = t.GetProperty("ShowTopBottomPorts");
-                                    prop?.SetValue(instance, showTB);
-                                }
-                                if (comp.PropertyBag.TryGetValue("OutPortsOnTop", out var outOnTopStr) && bool.TryParse(outOnTopStr, out var outOnTop))
-                                {
-                                    var prop = t.GetProperty("OutPortsOnTop");
-                                    prop?.SetValue(instance, outOnTop);
-                                }
-                            }
-                        }
-                        catch { }
-                        // Apply PM-specific persisted options BEFORE assigning connection point IDs
-                        try
-                        {
-                            if (type.Namespace == "Beep.Skia.PM" && comp.PropertyBag != null)
-                            {
-                                var t = type;
-                                if (comp.PropertyBag.TryGetValue("InPortCount", out var inCountStr) && int.TryParse(inCountStr, out var inCount))
-                                {
-                                    var prop = t.GetProperty("InPortCount");
-                                    prop?.SetValue(instance, inCount);
-                                }
-                                if (comp.PropertyBag.TryGetValue("OutPortCount", out var outCountStr) && int.TryParse(outCountStr, out var outCount))
-                                {
-                                    var prop = t.GetProperty("OutPortCount");
-                                    prop?.SetValue(instance, outCount);
-                                }
-                                if (comp.PropertyBag.TryGetValue("Title", out var titleStr))
-                                {
-                                    var prop = t.GetProperty("Title");
-                                    prop?.SetValue(instance, titleStr);
-                                }
-                                if (comp.PropertyBag.TryGetValue("Label", out var labelStr))
-                                {
-                                    var prop = t.GetProperty("Label");
-                                    prop?.SetValue(instance, labelStr);
-                                }
-                                if (comp.PropertyBag.TryGetValue("PercentComplete", out var pctStr) && int.TryParse(pctStr, out var pct))
-                                {
-                                    var prop = t.GetProperty("PercentComplete");
-                                    prop?.SetValue(instance, pct);
-                                }
-                            }
-                        }
-                        catch { }
-                        // Apply ERD-specific persisted options BEFORE assigning connection point IDs
-                        try
-                        {
-                            if (type.Namespace == "Beep.Skia.ERD" && comp.PropertyBag != null)
-                            {
-                                var t = type;
-                                if (comp.PropertyBag.TryGetValue("EntityName", out var nameStr))
-                                {
-                                    var prop = t.GetProperty("EntityName");
-                                    prop?.SetValue(instance, nameStr);
-                                }
-                                if (comp.PropertyBag.TryGetValue("RowsText", out var rowsStr))
-                                {
-                                    var prop = t.GetProperty("RowsText");
-                                    prop?.SetValue(instance, rowsStr);
-                                }
-                                if (comp.PropertyBag.TryGetValue("RowIdsCsv", out var idsStr))
-                                {
-                                    var prop = t.GetProperty("RowIdsCsv");
-                                    prop?.SetValue(instance, idsStr);
-                                }
-                                // If counts were persisted, set them after rows so row-based layout can sync
-                                if (comp.PropertyBag.TryGetValue("InPortCount", out var inCountStr2) && int.TryParse(inCountStr2, out var inCount2))
-                                {
-                                    var prop = t.GetProperty("InPortCount");
-                                    prop?.SetValue(instance, inCount2);
-                                }
-                                if (comp.PropertyBag.TryGetValue("OutPortCount", out var outCountStr2) && int.TryParse(outCountStr2, out var outCount2))
-                                {
-                                    var prop = t.GetProperty("OutPortCount");
-                                    prop?.SetValue(instance, outCount2);
-                                }
+                                var propValues = new Dictionary<string, object>();
+                                foreach (var kvp in comp.PropertyBag)
+                                    propValues[kvp.Key] = kvp.Value;
+                                instance.SetPropperties(propValues, updateNodeProperties: true, applyToPublicSetters: true);
                             }
                         }
                         catch { }
@@ -819,6 +544,286 @@ namespace Beep.Skia
             }
 
             DrawSurface?.Invoke(this, null);
+        }
+
+        /// <summary>
+        /// Gets the bounding rectangle that contains all components.
+        /// </summary>
+        /// <param name="padding">Padding to add around the content.</param>
+        /// <returns>The content bounding box.</returns>
+        public SKRect GetContentBounds(float padding = 20f)
+        {
+            if (_components.Count == 0) return new SKRect(0, 0, 800, 600);
+            float minX = float.MaxValue, minY = float.MaxValue;
+            float maxX = float.MinValue, maxY = float.MinValue;
+            foreach (var c in _components)
+            {
+                if (c.IsStatic) continue;
+                var right = c.X + c.Width;
+                var bottom = c.Y + c.Height;
+                if (c.X < minX) minX = c.X;
+                if (c.Y < minY) minY = c.Y;
+                if (right > maxX) maxX = right;
+                if (bottom > maxY) maxY = bottom;
+            }
+            if (minX == float.MaxValue) return new SKRect(0, 0, 800, 600);
+            return new SKRect(minX - padding, minY - padding, maxX + padding, maxY + padding);
+        }
+
+        /// <summary>
+        /// Arranges the diagram using the specified auto-layout algorithm.
+        /// </summary>
+        /// <param name="layout">The layout algorithm to apply.</param>
+        public void ArrangeDiagram(Beep.Skia.Layout.IAutoLayout layout)
+        {
+            if (layout == null) return;
+            layout.Arrange(_components, _lines);
+            foreach (var c in _components)
+                RefreshConnectionPoints(c);
+            DrawSurface?.Invoke(this, null);
+        }
+
+        /// <summary>
+        /// Validates the current diagram using all registered rules and returns issues.
+        /// </summary>
+        /// <returns>List of diagram issues found.</returns>
+        public List<DiagramIssue> ValidateDiagram()
+        {
+            return DiagramValidator.Validate(_components, _lines);
+        }
+
+        /// <summary>
+        /// Converts the current diagram to a WorkflowDefinition suitable for execution by IWorkflowEngine.
+        /// Only IAutomationNode components are included.
+        /// </summary>
+        public WorkflowDefinition ToWorkflowDefinition(string workflowName = "Workflow")
+        {
+            var wf = new WorkflowDefinition(Guid.NewGuid().ToString("N")[..8], workflowName);
+            var idMap = new Dictionary<SkiaComponent, string>();
+
+            foreach (var c in _components)
+            {
+                if (c is IAutomationNode auto)
+                {
+                    var nodeId = Guid.NewGuid().ToString("N")[..8];
+                    idMap[c] = nodeId;
+                    wf.AddNode(new NodeDefinition(nodeId, c.Name ?? auto.GetType().Name, NodeType.Action, auto.GetType().FullName ?? auto.GetType().Name));
+                }
+            }
+
+            foreach (var line in _lines)
+            {
+                if (line?.Start?.Component is SkiaComponent src && idMap.TryGetValue(src, out var srcId)
+                    && line?.End?.Component is SkiaComponent dst && idMap.TryGetValue(dst, out var dstId))
+                {
+                    wf.Connections.Add(new ConnectionDefinition(
+                        Guid.NewGuid().ToString("N")[..8], srcId, dstId));
+                }
+            }
+
+            return wf;
+        }
+
+        /// <summary>
+        /// Exports the current diagram to a PNG image file.
+        /// </summary>
+        /// <param name="filePath">Output file path.</param>
+        /// <param name="scale">Scale factor for export resolution (default 2x for retina).</param>
+        /// <param name="background">Background color (default white).</param>
+        /// <param name="cropToContent">When true, crops to content bounds; otherwise uses full canvas.</param>
+        public void ExportToPng(string filePath, float scale = 2f, SKColor? background = null, bool cropToContent = true)
+        {
+            var bgColor = background ?? SKColors.White;
+            SKRect bounds;
+            if (cropToContent)
+            {
+                bounds = GetContentBounds();
+                bounds.Left = Math.Max(0, bounds.Left);
+                bounds.Top = Math.Max(0, bounds.Top);
+            }
+            else
+            {
+                bounds = new SKRect(0, 0, 1920, 1080);
+            }
+
+            int width = (int)Math.Ceiling(bounds.Width * scale);
+            int height = (int)Math.Ceiling(bounds.Height * scale);
+
+            using var bitmap = new SKBitmap(width, height);
+            using var surface = SKSurface.Create(new SKImageInfo(width, height));
+            var canvas = surface.Canvas;
+            canvas.Clear(bgColor);
+            canvas.Scale(scale);
+            canvas.Translate(-bounds.Left, -bounds.Top);
+
+            Draw(canvas);
+            canvas.Flush();
+
+            using var image = surface.Snapshot();
+            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+            using var stream = System.IO.File.OpenWrite(filePath);
+            data.SaveTo(stream);
+        }
+
+        /// <summary>
+        /// Exports the current diagram to an SVG file.
+        /// </summary>
+        /// <param name="filePath">Output file path.</param>
+        /// <param name="cropToContent">When true, crops to content bounds.</param>
+        public void ExportToSvg(string filePath, bool cropToContent = true)
+        {
+            SKRect bounds;
+            if (cropToContent)
+            {
+                bounds = GetContentBounds();
+                bounds.Left = Math.Max(0, bounds.Left);
+                bounds.Top = Math.Max(0, bounds.Top);
+            }
+            else
+            {
+                bounds = new SKRect(0, 0, 1920, 1080);
+            }
+
+            var size = new SKSize(bounds.Width, bounds.Height);
+            using var stream = System.IO.File.Create(filePath);
+            using var svgCanvas = SKSvgCanvas.Create(new SKRect(0, 0, size.Width, size.Height), stream);
+
+            svgCanvas.Save();
+            svgCanvas.Translate(-bounds.Left, -bounds.Top);
+            Draw(svgCanvas);
+            svgCanvas.Restore();
+            svgCanvas.Flush();
+        }
+
+        /// <summary>
+        /// Exports the current diagram to a PDF file.
+        /// </summary>
+        /// <param name="filePath">Output file path.</param>
+        /// <param name="pageWidth">Page width in points (default A4 landscape).</param>
+        /// <param name="pageHeight">Page height in points (default A4 landscape).</param>
+        public void ExportToPdf(string filePath, float pageWidth = 842f, float pageHeight = 595f)
+        {
+            var bounds = GetContentBounds();
+
+            using var stream = System.IO.File.Create(filePath);
+            using var document = SKDocument.CreatePdf(stream);
+
+            float scaleToFit = Math.Min(
+                pageWidth / bounds.Width,
+                pageHeight / bounds.Height,
+                1f
+            );
+
+            float offsetX = (pageWidth - bounds.Width * scaleToFit) / 2f;
+            float offsetY = (pageHeight - bounds.Height * scaleToFit) / 2f;
+
+            using var pageCanvas = document.BeginPage(pageWidth, pageHeight);
+            pageCanvas.Scale(scaleToFit);
+            pageCanvas.Translate(-bounds.Left + offsetX / scaleToFit, -bounds.Top + offsetY / scaleToFit);
+            Draw(pageCanvas);
+            pageCanvas.Flush();
+            document.EndPage();
+            document.Close();
+        }
+
+        /// <summary>
+        /// Renders the diagram to an offscreen bitmap for testing or headless scenarios.
+        /// </summary>
+        /// <param name="width">Output width in pixels.</param>
+        /// <param name="height">Output height in pixels.</param>
+        /// <param name="background">Background color.</param>
+        /// <returns>The rendered bitmap.</returns>
+        public SKBitmap RenderToBitmap(int width = 1920, int height = 1080, SKColor? background = null)
+        {
+            var bgColor = background ?? SKColors.White;
+            using var surface = SKSurface.Create(new SKImageInfo(width, height));
+            var canvas = surface.Canvas;
+            canvas.Clear(bgColor);
+            Draw(canvas);
+            canvas.Flush();
+
+            var bitmap = new SKBitmap(width, height);
+            using var image = surface.Snapshot();
+            image.ReadPixels(bitmap.Info, bitmap.GetPixels(), bitmap.RowBytes, 0, 0);
+            return bitmap;
+        }
+
+        /// <summary>
+        /// Creates a System.Drawing.Printing.PrintDocument for printing the diagram.
+        /// The caller should call doc.Print() or show a PrintPreviewDialog with this document.
+        /// </summary>
+        /// <param name="documentName">Name shown in the print queue.</param>
+        /// <returns>A configured PrintDocument ready for printing or preview.</returns>
+        public System.Drawing.Printing.PrintDocument CreatePrintDocument(string documentName = "Beep.Skia Diagram")
+        {
+            var doc = new System.Drawing.Printing.PrintDocument();
+            doc.DocumentName = documentName;
+            var bounds = GetContentBounds();
+            int currentPage = 0;
+            int totalPages;
+
+            doc.BeginPrint += (s, e) =>
+            {
+                currentPage = 0;
+                // Calculate page dimensions in world-space
+                float pageW = (doc.DefaultPageSettings.PaperSize.Width
+                    - doc.DefaultPageSettings.Margins.Left
+                    - doc.DefaultPageSettings.Margins.Right) / 100f * 96f;
+                float pageH = (doc.DefaultPageSettings.PaperSize.Height
+                    - doc.DefaultPageSettings.Margins.Top
+                    - doc.DefaultPageSettings.Margins.Bottom) / 100f * 96f;
+                int cols = (int)Math.Ceiling(bounds.Width / pageW);
+                int rows = (int)Math.Ceiling(bounds.Height / pageH);
+                totalPages = cols * rows;
+            };
+
+            doc.PrintPage += (s, e) =>
+            {
+                float marginX = doc.DefaultPageSettings.Margins.Left / 100f * 96f;
+                float marginY = doc.DefaultPageSettings.Margins.Top / 100f * 96f;
+                float pageW = (doc.DefaultPageSettings.PaperSize.Width
+                    - doc.DefaultPageSettings.Margins.Left
+                    - doc.DefaultPageSettings.Margins.Right) / 100f * 96f;
+                float pageH = (doc.DefaultPageSettings.PaperSize.Height
+                    - doc.DefaultPageSettings.Margins.Top
+                    - doc.DefaultPageSettings.Margins.Bottom) / 100f * 96f;
+                int cols = (int)Math.Ceiling(bounds.Width / pageW);
+                int rows = (int)Math.Ceiling(bounds.Height / pageH);
+                int col = currentPage % cols;
+                int row = currentPage / cols;
+
+                float srcX = bounds.Left + col * pageW;
+                float srcY = bounds.Top + row * pageH;
+                float srcW = Math.Min(pageW, bounds.Right - srcX);
+                float srcH = Math.Min(pageH, bounds.Bottom - srcY);
+
+                using var bitmap = new SKBitmap((int)srcW, (int)srcH);
+                using var surface = SKSurface.Create(new SKImageInfo((int)srcW, (int)srcH));
+                var canvas = surface.Canvas;
+                canvas.Clear(SKColors.White);
+                canvas.Translate(-srcX, -srcY);
+                Draw(canvas);
+                canvas.Flush();
+
+                using var image = surface.Snapshot();
+                using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+                using var ms = new System.IO.MemoryStream();
+                data.SaveTo(ms);
+                ms.Seek(0, System.IO.SeekOrigin.Begin);
+
+                using var gdiBitmap = new System.Drawing.Bitmap(ms);
+                e.Graphics.DrawImage(gdiBitmap, marginX, marginY, pageW, pageH);
+                e.Graphics.DrawString(
+                    $"Page {currentPage + 1} of {totalPages}",
+                    new System.Drawing.Font("Segoe UI", 8),
+                    System.Drawing.Brushes.Gray,
+                    marginX + pageW - 100, marginY + pageH + 5);
+
+                currentPage++;
+                e.HasMorePages = currentPage < totalPages;
+            };
+
+            return doc;
         }
     }
 }

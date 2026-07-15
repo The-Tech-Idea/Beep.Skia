@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ComponentPalette | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="button.html">UI Components</a><span>&rsaquo;</span> <span>ComponentPalette</span></nav>
+<div class="page-header"><h1>ComponentPalette</h1><p class="page-subtitle">Toolbox/palette for drag-and-drop component discovery via SkiaComponentRegistry</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia.Controls</code> &mdash; <strong>Inherits:</strong> <code>MaterialControl</code> &rarr; <code>SkiaComponent</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#properties">Properties</a></li>
+    <li><a href="#discovery">Component Discovery</a></li>
+    <li><a href="#drag-drop">Drag-Drop Workflow</a></li>
+    <li><a href="#custom-categories">Custom Category Registration</a></li>
+    <li><a href="#code-example">Code Example</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p>The <code>ComponentPalette</code> control is a drag-and-drop toolbox that displays all registered <code>SkiaComponent</code> types as a categorized, searchable grid of icon+label tiles. It reads its inventory from the <code>SkiaComponentRegistry</code> &mdash; the centralized registry that maps component type metadata to factory delegates &mdash; enabling dynamic component discovery without hard-coded type lists.</p>
+
+  <p>Users can browse components by category, filter by keyword, select a display mode (icon grid or compact list), and drag items onto a canvas to instantiate new components. The palette renders entirely with SkiaSharp and follows Material Design 3.0 styling with elevation, state layers, and smooth drag-feedback animations.</p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h4>Registry-Driven</h4>
+      <p>Categories and items are populated automatically from <code>SkiaComponentRegistry</code>. No manual configuration required.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Search &amp; Filter</h4>
+      <p>A built-in search field filters components in real-time by name, description, or category tags.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Drag Ghost</h4>
+      <p>Dragging a palette item creates a semi-transparent "ghost" preview that follows the pointer.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Custom Extensions</h4>
+      <p>Register custom components and categories at runtime via the <code>SkiaComponentRegistry</code> API.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="properties">
+  <h2>Properties</h2>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Categories</code></td>
+        <td><code>List&lt;PaletteCategory&gt;</code></td>
+        <td>Read-only. The aggregated list of categories and their component entries, built from <code>SkiaComponentRegistry</code> on initialization.</td>
+      </tr>
+      <tr>
+        <td><code>FilterText</code></td>
+        <td><code>string</code></td>
+        <td>Search/filter string. When non-empty, only components whose name or description contains this text (case-insensitive) are displayed. Empty string shows all components.</td>
+      </tr>
+      <tr>
+        <td><code>DisplayMode</code></td>
+        <td><code>PaletteDisplayMode</code></td>
+        <td>Enum: <code>Icons</code> (default, large icon grid with labels) or <code>List</code> (compact list with small icon and text). Controls the visual layout of component tiles.</td>
+      </tr>
+      <tr>
+        <td><code>TileSize</code></td>
+        <td><code>float</code></td>
+        <td>Width/height of each component tile in icon mode. Default is <code>72f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>TilesPerRow</code></td>
+        <td><code>int</code></td>
+        <td>Number of tiles per row in icon mode. Used for grid layout calculation. Default is <code>4</code>.</td>
+      </tr>
+      <tr>
+        <td><code>ShowCategoryHeaders</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, category name headers are rendered as section dividers with an expand/collapse chevron. Default is <code>true</code>.</td>
+      </tr>
+      <tr>
+        <td><code>ExpandedCategories</code></td>
+        <td><code>HashSet&lt;string&gt;</code></td>
+        <td>Set of category names that are currently expanded. Categories not in this set are collapsed (header only).</td>
+      </tr>
+      <tr>
+        <td><code>ItemSpacing</code></td>
+        <td><code>float</code></td>
+        <td>Gap between component tiles in the grid. Default is <code>4f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>CategorySpacing</code></td>
+        <td><code>float</code></td>
+        <td>Vertical gap between category sections. Default is <code>12f</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table>
+    <thead>
+      <tr><th>Event</th><th>Signature</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>ComponentDragStarted</code></td>
+        <td><code>EventHandler&lt;PaletteEntry&gt;</code></td>
+        <td>Raised when the user begins dragging a component from the palette. The <code>PaletteEntry</code> contains the component's metadata.</td>
+      </tr>
+      <tr>
+        <td><code>ComponentDragEnded</code></td>
+        <td><code>EventHandler&lt;ComponentDropEventArgs&gt;</code></td>
+        <td>Raised when the user releases the drag. <code>ComponentDropEventArgs</code> includes the canvas-space drop position and the <code>PaletteEntry</code>.</td>
+      </tr>
+      <tr>
+        <td><code>FilterTextChanged</code></td>
+        <td><code>EventHandler&lt;string&gt;</code></td>
+        <td>Raised as the user types in the search/filter field.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="discovery">
+  <h2>Component Discovery</h2>
+  <p>The <code>ComponentPalette</code> discovers components exclusively through the <code>SkiaComponentRegistry</code>. This registry holds metadata for every component type available in the system, organized by category. The palette reads this data at initialization and builds its internal category/item structure.</p>
+
+  <h3>SkiaComponentRegistry Entries</h3>
+  <p>Each registry entry contains:</p>
+
+  <table>
+    <thead>
+      <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>ComponentType</code></td>
+        <td><code>Type</code></td>
+        <td>The CLR type that implements the component. Must inherit from <code>SkiaComponent</code>.</td>
+      </tr>
+      <tr>
+        <td><code>DisplayName</code></td>
+        <td><code>string</code></td>
+        <td>Human-readable name shown in the palette tile (e.g., <code>"Process Node"</code>, <code>"Decision Diamond"</code>).</td>
+      </tr>
+      <tr>
+        <td><code>Description</code></td>
+        <td><code>string</code></td>
+        <td>Hover tooltip text describing the component's purpose. Also searched by <code>FilterText</code>.</td>
+      </tr>
+      <tr>
+        <td><code>Category</code></td>
+        <td><code>string</code></td>
+        <td>Grouping category (e.g., <code>"Flowchart"</code>, <code>"ERD"</code>, <code>"Network"</code>, <code>"UI Controls"</code>). Components with the same category are grouped together in the palette.</td>
+      </tr>
+      <tr>
+        <td><code>Icon</code></td>
+        <td><code>SKPath</code></td>
+        <td>Vector icon drawn in each palette tile. Sized to fit within the tile with appropriate padding.</td>
+      </tr>
+      <tr>
+        <td><code>Factory</code></td>
+        <td><code>Func&lt;SkiaComponent&gt;</code></td>
+        <td>Delegate that creates a new instance of the component. The palette uses this for the drag-ghost preview and the canvas uses it when the drop is accepted.</td>
+      </tr>
+      <tr>
+        <td><code>DefaultWidth</code></td>
+        <td><code>float</code></td>
+        <td>Default width assigned to the component when dropped on the canvas. Default is <code>120f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>DefaultHeight</code></td>
+        <td><code>float</code></td>
+        <td>Default height assigned to the component when dropped on the canvas. Default is <code>60f</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>How the Palette Reads the Registry</h3>
+  <p>On initialization, the palette calls <code>SkiaComponentRegistry.GetAllEntries()</code> to retrieve a flat list of all registered component metadata. It then groups entries by <code>Category</code>, sorts categories alphabetically (with well-known diagram families listed first), and sorts entries within each category by <code>DisplayName</code>. The result is stored in the <code>Categories</code> property as a list of <code>PaletteCategory</code> objects.</p>
+
+  <p>The registry is read once during <code>Initialize()</code>. If components are registered after the palette is already displayed, call <code>palette.Refresh()</code> to re-read the registry and rebuild the category structure.</p>
+</section>
+
+<section class="section" id="drag-drop">
+  <h2>Drag-Drop Workflow</h2>
+  <p>The drag-and-drop workflow is a multi-step interaction handled cooperatively by the palette, the <code>InputManager</code>, and the target canvas:</p>
+
+  <ol>
+    <li><strong>Pointer Down on Tile:</strong> The palette identifies which <code>PaletteEntry</code> is under the pointer via hit testing.</li>
+    <li><strong>Drag Threshold:</strong> Once the pointer moves beyond a 4px threshold (while still pressed), the palette raises <code>ComponentDragStarted</code>. A drag ghost &mdash; a semi-transparent, scaled-down rendering of the component &mdash; is created and follows the pointer.</li>
+    <li><strong>Dragging Over Canvas:</strong> The <code>InputManager</code> enters drag mode. The canvas receives <code>OnDragOver</code> events with the pointer position. If the canvas supports component drops, it renders a drop indicator (a highlighted insertion point).</li>
+    <li><strong>Pointer Up:</strong> The palette raises <code>ComponentDragEnded</code> with a <code>ComponentDropEventArgs</code> containing the drop position and the <code>PaletteEntry</code>. The hosting application or canvas's drop handler creates a new instance via the entry's <code>Factory</code> delegate, sets its <code>X</code>/<code>Y</code>, calls <code>Initialize()</code>, and adds it to the drawing manager.</li>
+    <li><strong>Cancel:</strong> Pressing Escape during a drag cancels the operation. The ghost is removed and <code>ComponentDragEnded</code> fires with <code>DropPosition = null</code>.</li>
+  </ol>
+
+  <div class="code-example">
+    <h3>Canvas-Side Drop Handler</h3>
+    <pre><code class="language-csharp">palette.ComponentDragEnded += (s, args) =>
+{
+    if (args.DropPosition == null) return;
+
+    var component = args.Entry.Factory();
+    component.X = args.DropPosition.Value.X;
+    component.Y = args.DropPosition.Value.Y;
+    component.Width = args.Entry.DefaultWidth;
+    component.Height = args.Entry.DefaultHeight;
+    component.Initialize();
+
+    drawingManager.AddComponent(component);
+    canvas.Invalidate();
+};</code></pre>
+  </div>
+</section>
+
+<section class="section" id="custom-categories">
+  <h2>Custom Category Registration</h2>
+  <p>Components are registered with the <code>SkiaComponentRegistry</code> using the static <code>Register</code> method. This is typically done at application startup before the palette is instantiated:</p>
+
+  <div class="code-example">
+    <h3>Registering Custom Components</h3>
+    <pre><code class="language-csharp">SkiaComponentRegistry.Register(new ComponentRegistryEntry
+{
+    ComponentType = typeof(CustomGaugeNode),
+    DisplayName = "Gauge",
+    Description = "A custom gauge indicator with configurable range",
+    Category = "Custom Widgets",
+    Icon = SKPath.ParseSvgPathData(
+        "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"),
+    Factory = () => new CustomGaugeNode(),
+    DefaultWidth = 100,
+    DefaultHeight = 100
+});
+
+SkiaComponentRegistry.Register(new ComponentRegistryEntry
+{
+    ComponentType = typeof(StatusIndicator),
+    DisplayName = "Status Indicator",
+    Description = "Green/amber/red status dot with label",
+    Category = "Custom Widgets",
+    Icon = SKPath.ParseSvgPathData(
+        "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"),
+    Factory = () => new StatusIndicator(),
+    DefaultWidth = 80,
+    DefaultHeight = 30
+});</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Bulk Registering an Entire Assembly</h3>
+    <pre><code class="language-csharp">SkiaComponentRegistry.ScanAssembly(typeof(MyCustomNode).Assembly);</code></pre>
+  </div>
+
+  <p>The <code>ScanAssembly</code> method uses reflection to find all concrete types inheriting from <code>SkiaComponent</code> that are decorated with the <code>[ComponentPaletteEntry]</code> attribute. The attribute defines the display name, description, category, and icon path data:</p>
+
+  <div class="code-example">
+    <h3>Using the [ComponentPaletteEntry] Attribute</h3>
+    <pre><code class="language-csharp">[ComponentPaletteEntry(
+    DisplayName = "Pipeline Stage",
+    Description = "An ETL pipeline stage node",
+    Category = "ETL",
+    IconPathData = "M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z",
+    DefaultWidth = 140,
+    DefaultHeight = 60
+)]
+public class PipelineStageNode : FlowChartNode
+{
+    public override void DrawContent(SKCanvas canvas)
+    {
+        base.DrawContent(canvas);
+    }
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="code-example">
+  <h2>Code Example</h2>
+
+  <div class="code-example">
+    <h3>Basic ComponentPalette Setup</h3>
+    <pre><code class="language-csharp">var palette = new ComponentPalette
+{
+    X = 10,
+    Y = 50,
+    Width = 320,
+    Height = 600,
+    DisplayMode = PaletteDisplayMode.Icons,
+    TileSize = 68f,
+    TilesPerRow = 4,
+    ShowCategoryHeaders = true
+};
+
+palette.Initialize();
+
+palette.FilterTextChanged += (s, filter) =>
+    Console.WriteLine($"Filter: {filter}");
+
+palette.ComponentDragStarted += (s, entry) =>
+    Console.WriteLine($"Dragging: {entry.DisplayName}");
+
+palette.ComponentDragEnded += (s, args) =>
+{
+    if (args.DropPosition == null)
+    {
+        Console.WriteLine("Drag cancelled");
+        return;
+    }
+
+    var component = args.Entry.Factory();
+    component.X = args.DropPosition.Value.X;
+    component.Y = args.DropPosition.Value.Y;
+    component.Width = args.Entry.DefaultWidth;
+    component.Height = args.Entry.DefaultHeight;
+    component.Initialize();
+
+    drawingManager.AddComponent(component);
+    canvas.Invalidate();
+};
+
+drawingManager.AddComponent(palette);
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Programmatic Filter and Category Control</h3>
+    <pre><code class="language-csharp">palette.FilterText = "flow";
+
+var allCategories = palette.ExpandedCategories;
+palette.ExpandedCategories = new HashSet&lt;string&gt; { "Flowchart", "ETL" };
+
+palette.DisplayMode = PaletteDisplayMode.List;
+
+palette.CollapseAll();
+
+palette.ExpandAll();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Refreshing After Runtime Registration</h3>
+    <pre><code class="language-csharp">SkiaComponentRegistry.Register(new ComponentRegistryEntry
+{
+    ComponentType = typeof(DynamicChart),
+    DisplayName = "Dynamic Chart",
+    Category = "Runtime Components",
+    Factory = () => new DynamicChart(),
+    DefaultWidth = 200,
+    DefaultHeight = 150
+});
+
+palette.Refresh();
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="admonition note">
+    <p class="admonition-title">Note</p>
+    <p>The <code>ComponentPalette</code> is a read-only view of the registry. It does not modify or delete registry entries. If you need to remove a component from the palette, you must remove it from the <code>SkiaComponentRegistry</code> using <code>SkiaComponentRegistry.Unregister(type)</code> and then call <code>palette.Refresh()</code>.</p>
+  </div>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Tip</p>
+    <p>For large component libraries (50+ types), consider setting <code>ShowCategoryHeaders = true</code> and collapsing less-used categories by default. The palette renders only expanded categories, reducing visual clutter and improving rendering performance. Use <code>ExpandedCategories</code> to persist user preferences across sessions.</p>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

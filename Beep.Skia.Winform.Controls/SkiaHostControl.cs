@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel;
+using System.ComponentModel.Design;
+using System.Drawing;
 using System.Windows.Forms;
 using SkiaSharp.Views.Desktop;
 using SkiaSharp;
@@ -12,6 +14,7 @@ namespace Beep.Skia.Winform.Controls
     [DesignTimeVisible(true)]
     [Description("Host control that provides a Skia drawing surface and a DrawingManager to host Skia components.")]
     [DisplayName("Skia Host")]
+    [Designer(typeof(SkiaHostControlDesigner))]
     public class SkiaHostControl : UserControl, ISupportInitialize
     {
         private SKControl _skControl;
@@ -20,6 +23,7 @@ namespace Beep.Skia.Winform.Controls
     private SkiaComponentDescriptorCollection _designTimeComponents = new SkiaComponentDescriptorCollection();
     private Palette _palette;
     private ComponentPropertyEditor _propertyEditor;
+    private SkiaComponentPropertyWrapper _selectedComponentWrapper;
     // Runtime registry of created components keyed by Guid Id for quick lookup
     private readonly Dictionary<Guid, Beep.Skia.SkiaComponent> _componentRegistry = new Dictionary<Guid, Beep.Skia.SkiaComponent>();
     [Browsable(false)]
@@ -70,10 +74,12 @@ namespace Beep.Skia.Winform.Controls
                     if (sm.SelectedLines != null && sm.SelectedLines.Count == 1)
                     {
                         _propertyEditor.SelectedLine = sm.SelectedLines[0];
+                        ClearSelectionWrapper();
                     }
                     else if (sm.SelectedComponents != null && sm.SelectedComponents.Count == 1)
                     {
                         _propertyEditor.SelectedComponent = sm.SelectedComponents[0];
+                        SyncPropertyGridToSelection(sm.SelectedComponents[0]);
                         // Check if DDL was generated (ERD entity export)
                         CheckForDDLExport(sm.SelectedComponents[0]);
                     }
@@ -81,6 +87,7 @@ namespace Beep.Skia.Winform.Controls
                     {
                         _propertyEditor.SelectedLine = null;
                         _propertyEditor.SelectedComponent = null;
+                        ClearSelectionWrapper();
                     }
                     _skControl?.Invalidate();
                 }
@@ -297,6 +304,72 @@ namespace Beep.Skia.Winform.Controls
             _skControl.PaintSurface += SkControl_PaintSurface;
             this.DragEnter += SkiaHostControl_DragEnter;
             this.DragDrop += SkiaHostControl_DragDrop;
+        }
+
+        /// <summary>
+        /// Design-time canvas preview — renders a placeholder with component count and grid.
+        /// </summary>
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            if (!this.DesignMode) return;
+
+            var g = e.Graphics;
+            var rect = this.ClientRectangle;
+
+            // Background
+            using var bgBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(248, 249, 252));
+            g.FillRectangle(bgBrush, rect);
+
+            // Grid
+            using var gridPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(220, 224, 230), 0.5f);
+            for (float x = 0; x < rect.Width; x += 20)
+                g.DrawLine(gridPen, x, 0, x, rect.Height);
+            for (float y = 0; y < rect.Height; y += 20)
+                g.DrawLine(gridPen, 0, y, rect.Width, y);
+
+            // Title
+            using var titleFont = new System.Drawing.Font("Segoe UI", 12, System.Drawing.FontStyle.Bold);
+            using var titleBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(100, 100, 120));
+            g.DrawString("Beep.Skia Host", titleFont, titleBrush, 12, 12);
+
+            // Component count
+            if (_designTimeComponents != null && _designTimeComponents.Count > 0)
+            {
+                using var countFont = new System.Drawing.Font("Segoe UI", 9);
+                using var countBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(80, 80, 100));
+                g.DrawString($"{_designTimeComponents.Count} design-time component(s)", countFont, countBrush, 12, 32);
+
+                // Draw component placeholders as labeled rectangles
+                using var compPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(100, 120, 180), 1f);
+                using var compFill = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(220, 230, 248));
+                using var compFont = new System.Drawing.Font("Segoe UI", 7);
+
+                foreach (var desc in _designTimeComponents)
+                {
+                    var cr = new System.Drawing.Rectangle(
+                        (int)desc.X, (int)desc.Y,
+                        Math.Max(40, (int)desc.Width), Math.Max(20, (int)desc.Height));
+                    if (cr.Right > rect.Width || cr.Bottom > rect.Height) continue;
+                    if (cr.X < 0 || cr.Y < 0) continue;
+
+                    g.FillRectangle(compFill, cr);
+                    g.DrawRectangle(compPen, cr);
+                    var typeName = desc.ComponentType?.Split(',').FirstOrDefault()?.Split('.').LastOrDefault() ?? "Comp";
+                    g.DrawString(typeName, compFont, System.Drawing.Brushes.DarkSlateGray, cr.X + 2, cr.Y + 2);
+                }
+            }
+            else
+            {
+                using var hintFont = new System.Drawing.Font("Segoe UI", 9);
+                using var hintBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(160, 160, 180));
+                g.DrawString("Drop Skia components from the toolbox, or use Templates in smart-tag", hintFont, hintBrush, 12, 32);
+            }
+
+            // Border
+            using var borderPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(180, 185, 195), 1f);
+            g.DrawRectangle(borderPen, 0, 0, rect.Width - 1, rect.Height - 1);
         }
 
         public void BeginInit()
@@ -1084,6 +1157,46 @@ namespace Beep.Skia.Winform.Controls
                     _skControl.Invalidate();
                 }
             }
+        }
+
+        /// <summary>
+        /// Synchronizes the VS PropertyGrid with the selected Skia component at design time.
+        /// Creates a property wrapper and sets it as the primary selection.
+        /// </summary>
+        private void SyncPropertyGridToSelection(SkiaComponent component)
+        {
+            if (!DesignMode || component == null) return;
+            try
+            {
+                _selectedComponentWrapper = new SkiaComponentPropertyWrapper(component);
+                var selService = this.Site?.GetService(typeof(System.ComponentModel.Design.ISelectionService))
+                    as System.ComponentModel.Design.ISelectionService;
+                if (selService != null)
+                {
+                    selService.SetSelectedComponents(new object[] { _selectedComponentWrapper });
+                }
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// Clears the PropertyGrid selection wrapper and returns selection to the host control.
+        /// </summary>
+        private void ClearSelectionWrapper()
+        {
+            if (!DesignMode) return;
+            try
+            {
+                _selectedComponentWrapper?.Dispose();
+                _selectedComponentWrapper = null;
+                var selService = this.Site?.GetService(typeof(System.ComponentModel.Design.ISelectionService))
+                    as System.ComponentModel.Design.ISelectionService;
+                if (selService != null)
+                {
+                    selService.SetSelectedComponents(new object[] { this });
+                }
+            }
+            catch { }
         }
     }
 }

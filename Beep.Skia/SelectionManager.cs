@@ -331,6 +331,36 @@ namespace Beep.Skia
         public bool IsSelected(IConnectionPoint point) => _selectedConnectionPoints.Contains(point);
 
         /// <summary>
+        /// Adds a component to the current selection without clearing existing selection.
+        /// </summary>
+        /// <param name="component">The component to add.</param>
+        public void AddToSelection(SkiaComponent component)
+        {
+            if (component != null && !_selectedComponents.Contains(component))
+            {
+                _selectedComponents.Add(component);
+                component.IsSelected = true;
+                SelectionChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Selects all non-static components in the diagram.
+        /// </summary>
+        public void SelectAll()
+        {
+            ClearSelection();
+            var components = _drawingManager.GetComponents();
+            foreach (var c in components)
+            {
+                if (c == null || c.IsStatic) continue;
+                _selectedComponents.Add(c);
+                c.IsSelected = true;
+            }
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
         /// Gets the number of selected components.
         /// </summary>
     public int SelectionCount => _selectedComponents.Count;

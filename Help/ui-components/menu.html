@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu &amp; MenuBar | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="button.html">UI Components</a><span>&rsaquo;</span> <span>Menu &amp; MenuBar</span></nav>
+<div class="page-header"><h1>Menu &amp; MenuBar</h1><p class="page-subtitle">Dropdown menus, context menus, cascading menus, and horizontal menu bars</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia.Controls</code> &mdash; <strong>Inherits:</strong> <code>MenuBar</code> &rarr; <code>MaterialControl</code> &rarr; <code>SkiaComponent</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#menubar">MenuBar Properties</a></li>
+    <li><a href="#menuitem">MenuItem Properties</a></li>
+    <li><a href="#context-menu">ContextMenu</a></li>
+    <li><a href="#cascading">Cascading & Submenus</a></li>
+    <li><a href="#separators">Separators &amp; Icons</a></li>
+    <li><a href="#code-example">Code Example</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p>The <code>MenuBar</code> and <code>Menu</code> controls provide a complete menu system rendered entirely with SkiaSharp. <code>MenuBar</code> is a horizontal strip of top-level menu items (File, Edit, View, etc.). Each top-level item opens a <code>Menu</code> popup containing <code>MenuItem</code> entries. The system supports cascading submenus, context menus triggered by right-click, keyboard navigation with mnemonics, and icons rendered alongside menu item text.</p>
+
+  <p>All menus are <strong>overlay</strong> components: they float above the canvas content and are managed by the <code>OverlayManager</code>. When a menu opens, it captures pointer events to handle item hover/press and auto-closes when focus is lost or an item is selected.</p>
+</section>
+
+<section class="section" id="menubar">
+  <h2>MenuBar Properties</h2>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Items</code></td>
+        <td><code>List&lt;MenuItem&gt;</code></td>
+        <td>The top-level menu headers shown in the bar. Each <code>MenuItem</code> with <code>Children.Count &gt; 0</code> opens a dropdown.</td>
+      </tr>
+      <tr>
+        <td><code>MenuBarHeight</code></td>
+        <td><code>float</code></td>
+        <td>Height of the horizontal bar. Default is <code>48f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>ItemSpacing</code></td>
+        <td><code>float</code></td>
+        <td>Horizontal spacing between top-level menu items. Default is <code>4f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>ItemPadding</code></td>
+        <td><code>float</code></td>
+        <td>Horizontal padding inside each top-level item. Default is <code>12f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>ActiveIndex</code></td>
+        <td><code>int</code></td>
+        <td>Index of the currently open menu. <code>-1</code> when no menu is open. Setting this programmatically opens/closes menus.</td>
+      </tr>
+      <tr>
+        <td><code>IsOpen</code></td>
+        <td><code>bool</code></td>
+        <td>Read-only. True when any dropdown menu is currently visible.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="menuitem">
+  <h2>MenuItem Properties</h2>
+  <p>The <code>MenuItem</code> class represents a single entry in a menu. It is not a <code>SkiaComponent</code> itself but a model class used by the <code>Menu</code> control for layout and rendering.</p>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Text</code></td>
+        <td><code>string</code></td>
+        <td>The label displayed for this item. Use <code>&amp;</code> prefix to define a mnemonic (e.g., <code>"&amp;Save"</code> renders with underlined S).</td>
+      </tr>
+      <tr>
+        <td><code>Icon</code></td>
+        <td><code>SKPath</code></td>
+        <td>Optional vector icon drawn before the text. Rendered at <code>18x18</code> in the <code>OnSurface</code> color.</td>
+      </tr>
+      <tr>
+        <td><code>Shortcut</code></td>
+        <td><code>string</code></td>
+        <td>Keyboard shortcut text displayed right-aligned (e.g., <code>"Ctrl+S"</code>). Informational only; binding is handled by the <code>InputManager</code>.</td>
+      </tr>
+      <tr>
+        <td><code>IsEnabled</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>false</code>, the item is rendered greyed out and does not respond to hover or click. Default is <code>true</code>.</td>
+      </tr>
+      <tr>
+        <td><code>IsChecked</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, a checkmark icon is rendered to the left. Used for toggle-able menu items.</td>
+      </tr>
+      <tr>
+        <td><code>IsSeparator</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, renders a horizontal separator line instead of text. Ignored for hit testing.</td>
+      </tr>
+      <tr>
+        <td><code>Children</code></td>
+        <td><code>List&lt;MenuItem&gt;</code></td>
+        <td>Submenu items. When non-empty, a right-arrow indicator is drawn and hovering opens a cascading submenu.</td>
+      </tr>
+      <tr>
+        <td><code>Tag</code></td>
+        <td><code>object</code></td>
+        <td>Arbitrary user data attached to the item. Useful for command routing.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table>
+    <thead>
+      <tr><th>Event</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>OnClick</code></td><td>Action delegate invoked when the item is selected (clicked or Enter key).</td></tr>
+      <tr><td><code>OnCheckedChanged</code></td><td>Action&lt;bool&gt; invoked when <code>IsChecked</code> toggles.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="context-menu">
+  <h2>ContextMenu</h2>
+  <p>A <code>ContextMenu</code> is a standalone <code>Menu</code> popup not attached to a <code>MenuBar</code>. It is displayed at a specific screen position (typically the right-click location) and auto-dismisses when the user clicks outside or presses Escape.</p>
+
+  <div class="code-example">
+    <h3>Showing a ContextMenu</h3>
+    <pre><code class="language-csharp">var contextMenu = new ContextMenu();
+
+contextMenu.Items.Add(new MenuItem("Cut", () => CutSelection())
+    { Shortcut = "Ctrl+X" });
+contextMenu.Items.Add(new MenuItem("Copy", () => CopySelection())
+    { Shortcut = "Ctrl+C" });
+contextMenu.Items.Add(new MenuItem("Paste", () => PasteClipboard())
+    { Shortcut = "Ctrl+V" });
+contextMenu.Items.Add(new MenuItem("", null) { IsSeparator = true });
+contextMenu.Items.Add(new MenuItem("Delete", () => DeleteSelection())
+    { Shortcut = "Del" });
+
+contextMenu.Show(new SKPoint(mouseX, mouseY));</code></pre>
+  </div>
+</section>
+
+<section class="section" id="cascading">
+  <h2>Cascading &amp; Submenus</h2>
+  <p>When a <code>MenuItem</code> has a non-empty <code>Children</code> list, the menu system automatically renders a right-arrow indicator and supports cascading submenus. Hovering over the parent item (or pressing Right arrow) opens the submenu to the right. The submenu is rendered as a separate overlay panel positioned adjacent to the parent item, and it inherits the same styling and interaction behavior.</p>
+
+  <p>Submenus can be nested to arbitrary depth, though MD3 guidelines recommend a maximum depth of <strong>two levels</strong> for usability.</p>
+
+  <div class="code-example">
+    <h3>Nested Submenus</h3>
+    <pre><code class="language-csharp">var arrangeMenu = new MenuItem("Arrange");
+
+arrangeMenu.Children.Add(new MenuItem("Bring to Front", () => BringToFront()));
+arrangeMenu.Children.Add(new MenuItem("Send to Back", () => SendToBack()));
+
+var orderSubmenu = new MenuItem("Order");
+orderSubmenu.Children.Add(new MenuItem("Bring Forward", () => BringForward()));
+orderSubmenu.Children.Add(new MenuItem("Send Backward", () => SendBackward()));
+
+arrangeMenu.Children.Add(orderSubmenu);
+
+menuBar.Items.Add(arrangeMenu);</code></pre>
+  </div>
+</section>
+
+<section class="section" id="separators">
+  <h2>Separators &amp; Icons</h2>
+  <p>Create a separator by setting <code>IsSeparator = true</code>. The text value is ignored; a 1px horizontal line is drawn using the <code>Outline</code> theme color with 8px vertical padding. Separators are not hoverable or selectable.</p>
+
+  <p>Icons are specified as <code>SKPath</code> objects. The menu system renders them at <code>18x18</code> pixels, left-aligned within a 36px icon column. Icon color is resolved from the current theme's <code>OnSurface</code> token, with <code>OnSurfaceVariant</code> used for disabled items.</p>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Tip</p>
+    <p>To render Material Design icons, use <code>SKPath.ParseSvgPathData()</code> with the icon's SVG path data string. Beep.Skia includes a built-in <code>Icons</code> class with commonly used paths (see <code>Beep.Skia.Icons</code>).</p>
+  </div>
+</section>
+
+<section class="section" id="code-example">
+  <h2>Code Example</h2>
+
+  <div class="code-example">
+    <h3>Full MenuBar with File, Edit, and Help Menus</h3>
+    <pre><code class="language-csharp">var menuBar = new MenuBar
+{
+    X = 0,
+    Y = 0,
+    Width = 800,
+    MenuBarHeight = 48f
+};
+menuBar.Initialize();
+
+var fileMenu = new MenuItem("&amp;File");
+fileMenu.Children.Add(new MenuItem("&amp;New", () => NewDocument())
+    { Shortcut = "Ctrl+N" });
+fileMenu.Children.Add(new MenuItem("&amp;Open", () => OpenDocument())
+    { Shortcut = "Ctrl+O" });
+fileMenu.Children.Add(new MenuItem("", null) { IsSeparator = true });
+fileMenu.Children.Add(new MenuItem("&amp;Save", () => SaveDocument())
+    { Shortcut = "Ctrl+S" });
+fileMenu.Children.Add(new MenuItem("Save &amp;As...", () => SaveAs())
+    { Shortcut = "Ctrl+Shift+S" });
+fileMenu.Children.Add(new MenuItem("", null) { IsSeparator = true });
+fileMenu.Children.Add(new MenuItem("E&amp;xit", () => ExitApp())
+    { Shortcut = "Alt+F4" });
+
+var editMenu = new MenuItem("&amp;Edit");
+editMenu.Children.Add(new MenuItem("&amp;Undo", () => Undo())
+    { Shortcut = "Ctrl+Z", IsEnabled = false });
+editMenu.Children.Add(new MenuItem("&amp;Redo", () => Redo())
+    { Shortcut = "Ctrl+Y", IsEnabled = false });
+
+var helpMenu = new MenuItem("&amp;Help");
+helpMenu.Children.Add(new MenuItem("&amp;Documentation", () => OpenDocs()));
+helpMenu.Children.Add(new MenuItem("&amp;About", () => ShowAbout()));
+
+menuBar.Items.Add(fileMenu);
+menuBar.Items.Add(editMenu);
+menuBar.Items.Add(helpMenu);
+
+drawingManager.AddComponent(menuBar);
+canvas.Invalidate();</code></pre>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

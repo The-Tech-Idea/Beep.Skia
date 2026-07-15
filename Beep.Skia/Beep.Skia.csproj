@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net9.0;net8.0;net10.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>Latest</LangVersion>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -25,13 +25,13 @@
 		<Copy SourceFiles="$(TargetDir)$(PackageId).dll" DestinationFolder="$(ProjectDir)..\..\outputDLL\$(PackageId)\$(TargetFramework)" SkipUnchangedFiles="false" />
 	</Target>
   <ItemGroup>
-    <PackageReference Include="SkiaSharp" Version="3.119.0" />
-    <PackageReference Include="SkiaSharp.Extended" Version="2.0.0" />
+    <PackageReference Include="SkiaSharp" Version="4.150.1" />
+    <PackageReference Include="SkiaSharp.Extended" Version="3.0.0" />
     <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
-    <PackageReference Include="SkiaSharp.Views.Desktop.Common" Version="3.119.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.9" />
-    <PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="2.0.83" />
-    <PackageReference Include="TheTechIdea.Beep.Vis.Modules" Version="2.0.23" />
+    <PackageReference Include="SkiaSharp.Views.Desktop.Common" Version="4.150.1" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.10" />
+    <PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="3.1.1" />
+    <PackageReference Include="TheTechIdea.Beep.Vis.Modules" Version="2.0.44" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Beep.Skia.Model\Beep.Skia.Model.csproj" />

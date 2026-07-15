@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.Design;
+using System.Drawing;
+using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
 namespace Beep.Skia.Winform.Controls
@@ -10,6 +12,8 @@ namespace Beep.Skia.Winform.Controls
     // in the designer, this designer will add the underlying SkiaComponent
     // to the host's DrawingManager and remove the WinForms wrapper from the
     // design surface to avoid leaving a WinForms placeholder.
+    // The component is positioned at the current drop point (mouse position)
+    // converted to canvas coordinates.
     public class SkiaControlDesigner : ControlDesigner
     {
         public override void Initialize(IComponent component)
@@ -33,6 +37,47 @@ namespace Beep.Skia.Winform.Controls
                 var skComp = wrapper.SkiaComponent;
                 if (skComp != null)
                 {
+                    // Try to position at the current mouse cursor position (design-time drop point)
+                    try
+                    {
+                        var behaviorService = component.Site?.GetService(typeof(BehaviorService)) as BehaviorService;
+                        if (behaviorService != null)
+                        {
+                            // Get cursor position in screen coords, convert to host control coords
+                            var screenPoint = Cursor.Position;
+                            var clientPoint = primary.PointToClient(screenPoint);
+
+                            // Convert to canvas coords (account for SKControl position within host)
+                            if (primary.Controls.Count > 0 && primary.Controls[0] is Control skView)
+                            {
+                                int vx = clientPoint.X - skView.Left;
+                                int vy = clientPoint.Y - skView.Top;
+                                if (vx >= 0 && vy >= 0 && vx <= skView.Width && vy <= skView.Height)
+                                {
+                                    // Offset to center the component on the drop point
+                                    skComp.X = Math.Max(0, vx - skComp.Width / 2);
+                                    skComp.Y = Math.Max(0, vy - skComp.Height / 2);
+                                }
+                                else
+                                {
+                                    // Drop was outside the SKControl area — use default center
+                                    skComp.X = Math.Max(20, (skView.Width - skComp.Width) / 2);
+                                    skComp.Y = Math.Max(20, (skView.Height - skComp.Height) / 2);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Fallback: position near center of host
+                            skComp.X = Math.Max(20, (primary.Width - skComp.Width) / 2);
+                            skComp.Y = Math.Max(20, (primary.Height - skComp.Height) / 2);
+                        }
+                    }
+                    catch
+                    {
+                        // If positioning fails, leave at wrapper's default position
+                    }
+
                     // Add to the host drawing manager for immediate design-time preview.
                     primary.DrawingManager.AddComponent(skComp);
 

@@ -616,5 +616,32 @@ namespace Beep.Skia.ERD
                 catch { }
             }
         }
+
+        /// <summary>
+        /// Creates an ERDEntity from a parsed DDL table definition.
+        /// </summary>
+        public static ERDEntity FromTableInfo(DDLImporter.TableInfo table)
+        {
+            var entity = new ERDEntity
+            {
+                EntityName = table.TableName,
+                Width = 220f
+            };
+            var rows = new List<string>();
+            foreach (var col in table.Columns)
+            {
+                var prefix = col.IsPrimaryKey ? "*" : " ";
+                var nullable = col.IsNullable ? "" : " NOT NULL";
+                var auto = col.IsAutoIncrement ? " AUTO" : "";
+                var len = col.MaxLength.HasValue ? $"({col.MaxLength})" : "";
+                rows.Add($"{prefix}{col.Name}:{col.DataType}{len}{nullable}{auto}");
+            }
+            entity.RowsText = string.Join("\n", rows);
+
+            // Auto-size height based on row count
+            entity.Height = Math.Max(80f, 24f + 18f * table.Columns.Count + 16f);
+
+            return entity;
+        }
     }
 }

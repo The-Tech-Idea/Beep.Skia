@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connection System | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="skia-component.html">Core Concepts</a><span>&rsaquo;</span> <span>Connection System</span></nav>
+<div class="page-header"><h1>Connection System</h1><p class="page-subtitle">ConnectionLine (1145 lines), ConnectionPoint, routing, animation, and ERD multiplicity</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia.Connections</code> &mdash; <strong>Key Files:</strong> <code>ConnectionLine.cs</code> (1145 lines), <code>ConnectionManager.cs</code>, <code>ConnectionPoint.cs</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#connectionline">ConnectionLine</a></li>
+    <li><a href="#animation-styles">Animation Styles</a></li>
+    <li><a href="#routing-modes">Routing Modes</a></li>
+    <li><a href="#erd-multiplicity">ERD Multiplicity</a></li>
+    <li><a href="#connection-validation">Connection Validation</a></li>
+    <li><a href="#labels">Labels</a></li>
+  </ul>
+</div>
+
+<section class="section" id="connectionline">
+  <h2>ConnectionLine</h2>
+  <p><code>ConnectionLine</code> is a 1145-line class that renders a visual link between two <code>IConnectionPoint</code> instances. It manages the full lifecycle of a connection: path computation, visual styling, hit testing, label placement, and animation. Connection lines are the primary mechanism for expressing relationships in Beep.Skia diagrams.</p>
+
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>StartPoint</code></td><td><code>IConnectionPoint</code></td><td>The source port. Usually an <code>OutPoint</code> on the origin component.</td></tr>
+      <tr><td><code>EndPoint</code></td><td><code>IConnectionPoint</code></td><td>The target port. Usually an <code>InPoint</code> on the destination component.</td></tr>
+      <tr><td><code>LineStyle</code></td><td><code>LineStyle</code></td><td><code>Solid</code>, <code>Dashed</code>, <code>Dotted</code>, or <code>DashDot</code> pattern.</td></tr>
+      <tr><td><code>RoutingMode</code></td><td><code>RoutingMode</code></td><td><code>Straight</code>, <code>Orthogonal</code>, or <code>Curved</code>. See <a href="#routing-modes">Routing Modes</a>.</td></tr>
+      <tr><td><code>StartArrowhead</code></td><td><code>ArrowheadStyle</code></td><td>Arrow/stroke decoration at the start of the line. <code>None</code>, <code>FilledTriangle</code>, <code>OpenTriangle</code>, <code>Diamond</code>, <code>Circle</code>.</td></tr>
+      <tr><td><code>EndArrowhead</code></td><td><code>ArrowheadStyle</code></td><td>Arrow/stroke decoration at the end of the line.</td></tr>
+      <tr><td><code>StrokeWidth</code></td><td><code>float</code></td><td>Line thickness in logical units. Default: <code>2.0f</code>.</td></tr>
+      <tr><td><code>StrokeColor</code></td><td><code>SKColor</code></td><td>Line color. Defaults to <code>SKColors.Gray</code> or theme-dependent.</td></tr>
+      <tr><td><code>AnimationStyle</code></td><td><code>AnimationStyle</code></td><td>Visual animation applied to the line. See <a href="#animation-styles">Animation Styles</a>.</td></tr>
+      <tr><td><code>Labels</code></td><td><code>List&lt;ConnectionLabel&gt;</code></td><td>Text labels positioned along the line. See <a href="#labels">Labels</a>.</td></tr>
+      <tr><td><code>IsSelected</code></td><td><code>bool</code></td><td>Selection state. Selected lines render with a highlight color and visible control points.</td></tr>
+      <tr><td><code>ControlPoints</code></td><td><code>List&lt;SKPoint&gt;</code></td><td>Intermediate waypoints for the line path. Used by orthogonal routing for bend points.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="animation-styles">
+  <h2>Animation Styles</h2>
+  <p>Connection lines support configurable animations that provide visual feedback about flow direction and connection state. Animations are rendered on a separate frame timer and composited onto the line:</p>
+
+  <table>
+    <thead>
+      <tr><th>Style</th><th>Enum Value</th><th>Visual Effect</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>None</strong></td><td><code>AnimationStyle.None</code></td><td>Static line. No animation overhead.</td></tr>
+      <tr><td><strong>Dots</strong></td><td><code>AnimationStyle.Dots</code></td><td>Small circles travel along the line from start to end, resembling data packets.</td></tr>
+      <tr><td><strong>Dashes</strong></td><td><code>AnimationStyle.Dashes</code></td><td>Dashed segments scroll along the line, creating a marquee-style flow indicator. Phase offset animates continuously.</td></tr>
+      <tr><td><strong>Wave</strong></td><td><code>AnimationStyle.Wave</code></td><td>A sinusoidal displacement is applied perpendicular to the line path, creating a snake-like wave motion.</td></tr>
+      <tr><td><strong>Gradient</strong></td><td><code>AnimationStyle.Gradient</code></td><td>A linear gradient shifts along the line, cycling through two colors to indicate active flow.</td></tr>
+      <tr><td><strong>Particles</strong></td><td><code>AnimationStyle.Particles</code></td><td>Multiple small particles emanate from the start point and travel toward the end point at varying speeds.</td></tr>
+      <tr><td><strong>Pulse</strong></td><td><code>AnimationStyle.Pulse</code></td><td>The entire line pulses between two opacity levels with a smooth ease-in-out curve. Good for &quot;active connection&quot; state.</td></tr>
+      <tr><td><strong>Arrows</strong></td><td><code>AnimationStyle.Arrows</code></td><td>Small arrow shapes travel along the line, explicitly showing the flow direction. Most commonly used style.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>AnimatedFlowLines</h3>
+  <p>The <code>AnimatedFlowLines</code> feature is a higher-level abstraction that batches multiple animated connections and manages their shared animation timer. When enabled:</p>
+  <ul>
+    <li>A single <code>System.Timers.Timer</code> drives all animated connections at a configurable frame rate (default: 30 FPS).</li>
+    <li>Each connection tracks its own phase offset for independent animation timing.</li>
+    <li>The timer is automatically paused when the diagram is not visible (tab switch, minimize) to conserve CPU.</li>
+    <li>Animation speed is controlled per-connection via <code>AnimationSpeed</code> (range: 0.25x to 4.0x).</li>
+  </ul>
+
+  <div class="code-example">
+    <h3>Enabling Connection Animation</h3>
+    <pre><code class="language-csharp">var connection = drawingManager.Connect(sourcePort, targetPort);
+connection.AnimationStyle = AnimationStyle.Arrows;
+connection.AnimationSpeed = 2.0f;
+connection.AnimatedFlowLines = true;
+
+drawingManager.EnableFlowAnimation();</code></pre>
+  </div>
+</section>
+
+<section class="section" id="routing-modes">
+  <h2>Routing Modes</h2>
+  <p>The connection system supports three routing modes that determine how the line path is computed between the start and end ports:</p>
+
+  <table>
+    <thead>
+      <tr><th>Mode</th><th>Enum Value</th><th>Path</th><th>Use Case</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Straight</strong></td>
+        <td><code>RoutingMode.Straight</code></td>
+        <td>Direct line segment from start to end. No intermediate points.</td>
+        <td>Simple diagrams, quick prototyping, mind maps.</td>
+      </tr>
+      <tr>
+        <td><strong>Orthogonal</strong></td>
+        <td><code>RoutingMode.Orthogonal</code></td>
+        <td>Axis-aligned path with 90-degree bends. Automatically computed bend points. Honors obstacle avoidance.</td>
+        <td>Flowcharts, network diagrams, ERD — most professional diagram types.</td>
+      </tr>
+      <tr>
+        <td><strong>Curved</strong></td>
+        <td><code>RoutingMode.Curved</code></td>
+        <td>Smooth cubic Bezier curve between endpoints. Control points automatically positioned for natural curvature.</td>
+        <td>Mind maps, concept diagrams, UML associations, organic layouts.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Orthogonal Routing Details</h3>
+  <p>Orthogonal routing is the most sophisticated mode. The algorithm:</p>
+  <ol>
+    <li>Determines the exit direction from the start port (North, South, East, West) based on port placement.</li>
+    <li>Determines the entry direction into the end port.</li>
+    <li>Computes intermediate bend points that produce a clean, axis-aligned path with minimal crossings.</li>
+    <li>Applies a configurable <code>CornerRadius</code> to round the 90-degree bends for a polished appearance.</li>
+    <li>Automatically adjusts when components are moved, calling <code>RecalculateRoute()</code> on the next render cycle.</li>
+  </ol>
+
+  <div class="code-example">
+    <h3>Configuring Connection Routing</h3>
+    <pre><code class="language-csharp">connection.RoutingMode = RoutingMode.Orthogonal;
+connection.CornerRadius = 6;
+connection.RecomputeOnMove = true;
+
+connection.RoutingMode = RoutingMode.Curved;
+connection.CurveTension = 0.5f;
+
+connection.RoutingMode = RoutingMode.Straight;</code></pre>
+  </div>
+</section>
+
+<section class="section" id="erd-multiplicity">
+  <h2>ERD Multiplicity</h2>
+  <p>The connection system includes specialized support for Entity-Relationship Diagram (ERD) semantics, including multiplicity markers and row-level connections:</p>
+
+  <h3>Endpoint Markers</h3>
+  <p>Multiplicity is expressed as visual markers at each end of the connection line. The marker set follows standard ERD notation:</p>
+
+  <table>
+    <thead>
+      <tr><th>Multiplicity</th><th>Start Marker</th><th>End Marker</th><th>Meaning</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>One-to-One (1:1)</strong></td><td>Single vertical bar</td><td>Single vertical bar</td><td>Each instance of entity A relates to exactly one instance of entity B.</td></tr>
+      <tr><td><strong>One-to-Many (1:N)</strong></td><td>Single vertical bar</td><td>Crow&#39;s foot (three lines)</td><td>Each instance of entity A relates to zero or more instances of entity B.</td></tr>
+      <tr><td><strong>Many-to-Many (M:N)</strong></td><td>Crow&#39;s foot (three lines)</td><td>Crow&#39;s foot (three lines)</td><td>Instances of A and B have a many-to-many relationship. Typically resolved via a junction table.</td></tr>
+      <tr><td><strong>Zero-or-One (0..1)</strong></td><td>Circle</td><td>Single vertical bar</td><td>Optional participation: an instance of A may or may not relate to an instance of B.</td></tr>
+      <tr><td><strong>Zero-or-Many (0..N)</strong></td><td>Circle</td><td>Crow&#39;s foot (three lines)</td><td>Optional participation with multiple possible related instances.</td></tr>
+      <tr><td><strong>Exactly-One (1)</strong></td><td>Double vertical bar</td><td>—</td><td>Mandatory participation: every instance of A must relate to exactly one instance of B.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Row-Level Connection Semantics</h3>
+  <p>For ERD diagrams, connections can be established at the column level rather than the entity level. When a <code>ConnectionPoint</code> has a <code>RowId</code> set, the connection targets a specific field (row) within an entity. This enables:</p>
+  <ul>
+    <li>Foreign key relationships that link a specific column in one entity to a primary key column in another.</li>
+    <li>Visual connection lines that attach to individual row entries within an ERD entity box.</li>
+    <li>Schema generation that correctly emits <code>FOREIGN KEY (column) REFERENCES table(column)</code> constraints.</li>
+  </ul>
+
+  <div class="code-example">
+    <h3>Row-Level Connection Setup</h3>
+    <pre><code class="language-csharp">var fkPort = ordersEntity.OutPoints.First(p => p.RowId == "CustomerId");
+fkPort.DataType = typeof(Guid);
+
+var pkPort = customersEntity.OutPoints.First(p => p.RowId == "Id");
+
+var fkConnection = drawingManager.Connect(fkPort, pkPort);
+fkConnection.StartMultiplicity = Multiplicity.ZeroOrMany;
+fkConnection.EndMultiplicity = Multiplicity.ExactlyOne;</code></pre>
+  </div>
+</section>
+
+<section class="section" id="connection-validation">
+  <h2>Connection Validation</h2>
+  <p>Before a connection is established, the <code>ConnectionManager</code> runs a validation pipeline to ensure diagram integrity:</p>
+
+  <table>
+    <thead>
+      <tr><th>Validation Rule</th><th>Description</th><th>Violation Behavior</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Type Compatibility</strong></td><td>The <code>DataType</code> of the start and end ports must be compatible. Exact match or assignable via inheritance. Null-type ports accept any type.</td><td>Connection rejected. Status indicator shows red &quot;type mismatch&quot; icon on hover.</td></tr>
+      <tr><td><strong>Port Availability</strong></td><td>If a port has <code>MaxConnections = 1</code> and is already connected, additional connections are rejected.</td><td>Connection rejected. Port renders with a distinct &quot;occupied&quot; visual state.</td></tr>
+      <tr><td><strong>No Self-Loops</strong></td><td>A component cannot connect to itself unless <code>AllowSelfLoops</code> is explicitly set on the port.</td><td>Connection rejected. Visual feedback snaps the drag line back to the start port.</td></tr>
+      <tr><td><strong>Duplicate Prevention</strong></td><td>Two components cannot have more than one connection between the same pair of ports.</td><td>Connection rejected. Existing line flashes to indicate the duplicate attempt.</td></tr>
+      <tr><td><strong>Direction Validation</strong></td><td>An <code>OutPoint</code> can only connect to an <code>InPoint</code> (or vice versa). Out-to-out and in-to-in connections are rejected.</td><td>Connection rejected. Port changes cursor to a &quot;not allowed&quot; icon during drag.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Custom Connection Validation</h3>
+    <pre><code class="language-csharp">public class CustomConnectionValidator : IConnectionValidator
+{
+    public bool Validate(IConnectionPoint start, IConnectionPoint end,
+                         out string rejectionReason)
+    {
+        if (start.Owner is FlowChartNode source &&
+            end.Owner is FlowChartNode target &&
+            source.Department != target.Department)
+        {
+            rejectionReason = "Cannot connect nodes in different departments.";
+            return false;
+        }
+
+        rejectionReason = null;
+        return true;
+    }
+}
+
+drawingManager.ConnectionValidator = new CustomConnectionValidator();</code></pre>
+  </div>
+</section>
+
+<section class="section" id="labels">
+  <h2>Labels</h2>
+  <p>Connection lines support multiple text labels positioned at configurable locations along the line path. Labels are stored in the <code>Labels</code> collection and rendered during the line&#39;s draw cycle:</p>
+
+  <table>
+    <thead>
+      <tr><th>Label Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Text</code></td><td><code>string</code></td><td>Display text. Supports newline characters for multi-line labels.</td></tr>
+      <tr><td><code>Position</code></td><td><code>LabelPosition</code></td><td><code>Start</code>, <code>Middle</code>, or <code>End</code> — the position along the line as a proportion (0.0 to 1.0).</td></tr>
+      <tr><td><code>Offset</code></td><td><code>SKPoint</code></td><td>Pixel offset from the computed line position. Positive Y offsets push the label above the line.</td></tr>
+      <tr><td><code>FontSize</code></td><td><code>float</code></td><td>Font size in logical units. Default: <code>12f</code>.</td></tr>
+      <tr><td><code>FontColor</code></td><td><code>SKColor</code></td><td>Text color. Default: <code>SKColors.Black</code> or theme-dependent.</td></tr>
+      <tr><td><code>BackgroundColor</code></td><td><code>SKColor</code></td><td>Optional background fill behind the text to improve readability over the line.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Adding Labels to a Connection</h3>
+    <pre><code class="language-csharp">connection.Labels.Add(new ConnectionLabel
+{
+    Text = "has many",
+    Position = LabelPosition.Middle,
+    Offset = new SKPoint(0, -12),
+    FontColor = SKColors.DarkSlateGray
+});
+
+connection.Labels.Add(new ConnectionLabel
+{
+    Text = "1",
+    Position = LabelPosition.Start,
+    Offset = new SKPoint(8, -8),
+    FontSize = 10f
+});
+
+connection.Labels.Add(new ConnectionLabel
+{
+    Text = "N",
+    Position = LabelPosition.End,
+    Offset = new SKPoint(-8, -8),
+    FontSize = 10f
+});</code></pre>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

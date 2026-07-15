@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Authors>The Tech Idea</Authors>
+		<Company>The Tech Idea</Company>
+		<Copyright>2025</Copyright>
+		<PackageProjectUrl>https://github.com/The-Tech-Idea/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/The-Tech-Idea/Beep.Skia</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Description>Avalonia host controls for Beep.Skia components</Description>
+		<PackageTags>skia, avalonia, controls, diagramming, cross-platform</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" Version="3.119.0" />
+		<PackageReference Include="SkiaSharp.Views.Avalonia" Version="3.119.0" />
+		<PackageReference Include="Avalonia" Version="11.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Beep.Skia\Beep.Skia.csproj" />
+		<ProjectReference Include="..\Beep.Skia.Model\Beep.Skia.Model.csproj" />
+	</ItemGroup>
+</Project>

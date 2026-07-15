@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serialization | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="skia-component.html">Core Concepts</a><span>&rsaquo;</span> <span>Serialization</span></nav>
+<div class="page-header"><h1>Serialization</h1><p class="page-subtitle">JSON-based diagram persistence with DrawingManager.ToDto() and LoadFromDto()</p></div>
+
+<p><strong>Key Methods:</strong> <code>ToDto()</code>, <code>LoadFromDto()</code> &mdash; <strong>DTO Types:</strong> <code>DiagramDto</code>, <code>ComponentDto</code>, <code>ConnectionDto</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#serialization-flow">Serialization Flow</a></li>
+    <li><a href="#component-serialization">Component Serialization</a></li>
+    <li><a href="#connection-serialization">Connection Serialization</a></li>
+    <li><a href="#deserialization">Deserialization</a></li>
+    <li><a href="#versioning">Versioning</a></li>
+    <li><a href="#example">Complete Save/Load Example</a></li>
+  </ul>
+</div>
+
+<section class="section" id="serialization-flow">
+  <h2>Serialization Flow</h2>
+  <p>The serialization system transforms the live diagram state into a portable JSON representation and back again. The process uses plain Data Transfer Objects (DTOs) serialized via <code>System.Text.Json</code>, ensuring no dependency on Newtonsoft.Json or binary formatters.</p>
+
+  <div class="architecture-diagram">
+    <div class="arch-flow">
+      <div class="arch-box">DrawingManager</div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-box">ToDto()</div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-box secondary">DiagramDto</div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-box secondary">JSON String</div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-box secondary">File / Stream</div>
+    </div>
+    <div class="arch-flow reverse">
+      <div class="arch-box">DrawingManager</div>
+      <div class="arch-arrow">&larr;</div>
+      <div class="arch-box">LoadFromDto()</div>
+      <div class="arch-arrow">&larr;</div>
+      <div class="arch-box secondary">DiagramDto</div>
+      <div class="arch-arrow">&larr;</div>
+      <div class="arch-box secondary">JSON String</div>
+      <div class="arch-arrow">&larr;</div>
+      <div class="arch-box secondary">File / Stream</div>
+    </div>
+  </div>
+
+  <p>The <code>DiagramDto</code> is the root container:</p>
+
+  <div class="code-example">
+    <h3>DiagramDto Structure</h3>
+    <pre><code class="language-csharp">public class DiagramDto
+{
+    public string SchemaVersion { get; set; } = "3.0";
+    public string DiagramType { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime ModifiedAt { get; set; }
+
+    public List&lt;ComponentDto&gt; Components { get; set; } = new();
+    public List&lt;ConnectionDto&gt; Connections { get; set; } = new();
+
+    public Dictionary&lt;string, string&gt; Metadata { get; set; } = new();
+    public ViewportDto Viewport { get; set; }
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="component-serialization">
+  <h2>Component Serialization</h2>
+  <p>Each <code>SkiaComponent</code> on the canvas is serialized into a <code>ComponentDto</code>. The DTO captures the minimum information needed to reconstruct the component: its position, size, type identity, configurable properties, and connection-point GUIDs:</p>
+
+  <div class="code-example">
+    <h3>ComponentDto Structure</h3>
+    <pre><code class="language-csharp">public class ComponentDto
+{
+    public Guid Id { get; set; }
+    public string TypeName { get; set; }
+    public float X { get; set; }
+    public float Y { get; set; }
+    public float Width { get; set; }
+    public float Height { get; set; }
+    public int ZOrder { get; set; }
+    public bool IsVisible { get; set; } = true;
+
+    public Dictionary&lt;string, object&gt; NodeProperties { get; set; } = new();
+
+    public List&lt;ConnectionPointDto&gt; InPoints { get; set; } = new();
+    public List&lt;ConnectionPointDto&gt; OutPoints { get; set; } = new();
+
+    public string Tag { get; set; }
+}
+
+public class ConnectionPointDto
+{
+    public Guid Id { get; set; }
+    public string PortType { get; set; }
+    public string DataTypeName { get; set; }
+    public string RowId { get; set; }
+    public int MaxConnections { get; set; } = 1;
+}</code></pre>
+  </div>
+
+  <p><strong>NodeProperties serialization</strong> converts the <code>ParameterInfo</code> dictionary into a flat <code>Dictionary&lt;string, object&gt;</code>. Only the <code>Value</code> is persisted — metadata like <code>DisplayName</code>, <code>Category</code>, and <code>EditorHint</code> are re-established during deserialization when the component&#39;s <code>Initialize()</code> method runs.</p>
+
+  <div class="code-example">
+    <h3>ToDto() — Serializing Components</h3>
+    <pre><code class="language-csharp">public ComponentDto ComponentToDto(SkiaComponent component)
+{
+    var dto = new ComponentDto
+    {
+        Id = component.Id,
+        TypeName = component.GetType().FullName,
+        X = component.X,
+        Y = component.Y,
+        Width = component.Width,
+        Height = component.Height,
+        ZOrder = component.ZOrder,
+        IsVisible = component.IsVisible
+    };
+
+    foreach (var kvp in component.NodeProperties)
+    {
+        dto.NodeProperties[kvp.Key] = kvp.Value.Value;
+    }
+
+    foreach (var port in component.InPoints)
+    {
+        dto.InPoints.Add(new ConnectionPointDto
+        {
+            Id = port.Id,
+            PortType = "In",
+            DataTypeName = port.DataType?.FullName,
+            RowId = port.RowId,
+            MaxConnections = port.MaxConnections
+        });
+    }
+
+    foreach (var port in component.OutPoints)
+    {
+        dto.OutPoints.Add(new ConnectionPointDto
+        {
+            Id = port.Id,
+            PortType = "Out",
+            DataTypeName = port.DataType?.FullName,
+            RowId = port.RowId,
+            MaxConnections = port.MaxConnections
+        });
+    }
+
+    return dto;
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="connection-serialization">
+  <h2>Connection Serialization</h2>
+  <p>Connection lines are serialized by reference — they store the GUIDs of their start and end <code>ConnectionPoint</code> IDs rather than embedding the full port data. During deserialization, a GUID-to-port lookup index resolves these references:</p>
+
+  <div class="code-example">
+    <h3>ConnectionDto Structure</h3>
+    <pre><code class="language-csharp">public class ConnectionDto
+{
+    public Guid Id { get; set; }
+    public Guid StartPointId { get; set; }
+    public Guid EndPointId { get; set; }
+
+    public string LineStyle { get; set; } = "Solid";
+    public string RoutingMode { get; set; } = "Straight";
+    public string StartArrowhead { get; set; } = "None";
+    public string EndArrowhead { get; set; } = "FilledTriangle";
+    public float StrokeWidth { get; set; } = 2.0f;
+    public string StrokeColor { get; set; }
+
+    public string AnimationStyle { get; set; } = "None";
+    public float AnimationSpeed { get; set; } = 1.0f;
+
+    public string StartMultiplicity { get; set; }
+    public string EndMultiplicity { get; set; }
+
+    public float CornerRadius { get; set; }
+    public float CurveTension { get; set; } = 0.5f;
+
+    public List&lt;LabelDto&gt; Labels { get; set; } = new();
+}
+
+public class LabelDto
+{
+    public string Text { get; set; }
+    public string Position { get; set; }
+    public float OffsetX { get; set; }
+    public float OffsetY { get; set; }
+    public float FontSize { get; set; } = 12f;
+    public string FontColor { get; set; }
+    public string BackgroundColor { get; set; }
+}</code></pre>
+  </div>
+
+  <p>Line style properties are serialized as strings (enum names) for human-readable JSON. The deserializer parses these back to enum values using <code>Enum.Parse()</code> with case-insensitive matching.</p>
+</section>
+
+<section class="section" id="deserialization">
+  <h2>Deserialization</h2>
+  <p>Loading a diagram from JSON involves several coordinated steps to reconstruct the full object graph:</p>
+
+  <ol>
+    <li><strong>Parse JSON:</strong> The JSON string is deserialized into a <code>DiagramDto</code> using <code>System.Text.Json</code>.</li>
+    <li><strong>Look Up Types:</strong> For each <code>ComponentDto.TypeName</code>, the <code>SkiaComponentRegistry</code> resolves the corresponding CLR type from its cache of scanned assemblies.</li>
+    <li><strong>Instantiate Components:</strong> Components are created via <code>Activator.CreateInstance()</code> and their <code>Initialize()</code> method is called. This re-establishes the <code>NodeProperties</code> dictionary with all metadata (DisplayName, Category, EditorHint).</li>
+    <li><strong>Restore Property Values:</strong> The saved values from <code>ComponentDto.NodeProperties</code> are applied to the freshly initialized dictionary.</li>
+    <li><strong>Build Port Index:</strong> All connection points across all components are indexed by GUID in a flat <code>Dictionary&lt;Guid, IConnectionPoint&gt;</code>.</li>
+    <li><strong>Restore Connections:</strong> For each <code>ConnectionDto</code>, the start and end ports are looked up in the GUID index and a new <code>ConnectionLine</code> is created with the saved style properties.</li>
+    <li><strong>Restore Viewport:</strong> <code>ZoomFactor</code> and <code>PanOffset</code> are restored from the <code>ViewportDto</code>.</li>
+  </ol>
+
+  <div class="code-example">
+    <h3>LoadFromDto() — Deserialization Core Logic</h3>
+    <pre><code class="language-csharp">public void LoadFromDto(DiagramDto dto)
+{
+    ClearCanvas();
+
+    var portIndex = new Dictionary&lt;Guid, IConnectionPoint&gt;();
+
+    foreach (var cDto in dto.Components)
+    {
+        var type = SkiaComponentRegistry.ResolveType(cDto.TypeName);
+        if (type == null)
+        {
+            Logger.Warn($"Unknown component type: {cDto.TypeName}");
+            continue;
+        }
+
+        var component = (SkiaComponent)Activator.CreateInstance(type);
+        component.Initialize();
+
+        component.Id = cDto.Id;
+        component.X = cDto.X;
+        component.Y = cDto.Y;
+        component.Width = cDto.Width;
+        component.Height = cDto.Height;
+        component.ZOrder = cDto.ZOrder;
+        component.IsVisible = cDto.IsVisible;
+
+        foreach (var kvp in cDto.NodeProperties)
+        {
+            if (component.NodeProperties.TryGetValue(kvp.Key, out var param))
+            {
+                param.Value = kvp.Value;
+            }
+        }
+
+        ApplyPortDtos(component, cDto.InPoints, ref portIndex);
+        ApplyPortDtos(component, cDto.OutPoints, ref portIndex);
+
+        AddComponent(component);
+    }
+
+    foreach (var connDto in dto.Connections)
+    {
+        if (!portIndex.TryGetValue(connDto.StartPointId, out var startPort))
+            continue;
+        if (!portIndex.TryGetValue(connDto.EndPointId, out var endPort))
+            continue;
+
+        var connection = Connect(startPort, endPort);
+        ApplyConnectionDto(connection, connDto);
+    }
+
+    if (dto.Viewport != null)
+    {
+        ZoomFactor = dto.Viewport.Zoom;
+        PanOffset = new SKPoint(dto.Viewport.PanX, dto.Viewport.PanY);
+    }
+
+    Invalidate();
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="versioning">
+  <h2>Versioning</h2>
+  <p>The <code>SchemaVersion</code> property in <code>DiagramDto</code> provides backward compatibility as the serialization format evolves:</p>
+
+  <table>
+    <thead>
+      <tr><th>Version</th><th>Changes</th><th>Compatibility</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>"1.0"</code></td><td>Initial format. Components serialized with position, size, and type name only.</td><td>Legacy. Auto-upgraded to 3.0 on load.</td></tr>
+      <tr><td><code>"2.0"</code></td><td>Added <code>NodeProperties</code> dictionary and <code>ConnectionPointDto</code> GUIDs.</td><td>Supported. Minor props defaulted on load.</td></tr>
+      <tr><td><code>"3.0"</code></td><td>Added <code>Labels</code>, <code>AnimationStyle</code>, <code>Multiplicity</code>, and <code>Metadata</code>. Added <code>ViewportDto</code>.</td><td>Current. Full feature parity.</td></tr>
+    </tbody>
+  </table>
+
+  <p>Version migration is handled transparently during <code>LoadFromDto()</code>:</p>
+
+  <div class="code-example">
+    <h3>Version Migration</h3>
+    <pre><code class="language-csharp">private DiagramDto MigrateDto(DiagramDto dto)
+{
+    if (dto.SchemaVersion == "1.0")
+    {
+        foreach (var c in dto.Components)
+        {
+            c.NodeProperties ??= new Dictionary&lt;string, object&gt;();
+            c.InPoints ??= new List&lt;ConnectionPointDto&gt;();
+            c.OutPoints ??= new List&lt;ConnectionPointDto&gt;();
+        }
+        dto.SchemaVersion = "3.0";
+    }
+    else if (dto.SchemaVersion == "2.0")
+    {
+        foreach (var conn in dto.Connections)
+        {
+            conn.Labels ??= new List&lt;LabelDto&gt;();
+            conn.AnimationStyle ??= "None";
+        }
+        dto.Metadata ??= new Dictionary&lt;string, string&gt;();
+        dto.SchemaVersion = "3.0";
+    }
+
+    return dto;
+}</code></pre>
+  </div>
+
+  <div class="admonition note">
+    <p class="admonition-title">Note</p>
+    <p>Serialized files always use the latest <code>SchemaVersion</code>. The migration logic only executes when loading older files. This ensures that newly saved diagrams always use the current format.</p>
+  </div>
+</section>
+
+<section class="section" id="example">
+  <h2>Complete Save/Load Example</h2>
+  <p>Below is a complete end-to-end example demonstrating saving a diagram to a file and loading it back:</p>
+
+  <div class="code-example">
+    <h3>Saving a Diagram</h3>
+    <pre><code class="language-csharp">using System.Text.Json;
+
+var drawingManager = new DrawingManager();
+drawingManager.AttachCanvas(canvas);
+
+var start = new FlowChartNode("Start");
+start.X = 100; start.Y = 100;
+drawingManager.AddComponent(start);
+
+var process = new FlowChartNode("Process Data");
+process.X = 400; process.Y = 100;
+drawingManager.AddComponent(process);
+
+var decision = new DecisionNode("Valid?");
+decision.X = 250; decision.Y = 300;
+drawingManager.AddComponent(decision);
+
+drawingManager.Connect(start.OutPoints[0], process.InPoints[0]);
+drawingManager.Connect(process.OutPoints[0], decision.InPoints[0]);
+
+var dto = drawingManager.ToDto();
+dto.Metadata["Author"] = "Jane Smith";
+dto.Metadata["Description"] = "Order validation workflow";
+
+var options = new JsonSerializerOptions
+{
+    WriteIndented = true,
+    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+};
+
+string json = JsonSerializer.Serialize(dto, options);
+File.WriteAllText("workflow_diagram.json", json);
+
+Console.WriteLine($"Saved diagram with {dto.Components.Count} components " +
+                  $"and {dto.Connections.Count} connections.");</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Loading a Diagram</h3>
+    <pre><code class="language-csharp">string json = File.ReadAllText("workflow_diagram.json");
+
+var options = new JsonSerializerOptions
+{
+    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+};
+
+var dto = JsonSerializer.Deserialize&lt;DiagramDto&gt;(json, options);
+
+var drawingManager = new DrawingManager();
+drawingManager.AttachCanvas(canvas);
+
+drawingManager.LoadFromDto(dto);
+
+canvas.Invalidate();
+
+Console.WriteLine($"Loaded: {drawingManager.Components.Count} components, " +
+                  $"{drawingManager.Connections.Count} connections");
+Console.WriteLine($"Viewport: zoom={drawingManager.ZoomFactor}, " +
+                  $"pan=({drawingManager.PanOffset.X}, {drawingManager.PanOffset.Y})");
+
+if (dto.Metadata.TryGetValue("Author", out var author))
+{
+    Console.WriteLine($"Diagram author: {author}");
+}</code></pre>
+  </div>
+</section>
+
+<style>
+.architecture-diagram { margin: 1.5rem 0; }
+.arch-flow { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.arch-flow.reverse { flex-direction: row-reverse; }
+.arch-box { padding: 0.4rem 1rem; border-radius: var(--border-radius); border: 2px solid var(--color-brand-content); background: var(--color-code-background); font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
+.arch-box.secondary { border: 1px dashed var(--color-foreground-muted); font-weight: 400; }
+.arch-arrow { font-size: 1.3rem; font-weight: 700; color: var(--color-brand-content); }
+</style>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

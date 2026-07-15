@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Graph Visualization Family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="diagram-families/flowchart.html">Diagram Families</a><span>&rsaquo;</span> <span>Network Graph Visualization Family</span></nav><div class="page-header"><h1>Network Graph Visualization Family</h1><p class="page-subtitle">Network graph analysis and visualization with 12 components including node clustering, path finding, centrality measures, community detection, and graph navigation.</p></div>
+<div class="toc"><h3>Table of Contents</h3><ul><li><a href="#overview">Overview</a></li><li><a href="#node-types">Node Types</a></li><li><a href="#ports">Connection Points</a></li><li><a href="#conventions">Connection Conventions</a></li><li><a href="#example">Usage Example</a></li></ul></div><section class="section" id="overview"><h2>Overview</h2><p><strong>Base Control:</strong> <code>NetworkControl : MaterialControl</code><br><strong>Namespace:</strong> <code>Beep.Skia.Network</code></p><p>The <strong>NetworkControl</strong> is the root control for this diagram family. It inherits <code>MaterialControl</code> and provides shared port management, styling, and template methods for all nodes in the family.</p><p>This family contains <strong>12 node types</strong>.</p></section><section class="section" id="node-types"><h2>Node Types</h2><table><thead><tr><th>Node Class</th><th>Shape</th><th>Description</th></tr></thead><tbody><tr><td><code>NetworkNode</code></td><td>Circle with label</td><td>Graph node/vertex with position, size, color, and label.</td></tr>
+<tr><td><code>NetworkLink</code></td><td>Line with weight</td><td>Weighted edge between two nodes. Supports directed/undirected.</td></tr>
+<tr><td><code>NetworkGraph</code></td><td>N/A (data structure)</td><td>Graph data structure: adjacency list, node/link management, serialization.</td></tr>
+<tr><td><code>PathFinder</code></td><td>N/A (algorithm)</td><td>Shortest path algorithms: Dijkstra, A*, Floyd-Warshall.</td></tr>
+<tr><td><code>CentralityMeasure</code></td><td>N/A (algorithm)</td><td>Node centrality: degree, betweenness, closeness, eigenvector, PageRank.</td></tr>
+<tr><td><code>CommunityDetector</code></td><td>N/A (algorithm)</td><td>Community detection: Louvain, label propagation, Girvan-Newman.</td></tr>
+<tr><td><code>GraphNavigator</code></td><td>N/A (interaction)</td><td>Graph exploration controls: zoom, pan, focus/unfocus, expand/collapse.</td></tr>
+<tr><td><code>LayoutSelector</code></td><td>N/A (UI)</td><td>Layout algorithm picker: force-directed, circular, hierarchical, grid, radial.</td></tr>
+<tr><td><code>FilterPanel</code></td><td>N/A (UI)</td><td>Node/link filtering by attributes, degree threshold, community membership.</td></tr>
+<tr><td><code>ExportPanel</code></td><td>N/A (UI)</td><td>Export graph as PNG, SVG, JSON, GEXF, GraphML.</td></tr>
+<tr><td><code>NodeCluster</code></td><td>Group/hull</td><td>Visual cluster grouping of related nodes with convex hull or bounding box.</td></tr>
+<tr><td><code>NetworkAnalyzer</code></td><td>N/A (algorithm)</td><td>Graph statistics: density, diameter, clustering coefficient, modularity.</td></tr></tbody></table></section><div id="networknode"><h3>NetworkNode</h3><p>Graph node/vertex with position, size, color, and label.</p><table><tr><th style="width:30%">Shape</th><td>Circle with label</td></tr><tr><th>Input Ports</th><td>Flexible</td></tr><tr><th>Output Ports</th><td>Flexible</td></tr></table></div><div id="networklink"><h3>NetworkLink</h3><p>Weighted edge between two nodes. Supports directed/undirected.</p><table><tr><th style="width:30%">Shape</th><td>Line with weight</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="networkgraph"><h3>NetworkGraph</h3><p>Graph data structure: adjacency list, node/link management, serialization.</p><table><tr><th style="width:30%">Shape</th><td>N/A (data structure)</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="pathfinder"><h3>PathFinder</h3><p>Shortest path algorithms: Dijkstra, A*, Floyd-Warshall.</p><table><tr><th style="width:30%">Shape</th><td>N/A (algorithm)</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="centralitymeasure"><h3>CentralityMeasure</h3><p>Node centrality: degree, betweenness, closeness, eigenvector, PageRank.</p><table><tr><th style="width:30%">Shape</th><td>N/A (algorithm)</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="communitydetector"><h3>CommunityDetector</h3><p>Community detection: Louvain, label propagation, Girvan-Newman.</p><table><tr><th style="width:30%">Shape</th><td>N/A (algorithm)</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="graphnavigator"><h3>GraphNavigator</h3><p>Graph exploration controls: zoom, pan, focus/unfocus, expand/collapse.</p><table><tr><th style="width:30%">Shape</th><td>N/A (interaction)</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="layoutselector"><h3>LayoutSelector</h3><p>Layout algorithm picker: force-directed, circular, hierarchical, grid, radial.</p><table><tr><th style="width:30%">Shape</th><td>N/A (UI)</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="filterpanel"><h3>FilterPanel</h3><p>Node/link filtering by attributes, degree threshold, community membership.</p><table><tr><th style="width:30%">Shape</th><td>N/A (UI)</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="exportpanel"><h3>ExportPanel</h3><p>Export graph as PNG, SVG, JSON, GEXF, GraphML.</p><table><tr><th style="width:30%">Shape</th><td>N/A (UI)</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="nodecluster"><h3>NodeCluster</h3><p>Visual cluster grouping of related nodes with convex hull or bounding box.</p><table><tr><th style="width:30%">Shape</th><td>Group/hull</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="networkanalyzer"><h3>NetworkAnalyzer</h3><p>Graph statistics: density, diameter, clustering coefficient, modularity.</p><table><tr><th style="width:30%">Shape</th><td>N/A (algorithm)</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty when the node moves or resizes.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>NetworkNode</code></td><td>Flexible</td><td>Flexible</td><td>—</td></tr>
+<tr><td><code>NetworkLink</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>NetworkGraph</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>PathFinder</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>CentralityMeasure</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>CommunityDetector</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>GraphNavigator</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>LayoutSelector</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>FilterPanel</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>ExportPanel</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>NodeCluster</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>NetworkAnalyzer</code></td><td>0</td><td>0</td><td>—</td></tr></tbody></table></section><section class="section" id="conventions"><h2>Connection Conventions</h2><p>When building diagrams with this family, follow these conventions:</p><ul><li>NetworkGraph is the primary data model; NetworkNode/NetworkLink are visual</li><li>Layout algorithms rearrange nodes to minimize edge crossings</li><li>Analysis components operate on the graph structure, not the visual layer</li></ul></section><section class="section" id="example"><h2>Usage Example</h2><p>Complete example showing creation, node placement, and connection:</p><div class="code-example"><h3>C# Example</h3>
+<pre><code class="language-csharp">var net = new NetworkControl
+{
+    X = 50, Y = 50,
+    Width = 700, Height = 500
+};
+drawingManager.AddComponent(net);
+
+var graph = new NetworkGraph();
+var n1 = graph.AddNode("A", x: 100, y: 100);
+var n2 = graph.AddNode("B", x: 250, y: 80);
+var n3 = graph.AddNode("C", x: 250, y: 180);
+graph.AddLink(n1, n2, weight: 1.5);
+graph.AddLink(n1, n3, weight: 2.0);
+graph.AddLink(n2, n3, weight: 0.8);
+
+var finder = new PathFinder(graph);
+var path = finder.FindShortestPath(n1, n3);
+
+var centrality = new CentralityMeasure(graph);
+var scores = centrality.CalculateBetweenness();</code></pre></div></section>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

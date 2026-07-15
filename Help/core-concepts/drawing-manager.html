@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DrawingManager | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="skia-component.html">Core Concepts</a><span>&rsaquo;</span> <span>DrawingManager</span></nav>
+<div class="page-header"><h1>DrawingManager</h1><p class="page-subtitle">The central coordinator — split across 5 partial files</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia.Canvas</code> &mdash; <strong>Type:</strong> class &mdash; <strong>Partial Files:</strong> 5</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#partial-files">Partial Files</a></li>
+    <li><a href="#component-management">Component Management</a></li>
+    <li><a href="#connection-management">Connection Management</a></li>
+    <li><a href="#selection">Selection</a></li>
+    <li><a href="#zoom-pan">Zoom &amp; Pan</a></li>
+    <li><a href="#events">Events</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p><code>DrawingManager</code> is the central coordinator of the Beep.Skia canvas ecosystem. It maintains the master list of all components and connection lines, routes mouse and keyboard interactions to the appropriate handlers, manages zooming and panning transforms, renders the background grid, and provides the public API for adding, removing, connecting, and disconnecting diagram elements.</p>
+
+  <p>Rather than being a monolithic class, <code>DrawingManager</code> delegates specialized responsibilities to a set of helper classes:</p>
+
+  <table>
+    <thead>
+      <tr><th>Helper Class</th><th>Responsibility</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>SelectionManager</code></td><td>Component/line selection, rubber-band marquee, clipboard operations (355 lines).</td></tr>
+      <tr><td><code>InteractionHelper</code></td><td>Mouse event routing, drag modes, hit-test priority chain resolution.</td></tr>
+      <tr><td><code>RenderingHelper</code></td><td>Grid rendering, pan/zoom transform application, canvas state management.</td></tr>
+      <tr><td><code>HistoryManager</code></td><td>Command-pattern undo/redo stack for all diagram mutations.</td></tr>
+      <tr><td><code>ConnectionManager</code></td><td>Connection line validation, routing, and state tracking.</td></tr>
+      <tr><td><code>ComponentManager</code></td><td>Add/remove/find operations with Z-order and lookup index maintenance.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Creating a DrawingManager Instance</h3>
+    <pre><code class="language-csharp">using Beep.Skia.Canvas;
+
+var drawingManager = new DrawingManager();
+
+var canvas = new SkiaCanvas(1200, 800);
+drawingManager.AttachCanvas(canvas);
+
+drawingManager.GridSize = 20;
+drawingManager.ShowGrid = true;
+drawingManager.SnapToGrid = true;
+
+canvas.Invalidate();</code></pre>
+  </div>
+</section>
+
+<section class="section" id="partial-files">
+  <h2>Partial Files</h2>
+  <p>The <code>DrawingManager</code> class is split across 5 partial files for maintainability and clear separation of concerns:</p>
+
+  <table>
+    <thead>
+      <tr><th>File</th><th>Contents</th><th>Key Members</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>DrawingManager.Core.cs</code></td>
+        <td>Properties, events, initialization, canvas attachment, dispose pattern.</td>
+        <td><code>Canvas</code>, <code>Components</code>, <code>Connections</code>, <code>GridSize</code>, <code>ShowGrid</code>, <code>SnapToGrid</code>, <code>IsDirty</code></td>
+      </tr>
+      <tr>
+        <td><code>DrawingManager.Components.cs</code></td>
+        <td>Component addition, removal, lookup, Z-order management, re-parenting.</td>
+        <td><code>AddComponent()</code>, <code>RemoveComponent()</code>, <code>FindComponentAt()</code>, <code>BringToFront()</code>, <code>SendToBack()</code></td>
+      </tr>
+      <tr>
+        <td><code>DrawingManager.Connections.cs</code></td>
+        <td>Connection creation, validation, disconnection, line routing, port binding.</td>
+        <td><code>Connect()</code>, <code>Disconnect()</code>, <code>GetConnectionsFor()</code>, <code>ValidateConnection()</code></td>
+      </tr>
+      <tr>
+        <td><code>DrawingManager.Interaction.cs</code></td>
+        <td>Mouse and keyboard event routing, drag modes, hit testing, cursor management.</td>
+        <td><code>OnMouseDown()</code>, <code>OnMouseMove()</code>, <code>OnMouseUp()</code>, <code>OnKeyDown()</code>, <code>CurrentDragMode</code></td>
+      </tr>
+      <tr>
+        <td><code>DrawingManager.Rendering.cs</code></td>
+        <td>Canvas drawing orchestration, grid rendering, component iteration for paint.</td>
+        <td><code>Render()</code>, <code>DrawGrid()</code>, <code>DrawComponents()</code>, <code>DrawConnections()</code>, <code>DrawSelection()</code></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="component-management">
+  <h2>Component Management</h2>
+  <p>Components are the primary entities managed by <code>DrawingManager</code>. The component API handles the full lifecycle of diagram nodes:</p>
+
+  <div class="code-example">
+    <h3>Adding and Removing Components</h3>
+    <pre><code class="language-csharp">var node = new ProcessNode("Validate Order");
+node.X = 300;
+node.Y = 150;
+drawingManager.AddComponent(node);
+
+var found = drawingManager.FindComponentAt(new SKPoint(310, 160));
+if (found != null)
+{
+    Console.WriteLine($"Found component: {((SkiaComponent)found).NodeProperties["Text"].Value}");
+}
+
+drawingManager.RemoveComponent(node);
+node.Dispose();</code></pre>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Signature</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>AddComponent</code></td><td><code>void AddComponent(IDrawableComponent component)</code></td><td>Adds a component to the diagram, assigns it the next available Z-order, triggers <code>ComponentAdded</code> event, and invalidates the canvas.</td></tr>
+      <tr><td><code>RemoveComponent</code></td><td><code>void RemoveComponent(IDrawableComponent component)</code></td><td>Removes the component, disconnects all attached connection lines, triggers <code>ComponentRemoved</code> event, and invalidates the canvas. Does <em>not</em> call <code>Dispose()</code> — caller is responsible.</td></tr>
+      <tr><td><code>FindComponentAt</code></td><td><code>IDrawableComponent? FindComponentAt(SKPoint worldPoint)</code></td><td>Returns the topmost component at the given world-space point. Iterates components in reverse Z-order for correct hit-test priority.</td></tr>
+      <tr><td><code>BringToFront</code></td><td><code>void BringToFront(IDrawableComponent c)</code></td><td>Sets the component&#39;s Z-order to the maximum value, ensuring it renders above all others.</td></tr>
+      <tr><td><code>SendToBack</code></td><td><code>void SendToBack(IDrawableComponent c)</code></td><td>Sets the component&#39;s Z-order to the minimum value, rendering it below all others.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="connection-management">
+  <h2>Connection Management</h2>
+  <p>Connection lines visually link two ports and represent relationships between diagram components. The <code>DrawingManager</code> provides a type-safe API for creating, validating, and removing connections:</p>
+
+  <div class="code-example">
+    <h3>Connecting and Disconnecting Components</h3>
+    <pre><code class="language-csharp">var sourcePort = startNode.OutPoints.First();
+var targetPort = endNode.InPoints.First();
+
+var connection = drawingManager.Connect(sourcePort, targetPort);
+
+if (connection != null)
+{
+    connection.LineStyle = LineStyle.Dashed;
+    connection.RoutingMode = RoutingMode.Orthogonal;
+}
+
+var connectionsForNode = drawingManager.GetConnectionsFor(startNode);
+
+drawingManager.Disconnect(connection);</code></pre>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Connect(IConnectionPoint start, IConnectionPoint end)</code></td><td>Validates type compatibility, creates a <code>ConnectionLine</code>, binds it to both ports, adds to the connection list, and fires <code>ConnectionEstablished</code>. Returns <code>null</code> if validation fails.</td></tr>
+      <tr><td><code>Disconnect(ConnectionLine line)</code></td><td>Unbinds the line from both ports, removes from the connection list, and invalidates the canvas.</td></tr>
+      <tr><td><code>GetConnectionsFor(IDrawableComponent component)</code></td><td>Returns all <code>ConnectionLine</code> instances where the given component is either the start or end point.</td></tr>
+      <tr><td><code>ValidateConnection(IConnectionPoint start, IConnectionPoint end)</code></td><td>Checks type compatibility (<code>DataType</code> matching), port availability (not already connected if single-connection), and prevents self-loops unless explicitly allowed.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="selection">
+  <h2>Selection</h2>
+  <p>Selection state is managed cooperatively between <code>DrawingManager</code> and <code>SelectionManager</code>. The drawing manager exposes the selection API while delegating implementation to the selection helper:</p>
+
+  <table>
+    <thead>
+      <tr><th>Member</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>SelectedComponents</code></td><td><code>IReadOnlyList&lt;IDrawableComponent&gt;</code></td><td>Currently selected components. Multiple selection via rubber-band or <kbd>Ctrl</kbd>+click.</td></tr>
+      <tr><td><code>SelectedConnection</code></td><td><code>ConnectionLine?</code></td><td>The currently selected connection line, if any. Only one connection can be selected at a time.</td></tr>
+      <tr><td><code>SelectAll()</code></td><td><code>void</code></td><td>Selects every component on the canvas.</td></tr>
+      <tr><td><code>ClearSelection()</code></td><td><code>void</code></td><td>Deselects all components and connections. Fires <code>SelectionChanged</code>.</td></tr>
+      <tr><td><code>DeleteSelected()</code></td><td><code>void</code></td><td>Removes all selected components and connections, pushing actions onto the undo stack.</td></tr>
+      <tr><td><code>CopySelected()</code></td><td><code>void</code></td><td>Serializes selected components to the clipboard as JSON <code>DiagramDto</code>.</td></tr>
+      <tr><td><code>PasteClipboard()</code></td><td><code>void</code></td><td>Deserializes clipboard JSON, instantiates new components with offset positions, adds to canvas.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="zoom-pan">
+  <h2>Zoom &amp; Pan</h2>
+  <p>The <code>DrawingManager</code> exposes viewport controls that transform the canvas without modifying individual component positions:</p>
+
+  <table>
+    <thead>
+      <tr><th>Property / Method</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>ZoomFactor</code></td><td><code>float</code></td><td>Current zoom level. Range: <code>0.1f</code> to <code>5.0f</code>. <code>1.0f</code> = 100% (no zoom).</td></tr>
+      <tr><td><code>PanOffset</code></td><td><code>SKPoint</code></td><td>Current scroll offset in world-space units. Negative values pan the viewport right/down.</td></tr>
+      <tr><td><code>ResetView()</code></td><td><code>void</code></td><td>Resets <code>ZoomFactor</code> to <code>1.0f</code> and <code>PanOffset</code> to <code>(0,0)</code>. Useful for &quot;fit to screen&quot; or &quot;reset view&quot; toolbar buttons.</td></tr>
+      <tr><td><code>ZoomToFit()</code></td><td><code>void</code></td><td>Calculates the bounding box of all components and adjusts <code>ZoomFactor</code> and <code>PanOffset</code> so the entire diagram fits within the visible canvas area with padding.</td></tr>
+      <tr><td><code>ScreenToWorld(SKPoint screenPt)</code></td><td><code>SKPoint</code></td><td>Converts a screen-space pixel coordinate to world-space by reversing the pan/zoom transform.</td></tr>
+      <tr><td><code>WorldToScreen(SKPoint worldPt)</code></td><td><code>SKPoint</code></td><td>Converts a world-space coordinate to screen-space by applying the pan/zoom transform.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Programmatic Zoom and Pan</h3>
+    <pre><code class="language-csharp">drawingManager.ZoomFactor = 1.5f;
+
+drawingManager.PanOffset = new SKPoint(-100, -50);
+
+var worldPoint = drawingManager.ScreenToWorld(
+    new SKPoint(mouseX, mouseY));
+
+drawingManager.ResetView();
+
+drawingManager.ZoomToFit();</code></pre>
+  </div>
+</section>
+
+<section class="section" id="events">
+  <h2>Events</h2>
+  <p><code>DrawingManager</code> exposes a rich set of events that allow external code to react to diagram state changes:</p>
+
+  <table>
+    <thead>
+      <tr><th>Event</th><th>Delegate</th><th>Fired When</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>ComponentAdded</code></td><td><code>EventHandler&lt;ComponentEventArgs&gt;</code></td><td>A component is added to the canvas via <code>AddComponent()</code> or paste.</td></tr>
+      <tr><td><code>ComponentRemoved</code></td><td><code>EventHandler&lt;ComponentEventArgs&gt;</code></td><td>A component is removed from the canvas via <code>RemoveComponent()</code> or delete.</td></tr>
+      <tr><td><code>SelectionChanged</code></td><td><code>EventHandler&lt;SelectionEventArgs&gt;</code></td><td>Selection state changes: component selected, deselected, or multi-select rubber-band completed.</td></tr>
+      <tr><td><code>ConnectionEstablished</code></td><td><code>EventHandler&lt;ConnectionEventArgs&gt;</code></td><td>A new connection line is created between two valid ports.</td></tr>
+      <tr><td><code>ConnectionRemoved</code></td><td><code>EventHandler&lt;ConnectionEventArgs&gt;</code></td><td>A connection line is disconnected or its owning component is removed.</td></tr>
+      <tr><td><code>ComponentMoved</code></td><td><code>EventHandler&lt;ComponentEventArgs&gt;</code></td><td>A component&#39;s X/Y position changes (fired on drag completion, not during drag).</td></tr>
+      <tr><td><code>ViewportChanged</code></td><td><code>EventHandler</code></td><td>ZoomFactor or PanOffset changes, requiring the viewport to repaint.</td></tr>
+      <tr><td><code>DiagramDirty</code></td><td><code>EventHandler</code></td><td>Any state change that requires a canvas repaint. Components subscribe internally.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Subscribing to DrawingManager Events</h3>
+    <pre><code class="language-csharp">drawingManager.ComponentAdded += (sender, args) =>
+{
+    Console.WriteLine($"Component added: {args.Component.GetType().Name}");
+    UpdatePropertyGrid(args.Component);
+};
+
+drawingManager.ConnectionEstablished += (sender, args) =>
+{
+    Console.WriteLine($"Connected: {args.Connection.StartPoint.Owner} -> " +
+                      $"{args.Connection.EndPoint.Owner}");
+    ValidateDiagramIntegrity();
+};
+
+drawingManager.SelectionChanged += (sender, args) =>
+{
+    UpdateToolbarState(
+        drawingManager.SelectedComponents.Any(),
+        drawingManager.SelectedConnection != null);
+};</code></pre>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

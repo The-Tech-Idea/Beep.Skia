@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coordinate System | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="skia-component.html">Core Concepts</a><span>&rsaquo;</span> <span>Coordinate System</span></nav>
+<div class="page-header"><h1>Coordinate System</h1><p class="page-subtitle">Absolute coordinate system, pan/zoom transforms, and grid rendering</p></div>
+
+<p><strong>Related Classes:</strong> <code>RenderingHelper</code>, <code>DrawingManager</code> &mdash; <strong>Key File:</strong> <code>DrawingManager.Rendering.cs</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#absolute-coordinates">Absolute Coordinates</a></li>
+    <li><a href="#pan-zoom">Pan &amp; Zoom</a></li>
+    <li><a href="#grid-system">Grid System</a></li>
+    <li><a href="#coordinate-transforms">Coordinate Transforms</a></li>
+    <li><a href="#dpi-scaling">DPI Scaling</a></li>
+  </ul>
+</div>
+
+<section class="section" id="absolute-coordinates">
+  <h2>Absolute Coordinates</h2>
+  <p>Beep.Skia uses an <strong>absolute coordinate system</strong> where every component stores its position in a virtual, unbounded world space. Component positions are independent of the current viewport, scroll position, or zoom level. This design means:</p>
+
+  <ul>
+    <li>A component at <code>(500, 300)</code> is always at <code>(500, 300)</code> regardless of how the user pans or zooms.</li>
+    <li>The coordinate origin <code>(0, 0)</code> is at the top-left of the infinite canvas, with positive X extending rightward and positive Y extending downward.</li>
+    <li>All component bounds, port positions, and connection-line endpoints are expressed in world-space coordinates.</li>
+    <li>Pan and zoom transforms are applied <strong>once globally</strong> by <code>RenderingHelper</code> before any drawing occurs.</li>
+  </ul>
+
+  <div class="admonition note">
+    <p class="admonition-title">World-Space vs. Screen-Space</p>
+    <p><strong>World-space</strong> is the conceptual coordinate system of the diagram. A node at <code>(200, 100)</code> in world-space is at that position relative to the canvas origin.</p>
+    <p><strong>Screen-space</strong> is the pixel coordinate system of the display device. Mouse events arrive in screen-space and must be converted to world-space before hit testing.</p>
+    <p>The transform between these two spaces is: <code>worldPoint = (screenPoint - panOffset) / zoomFactor</code></p>
+  </div>
+</section>
+
+<section class="section" id="pan-zoom">
+  <h2>Pan &amp; Zoom</h2>
+  <p>The viewport is controlled by two parameters on <code>DrawingManager</code>: <code>ZoomFactor</code> and <code>PanOffset</code>. These are composed into an <code>SKMatrix</code> that is applied to the canvas before any component rendering:</p>
+
+  <div class="code-example">
+    <h3>Applying the Viewport Transform</h3>
+    <pre><code class="language-csharp">private void ApplyViewportTransform(SKCanvas canvas)
+{
+    canvas.Save();
+
+    var matrix = SKMatrix.CreateScale(ZoomFactor, ZoomFactor);
+    matrix = matrix.PostConcat(
+        SKMatrix.CreateTranslation(PanOffset.X, PanOffset.Y));
+    canvas.SetMatrix(canvas.TotalMatrix.PostConcat(matrix));
+
+    RenderComponents(canvas);
+    RenderConnections(canvas);
+    RenderGrid(canvas);
+
+    canvas.Restore();
+}</code></pre>
+  </div>
+
+  <h3>Screen-to-World and World-to-Screen Conversion</h3>
+  <p>Mouse events arrive in screen-space pixel coordinates. Before hit testing, they must be converted to world-space. Conversely, when displaying tooltips or UI overlays at a component position, world-space coordinates must be converted back to screen-space:</p>
+
+  <div class="code-example">
+    <h3>Coordinate Conversion Methods</h3>
+    <pre><code class="language-csharp">public SKPoint ScreenToWorld(SKPoint screenPoint)
+{
+    float worldX = (screenPoint.X - PanOffset.X) / ZoomFactor;
+    float worldY = (screenPoint.Y - PanOffset.Y) / ZoomFactor;
+    return new SKPoint(worldX, worldY);
+}
+
+public SKPoint WorldToScreen(SKPoint worldPoint)
+{
+    float screenX = worldPoint.X * ZoomFactor + PanOffset.X;
+    float screenY = worldPoint.Y * ZoomFactor + PanOffset.Y;
+    return new SKPoint(screenX, screenY);
+}</code></pre>
+  </div>
+
+  <p>These conversions are used throughout the interaction system:</p>
+
+  <div class="code-example">
+    <h3>Usage in Mouse Handlers</h3>
+    <pre><code class="language-csharp">public void OnMouseDown(MouseEventArgs e)
+{
+    var screenPoint = new SKPoint(e.X, e.Y);
+    var worldPoint = drawingManager.ScreenToWorld(screenPoint);
+
+    var hitComponent = drawingManager.FindComponentAt(worldPoint);
+    if (hitComponent != null)
+    {
+        SelectComponent(hitComponent);
+        StartDrag(hitComponent, worldPoint);
+    }
+}</code></pre>
+  </div>
+
+  <h3>Zoom Constraints</h3>
+  <table>
+    <thead>
+      <tr><th>Parameter</th><th>Value</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>MinZoom</code></td><td><code>0.1f</code></td><td>Minimum zoom level (10%). Prevents excessive zoom-out where components become invisible.</td></tr>
+      <tr><td><code>MaxZoom</code></td><td><code>5.0f</code></td><td>Maximum zoom level (500%). Prevents excessive zoom-in where a single component fills the viewport.</td></tr>
+      <tr><td><code>ZoomStep</code></td><td><code>0.1f</code></td><td>Increment/decrement per mouse wheel notch. With <kbd>Ctrl</kbd> held.</td></tr>
+      <tr><td><code>ZoomOrigin</code></td><td><code>SKPoint</code></td><td>The point in screen-space that remains fixed during zoom. Typically the mouse cursor position.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="grid-system">
+  <h2>Grid System</h2>
+  <p>The grid provides a visual reference for component placement and an optional snapping mechanism for precise alignment. Grid rendering is handled by <code>RenderingHelper</code> and toggled by properties on <code>DrawingManager</code>:</p>
+
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>GridSize</code></td><td><code>float</code></td><td><code>20</code></td><td>Spacing between grid lines in world-space units. The grid adapts to zoom level — at 200% zoom, each cell appears as 40 screen pixels.</td></tr>
+      <tr><td><code>ShowGrid</code></td><td><code>bool</code></td><td><code>true</code></td><td>Toggles grid visibility. When false, the background renders as a solid color with no grid lines.</td></tr>
+      <tr><td><code>MinorGridLines</code></td><td><code>bool</code></td><td><code>true</code></td><td>Renders thin, subtle grid lines at the <code>GridSize</code> interval. Drawn in a very light color to avoid visual clutter.</td></tr>
+      <tr><td><code>MajorGridLines</code></td><td><code>bool</code></td><td><code>true</code></td><td>Renders heavier grid lines at <code>GridSize * MajorGridInterval</code>. Default interval is 5, so major lines appear every 100 units.</td></tr>
+      <tr><td><code>SnapToGrid</code></td><td><code>bool</code></td><td><code>false</code></td><td>When enabled, component positions snap to the nearest grid intersection during drag and resize operations.</td></tr>
+      <tr><td><code>GridColor</code></td><td><code>SKColor</code></td><td><code>#E0E0E0</code></td><td>Color of minor grid lines. Major lines use a slightly darker shade.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Configuring the Grid</h3>
+    <pre><code class="language-csharp">drawingManager.GridSize = 16;
+drawingManager.ShowGrid = true;
+drawingManager.MinorGridLines = true;
+drawingManager.MajorGridLines = true;
+drawingManager.MajorGridInterval = 4;
+drawingManager.SnapToGrid = true;
+drawingManager.GridColor = new SKColor(0xE8, 0xE8, 0xE8);</code></pre>
+  </div>
+
+  <h3>Grid Snapping</h3>
+  <p>When <code>SnapToGrid</code> is enabled, component positions are quantized to the nearest grid intersection. This is applied during move and resize operations:</p>
+
+  <div class="code-example">
+    <h3>Snap-to-Grid Logic</h3>
+    <pre><code class="language-csharp">public float SnapToGridValue(float value)
+{
+    if (!SnapToGrid) return value;
+    return (float)Math.Round(value / GridSize) * GridSize;
+}
+
+var snappedX = SnapToGridValue(component.X);
+var snappedY = SnapToGridValue(component.Y);
+component.Position = new SKPoint(snappedX, snappedY);</code></pre>
+  </div>
+</section>
+
+<section class="section" id="coordinate-transforms">
+  <h2>Coordinate Transforms</h2>
+  <p>All coordinate transforms use <code>SKMatrix</code> from SkiaSharp for high-performance 2D affine transformations. The rendering pipeline applies transforms efficiently using canvas state management:</p>
+
+  <div class="code-example">
+    <h3>Canvas State Management with Save/Restore</h3>
+    <pre><code class="language-csharp">public void Render(SKCanvas canvas)
+{
+    canvas.Save();
+
+    canvas.Clear(SKColors.White);
+
+    ApplyViewportTransform(canvas);
+
+    if (ShowGrid)
+        DrawGrid(canvas);
+
+    foreach (var component in Components.OrderBy(c => c.ZOrder))
+    {
+        canvas.Save();
+        canvas.Translate(component.X, component.Y);
+        component.DrawContent(canvas);
+        canvas.Restore();
+    }
+
+    foreach (var connection in Connections)
+    {
+        connection.Draw(canvas);
+    }
+
+    canvas.Restore();
+}</code></pre>
+  </div>
+
+  <p>Key principles of the transform system:</p>
+  <ul>
+    <li><strong>Viewport transform applied once:</strong> Pan and zoom are composed as a single <code>SKMatrix</code> and applied at the start of the render cycle. Individual components do not need to handle viewport transforms.</li>
+    <li><strong>Component-local transforms:</strong> Each component uses <code>Save()</code>/<code>Restore()</code> pairs to apply local translation to its position. This allows components to draw using local coordinates (0,0 at the component&#39;s top-left corner).</li>
+    <li><strong>Efficient state restoration:</strong> The <code>Save()</code>/<code>Restore()</code> pattern ensures that each component&#39;s transforms do not leak into subsequent draw calls. SkiaSharp&#39;s internal state stack handles this efficiently.</li>
+    <li><strong>No per-component matrix storage:</strong> Unlike some frameworks that store a transform matrix per object, Beep.Skia applies transforms transiently during rendering, reducing memory overhead.</li>
+  </ul>
+</section>
+
+<section class="section" id="dpi-scaling">
+  <h2>DPI Scaling</h2>
+  <p>Beep.Skia provides automatic support for high-DPI displays through SkiaSharp&#39;s built-in scaling capabilities:</p>
+
+  <table>
+    <thead>
+      <tr><th>Feature</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Automatic Detection</strong></td><td>The <code>SkiaCanvas</code> queries the display&#39;s DPI scale factor (e.g., 1.0 for 96 DPI, 2.0 for 192 DPI) and adjusts the backing surface accordingly.</td></tr>
+      <tr><td><strong>Logical vs. Physical Pixels</strong></td><td>All component coordinates and sizes are expressed in <strong>logical pixels</strong> (device-independent). The DPI scale is applied at the canvas level, so component code is DPI-agnostic.</td></tr>
+      <tr><td><strong>Sharp Rendering</strong></td><td>The backing <code>SKSurface</code> is created at the physical pixel resolution, ensuring crisp text and vector graphics on high-DPI displays without blurring.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>High-DPI Canvas Configuration</h3>
+    <pre><code class="language-csharp">public class SkiaCanvas
+{
+    private float _dpiScale;
+
+    public SkiaCanvas(int logicalWidth, int logicalHeight)
+    {
+        _dpiScale = GetDisplayScale();
+
+        int physicalWidth = (int)(logicalWidth * _dpiScale);
+        int physicalHeight = (int)(logicalHeight * _dpiScale);
+
+        _surface = SKSurface.Create(new SKImageInfo(
+            physicalWidth, physicalHeight));
+
+        Canvas.Scale(_dpiScale, _dpiScale);
+    }
+
+    private float GetDisplayScale()
+    {
+        return (float)VisualTreeHelper.GetDpi(
+            Application.Current.MainWindow) / 96.0f;
+    }
+}</code></pre>
+  </div>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Tip</p>
+    <p>All component code should use logical coordinates only. Never multiply positions by the DPI scale factor in component <code>DrawContent</code> methods — the canvas handles this transparently.</p>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

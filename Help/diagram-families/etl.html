@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETL (Data Pipeline) Diagram Family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="diagram-families/flowchart.html">Diagram Families</a><span>&rsaquo;</span> <span>ETL (Data Pipeline) Diagram Family</span></nav><div class="page-header"><h1>ETL (Data Pipeline) Diagram Family</h1><p class="page-subtitle">ETL/ELT data pipeline diagrams with 17 transformation nodes covering extract, transform, load, and data quality operations.</p></div>
+<div class="toc"><h3>Table of Contents</h3><ul><li><a href="#overview">Overview</a></li><li><a href="#node-types">Node Types</a></li><li><a href="#ports">Connection Points</a></li><li><a href="#conventions">Connection Conventions</a></li><li><a href="#example">Usage Example</a></li></ul></div><section class="section" id="overview"><h2>Overview</h2><p><strong>Base Control:</strong> <code>ETLControl : MaterialControl</code><br><strong>Namespace:</strong> <code>Beep.Skia.ETL</code></p><p>The <strong>ETLControl</strong> is the root control for this diagram family. It inherits <code>MaterialControl</code> and provides shared port management, styling, and template methods for all nodes in the family.</p><p>This family contains <strong>18 node types</strong>.</p></section><section class="section" id="node-types"><h2>Node Types</h2><table><thead><tr><th>Node Class</th><th>Shape</th><th>Description</th></tr></thead><tbody><tr><td><code>ETLSource</code></td><td>Table/source icon</td><td>Data extraction source (database, file, API).</td></tr>
+<tr><td><code>ETLTransform</code></td><td>Gear/rectangle</td><td>Generic data transformation step.</td></tr>
+<tr><td><code>ETLTarget</code></td><td>Database/target icon</td><td>Data loading destination.</td></tr>
+<tr><td><code>ETLDestination</code></td><td>Target container</td><td>Alternative destination node.</td></tr>
+<tr><td><code>ETLFilter</code></td><td>Funnel</td><td>Row-level filtering by condition.</td></tr>
+<tr><td><code>ETLSort</code></td><td>Arrow up/down</td><td>Sort operation on data stream.</td></tr>
+<tr><td><code>ETLJoin</code></td><td>Merge icon</td><td>Join two data streams (inner/left/right/full).</td></tr>
+<tr><td><code>ETLMerge</code></td><td>Merge (vertical)</td><td>Merge/union compatible data streams.</td></tr>
+<tr><td><code>ETLLookup</code></td><td>Magnifying glass</td><td>Reference data lookup/join.</td></tr>
+<tr><td><code>ETLAggregate</code></td><td>Sigma symbol</td><td>Aggregation (SUM, COUNT, AVG, GROUP BY).</td></tr>
+<tr><td><code>ETLPivot</code></td><td>Arrow rotate</td><td>Pivot rows to columns.</td></tr>
+<tr><td><code>ETLUnpivot</code></td><td>Arrow counter-rotate</td><td>Unpivot columns to rows.</td></tr>
+<tr><td><code>ETLConditionalSplit</code></td><td>Diamond</td><td>Route rows to different outputs based on conditions.</td></tr>
+<tr><td><code>ETLDerivedColumn</code></td><td>Column icon</td><td>Compute new column from expression.</td></tr>
+<tr><td><code>ETLMulticast</code></td><td>Triangle split</td><td>Duplicate stream to multiple outputs.</td></tr>
+<tr><td><code>ETLRowCount</code></td><td>Counter</td><td>Count rows passing through.</td></tr>
+<tr><td><code>ETLScd</code></td><td>Clock icon</td><td>Slowly Changing Dimension (Type 1/2/3).</td></tr>
+<tr><td><code>ETLScript</code></td><td>Code block</td><td>Custom script/expression execution.</td></tr></tbody></table></section><div id="etlsource"><h3>ETLSource</h3><p>Data extraction source (database, file, API).</p><table><tr><th style="width:30%">Shape</th><td>Table/source icon</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>1+</td></tr></table></div><div id="etltransform"><h3>ETLTransform</h3><p>Generic data transformation step.</p><table><tr><th style="width:30%">Shape</th><td>Gear/rectangle</td></tr><tr><th>Input Ports</th><td>1+</td></tr><tr><th>Output Ports</th><td>1+</td></tr></table></div><div id="etltarget"><h3>ETLTarget</h3><p>Data loading destination.</p><table><tr><th style="width:30%">Shape</th><td>Database/target icon</td></tr><tr><th>Input Ports</th><td>1+</td></tr><tr><th>Output Ports</th><td>0-1</td></tr></table></div><div id="etldestination"><h3>ETLDestination</h3><p>Alternative destination node.</p><table><tr><th style="width:30%">Shape</th><td>Target container</td></tr><tr><th>Input Ports</th><td>1+</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="etlfilter"><h3>ETLFilter</h3><p>Row-level filtering by condition.</p><table><tr><th style="width:30%">Shape</th><td>Funnel</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="etlsort"><h3>ETLSort</h3><p>Sort operation on data stream.</p><table><tr><th style="width:30%">Shape</th><td>Arrow up/down</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="etljoin"><h3>ETLJoin</h3><p>Join two data streams (inner/left/right/full).</p><table><tr><th style="width:30%">Shape</th><td>Merge icon</td></tr><tr><th>Input Ports</th><td>2</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="etlmerge"><h3>ETLMerge</h3><p>Merge/union compatible data streams.</p><table><tr><th style="width:30%">Shape</th><td>Merge (vertical)</td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="etllookup"><h3>ETLLookup</h3><p>Reference data lookup/join.</p><table><tr><th style="width:30%">Shape</th><td>Magnifying glass</td></tr><tr><th>Input Ports</th><td>2</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="etlaggregate"><h3>ETLAggregate</h3><p>Aggregation (SUM, COUNT, AVG, GROUP BY).</p><table><tr><th style="width:30%">Shape</th><td>Sigma symbol</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="etlpivot"><h3>ETLPivot</h3><p>Pivot rows to columns.</p><table><tr><th style="width:30%">Shape</th><td>Arrow rotate</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="etlunpivot"><h3>ETLUnpivot</h3><p>Unpivot columns to rows.</p><table><tr><th style="width:30%">Shape</th><td>Arrow counter-rotate</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="etlconditionalsplit"><h3>ETLConditionalSplit</h3><p>Route rows to different outputs based on conditions.</p><table><tr><th style="width:30%">Shape</th><td>Diamond</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>2+</td></tr></table></div><div id="etlderivedcolumn"><h3>ETLDerivedColumn</h3><p>Compute new column from expression.</p><table><tr><th style="width:30%">Shape</th><td>Column icon</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="etlmulticast"><h3>ETLMulticast</h3><p>Duplicate stream to multiple outputs.</p><table><tr><th style="width:30%">Shape</th><td>Triangle split</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>2+</td></tr></table></div><div id="etlrowcount"><h3>ETLRowCount</h3><p>Count rows passing through.</p><table><tr><th style="width:30%">Shape</th><td>Counter</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="etlscd"><h3>ETLScd</h3><p>Slowly Changing Dimension (Type 1/2/3).</p><table><tr><th style="width:30%">Shape</th><td>Clock icon</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="etlscript"><h3>ETLScript</h3><p>Custom script/expression execution.</p><table><tr><th style="width:30%">Shape</th><td>Code block</td></tr><tr><th>Input Ports</th><td>1+</td></tr><tr><th>Output Ports</th><td>1+</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty when the node moves or resizes.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>ETLSource</code></td><td>0</td><td>1+</td><td>—</td></tr>
+<tr><td><code>ETLTransform</code></td><td>1+</td><td>1+</td><td>—</td></tr>
+<tr><td><code>ETLTarget</code></td><td>1+</td><td>0-1</td><td>—</td></tr>
+<tr><td><code>ETLDestination</code></td><td>1+</td><td>0</td><td>—</td></tr>
+<tr><td><code>ETLFilter</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ETLSort</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ETLJoin</code></td><td>2</td><td>1</td><td>—</td></tr>
+<tr><td><code>ETLMerge</code></td><td>2+</td><td>1</td><td>—</td></tr>
+<tr><td><code>ETLLookup</code></td><td>2</td><td>1</td><td>—</td></tr>
+<tr><td><code>ETLAggregate</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ETLPivot</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ETLUnpivot</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ETLConditionalSplit</code></td><td>1</td><td>2+</td><td>—</td></tr>
+<tr><td><code>ETLDerivedColumn</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ETLMulticast</code></td><td>1</td><td>2+</td><td>—</td></tr>
+<tr><td><code>ETLRowCount</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ETLScd</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ETLScript</code></td><td>1+</td><td>1+</td><td>—</td></tr></tbody></table></section><section class="section" id="conventions"><h2>Connection Conventions</h2><p>When building diagrams with this family, follow these conventions:</p><ul><li>Flow direction: left to right or top to bottom</li><li>Sources have no input ports, targets have no output ports</li><li>Transforms may have multiple inputs/outputs</li><li>Line colors indicate data flow, error flow, or logging flow</li></ul></section><section class="section" id="example"><h2>Usage Example</h2><p>Complete example showing creation, node placement, and connection:</p><div class="code-example"><h3>C# Example</h3>
+<pre><code class="language-csharp">var etl = new ETLControl
+{
+    X = 50, Y = 50,
+    Width = 800, Height = 500
+};
+drawingManager.AddComponent(etl);
+
+var src = new ETLSource { X = 100, Y = 250, Text = "SQL Server" };
+var filter = new ETLFilter { X = 280, Y = 250, Text = "Filter Active" };
+var transform = new ETLTransform { X = 460, Y = 250, Text = "Normalize" };
+var tgt = new ETLTarget { X = 640, Y = 250, Text = "Data Warehouse" };
+
+drawingManager.AddComponent(src);
+drawingManager.AddComponent(filter);
+drawingManager.AddComponent(transform);
+drawingManager.AddComponent(tgt);
+
+drawingManager.Connect(src.OutPoints[0], filter.InPoints[0]);
+drawingManager.Connect(filter.OutPoints[0], transform.InPoints[0]);
+drawingManager.Connect(transform.OutPoints[0], tgt.InPoints[0]);</code></pre></div></section>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

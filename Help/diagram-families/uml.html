@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UML Diagram Family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="diagram-families/flowchart.html">Diagram Families</a><span>&rsaquo;</span> <span>UML Diagram Family</span></nav><div class="page-header"><h1>UML Diagram Family</h1><p class="page-subtitle">UML diagrams with 17 node types covering class, interface, use case, sequence, activity, and deployment views.</p></div>
+<div class="toc"><h3>Table of Contents</h3><ul><li><a href="#overview">Overview</a></li><li><a href="#node-types">Node Types</a></li><li><a href="#ports">Connection Points</a></li><li><a href="#conventions">Connection Conventions</a></li><li><a href="#example">Usage Example</a></li></ul></div><section class="section" id="overview"><h2>Overview</h2><p><strong>Base Control:</strong> <code>UMLControl : MaterialControl</code><br><strong>Namespace:</strong> <code>Beep.Skia.UML</code></p><p>The <strong>UMLControl</strong> is the root control for this diagram family. It inherits <code>MaterialControl</code> and provides shared port management, styling, and template methods for all nodes in the family.</p><p>This family contains <strong>13 node types</strong>.</p></section><section class="section" id="node-types"><h2>Node Types</h2><table><thead><tr><th>Node Class</th><th>Shape</th><th>Description</th></tr></thead><tbody><tr><td><code>UMLClass</code></td><td>3-section rectangle</td><td>Class with name, properties, and methods compartments.</td></tr>
+<tr><td><code>UMLInterface</code></td><td>Rectangle with <<interface>></td><td>Interface with stereotype and method signatures.</td></tr>
+<tr><td><code>UMLActor</code></td><td>Stick figure</td><td>Use case actor (user/role/system).</td></tr>
+<tr><td><code>UMLLifeline</code></td><td>Dashed vertical line</td><td>Sequence diagram lifeline for object/actor.</td></tr>
+<tr><td><code>UMLAssociation</code></td><td>Solid line</td><td>Association relationship between classes.</td></tr>
+<tr><td><code>UMLInheritance</code></td><td>Hollow triangle arrow</td><td>Inheritance/generalization relationship.</td></tr>
+<tr><td><code>UMLMessage</code></td><td>Arrow line</td><td>Sequence diagram message between lifelines.</td></tr>
+<tr><td><code>UMLActionNode</code></td><td>Rounded rectangle</td><td>Activity diagram action step.</td></tr>
+<tr><td><code>UMLConditionNode</code></td><td>Diamond</td><td>Activity diagram decision/branch.</td></tr>
+<tr><td><code>UMLDataSourceNode</code></td><td>Database icon</td><td>Data source in deployment/component diagram.</td></tr>
+<tr><td><code>UMLTransformNode</code></td><td>Gear</td><td>Transform node in component diagram.</td></tr>
+<tr><td><code>UMLOutputNode</code></td><td>Output icon</td><td>Output/sink node.</td></tr>
+<tr><td><code>UMLTriggerNode</code></td><td>Event icon</td><td>Trigger/event source for activity.</td></tr></tbody></table></section><div id="umlclass"><h3>UMLClass</h3><p>Class with name, properties, and methods compartments.</p><table><tr><th style="width:30%">Shape</th><td>3-section rectangle</td></tr><tr><th>Input Ports</th><td>2+ (sides)</td></tr><tr><th>Output Ports</th><td>2+ (sides)</td></tr></table></div><div id="umlinterface"><h3>UMLInterface</h3><p>Interface with stereotype and method signatures.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with <<interface>></td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>2+</td></tr></table></div><div id="umlactor"><h3>UMLActor</h3><p>Use case actor (user/role/system).</p><table><tr><th style="width:30%">Shape</th><td>Stick figure</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="umllifeline"><h3>UMLLifeline</h3><p>Sequence diagram lifeline for object/actor.</p><table><tr><th style="width:30%">Shape</th><td>Dashed vertical line</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>1+</td></tr></table></div><div id="umlassociation"><h3>UMLAssociation</h3><p>Association relationship between classes.</p><table><tr><th style="width:30%">Shape</th><td>Solid line</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="umlinheritance"><h3>UMLInheritance</h3><p>Inheritance/generalization relationship.</p><table><tr><th style="width:30%">Shape</th><td>Hollow triangle arrow</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="umlmessage"><h3>UMLMessage</h3><p>Sequence diagram message between lifelines.</p><table><tr><th style="width:30%">Shape</th><td>Arrow line</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="umlactionnode"><h3>UMLActionNode</h3><p>Activity diagram action step.</p><table><tr><th style="width:30%">Shape</th><td>Rounded rectangle</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="umlconditionnode"><h3>UMLConditionNode</h3><p>Activity diagram decision/branch.</p><table><tr><th style="width:30%">Shape</th><td>Diamond</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>2+</td></tr></table></div><div id="umldatasourcenode"><h3>UMLDataSourceNode</h3><p>Data source in deployment/component diagram.</p><table><tr><th style="width:30%">Shape</th><td>Database icon</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="umltransformnode"><h3>UMLTransformNode</h3><p>Transform node in component diagram.</p><table><tr><th style="width:30%">Shape</th><td>Gear</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="umloutputnode"><h3>UMLOutputNode</h3><p>Output/sink node.</p><table><tr><th style="width:30%">Shape</th><td>Output icon</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>0-1</td></tr></table></div><div id="umltriggernode"><h3>UMLTriggerNode</h3><p>Trigger/event source for activity.</p><table><tr><th style="width:30%">Shape</th><td>Event icon</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty when the node moves or resizes.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>UMLClass</code></td><td>2+ (sides)</td><td>2+ (sides)</td><td>—</td></tr>
+<tr><td><code>UMLInterface</code></td><td>2+</td><td>2+</td><td>—</td></tr>
+<tr><td><code>UMLActor</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>UMLLifeline</code></td><td>0</td><td>1+</td><td>—</td></tr>
+<tr><td><code>UMLAssociation</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>UMLInheritance</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>UMLMessage</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>UMLActionNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>UMLConditionNode</code></td><td>1</td><td>2+</td><td>—</td></tr>
+<tr><td><code>UMLDataSourceNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>UMLTransformNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>UMLOutputNode</code></td><td>1</td><td>0-1</td><td>—</td></tr>
+<tr><td><code>UMLTriggerNode</code></td><td>0</td><td>1</td><td>—</td></tr></tbody></table></section><section class="section" id="conventions"><h2>Connection Conventions</h2><p>When building diagrams with this family, follow these conventions:</p><ul><li>Class diagram: inheritance uses hollow triangle, association uses open arrow</li><li>Sequence diagram: lifelines with activation bars, messages as horizontal arrows</li><li>Activity diagram: action nodes connected by control flow arrows</li></ul></section><section class="section" id="example"><h2>Usage Example</h2><p>Complete example showing creation, node placement, and connection:</p><div class="code-example"><h3>C# Example</h3>
+<pre><code class="language-csharp">var uml = new UMLControl
+{
+    X = 50, Y = 50,
+    Width = 700, Height = 500
+};
+drawingManager.AddComponent(uml);
+
+var cls = new UMLClass
+{
+    X = 100, Y = 80,
+    ClassName = "Order",
+    Width = 200
+};
+cls.AddProperty("- Id : int");
+cls.AddProperty("- Date : DateTime");
+cls.AddMethod("+ CalculateTotal() : decimal");
+drawingManager.AddComponent(cls);
+
+var iface = new UMLInterface
+{
+    X = 400, Y = 80,
+    InterfaceName = "IOrderService",
+    Width = 200
+};
+drawingManager.AddComponent(iface);
+
+var inh = new UMLInheritance
+{
+    StartPoint = cls.OutPoints[0],
+    EndPoint = iface.InPoints[0]
+};
+drawingManager.AddConnection(inh);</code></pre></div></section>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

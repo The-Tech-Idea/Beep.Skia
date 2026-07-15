@@ -97,41 +97,116 @@ namespace Beep.Skia.Network
         }
 
         /// <summary>
-        /// Detects communities using the Louvain method (simplified).
+        /// Detects communities using the Louvain method (greedy modularity optimization).
         /// </summary>
         private void DetectCommunitiesLouvain(List<NetworkNode> nodes, List<NetworkLink> links)
         {
-            // Simplified Louvain method - in practice this would be much more complex
-            // For now, we'll use a basic clustering approach
-            var visited = new HashSet<NetworkNode>();
-            var adjacencyList = BuildAdjacencyList(nodes, links);
+            int n = nodes.Count;
+            var nodeIndex = new Dictionary<NetworkNode, int>();
+            for (int i = 0; i < n; i++) nodeIndex[nodes[i]] = i;
 
-            foreach (var node in nodes)
+            var adj = new List<(int target, double weight)>[n];
+            for (int i = 0; i < n; i++) adj[i] = new List<(int, double)>();
+
+            double totalWeight = 0;
+            foreach (var link in links)
             {
-                if (visited.Contains(node))
-                    continue;
-
-                var community = new Community { Id = Communities.Count + 1 };
-                var queue = new Queue<NetworkNode>();
-                queue.Enqueue(node);
-                visited.Add(node);
-
-                while (queue.Count > 0)
+                int si = nodeIndex[link.SourceNode];
+                int ti = nodeIndex[link.TargetNode];
+                if (si != ti)
                 {
-                    var current = queue.Dequeue();
-                    community.Nodes.Add(current);
+                    double w = link.Weight > 0 ? link.Weight : 1.0;
+                    adj[si].Add((ti, w));
+                    adj[ti].Add((si, w));
+                    totalWeight += w;
+                }
+            }
+            if (totalWeight == 0) totalWeight = 1;
 
-                    foreach (var neighbor in adjacencyList[current])
+            // Initialize: each node in its own community
+            var community = new int[n];
+            for (int i = 0; i < n; i++) community[i] = i;
+
+            var communityWeight = new double[n];
+            var nodeWeight = new double[n];
+            for (int i = 0; i < n; i++)
+            {
+                foreach (var (_, w) in adj[i])
+                {
+                    nodeWeight[i] += w;
+                }
+                communityWeight[i] = nodeWeight[i];
+            }
+
+            bool improved = true;
+            int maxIterations = 50;
+
+            while (improved && maxIterations-- > 0)
+            {
+                improved = false;
+                for (int i = 0; i < n; i++)
+                {
+                    int currentComm = community[i];
+                    var neighborComms = new Dictionary<int, double>();
+
+                    // Calculate weight to each neighbor community
+                    foreach (var (neighbor, w) in adj[i])
                     {
-                        if (!visited.Contains(neighbor))
+                        int nc = community[neighbor];
+                        neighborComms[nc] = neighborComms.GetValueOrDefault(nc) + w;
+                    }
+
+                    // Also consider staying in current community
+                    double bestDelta = 0;
+                    int bestComm = currentComm;
+
+                    foreach (var kvp in neighborComms)
+                    {
+                        int targetComm = kvp.Key;
+                        double weightToTarget = kvp.Value;
+
+                        // Modularity gain = weightToTarget/totalWeight - 2*communityWeight[targetComm]*nodeWeight[i]/totalWeight^2
+                        double delta = weightToTarget / totalWeight
+                            - communityWeight[targetComm] * nodeWeight[i] / (2 * totalWeight * totalWeight);
+
+                        if (delta > bestDelta)
                         {
-                            visited.Add(neighbor);
-                            queue.Enqueue(neighbor);
+                            bestDelta = delta;
+                            bestComm = targetComm;
                         }
                     }
-                }
 
-                Communities.Add(community);
+                    if (bestComm != currentComm)
+                    {
+                        communityWeight[currentComm] -= nodeWeight[i];
+                        communityWeight[bestComm] += nodeWeight[i];
+                        community[i] = bestComm;
+                        improved = true;
+                    }
+                }
+            }
+
+            // Group by community label
+            var labelMap = new Dictionary<int, int>();
+            foreach (int c in community.Distinct())
+                labelMap[c] = labelMap.Count + 1;
+
+            var groups = new Dictionary<int, List<NetworkNode>>();
+            for (int i = 0; i < n; i++)
+            {
+                int label = labelMap[community[i]];
+                if (!groups.ContainsKey(label))
+                    groups[label] = new List<NetworkNode>();
+                groups[label].Add(nodes[i]);
+            }
+
+            foreach (var kvp in groups)
+            {
+                Communities.Add(new Community
+                {
+                    Id = kvp.Key,
+                    Nodes = kvp.Value
+                });
             }
         }
 

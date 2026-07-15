@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DataGrid | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="button.html">UI Components</a><span>&rsaquo;</span> <span>DataGrid</span></nav>
+<div class="page-header"><h1>DataGrid</h1><p class="page-subtitle">Tabular data display with columns, sorting, selection, and scrolling</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia.Controls</code> &mdash; <strong>Inherits:</strong> <code>MaterialControl</code> &rarr; <code>SkiaComponent</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#properties">Properties</a></li>
+    <li><a href="#columns">DataGridColumn Model</a></li>
+    <li><a href="#cell-rendering">Cell Rendering</a></li>
+    <li><a href="#scroll">Scroll Support</a></li>
+    <li><a href="#code-example">Code Example</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p>The <code>DataGrid</code> control renders tabular data with a Material Design 3.0 aesthetic using SkiaSharp. It supports column headers, sortable columns by clicking headers, row selection with single and multi-select modes, and both vertical and horizontal scrolling. The grid is rendered entirely through SkiaSharp draw calls with no underlying data-bound grid framework &mdash; rows and columns are virtualized for performance with large data sets.</p>
+
+  <p>Cells are rendered using the <code>DrawCell</code> virtual method, which subclasses can override for custom cell painting (progress bars, icons, color swatches, etc.). Alternating row colors, grid lines, and header styling all follow the active Material theme.</p>
+</section>
+
+<section class="section" id="properties">
+  <h2>Properties</h2>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Columns</code></td>
+        <td><code>List&lt;DataGridColumn&gt;</code></td>
+        <td>The column definitions. Each column specifies a header label, width, data binding key, and optional sort configuration.</td>
+      </tr>
+      <tr>
+        <td><code>Rows</code></td>
+        <td><code>IList&lt;object&gt;</code></td>
+        <td>The data rows. Each element is typically a dictionary, anonymous object, or typed model. The grid uses the <code>DataField</code> property of each column to extract cell values via reflection or indexer lookup.</td>
+      </tr>
+      <tr>
+        <td><code>HeaderHeight</code></td>
+        <td><code>float</code></td>
+        <td>Height of the column header row. Default is <code>56f</code> per MD3 dense table spec.</td>
+      </tr>
+      <tr>
+        <td><code>RowHeight</code></td>
+        <td><code>float</code></td>
+        <td>Height of each data row. Default is <code>48f</code> per MD3 standard table row spec.</td>
+      </tr>
+      <tr>
+        <td><code>ShowHeader</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>false</code>, the column header row is hidden and the data rows begin at Y=0. Default is <code>true</code>.</td>
+      </tr>
+      <tr>
+        <td><code>SelectionMode</code></td>
+        <td><code>SelectionMode</code></td>
+        <td>Enum: <code>None</code>, <code>Single</code> (default), or <code>Multi</code>. In multi-select mode, rows can be toggled with Ctrl+Click or selected as a range with Shift+Click.</td>
+      </tr>
+      <tr>
+        <td><code>SelectedIndex</code></td>
+        <td><code>int</code></td>
+        <td>Zero-based index of the selected row in single-select mode. <code>-1</code> when nothing is selected.</td>
+      </tr>
+      <tr>
+        <td><code>SelectedIndices</code></td>
+        <td><code>HashSet&lt;int&gt;</code></td>
+        <td>Set of selected row indices in multi-select mode.</td>
+      </tr>
+      <tr>
+        <td><code>ShowGridLines</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, horizontal and vertical grid lines are drawn between rows and columns. Default is <code>false</code> (clean MD3 style).</td>
+      </tr>
+      <tr>
+        <td><code>AlternateRowColor</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, even rows receive a subtle background tint (<code>SurfaceVariant</code> at low opacity). Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+        <td><code>SortColumnIndex</code></td>
+        <td><code>int</code></td>
+        <td>Index of the currently sorted column. <code>-1</code> when no sort is applied. Set automatically when a column header is clicked.</td>
+      </tr>
+      <tr>
+        <td><code>SortDirection</code></td>
+        <td><code>SortDirection</code></td>
+        <td><code>Ascending</code> or <code>Descending</code>. The sort indicator icon is drawn in the corresponding column header.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="columns">
+  <h2>DataGridColumn Model</h2>
+
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>HeaderText</code></td>
+        <td><code>string</code></td>
+        <td>The label displayed in the column header. Rendered using <code>LabelMedium</code> typography.</td>
+      </tr>
+      <tr>
+        <td><code>DataField</code></td>
+        <td><code>string</code></td>
+        <td>The property name or dictionary key used to extract the cell value from each row object. Supports nested paths via dot notation (e.g., <code>"Address.City"</code>).</td>
+      </tr>
+      <tr>
+        <td><code>Width</code></td>
+        <td><code>float</code></td>
+        <td>Fixed column width in logical pixels. Default is <code>120f</code>. Set to <code>0</code> for auto-size (fills remaining space). Only one column should have auto-width.</td>
+      </tr>
+      <tr>
+        <td><code>MinWidth</code></td>
+        <td><code>float</code></td>
+        <td>Minimum column width when resizing. Default is <code>60f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>IsSortable</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, clicking the column header toggles sort direction. Default is <code>true</code>.</td>
+      </tr>
+      <tr>
+        <td><code>Alignment</code></td>
+        <td><code>SKTextAlign</code></td>
+        <td>Horizontal alignment for cell text. <code>Left</code> (default), <code>Center</code>, or <code>Right</code>. Numeric columns typically use Right alignment.</td>
+      </tr>
+      <tr>
+        <td><code>FormatString</code></td>
+        <td><code>string</code></td>
+        <td>Optional .NET format string applied to cell values (e.g., <code>"N2"</code> for two-decimal numbers, <code>"d"</code> for short dates). If <code>null</code>, <code>ToString()</code> is used.</td>
+      </tr>
+      <tr>
+        <td><code>CellRenderer</code></td>
+        <td><code>Action&lt;SKCanvas, SKRect, object&gt;</code></td>
+        <td>Optional custom render delegate. When set, the delegate is called instead of the default text rendering. Use for custom cell content like swatches, progress bars, or icons.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="cell-rendering">
+  <h2>Cell Rendering</h2>
+  <p>By default, cell values are rendered as text using <code>BodyMedium</code> typography. The cell background alternates between <code>Surface</code> (selected/odd) and <code>SurfaceVariant</code> (even) when <code>AlternateRowColor</code> is enabled. Selected rows are highlighted with a translucent <code>Primary</code> state layer at 8% opacity.</p>
+
+  <p>For custom cell rendering, assign a <code>CellRenderer</code> delegate to a column. The delegate receives the canvas, the cell's bounding rectangle (already clipped), and the raw cell value. Use canvas transforms and save/restore within the delegate.</p>
+
+  <div class="code-example">
+    <h3>Custom Cell Renderer for a Progress Bar</h3>
+    <pre><code class="language-csharp">var progressColumn = new DataGridColumn
+{
+    HeaderText = "Progress",
+    DataField = "PercentComplete",
+    Width = 150,
+    CellRenderer = (canvas, rect, value) =>
+    {
+        float percent = Convert.ToSingle(value) / 100f;
+        float barWidth = rect.Width * percent;
+
+        using var bgPaint = new SKPaint { Color = SKColors.LightGray };
+        canvas.DrawRect(rect.Left, rect.Top + 8, rect.Width, rect.Height - 16, bgPaint);
+
+        using var fillPaint = new SKPaint { Color = SKColors.Green };
+        canvas.DrawRect(rect.Left, rect.Top + 8, barWidth, rect.Height - 16, fillPaint);
+    }
+};</code></pre>
+  </div>
+</section>
+
+<section class="section" id="scroll">
+  <h2>Scroll Support</h2>
+  <p>The <code>DataGrid</code> supports both vertical and horizontal scrolling when the content exceeds the control's visible area. Scroll behavior is controlled by these properties:</p>
+
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>ScrollOffsetY</code></td><td><code>float</code></td><td>Current vertical scroll offset. Rows above this offset are clipped from rendering (virtualization). Default is <code>0</code>.</td></tr>
+      <tr><td><code>MaxScrollY</code></td><td><code>float</code></td><td>Read-only. Maximum vertical scroll value. Computed as <code>Rows.Count * RowHeight - VisibleHeight</code>.</td></tr>
+      <tr><td><code>ScrollOffsetX</code></td><td><code>float</code></td><td>Current horizontal scroll offset. Columns to the left are clipped. Default is <code>0</code>.</td></tr>
+      <tr><td><code>ShowScrollbar</code></td><td><code>bool</code></td><td>When <code>true</code>, a Material-themed scroll bar thumb is rendered on the right edge. Default is <code>true</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <p>Scroll is handled by the <code>InputManager</code>. The grid responds to <code>MouseWheel</code> events for vertical scroll and <code>Shift+MouseWheel</code> for horizontal scroll. Touch scrolling with inertia is supported when the hosting application provides touch input.</p>
+</section>
+
+<section class="section" id="code-example">
+  <h2>Code Example</h2>
+
+  <div class="code-example">
+    <h3>DataGrid with Sortable Columns and Row Selection</h3>
+    <pre><code class="language-csharp">var data = new List&lt;Dictionary&lt;string, object&gt;&gt;
+{
+    new() { ["Id"] = 1, ["Name"] = "Alice", ["Dept"] = "Engineering", ["Salary"] = 95000 },
+    new() { ["Id"] = 2, ["Name"] = "Bob",   ["Dept"] = "Design",      ["Salary"] = 82000 },
+    new() { ["Id"] = 3, ["Name"] = "Carol", ["Dept"] = "Engineering", ["Salary"] = 105000 },
+    new() { ["Id"] = 4, ["Name"] = "Dave",  ["Dept"] = "Marketing",   ["Salary"] = 78000 },
+    new() { ["Id"] = 5, ["Name"] = "Eve",   ["Dept"] = "Design",      ["Salary"] = 91000 }
+};
+
+var grid = new DataGrid
+{
+    X = 20,
+    Y = 60,
+    Width = 700,
+    Height = 400,
+    SelectionMode = SelectionMode.Single,
+    AlternateRowColor = true,
+    Columns = new List&lt;DataGridColumn&gt;
+    {
+        new() { HeaderText = "ID",       DataField = "Id",     Width = 60,   Alignment = SKTextAlign.Center },
+        new() { HeaderText = "Name",     DataField = "Name",   Width = 180 },
+        new() { HeaderText = "Department", DataField = "Dept", Width = 200 },
+        new() { HeaderText = "Salary",   DataField = "Salary", Width = 120,  Alignment = SKTextAlign.Right, FormatString = "C0" }
+    },
+    Rows = data.Cast&lt;object&gt;().ToList()
+};
+
+grid.Initialize();
+
+grid.SelectedIndexChanged += (s, idx) =>
+{
+    if (idx >= 0)
+    {
+        var row = (Dictionary&lt;string, object&gt;)grid.Rows[idx];
+        Console.WriteLine($"Selected: {row["Name"]}");
+    }
+};
+
+drawingManager.AddComponent(grid);
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>DataGrid with Object Data Source</h3>
+    <pre><code class="language-csharp">public record Employee(int Id, string Name, string Department, decimal Salary);
+
+var employees = new List&lt;Employee&gt;
+{
+    new(1, "Alice", "Engineering", 95000m),
+    new(2, "Bob",   "Design",      82000m),
+    new(3, "Carol", "Engineering", 105000m)
+};
+
+var grid = new DataGrid
+{
+    X = 20, Y = 60,
+    Width = 700, Height = 250,
+    Columns = new List&lt;DataGridColumn&gt;
+    {
+        new() { HeaderText = "ID",   DataField = "Id", Width = 60 },
+        new() { HeaderText = "Name", DataField = "Name", Width = 200 },
+        new() { HeaderText = "Dept", DataField = "Department", Width = 200 },
+        new() { HeaderText = "Salary", DataField = "Salary",
+                Width = 120, Alignment = SKTextAlign.Right, FormatString = "C0" }
+    },
+    Rows = employees.Cast&lt;object&gt;().ToList()
+};
+
+grid.Initialize();
+drawingManager.AddComponent(grid);</code></pre>
+  </div>
+
+  <div class="admonition note">
+    <p class="admonition-title">Note</p>
+    <p>The grid performs <strong>no data binding</strong> in the .NET WinForms/WPF sense. Rows are a snapshot list. To update the grid after data changes, assign a new list to <code>Rows</code> and call <code>grid.Invalidate()</code>. For large datasets (10k+ rows), virtualized rendering ensures only visible rows are drawn.</p>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

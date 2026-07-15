@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabs | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="button.html">UI Components</a><span>&rsaquo;</span> <span>Tabs</span></nav>
+<div class="page-header"><h1>Tabs</h1><p class="page-subtitle">Tabbed navigation with horizontal tab strip and content panels</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia.Controls</code> &mdash; <strong>Inherits:</strong> <code>MaterialControl</code> &rarr; <code>SkiaComponent</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#properties">Properties</a></li>
+    <li><a href="#tabitem">TabItem Model</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#code-example">Code Example</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p>The <code>Tabs</code> control provides tabbed navigation with a horizontal tab strip and associated content panels, rendered entirely with SkiaSharp. Each tab has a label, optional icon, and a content component that is shown when the tab is active. The active tab indicator is drawn as a 3px-thick underline that slides smoothly between tab positions using an animated transition.</p>
+
+  <p>The tab strip supports horizontal scrolling when the total tab width exceeds the control width, with fade indicators drawn at the edges when scrollable. Tab content is rendered directly within the control's body area below the strip.</p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h4>Animated Indicator</h4>
+      <p>The active-tab underline slides smoothly with a spring animation between tab positions.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Scrollable Tabs</h4>
+      <p>When tabs overflow, horizontal scroll arrows appear and the strip becomes scrollable.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Icon Support</h4>
+      <p>Each tab can display an <code>SKPath</code> icon above or beside its label text.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Content Hosting</h4>
+      <p>Any <code>SkiaComponent</code> can be the content of a tab. Only the active tab's content is rendered.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="properties">
+  <h2>Properties</h2>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>SelectedIndex</code></td>
+        <td><code>int</code></td>
+        <td>Zero-based index of the currently active tab. Setting this switches the visible content panel and moves the indicator. Default is <code>0</code>.</td>
+      </tr>
+      <tr>
+        <td><code>TabItems</code></td>
+        <td><code>List&lt;TabItem&gt;</code></td>
+        <td>Collection of <code>TabItem</code> models defining the tabs. Each contains text, icon, and a content component reference.</td>
+      </tr>
+      <tr>
+        <td><code>TabPosition</code></td>
+        <td><code>TabPosition</code></td>
+        <td>Enum controlling tab strip placement: <code>Top</code> (default) or <code>Bottom</code>. Bottom-positioned tabs draw the indicator above instead of below.</td>
+      </tr>
+      <tr>
+        <td><code>Scrollable</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code> and tabs exceed the available width, horizontal scroll controls become visible. Default is <code>true</code>.</td>
+      </tr>
+      <tr>
+        <td><code>TabHeight</code></td>
+        <td><code>float</code></td>
+        <td>Height of the tab strip. Default is <code>48f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>IndicatorHeight</code></td>
+        <td><code>float</code></td>
+        <td>Thickness of the active-tab underline. Default is <code>3f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>ContentPadding</code></td>
+        <td><code>float</code></td>
+        <td>Padding around the content panel area. Default is <code>8f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>TabMinWidth</code></td>
+        <td><code>float</code></td>
+        <td>Minimum width per tab header. Default is <code>90f</code>. Tabs with short labels still receive this minimum width.</td>
+      </tr>
+      <tr>
+        <td><code>TabMaxWidth</code></td>
+        <td><code>float</code></td>
+        <td>Maximum width per tab header. Default is <code>360f</code>. Tabs grow to fill available space evenly up to this limit.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="tabitem">
+  <h2>TabItem Model</h2>
+  <p>The <code>TabItem</code> class defines a single tab in the tab strip. It is a model class (not a <code>SkiaComponent</code>) that holds the data the <code>Tabs</code> control uses for rendering.</p>
+
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Text</code></td>
+        <td><code>string</code></td>
+        <td>Label displayed on the tab. Rendered using <code>TitleSmall</code> typography for inactive tabs and <code>TitleSmall</code> + <code>Primary</code> color for the active tab.</td>
+      </tr>
+      <tr>
+        <td><code>Icon</code></td>
+        <td><code>SKPath</code></td>
+        <td>Optional vector icon rendered above the text. When present, tab height expands to accommodate the icon. Icon color follows the same active/inactive state rules as text.</td>
+      </tr>
+      <tr>
+        <td><code>Content</code></td>
+        <td><code>SkiaComponent</code></td>
+        <td>The component displayed when this tab is active. Only one tab's content is drawn at a time. The content's coordinate space is relative to the content panel's top-left corner. Set to <code>null</code> for tabs that have no content.</td>
+      </tr>
+      <tr>
+        <td><code>IsEnabled</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>false</code>, the tab appears dimmed and cannot be selected. Default is <code>true</code>.</td>
+      </tr>
+      <tr>
+        <td><code>Tag</code></td>
+        <td><code>object</code></td>
+        <td>Arbitrary data attached to the tab. Not rendered or serialized by default.</td>
+      </tr>
+      <tr>
+        <td><code>Badge</code></td>
+        <td><code>string</code></td>
+        <td>Optional badge text displayed as a small pill next to the tab label. Renderered in <code>Error</code> color on a small rounded background.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="events">
+  <h2>Events</h2>
+
+  <table>
+    <thead>
+      <tr><th>Event</th><th>Signature</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>SelectedIndexChanged</code></td>
+        <td><code>EventHandler&lt;int&gt;</code></td>
+        <td>Raised when the active tab changes. The integer argument is the new <code>SelectedIndex</code>. Raised after the indicator animation begins but before it completes.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="code-example">
+  <h2>Code Example</h2>
+
+  <div class="code-example">
+    <h3>Basic Tabs with Multiple Content Panels</h3>
+    <pre><code class="language-csharp">var tabs = new Tabs
+{
+    X = 20,
+    Y = 20,
+    Width = 600,
+    Height = 400,
+    SelectedIndex = 0,
+    Scrollable = true
+};
+tabs.Initialize();
+
+var generalContent = new Label
+{
+    Text = "General settings content goes here.",
+    X = 0, Y = 0,
+    Width = 580, Height = 300
+};
+generalContent.Initialize();
+
+var appearanceContent = new Card
+{
+    Title = "Appearance",
+    Subtitle = "Color theme and font settings",
+    X = 0, Y = 0,
+    Width = 580, Height = 300
+};
+appearanceContent.Initialize();
+
+var advancedContent = new Label
+{
+    Text = "Advanced configuration options.",
+    X = 0, Y = 0,
+    Width = 580, Height = 300
+};
+advancedContent.Initialize();
+
+tabs.TabItems.Add(new TabItem
+{
+    Text = "General",
+    Content = generalContent
+});
+
+tabs.TabItems.Add(new TabItem
+{
+    Text = "Appearance",
+    Content = appearanceContent
+});
+
+tabs.TabItems.Add(new TabItem
+{
+    Text = "Advanced",
+    Content = advancedContent,
+    IsEnabled = false
+});
+
+tabs.SelectedIndexChanged += (s, index) =>
+    Console.WriteLine($"Tab switched to index {index}");
+
+drawingManager.AddComponent(tabs);
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Tabs with Icons</h3>
+    <pre><code class="language-csharp">var homeIcon = SKPath.ParseSvgPathData(
+    "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z");
+var settingsIcon = SKPath.ParseSvgPathData(
+    "M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81a.484.484 0 0 0-.41-.31h-3.98a.48.48 0 0 0-.41.31l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.72 8.87c-.12.2-.07.44.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.22.23.38.41.31h3.98c.19 0 .36-.09.41-.31l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.44-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z");
+
+tabs.TabItems.Clear();
+tabs.TabItems.Add(new TabItem { Text = "Home", Icon = homeIcon, Content = homePanel });
+tabs.TabItems.Add(new TabItem { Text = "Settings", Icon = settingsIcon, Content = settingsPanel });</code></pre>
+  </div>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Tip</p>
+    <p>For dynamic tab content that changes at runtime, update the <code>Content</code> property of the relevant <code>TabItem</code> and invalidate the tabs control. The newly assigned component will be rendered on the next draw cycle without needing to recreate the tabs control.</p>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

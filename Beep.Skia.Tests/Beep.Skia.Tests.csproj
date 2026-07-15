@@ -19,6 +19,7 @@
     <ProjectReference Include="..\Beep.Skia.UML\Beep.Skia.UML.csproj" />
     <ProjectReference Include="..\Beep.Skia.Network\Beep.Skia.Network.csproj" />
     <ProjectReference Include="..\Beep.Ski.Quantitative\Beep.Ski.Quantitative.csproj" />
+    <ProjectReference Include="..\Beep.Skia.WellLogs\Beep.Skia.WellLogs.csproj" />
   </ItemGroup>
 
 </Project>

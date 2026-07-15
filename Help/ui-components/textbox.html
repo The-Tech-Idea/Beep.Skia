@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TextBox &amp; TextArea | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="button.html">UI Components</a><span>&rsaquo;</span> <span>TextBox &amp; TextArea</span></nav>
+<div class="page-header"><h1>TextBox &amp; TextArea</h1><p class="page-subtitle">Single-line and multi-line text input with Material Design styling</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia.Controls</code> &mdash; <strong>Inherits:</strong> <code>MaterialControl</code> &rarr; <code>SkiaComponent</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#textbox-properties">TextBox Properties</a></li>
+    <li><a href="#textarea">TextArea Properties</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#code-example">Code Example</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p>The <code>TextBox</code> and <code>TextArea</code> controls provide Material Design 3.0 text input fields rendered entirely with SkiaSharp. <code>TextBox</code> handles single-line input (e.g., form fields, search boxes, labels) while <code>TextArea</code> extends it with multi-line editing, word wrap, and line count tracking. Both controls use <code>SKCanvas</code> for text rendering and integrate with the platform's keyboard input system via the <code>InputManager</code>.</p>
+
+  <p>Text fields follow the MD3 "Filled" and "Outlined" visual styles with animated label transitions, floating placeholder labels, error states, and helper text. The cursor is a blinking vertical line drawn by the control's render cycle. Text selection is drawn as a semi-transparent highlight rectangle.</p>
+</section>
+
+<section class="section" id="textbox-properties">
+  <h2>TextBox Properties</h2>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Text</code></td>
+        <td><code>string</code></td>
+        <td>The current text value. Setting this programmatically moves the cursor to the end unless <code>CursorPosition</code> is also set.</td>
+      </tr>
+      <tr>
+        <td><code>Placeholder</code></td>
+        <td><code>string</code></td>
+        <td>Placeholder text shown when <code>Text</code> is empty. Rendered in <code>OnSurfaceVariant</code> color at 60% opacity. In MD3 style, the placeholder acts as a label that floats above the field when focused or populated.</td>
+      </tr>
+      <tr>
+        <td><code>MaxLength</code></td>
+        <td><code>int</code></td>
+        <td>Maximum character count. Input beyond this limit is rejected. Default is <code>0</code> (unlimited). A character counter is displayed below the field when set.</td>
+      </tr>
+      <tr>
+        <td><code>IsPassword</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, characters are rendered as bullets (<code>&bull;</code>) instead of the actual text. A visibility toggle icon is drawn at the trailing edge. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+        <td><code>IsReadOnly</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, the field cannot be edited but remains selectable for copy operations. The background is rendered in a muted state. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+        <td><code>FieldStyle</code></td>
+        <td><code>TextFieldStyle</code></td>
+        <td>Enum: <code>Filled</code> (default) or <code>Outlined</code>. <code>Filled</code> has a filled background with an underline indicator. <code>Outlined</code> has a transparent background with a full border.</td>
+      </tr>
+      <tr>
+        <td><code>IsFocused</code></td>
+        <td><code>bool</code></td>
+        <td>Read-only. Indicates whether the field has keyboard focus. When focused, the underline/outline is drawn in <code>Primary</code> color.</td>
+      </tr>
+      <tr>
+        <td><code>CursorPosition</code></td>
+        <td><code>int</code></td>
+        <td>Zero-based index of the insertion cursor within <code>Text</code>. Setting this moves the cursor. Read to determine where the next typed character will be inserted.</td>
+      </tr>
+      <tr>
+        <td><code>IsCursorVisible</code></td>
+        <td><code>bool</code></td>
+        <td>Read-only. Indicates whether the blinking cursor is currently shown (alternates on a timer).</td>
+      </tr>
+      <tr>
+        <td><code>HelperText</code></td>
+        <td><code>string</code></td>
+        <td>Optional helper text displayed below the field in <code>BodySmall</code> typography. Used for hints or validation messages.</td>
+      </tr>
+      <tr>
+        <td><code>HasError</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, the field renders in <code>Error</code> color (underline, outline, label) and the helper text color changes to <code>Error</code>. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+        <td><code>LeadingIcon</code></td>
+        <td><code>SKPath</code></td>
+        <td>Optional icon drawn at the left side of the field. Icon color follows the field state.</td>
+      </tr>
+      <tr>
+        <td><code>TrailingIcon</code></td>
+        <td><code>SKPath</code></td>
+        <td>Optional icon drawn at the right side. For IsPassword fields, a visibility toggle icon is automatically managed here.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="textarea">
+  <h2>TextArea Properties</h2>
+  <p><code>TextArea</code> inherits all <code>TextBox</code> properties and adds multi-line support:</p>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>LineCount</code></td>
+        <td><code>int</code></td>
+        <td>Read-only. The number of text lines, accounting for newline characters and word wrap. Updated on every text change.</td>
+      </tr>
+      <tr>
+        <td><code>WordWrap</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code> (default), text automatically wraps at the field's width boundary. When <code>false</code>, horizontal scrolling is enabled.</td>
+      </tr>
+      <tr>
+        <td><code>LineHeight</code></td>
+        <td><code>float</code></td>
+        <td>Vertical spacing between wrapped lines in logical pixels. Default is <code>20f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>AcceptsReturn</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, the Enter key inserts a newline. When <code>false</code>, Enter triggers the default action or is ignored. Default is <code>true</code>.</td>
+      </tr>
+      <tr>
+        <td><code>AcceptsTab</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, Tab inserts a tab character instead of moving focus. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+        <td><code>MinLines</code></td>
+        <td><code>int</code></td>
+        <td>Minimum number of visible lines. The TextArea will not shrink below this height. Default is <code>1</code>.</td>
+      </tr>
+      <tr>
+        <td><code>MaxLines</code></td>
+        <td><code>int</code></td>
+        <td>Maximum number of visible lines before vertical scrolling begins. <code>0</code> for unlimited. Default is <code>0</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="events">
+  <h2>Events</h2>
+
+  <table>
+    <thead>
+      <tr><th>Event</th><th>Signature</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>TextChanged</code></td>
+        <td><code>EventHandler&lt;string&gt;</code></td>
+        <td>Raised whenever <code>Text</code> changes, either by user input or programmatic assignment. The string argument is the new text value. Fires after the internal state is updated.</td>
+      </tr>
+      <tr>
+        <td><code>FocusChanged</code></td>
+        <td><code>EventHandler&lt;bool&gt;</code></td>
+        <td>Raised when the field gains or loses keyboard focus. The boolean is the new <code>IsFocused</code> value.</td>
+      </tr>
+      <tr>
+        <td><code>CursorPositionChanged</code></td>
+        <td><code>EventHandler&lt;int&gt;</code></td>
+        <td>Raised when the cursor position changes, either by click, arrow keys, or programmatic assignment.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="code-example">
+  <h2>Code Example</h2>
+
+  <div class="code-example">
+    <h3>Basic TextBox (Filled Style)</h3>
+    <pre><code class="language-csharp">var nameField = new TextBox
+{
+    Text = "",
+    Placeholder = "Full Name",
+    FieldStyle = TextFieldStyle.Filled,
+    MaxLength = 100,
+    X = 40,
+    Y = 40,
+    Width = 300,
+    Height = 56
+};
+
+nameField.Initialize();
+nameField.TextChanged += (s, text) =>
+    Console.WriteLine($"Name updated: {text}");
+
+drawingManager.AddComponent(nameField);
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Outlined Password Field with Error</h3>
+    <pre><code class="language-csharp">var passwordField = new TextBox
+{
+    Placeholder = "Password",
+    IsPassword = true,
+    FieldStyle = TextFieldStyle.Outlined,
+    MaxLength = 32,
+    HelperText = "Must be at least 8 characters",
+    X = 40,
+    Y = 120,
+    Width = 300,
+    Height = 56
+};
+
+passwordField.Initialize();
+
+passwordField.TextChanged += (s, text) =>
+{
+    passwordField.HasError = text.Length > 0 && text.Length < 8;
+    passwordField.HelperText = passwordField.HasError
+        ? "Password is too short"
+        : "Must be at least 8 characters";
+};
+
+drawingManager.AddComponent(passwordField);</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Multi-Line TextArea</h3>
+    <pre><code class="language-csharp">var descriptionArea = new TextArea
+{
+    Text = "",
+    Placeholder = "Description",
+    FieldStyle = TextFieldStyle.Outlined,
+    WordWrap = true,
+    MinLines = 3,
+    MaxLines = 8,
+    AcceptsReturn = true,
+    AcceptsTab = false,
+    X = 40,
+    Y = 200,
+    Width = 400,
+    Height = 120
+};
+
+descriptionArea.Initialize();
+descriptionArea.TextChanged += (s, text) =>
+    Console.WriteLine($"Description lines: {descriptionArea.LineCount}");
+
+drawingManager.AddComponent(descriptionArea);</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>ReadOnly TextBox with Leading Icon</h3>
+    <pre><code class="language-csharp">var iconPath = SKPath.ParseSvgPathData(
+    "M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z");
+
+var readonlyField = new TextBox
+{
+    Text = "This field is not editable",
+    IsReadOnly = true,
+    LeadingIcon = iconPath,
+    FieldStyle = TextFieldStyle.Filled,
+    X = 40,
+    Y = 350,
+    Width = 400,
+    Height = 56
+};
+
+readonlyField.Initialize();
+drawingManager.AddComponent(readonlyField);
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Tip</p>
+    <p>Text input in SkiaSharp-rendered controls relies on keyboard event forwarding. The <code>TextBox</code> control registers itself with the <code>InputManager</code> on focus to receive <code>OnKeyDown</code> and <code>OnKeyPress</code> events. Ensure your host application forwards platform keyboard events to the <code>InputManager</code> for text input to work.</p>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

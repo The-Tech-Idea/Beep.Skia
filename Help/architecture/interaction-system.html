@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interaction System Architecture | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="../architecture/component-registry.html">Architecture & Internals</a><span>&rsaquo;</span> <span>Interaction System Architecture</span></nav><div class="page-header"><h1>Interaction System Architecture</h1><p class="page-subtitle">Mouse and keyboard interaction routing through InteractionHelper and SelectionManager.</p></div>
+<p>The interaction system routes all user input events through <code>InteractionHelper</code> with a hit-test priority chain.</p>
+<h3>Hit-Test Priority</h3>
+<ol>
+<li><strong>Connection Points:</strong> If cursor is over a port (small radius), port interaction mode</li>
+<li><strong>Selection Handles:</strong> If cursor is over a resize/move handle, handle mode</li>
+<li><strong>Component Body:</strong> Full component hit test via bounding rectangle</li>
+<li><strong>Connection Lines:</strong> Line proximity test for click-to-select</li>
+<li><strong>Canvas:</strong> Background click = marquee select or deselect all</li>
+</ol>
+<h3>Drag Modes</h3>
+<ul>
+<li><strong>None:</strong> No active drag</li>
+<li><strong>ComponentMove:</strong> Dragging selected component(s)</li>
+<li><strong>PortConnect:</strong> Drawing a new connection line from a port</li>
+<li><strong>MarqueeSelect:</strong> Rubber-band selection rectangle</li>
+<li><strong>CanvasPan:</strong> Middle-mouse or space+drag panning</li>
+</ul>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

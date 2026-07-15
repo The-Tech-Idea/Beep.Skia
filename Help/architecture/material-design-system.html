@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Material Design 3.0 Theming Architecture | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="../architecture/component-registry.html">Architecture & Internals</a><span>&rsaquo;</span> <span>Material Design 3.0 Theming Architecture</span></nav><div class="page-header"><h1>Material Design 3.0 Theming Architecture</h1><p class="page-subtitle">Material Design 3.0 color token system, border rendering, and text theming in MaterialControl.</p></div>
+<p><code>MaterialControl</code> and <code>MaterialDesignColors</code> implement a complete Material Design 3.0 token system.</p>
+<h3>Color Tokens</h3>
+<ul>
+<li><strong>Primary:</strong> Main brand color for buttons, active states, emphasis</li>
+<li><strong>OnPrimary:</strong> Contrast color for content on primary surfaces</li>
+<li><strong>Surface:</strong> Background color for cards, dialogs, sheets</li>
+<li><strong>OnSurface:</strong> Text/icon color on surface backgrounds</li>
+<li><strong>Outline:</strong> Border and separator colors</li>
+<li><strong>Error:</strong> Error state color for validation</li>
+</ul>
+<h3>Border Rendering</h3>
+<p>MaterialControl provides 14 border rendering styles: None, Solid, Dashed, Dotted, Double, Groove, Ridge, Inset, Outset, Rounded, Shadow, Underline, Glow, and Gradient. Each uses pre-computed <code>SKPaint</code> objects for performance.</p>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

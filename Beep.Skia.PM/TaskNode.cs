@@ -1,5 +1,6 @@
 using Beep.Skia.Model;
 using SkiaSharp;
+using System;
 
 namespace Beep.Skia.PM
 {
@@ -44,6 +45,23 @@ namespace Beep.Skia.PM
             }
         }
 
+        private int _durationDays = 1;
+        public int DurationDays
+        {
+            get => _durationDays;
+            set
+            {
+                var v = Math.Max(1, value);
+                if (_durationDays != v)
+                {
+                    _durationDays = v;
+                    if (NodeProperties.TryGetValue("DurationDays", out var pi))
+                        pi.ParameterCurrentValue = _durationDays;
+                    InvalidateVisual();
+                }
+            }
+        }
+
         public TaskNode()
         {
             Name = "PM Task";
@@ -67,6 +85,14 @@ namespace Beep.Skia.PM
                 DefaultParameterValue = _percentComplete,
                 ParameterCurrentValue = _percentComplete,
                 Description = "Percent completed (0-100)"
+            };
+            NodeProperties["DurationDays"] = new Beep.Skia.Model.ParameterInfo
+            {
+                ParameterName = "DurationDays",
+                ParameterType = typeof(int),
+                DefaultParameterValue = _durationDays,
+                ParameterCurrentValue = _durationDays,
+                Description = "Task duration in working days"
             };
         }
 

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beep.Skia Documentation</title>
+    <link rel="stylesheet" href="sphinx-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        #content-frame {
+            border: none;
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><i class="bi bi-sun-fill" id="theme-icon"></i></button>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <img src="assets/beep-logo.svg" alt="Beep.Skia Logo">
+                <div class="logo-text"><h2>Beep.Skia</h2><span class="version">v3.119.0</span></div>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" id="sidebar-search" placeholder="Search documentation..." oninput="searchSidebar(this.value)">
+            </div>
+            <nav><ul class="nav-menu">
+                <li><a href="home.html" target="content-frame"><i class="bi bi-house"></i> Home</a></li>
+
+                <li class="has-submenu"><a href="#"><i class="bi bi-rocket"></i> Getting Started</a>
+                    <ul class="submenu">
+                        <li><a href="getting-started/installation.html" target="content-frame">Installation Guide</a></li>
+                        <li><a href="getting-started/quick-start.html" target="content-frame">Quick Start Tutorial</a></li>
+                        <li><a href="getting-started/architecture-overview.html" target="content-frame">Architecture Overview</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu"><a href="#"><i class="bi bi-gear"></i> Core Concepts</a>
+                    <ul class="submenu">
+                        <li><a href="core-concepts/skia-component.html" target="content-frame">SkiaComponent Base</a></li>
+                        <li><a href="core-concepts/drawing-manager.html" target="content-frame">DrawingManager</a></li>
+                        <li><a href="core-concepts/coordinate-system.html" target="content-frame">Coordinate System</a></li>
+                        <li><a href="core-concepts/connection-system.html" target="content-frame">Connection System</a></li>
+                        <li><a href="core-concepts/serialization.html" target="content-frame">Serialization</a></li>
+                        <li><a href="core-concepts/interaction.html" target="content-frame">Interaction Model</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu"><a href="#"><i class="bi bi-diagram-3"></i> Diagram Families</a>
+                    <ul class="submenu">
+                        <li style="font-weight:700;color:var(--meta);padding:4px 1.5rem;font-size:.8rem">Business & Process</li>
+                        <li><a href="diagram-families/flowchart.html" target="content-frame">FlowChart</a></li>
+                        <li><a href="diagram-families/business-process.html" target="content-frame">Business Process</a></li>
+                        <li><a href="diagram-families/project-management.html" target="content-frame">Project Management</a></li>
+                        <li><a href="diagram-families/mindmap.html" target="content-frame">MindMap</a></li>
+                        <li><a href="diagram-families/state-machine.html" target="content-frame">State Machine</a></li>
+                        <li style="font-weight:700;color:var(--meta);padding:4px 1.5rem;font-size:.8rem">Data & Systems</li>
+                        <li><a href="diagram-families/erd.html" target="content-frame">ERD (Entity-Relationship)</a></li>
+                        <li><a href="diagram-families/dfd.html" target="content-frame">DFD (Data Flow)</a></li>
+                        <li><a href="diagram-families/etl.html" target="content-frame">ETL (Data Pipeline)</a></li>
+                        <li><a href="diagram-families/uml.html" target="content-frame">UML</a></li>
+                        <li><a href="diagram-families/network.html" target="content-frame">Network Graph</a></li>
+                        <li style="font-weight:700;color:var(--meta);padding:4px 1.5rem;font-size:.8rem">Engineering</li>
+                        <li><a href="diagram-families/ecad.html" target="content-frame">ECAD (Electronics)</a></li>
+                        <li><a href="diagram-families/cloud.html" target="content-frame">Cloud Architecture</a></li>
+                        <li><a href="diagram-families/security.html" target="content-frame">Security</a></li>
+                        <li style="font-weight:700;color:var(--meta);padding:4px 1.5rem;font-size:.8rem">Analytics</li>
+                        <li><a href="diagram-families/ml.html" target="content-frame">Machine Learning</a></li>
+                        <li><a href="diagram-families/quantitative.html" target="content-frame">Quantitative/Finance</a></li>
+                        <li><a href="diagram-families/welllogs.html" target="content-frame">Well Logs</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu"><a href="#"><i class="bi bi-grid"></i> UI Components</a>
+                    <ul class="submenu">
+                        <li><a href="ui-components/button.html" target="content-frame">Button</a></li>
+                        <li><a href="ui-components/card.html" target="content-frame">Card</a></li>
+                        <li><a href="ui-components/menu.html" target="content-frame">Menu & MenuBar</a></li>
+                        <li><a href="ui-components/tabs.html" target="content-frame">Tabs</a></li>
+                        <li><a href="ui-components/datagrid.html" target="content-frame">DataGrid</a></li>
+                        <li><a href="ui-components/textbox.html" target="content-frame">TextBox & TextArea</a></li>
+                        <li><a href="ui-components/dropdown.html" target="content-frame">Dropdown & ComboBox</a></li>
+                        <li><a href="ui-components/checkbox.html" target="content-frame">CheckBox & Radio</a></li>
+                        <li><a href="ui-components/slider.html" target="content-frame">Slider & ProgressBar</a></li>
+                        <li><a href="ui-components/notifications.html" target="content-frame">Notifications & Dialogs</a></li>
+                        <li><a href="ui-components/palette.html" target="content-frame">ComponentPalette</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu"><a href="#"><i class="bi bi-book"></i> Guides</a>
+                    <ul class="submenu">
+                        <li><a href="guides/creating-custom-family.html" target="content-frame">Creating Custom Families</a></li>
+                        <li><a href="guides/best-practices.html" target="content-frame">Best Practices</a></li>
+                        <li><a href="guides/performance.html" target="content-frame">Performance Guide</a></li>
+                        <li><a href="guides/theming.html" target="content-frame">Theming Guide</a></li>
+                        <li><a href="guides/extensibility.html" target="content-frame">Extensibility & Plugins</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu"><a href="#"><i class="bi bi-cpu"></i> Architecture & Internals</a>
+                    <ul class="submenu">
+                        <li><a href="architecture/component-registry.html" target="content-frame">Component Registry</a></li>
+                        <li><a href="architecture/rendering-pipeline.html" target="content-frame">Rendering Pipeline</a></li>
+                        <li><a href="architecture/interaction-system.html" target="content-frame">Interaction System</a></li>
+                        <li><a href="architecture/serialization-system.html" target="content-frame">Serialization System</a></li>
+                        <li><a href="architecture/material-design-system.html" target="content-frame">Material Design System</a></li>
+                        <li><a href="architecture/layout-engines.html" target="content-frame">Layout Engines</a></li>
+                        <li><a href="architecture/history-undo-system.html" target="content-frame">Undo/Redo System</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#"><i class="bi bi-code-square"></i> API Reference</a></li>
+            </ul></nav>
+        </aside>
+
+        <iframe name="content-frame" id="content-frame" src="home.html" class="content"></iframe>
+    </div>
+
+    <script>
+        document.querySelectorAll('.has-submenu > a').forEach(function(a) {
+            a.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#') e.preventDefault();
+                var li = this.parentElement;
+                var wasOpen = li.classList.contains('open');
+                document.querySelectorAll('.has-submenu.open').forEach(function(el) {
+                    if (el !== li) el.classList.remove('open');
+                });
+                li.classList.toggle('open', !wasOpen);
+            });
+        });
+
+        document.querySelectorAll('.submenu a').forEach(function(a) {
+            a.addEventListener('click', function() {
+                document.querySelectorAll('.nav-menu a.active').forEach(function(el) { el.classList.remove('active'); });
+                this.classList.add('active');
+            });
+        });
+
+        function searchSidebar(q) {
+            q = q.trim().toLowerCase();
+            document.querySelectorAll('.submenu li').forEach(function(li) {
+                var isCatHeader = li.querySelector('a') === null;
+                li.style.display = (!q || isCatHeader || li.textContent.toLowerCase().indexOf(q) !== -1) ? '' : 'none';
+            });
+            if (q) {
+                document.querySelectorAll('.has-submenu').forEach(function(grp) {
+                    var has = Array.from(grp.querySelectorAll('.submenu li')).some(function(li) { return li.style.display !== 'none'; });
+                    grp.classList.toggle('open', has);
+                });
+            }
+        }
+
+        function toggleTheme() {
+            var body = document.body;
+            var icon = document.getElementById('theme-icon');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                icon.className = 'bi bi-sun-fill';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.className = 'bi bi-moon-fill';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        (function() {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                document.getElementById('theme-icon').className = 'bi bi-moon-fill';
+            }
+        })();
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+    </script>
+</body>
+</html>

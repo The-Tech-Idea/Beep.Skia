@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERD (Entity-Relationship Diagram) Family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="diagram-families/flowchart.html">Diagram Families</a><span>&rsaquo;</span> <span>ERD (Entity-Relationship Diagram) Family</span></nav><div class="page-header"><h1>ERD (Entity-Relationship Diagram) Family</h1><p class="page-subtitle">Entity-Relationship Diagrams with entities, attributes, relationships, row-level connection points, multiplicity markers (1:1, 1:N, M:N), and DDL export.</p></div>
+<div class="toc"><h3>Table of Contents</h3><ul><li><a href="#overview">Overview</a></li><li><a href="#node-types">Node Types</a></li><li><a href="#ports">Connection Points</a></li><li><a href="#conventions">Connection Conventions</a></li><li><a href="#example">Usage Example</a></li></ul></div><section class="section" id="overview"><h2>Overview</h2><p><strong>Base Control:</strong> <code>ERDControl : MaterialControl</code><br><strong>Namespace:</strong> <code>Beep.Skia.ERD</code></p><p>The <strong>ERDControl</strong> is the root control for this diagram family. It inherits <code>MaterialControl</code> and provides shared port management, styling, and template methods for all nodes in the family.</p><p>This family contains <strong>4 node types</strong>.</p></section><section class="section" id="node-types"><h2>Node Types</h2><table><thead><tr><th>Node Class</th><th>Shape</th><th>Description</th></tr></thead><tbody><tr><td><code>ERDEntity</code></td><td>Table rectangle</td><td>Database table with columns, primary keys, foreign keys, and row-level connection points for per-column relationships.</td></tr>
+<tr><td><code>ERDAttribute</code></td><td>Oval</td><td>Entity attribute with name, data type, and nullable flag.</td></tr>
+<tr><td><code>ERDRelationship</code></td><td>Diamond</td><td>Relationship between entities with cardinality (1:1, 1:N, M:N) and Crow's Foot notation.</td></tr>
+<tr><td><code>DDLExporter</code></td><td>N/A (utility)</td><td>Generates CREATE TABLE SQL from ERDEntity definitions including PKs, FKs, indexes, and constraints.</td></tr></tbody></table></section><div id="erdentity"><h3>ERDEntity</h3><p>Database table with columns, primary keys, foreign keys, and row-level connection points for per-column relationships.</p><table><tr><th style="width:30%">Shape</th><td>Table rectangle</td></tr><tr><th>Input Ports</th><td>2+ (left)</td></tr><tr><th>Output Ports</th><td>2+ (right)</td></tr></table></div><div id="erdattribute"><h3>ERDAttribute</h3><p>Entity attribute with name, data type, and nullable flag.</p><table><tr><th style="width:30%">Shape</th><td>Oval</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="erdrelationship"><h3>ERDRelationship</h3><p>Relationship between entities with cardinality (1:1, 1:N, M:N) and Crow's Foot notation.</p><table><tr><th style="width:30%">Shape</th><td>Diamond</td></tr><tr><th>Input Ports</th><td>2+ (left/top)</td></tr><tr><th>Output Ports</th><td>2+ (right/bottom)</td></tr></table></div><div id="ddlexporter"><h3>DDLExporter</h3><p>Generates CREATE TABLE SQL from ERDEntity definitions including PKs, FKs, indexes, and constraints.</p><table><tr><th style="width:30%">Shape</th><td>N/A (utility)</td></tr><tr><th>Input Ports</th><td>—</td></tr><tr><th>Output Ports</th><td>—</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty when the node moves or resizes.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>ERDEntity</code></td><td>2+ (left)</td><td>2+ (right)</td><td>1 per field (left/right)</td></tr>
+<tr><td><code>ERDAttribute</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ERDRelationship</code></td><td>2+ (left/top)</td><td>2+ (right/bottom)</td><td>—</td></tr>
+<tr><td><code>DDLExporter</code></td><td>—</td><td>—</td><td>—</td></tr></tbody></table></section><section class="section" id="conventions"><h2>Connection Conventions</h2><p>When building diagrams with this family, follow these conventions:</p><ul><li>ERDEntity uses row-level connection points for per-column relationships</li><li>Multiplicity markers displayed on line endpoints (1, N, M)</li><li>DDLExporter generates SQL from entity metadata</li><li>ConnectionPoint.DataType and RowId enable schema validation</li></ul></section><section class="section" id="example"><h2>Usage Example</h2><p>Complete example showing creation, node placement, and connection:</p><div class="code-example"><h3>C# Example</h3>
+<pre><code class="language-csharp">var erd = new ERDControl
+{
+    X = 100, Y = 50,
+    Width = 700, Height = 500
+};
+drawingManager.AddComponent(erd);
+
+var entity = new ERDEntity
+{
+    X = 200, Y = 100,
+    TableName = "Customers",
+    Width = 200, Height = 150
+};
+entity.AddField("Id", "int", isPrimaryKey: true);
+entity.AddField("Name", "varchar(100)");
+entity.AddField("Email", "varchar(255)");
+drawingManager.AddComponent(entity);
+
+var attr = new ERDAttribute
+{
+    X = 450, Y = 100,
+    AttributeName = "Email",
+    DataType = "varchar(255)"
+};
+drawingManager.AddComponent(attr);
+
+var rel = new ERDRelationship
+{
+    X = 200, Y = 300,
+    RelationshipType = RelationshipType.OneToMany,
+    Text = "places"
+};
+drawingManager.AddComponent(rel);
+
+// Row-level connections with multiplicity
+drawingManager.Connect(entity.GetFieldPoint("Id"), rel.InPoints[0]);
+drawingManager.Connect(rel.OutPoints[0], attr.InPoints[0]);
+
+// Export DDL
+var exporter = new DDLExporter();
+string sql = exporter.Export(entity);</code></pre></div></section>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

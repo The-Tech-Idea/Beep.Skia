@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Best Practices | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="creating-custom-family.html">Guides</a><span>&rsaquo;</span> <span>Best Practices</span></nav>
+<div class="page-header"><h1>Best Practices</h1><p class="page-subtitle">Design patterns, conventions, and anti-patterns when working with Beep.Skia</p></div>
+
+<p>This guide codifies the design patterns and conventions used across all 18 built-in diagram families and the 200+ shipped node types. Following these practices ensures your components integrate cleanly with the rendering pipeline, theme system, serialization engine, and interaction model.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#component-design">Component Design</a></li>
+    <li><a href="#port-management">Port Management</a></li>
+    <li><a href="#performance">Performance</a></li>
+    <li><a href="#nodeproperties">NodeProperties</a></li>
+    <li><a href="#connection-validation">Connection Validation</a></li>
+    <li><a href="#anti-patterns">Anti-Patterns</a></li>
+    <li><a href="#testing">Testing</a></li>
+  </ul>
+</div>
+
+<section class="section" id="component-design">
+  <h2>Component Design</h2>
+
+  <h3>Keep DrawContent() Lightweight</h3>
+  <p><code>DrawContent()</code> is called on every frame during pan, zoom, and drag operations. A typical diagram with 200 components will call this method 200 times per frame at 60 FPS. Every allocation, path construction, and string measurement adds up quickly.</p>
+
+  <table>
+    <thead>
+      <tr><th>Do</th><th>Don't</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Pre-compute text measurements in <code>Initialize()</code></td>
+        <td>Call <code>paint.MeasureText()</code> inside <code>DrawContent()</code></td>
+      </tr>
+      <tr>
+        <td>Cache <code>SKPath</code> objects and only rebuild when geometry changes</td>
+        <td>Create new <code>SKPath</code> instances on every draw call</td>
+      </tr>
+      <tr>
+        <td>Use <code>canvas.Save()</code>/<code>canvas.Restore()</code> for localized transforms</td>
+        <td>Leave the canvas in a modified state for subsequent draws</td>
+      </tr>
+      <tr>
+        <td>Use simple hit-test (bounds-based) by default</td>
+        <td>Implement per-pixel hit-testing unless required for precise selection</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Good: Lightweight DrawContent</h3>
+    <pre><code class="language-csharp">private SKPath _cachedPath;
+private SKRect _cachedBounds;
+
+protected override void Initialize()
+{
+    base.Initialize();
+    _cachedPath = new SKPath();
+    BuildPath();
+}
+
+private void BuildPath()
+{
+    _cachedPath.Reset();
+    _cachedPath.AddRoundRect(new SKRect(0, 0, Width, Height), 8f, 8f);
+    _cachedBounds = _cachedPath.Bounds;
+}
+
+public override void DrawContent(SKCanvas canvas)
+{
+    canvas.Save();
+    canvas.Translate(X, Y);
+    canvas.DrawPath(_cachedPath, FillPaint);
+    canvas.DrawPath(_cachedPath, StrokePaint);
+    canvas.Restore();
+}</code></pre>
+  </div>
+
+  <h3>SKPaint Pooling</h3>
+  <p>Creating and destroying <code>SKPaint</code> objects is expensive. Pool them at the component level and reuse across draw calls:</p>
+
+  <div class="code-example">
+    <h3>Bad: Creating Paints in DrawContent</h3>
+    <pre><code class="language-csharp">// DON'T DO THIS
+public override void DrawContent(SKCanvas canvas)
+{
+    using var fill = new SKPaint { Color = SKColors.Blue, IsAntialias = true };
+    using var stroke = new SKPaint { Color = SKColors.Black, Style = SKPaintStyle.Stroke };
+    canvas.DrawRect(Bounds, fill);
+    canvas.DrawRect(Bounds, stroke);
+}</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Good: Pooled Paints</h3>
+    <pre><code class="language-csharp">// DO THIS INSTEAD
+private SKPaint _fillPaint;
+private SKPaint _strokePaint;
+
+protected override void Initialize()
+{
+    base.Initialize();
+    _fillPaint = new SKPaint { Color = SKColors.Blue, IsAntialias = true };
+    _strokePaint = new SKPaint
+    {
+        Color = SKColors.Black,
+        Style = SKPaintStyle.Stroke,
+        IsAntialias = true,
+        StrokeWidth = 2f
+    };
+}
+
+public override void DrawContent(SKCanvas canvas)
+{
+    canvas.DrawRect(Bounds, _fillPaint);
+    canvas.DrawRect(Bounds, _strokePaint);
+}
+
+public override void Dispose()
+{
+    _fillPaint?.Dispose();
+    _strokePaint?.Dispose();
+    base.Dispose();
+}</code></pre>
+  </div>
+
+  <h3>Cache Complex Paths</h3>
+  <p>If a component has a complex shape that only changes when <code>Width</code> or <code>Height</code> change, cache the <code>SKPath</code> and only rebuild it when the component is resized:</p>
+
+  <div class="code-example">
+    <h3>Path Caching Pattern</h3>
+    <pre><code class="language-csharp">private SKPath _shapePath;
+private float _lastWidth, _lastHeight;
+
+private void EnsurePath()
+{
+    if (_shapePath != null && Math.Abs(_lastWidth - Width) < 0.01f
+                           && Math.Abs(_lastHeight - Height) < 0.01f)
+        return;
+
+    _shapePath?.Dispose();
+    _shapePath = new SKPath();
+
+    // Build complex shape
+    _shapePath.MoveTo(0, Height * 0.2f);
+    _shapePath.LineTo(Width * 0.5f, 0);
+    _shapePath.LineTo(Width, Height * 0.2f);
+    _shapePath.LineTo(Width * 0.8f, Height);
+    _shapePath.LineTo(Width * 0.2f, Height);
+    _shapePath.Close();
+
+    _lastWidth = Width;
+    _lastHeight = Height;
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="port-management">
+  <h2>Port Management</h2>
+
+  <h3>Always Call MarkPortsDirty() After Position/Size Changes</h3>
+  <p>Connection points are computed lazily. If your component changes position, size, or layout, it must signal that port positions need recomputation:</p>
+
+  <div class="code-example">
+    <h3>Property Setters That Mark Ports Dirty</h3>
+    <pre><code class="language-csharp">private float _x;
+public new float X
+{
+    get => _x;
+    set
+    {
+        if (Math.Abs(_x - value) < 0.001f) return;
+        _x = value;
+        MarkPortsDirty();
+    }
+}
+
+private float _width;
+public new float Width
+{
+    get => _width;
+    set
+    {
+        if (Math.Abs(_width - value) < 0.001f) return;
+        _width = value;
+        MarkPortsDirty();
+        InvalidateVisual();  // also invalidate painted content
+    }
+}</code></pre>
+  </div>
+
+  <h3>Use Lazy Port Layout</h3>
+  <p>The <code>EnsurePortLayout()</code> pattern minimizes wasted computation during rapid drag operations:</p>
+
+  <div class="code-example">
+    <h3>Lazy Port Layout Pattern</h3>
+    <pre><code class="language-csharp">private bool _portsDirty = true;
+
+protected void MarkPortsDirty()
+{
+    _portsDirty = true;
+    base.MarkPortsDirty();
+}
+
+protected void MarkPortsClean()
+{
+    _portsDirty = false;
+}
+
+protected bool PortsDirty => _portsDirty;
+
+// Called by connection hit-testing, connection rendering, and serialization
+public override void EnsurePortLayout()
+{
+    if (!PortsDirty) return;
+
+    InPoints.Clear();
+    OutPoints.Clear();
+
+    // Compute new port positions based on current X, Y, Width, Height
+    float halfH = Y + Height / 2;
+    float halfW = X + Width / 2;
+
+    InPoints.Add(new ConnectionPoint
+    {
+        Type = PortType.In,
+        Position = new SKPoint(X, halfH),
+        DataType = typeof(object),
+        Owner = this
+    });
+
+    OutPoints.Add(new ConnectionPoint
+    {
+        Type = PortType.Out,
+        Position = new SKPoint(X + Width, halfH),
+        DataType = typeof(object),
+        Owner = this
+    });
+
+    MarkPortsClean();
+}</code></pre>
+  </div>
+
+  <div class="admonition warning">
+    <p class="admonition-title">Critical</p>
+    <p>Failing to call <code>MarkPortsDirty()</code> after position changes results in connection lines detaching from ports or rendering at stale positions. This is the most common bug in custom component implementations.</p>
+  </div>
+
+  <h3>Port Count Guidelines</h3>
+  <table>
+    <thead>
+      <tr><th>Component Type</th><th>Input Ports</th><th>Output Ports</th><th>Typical Pattern</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Simple node</td><td>1&ndash;2</td><td>1&ndash;2</td><td>Left/right or top/bottom pairs</td></tr>
+      <tr><td>Decision/condition node</td><td>1</td><td>2&ndash;4</td><td>Branching paths with labeled ports</td></tr>
+      <tr><td>ERD entity</td><td>0&ndash;N</td><td>0&ndash;N</td><td>Per-field connection points</td></tr>
+      <tr><td>Container/pool</td><td>0</td><td>0</td><td>No ports &mdash; parenting via bounds containment</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="performance">
+  <h2>Performance</h2>
+
+  <h3>Avoid Allocations in OnPaint</h3>
+  <p>The rendering path is extremely hot. Allocate once in <code>Initialize()</code>, reuse across frames, and dispose in <code>Dispose()</code>:</p>
+
+  <table>
+    <thead>
+      <tr><th>Allocation Source</th><th>Impact</th><th>Mitigation</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>new SKPaint()</code></td><td>GC pressure at 60 FPS</td><td>Pool paint objects as class fields</td></tr>
+      <tr><td><code>new SKPath()</code></td><td>Native allocation overhead</td><td>Cache and rebuild only on geometry changes</td></tr>
+      <tr><td><code>new SKRect()</code> / <code>new SKPoint()</code></td><td>Stack-allocated structs &mdash; free</td><td>No action needed; these are value types</td></tr>
+      <tr><td>String concatenation for labels</td><td>GC from intermediate strings</td><td>Pre-compute display strings in <code>Initialize()</code></td></tr>
+      <tr><td>LINQ expressions</td><td>Enumerable allocations</td><td>Use plain <code>for</code>/<code>foreach</code> loops</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Use Pre-Computed SKRect for Bounds</h3>
+  <p>The <code>Bounds</code> property is accessed by hit-testing, spatial indexing, and clipping. Compute it once and invalidate only when position or size changes:</p>
+
+  <div class="code-example">
+    <h3>Pre-Computed Bounds</h3>
+    <pre><code class="language-csharp">private SKRect _bounds;
+
+public override SKRect Bounds
+{
+    get
+    {
+        if (_boundsDirty)
+        {
+            _bounds = new SKRect(X, Y, X + Width, Y + Height);
+            _boundsDirty = false;
+        }
+        return _bounds;
+    }
+}
+
+public override void Invalidate()
+{
+    _boundsDirty = true;
+    base.Invalidate();
+}</code></pre>
+  </div>
+
+  <h3>Batch Canvas Save/Restore</h3>
+  <p>Each <code>canvas.Save()</code>/<code>canvas.Restore()</code> pair pushes/pops a state onto the canvas stack. Minimize nesting depth:</p>
+
+  <div class="code-example">
+    <h3>Good: Single Save/Restore Block</h3>
+    <pre><code class="language-csharp">public override void DrawContent(SKCanvas canvas)
+{
+    canvas.Save();
+    canvas.Translate(X, Y);
+    canvas.ClipRect(new SKRect(0, 0, Width, Height));
+
+    DrawBackground(canvas);
+    DrawIcon(canvas);
+    DrawLabel(canvas);
+    DrawSelectionHighlight(canvas);
+
+    canvas.Restore();
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="nodeproperties">
+  <h2>NodeProperties</h2>
+
+  <h3>Use ParameterInfo for Dynamic Properties</h3>
+  <p>Instead of hardcoding property editors in WinForms <code>PropertyGrid</code> controls, expose component configuration through the <code>NodeProperties</code> dictionary. This enables the built-in dynamic property grid to render appropriate editors without reflection:</p>
+
+  <div class="code-example">
+    <h3>Property Definition Best Practices</h3>
+    <pre><code class="language-csharp">protected override void Initialize()
+{
+    base.Initialize();
+
+    NodeProperties["Text"] = new ParameterInfo
+    {
+        Name = "Text",
+        DisplayName = "Label Text",
+        Value = "New Node",
+        DataType = typeof(string),
+        Category = "Content",
+        EditorHint = "TextBox"
+    };
+
+    NodeProperties["FillColor"] = new ParameterInfo
+    {
+        Name = "FillColor",
+        DisplayName = "Fill Color",
+        Value = SKColors.CornflowerBlue,
+        DataType = typeof(SKColor),
+        Category = "Appearance",
+        EditorHint = "ColorPicker"
+    };
+
+    NodeProperties["IsRequired"] = new ParameterInfo
+    {
+        Name = "IsRequired",
+        DisplayName = "Required Field",
+        Value = false,
+        DataType = typeof(bool),
+        Category = "Validation",
+        EditorHint = "CheckBox"
+    };
+
+    NodeProperties["Priority"] = new ParameterInfo
+    {
+        Name = "Priority",
+        DisplayName = "Priority",
+        Value = Priority.Medium,
+        DataType = typeof(Priority),  // enum
+        Category = "Behavior",
+        EditorHint = "ComboBox"
+    };
+
+    NodeProperties["BorderRadius"] = new ParameterInfo
+    {
+        Name = "BorderRadius",
+        DisplayName = "Corner Radius",
+        Value = 8f,
+        DataType = typeof(float),
+        Category = "Appearance",
+        EditorHint = "Slider:0-32"
+    };
+}</code></pre>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>EditorHint</th><th>Data Type</th><th>Rendered Widget</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>TextBox</code></td><td><code>string</code></td><td>Single-line text input</td></tr>
+      <tr><td><code>TextArea</code></td><td><code>string</code></td><td>Multi-line text input</td></tr>
+      <tr><td><code>ColorPicker</code></td><td><code>SKColor</code></td><td>Color swatch with picker dialog</td></tr>
+      <tr><td><code>CheckBox</code></td><td><code>bool</code></td><td>Toggle checkbox</td></tr>
+      <tr><td><code>ComboBox</code></td><td><code>enum</code></td><td>Dropdown selector</td></tr>
+      <tr><td><code>Slider:min-max</code></td><td><code>float</code></td><td>Range slider with value label</td></tr>
+      <tr><td><code>NumericUpDown</code></td><td><code>int</code></td><td>Spinner with increment/decrement</td></tr>
+      <tr><td><code>FontPicker</code></td><td><code>SKFont</code></td><td>Font family, size, and style selector</td></tr>
+      <tr><td><code>FilePath</code></td><td><code>string</code></td><td>Text input with browse button</td></tr>
+    </tbody>
+  </table>
+
+  <div class="admonition note">
+    <p class="admonition-title">NodeProperties Categories</p>
+    <p>Use consistent category names across your family: <strong>Content</strong> (text, labels, data), <strong>Appearance</strong> (colors, borders, fonts), <strong>Layout</strong> (position, size, padding), <strong>Behavior</strong> (flags, modes, triggers), and <strong>Data</strong> (business keys, tags, identifiers). This creates a predictable property grid experience for users.</p>
+  </div>
+</section>
+
+<section class="section" id="connection-validation">
+  <h2>Connection Validation</h2>
+
+  <h3>Check DataType Compatibility Before Connecting</h3>
+  <p>When users drag connections between ports, validate that the source and target data types are compatible. This prevents runtime errors during data flow and provides immediate visual feedback:</p>
+
+  <div class="code-example">
+    <h3>Connection Validation</h3>
+    <pre><code class="language-csharp">public static bool CanConnect(IConnectionPoint source, IConnectionPoint target)
+{
+    if (source == null || target == null)
+        return false;
+
+    if (source.Type == target.Type)
+        return false;  // Can't connect two inputs or two outputs
+
+    if (source.Owner == target.Owner)
+        return false;  // Can't self-connect
+
+    if (target.IsConnected)
+        return false;  // Target input already has a connection
+
+    // Type compatibility: target type must be assignable from source type
+    if (!target.DataType.IsAssignableFrom(source.DataType))
+        return false;
+
+    return true;
+}</code></pre>
+  </div>
+
+  <h3>Handle Null Ports Gracefully</h3>
+  <p>Connection operations can encounter null ports when components are being added, removed, or re-laid-out during a drag. Always guard with null checks:</p>
+
+  <div class="code-example">
+    <h3>Null-Safe Connection Handling</h3>
+    <pre><code class="language-csharp">public void Connect(IConnectionPoint source, IConnectionPoint target)
+{
+    if (source == null) throw new ArgumentNullException(nameof(source));
+    if (target == null) throw new ArgumentNullException(nameof(target));
+
+    if (!CanConnect(source, target))
+    {
+        LogWarning($"Cannot connect {source.Owner?.Id} to {target.Owner?.Id}");
+        return;
+    }
+
+    var connection = new ConnectionLine(source, target);
+    _connections.Add(connection);
+    source.IsConnected = true;
+    target.IsConnected = true;
+
+    Invalidate();
+}</code></pre>
+  </div>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Connection DataType Convention</p>
+    <p>Use <code>typeof(object)</code> for generic/any-type connections (most common for diagramming). Use specific types (<code>typeof(string)</code>, <code>typeof(FlowData)</code>) when your diagram family models typed data flow between components. The DataFlow Diagram (DFD) and ETL families use typed connections extensively.</p>
+  </div>
+</section>
+
+<section class="section" id="anti-patterns">
+  <h2>Anti-Patterns</h2>
+
+  <p>These patterns appear in naive implementations and cause rendering bugs, memory leaks, or performance degradation. Avoid them.</p>
+
+  <table>
+    <thead>
+      <tr><th>Anti-Pattern</th><th>Why It's Wrong</th><th>Correct Approach</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Creating components inside <code>DrawContent()</code></strong></td>
+        <td>Adds components to the drawing manager every frame, causing exponential growth and rendering chaos</td>
+        <td>Create components in response to user actions (toolbox drag, context menu, keyboard shortcut), never during rendering</td>
+      </tr>
+      <tr>
+        <td><strong>Modifying <code>ConnectionPoints</code> during rendering</strong></td>
+        <td>The rendering loop iterates over connection points; mutating the collection causes <code>InvalidOperationException</code></td>
+        <td>Modify ports only in <code>EnsurePortLayout()</code>, which is called outside the render loop</td>
+      </tr>
+      <tr>
+        <td><strong>Forgetting to <code>Dispose()</code> SKPaint objects</strong></td>
+        <td>Native Skia memory leaks. GC does not reclaim unmanaged Skia resources promptly</td>
+        <td>Override <code>Dispose()</code>, call <code>Dispose()</code> on all <code>SKPaint</code>, <code>SKPath</code>, <code>SKBitmap</code>, and <code>SKSurface</code> fields, then call <code>base.Dispose()</code></td>
+      </tr>
+      <tr>
+        <td><strong>Calling <code>canvas.Invalidate()</code> inside <code>DrawContent()</code></strong></td>
+        <td>Creates an infinite render loop: draw &rarr; invalidate &rarr; draw &rarr; ...</td>
+        <td>Invalidate only in response to input events, property changes, or timer callbacks</td>
+      </tr>
+      <tr>
+        <td><strong>Using <code>SKMatrix</code> on canvas directly</strong></td>
+        <td>SKMatrix modifies global canvas state; subsequent components inherit the transform</td>
+        <td>Always wrap transforms in <code>canvas.Save()</code>/<code>canvas.Restore()</code></td>
+      </tr>
+      <tr>
+        <td><strong>Storing references to <code>SKCanvas</code></strong></td>
+        <td>The canvas object is transient; it changes between frames and between render targets</td>
+        <td>Accept <code>SKCanvas</code> as a method parameter, never store it as a field</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="admonition warning">
+    <p class="admonition-title">The Most Dangerous Anti-Pattern</p>
+    <p><strong>Never create SkiaComponent instances inside DrawContent().</strong> This is the single most destructive anti-pattern. Each frame will add new components to the DrawingManager, which in turn will be drawn on the next frame, adding more components, and so on. The application will freeze within seconds. Component creation must always happen in response to discrete user actions outside the render loop.</p>
+  </div>
+</section>
+
+<section class="section" id="testing">
+  <h2>Testing</h2>
+
+  <p>Beep.Skia components are visual, but they are also pure data objects with deterministic rendering output. Unit testing is practical and encouraged.</p>
+
+  <h3>Rendering Smoke Tests</h3>
+  <p>Verify that every component renders without throwing exceptions and produces non-empty pixel output:</p>
+
+  <div class="code-example">
+    <h3>Rendering Smoke Test</h3>
+    <pre><code class="language-csharp">[Test]
+public void ValveNode_RendersSuccessfully()
+{
+    using var surface = SKSurface.Create(new SKImageInfo(200, 200));
+    var canvas = surface.Canvas;
+    canvas.Clear(SKColors.White);
+
+    var node = new ValveNode();
+    node.Initialize();
+    node.X = 50;
+    node.Y = 50;
+
+    Assert.DoesNotThrow(() => node.DrawContent(canvas));
+
+    using var image = surface.Snapshot();
+    using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+
+    // Verify non-empty output
+    Assert.That(data.Size, Is.GreaterThan(100), "Rendered output should be non-empty");
+
+    node.Dispose();
+}</code></pre>
+  </div>
+
+  <h3>Serialization Round-Trip Tests</h3>
+  <p>Every component family must survive a serialize &rarr; deserialize round-trip without property loss:</p>
+
+  <div class="code-example">
+    <h3>Serialization Round-Trip Test</h3>
+    <pre><code class="language-csharp">[Test]
+public void ValveNode_SerializeDeserialize_RoundTrip()
+{
+    var original = new ValveNode();
+    original.Initialize();
+    original.X = 150;
+    original.Y = 200;
+    original.Width = 80;
+    original.Height = 100;
+    original.NodeLabel = "Test Valve";
+
+    var json = JsonSerializer.Serialize(original);
+    var restored = JsonSerializer.Deserialize&lt;ValveNode&gt;(json);
+
+    Assert.That(restored.X, Is.EqualTo(150));
+    Assert.That(restored.Y, Is.EqualTo(200));
+    Assert.That(restored.Width, Is.EqualTo(80));
+    Assert.That(restored.Height, Is.EqualTo(100));
+    Assert.That(restored.NodeLabel, Is.EqualTo("Test Valve"));
+    Assert.That(restored.Id, Is.EqualTo(original.Id));
+
+    original.Dispose();
+    restored.Dispose();
+}</code></pre>
+  </div>
+
+  <h3>Port Layout Tests</h3>
+  <p>Verify that ports are positioned correctly and respond to position/size changes:</p>
+
+  <div class="code-example">
+    <h3>Port Layout Test</h3>
+    <pre><code class="language-csharp">[Test]
+public void ValveNode_PortsUpdateAfterMove()
+{
+    var node = new ValveNode();
+    node.Initialize();
+    node.X = 100;
+    node.Y = 100;
+
+    node.EnsurePortLayout();
+    var originalOutPort = node.OutPoints[0].Position;
+
+    node.X = 300;
+    node.EnsurePortLayout();
+    var movedOutPort = node.OutPoints[0].Position;
+
+    Assert.That(movedOutPort.X, Is.GreaterThan(originalOutPort.X));
+    Assert.That(movedOutPort.Y, Is.EqualTo(originalOutPort.Y)); // Horizontal move, Y unchanged
+
+    node.Dispose();
+}</code></pre>
+  </div>
+
+  <h3>Test Checklist</h3>
+  <table>
+    <thead>
+      <tr><th>Test Category</th><th>What to Verify</th><th>Priority</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Rendering</strong></td><td>No exceptions, non-empty output, correct color at known coordinates</td><td>High</td></tr>
+      <tr><td><strong>Serialization</strong></td><td>Round-trip preserves Id, position, size, all NodeProperties</td><td>High</td></tr>
+      <tr><td><strong>Port Layout</strong></td><td>Ports reposition on move, ports added/removed on size change, PortsDirty flag behavior</td><td>Medium</td></tr>
+      <tr><td><strong>NodeProperties</strong></td><td>All properties in dictionary, correct DataType, correct default values</td><td>Medium</td></tr>
+      <tr><td><strong>Dispose</strong></td><td>No memory leak after 1000 create/dispose cycles, no ObjectDisposedException</td><td>Medium</td></tr>
+      <tr><td><strong>Hit Testing</strong></td><td>Hits at center, misses at far-outside point, edge behavior at bounds</td><td>Low</td></tr>
+      <tr><td><strong>Connection Validation</strong></td><td>Valid connections accepted, self-connect rejected, type-mismatch rejected</td><td>Low</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

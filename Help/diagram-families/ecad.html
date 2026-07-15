@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECAD (Electronic CAD) Diagram Family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="diagram-families/flowchart.html">Diagram Families</a><span>&rsaquo;</span> <span>ECAD (Electronic CAD) Diagram Family</span></nav><div class="page-header"><h1>ECAD (Electronic CAD) Diagram Family</h1><p class="page-subtitle">Electronic circuit diagrams with 18 component nodes covering passive components, semiconductors, ICs, power, and tracing.</p></div>
+<div class="toc"><h3>Table of Contents</h3><ul><li><a href="#overview">Overview</a></li><li><a href="#node-types">Node Types</a></li><li><a href="#ports">Connection Points</a></li><li><a href="#conventions">Connection Conventions</a></li><li><a href="#example">Usage Example</a></li></ul></div><section class="section" id="overview"><h2>Overview</h2><p><strong>Base Control:</strong> <code>ECADControl : MaterialControl</code><br><strong>Namespace:</strong> <code>Beep.Skia.ECAD</code></p><p>The <strong>ECADControl</strong> is the root control for this diagram family. It inherits <code>MaterialControl</code> and provides shared port management, styling, and template methods for all nodes in the family.</p><p>This family contains <strong>17 node types</strong>.</p></section><section class="section" id="node-types"><h2>Node Types</h2><table><thead><tr><th>Node Class</th><th>Shape</th><th>Description</th></tr></thead><tbody><tr><td><code>ECADResistorNode</code></td><td>Zigzag line</td><td>Resistor with value and tolerance.</td></tr>
+<tr><td><code>ECADCapacitorNode</code></td><td>Parallel plates</td><td>Capacitor (polarized or non-polarized).</td></tr>
+<tr><td><code>ECADDiodeNode</code></td><td>Triangle with bar</td><td>Diode including LED, Zener, Schottky variants.</td></tr>
+<tr><td><code>ECADFuseNode</code></td><td>Wire with break</td><td>Fuse/circuit breaker.</td></tr>
+<tr><td><code>ECADICNode</code></td><td>Rectangle with pin grid</td><td>Integrated circuit with configurable pin count.</td></tr>
+<tr><td><code>ECADInductorNode</code></td><td>Coil loops</td><td>Inductor/coil with inductance value.</td></tr>
+<tr><td><code>ECADOpAmpNode</code></td><td>Triangle with +/- inputs</td><td>Operational amplifier with inverting/non-inverting inputs.</td></tr>
+<tr><td><code>ECADTransistorNode</code></td><td>Circle with 3 legs</td><td>BJT (NPN/PNP) with collector, base, emitter.</td></tr>
+<tr><td><code>ECADGroundNode</code></td><td>Ground symbol</td><td>Ground/reference point.</td></tr>
+<tr><td><code>ECADBatteryNode</code></td><td>Long/short line pair</td><td>DC power source.</td></tr>
+<tr><td><code>ECADPowerSupplyNode</code></td><td>Circle with +/-</td><td>Power supply unit with voltage/current output.</td></tr>
+<tr><td><code>ECADVoltageRegulatorNode</code></td><td>Rectangle with Vout</td><td>Linear/switching voltage regulator.</td></tr>
+<tr><td><code>ECADTransformerNode</code></td><td>Two coils</td><td>Transformer with primary/secondary windings.</td></tr>
+<tr><td><code>ECADLogicGateNode</code></td><td>AND/OR/NOT gate symbol</td><td>Logic gate (AND, OR, NOT, NAND, NOR, XOR).</td></tr>
+<tr><td><code>ECADMicrocontrollerNode</code></td><td>Rectangle with pins</td><td>Microcontroller/MCU with GPIO, ADC, UART, I2C.</td></tr>
+<tr><td><code>ECADMemoryNode</code></td><td>Rectangle with address/data</td><td>Memory chip (RAM, ROM, EEPROM, Flash).</td></tr>
+<tr><td><code>ECADTraceNode</code></td><td>Line with width</td><td>PCB trace/routing line with configurable width.</td></tr></tbody></table></section><div id="ecadresistornode"><h3>ECADResistorNode</h3><p>Resistor with value and tolerance.</p><table><tr><th style="width:30%">Shape</th><td>Zigzag line</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="ecadcapacitornode"><h3>ECADCapacitorNode</h3><p>Capacitor (polarized or non-polarized).</p><table><tr><th style="width:30%">Shape</th><td>Parallel plates</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="ecaddiodenode"><h3>ECADDiodeNode</h3><p>Diode including LED, Zener, Schottky variants.</p><table><tr><th style="width:30%">Shape</th><td>Triangle with bar</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="ecadfusenode"><h3>ECADFuseNode</h3><p>Fuse/circuit breaker.</p><table><tr><th style="width:30%">Shape</th><td>Wire with break</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="ecadicnode"><h3>ECADICNode</h3><p>Integrated circuit with configurable pin count.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with pin grid</td></tr><tr><th>Input Ports</th><td>4+ (left)</td></tr><tr><th>Output Ports</th><td>4+ (right)</td></tr></table></div><div id="ecadinductornode"><h3>ECADInductorNode</h3><p>Inductor/coil with inductance value.</p><table><tr><th style="width:30%">Shape</th><td>Coil loops</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="ecadopampnode"><h3>ECADOpAmpNode</h3><p>Operational amplifier with inverting/non-inverting inputs.</p><table><tr><th style="width:30%">Shape</th><td>Triangle with +/- inputs</td></tr><tr><th>Input Ports</th><td>2</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="ecadtransistornode"><h3>ECADTransistorNode</h3><p>BJT (NPN/PNP) with collector, base, emitter.</p><table><tr><th style="width:30%">Shape</th><td>Circle with 3 legs</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="ecadgroundnode"><h3>ECADGroundNode</h3><p>Ground/reference point.</p><table><tr><th style="width:30%">Shape</th><td>Ground symbol</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="ecadbatterynode"><h3>ECADBatteryNode</h3><p>DC power source.</p><table><tr><th style="width:30%">Shape</th><td>Long/short line pair</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="ecadpowersupplynode"><h3>ECADPowerSupplyNode</h3><p>Power supply unit with voltage/current output.</p><table><tr><th style="width:30%">Shape</th><td>Circle with +/-</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>1+</td></tr></table></div><div id="ecadvoltageregulatornode"><h3>ECADVoltageRegulatorNode</h3><p>Linear/switching voltage regulator.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with Vout</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="ecadtransformernode"><h3>ECADTransformerNode</h3><p>Transformer with primary/secondary windings.</p><table><tr><th style="width:30%">Shape</th><td>Two coils</td></tr><tr><th>Input Ports</th><td>2</td></tr><tr><th>Output Ports</th><td>2</td></tr></table></div><div id="ecadlogicgatenode"><h3>ECADLogicGateNode</h3><p>Logic gate (AND, OR, NOT, NAND, NOR, XOR).</p><table><tr><th style="width:30%">Shape</th><td>AND/OR/NOT gate symbol</td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="ecadmicrocontrollernode"><h3>ECADMicrocontrollerNode</h3><p>Microcontroller/MCU with GPIO, ADC, UART, I2C.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with pins</td></tr><tr><th>Input Ports</th><td>8+</td></tr><tr><th>Output Ports</th><td>8+</td></tr></table></div><div id="ecadmemorynode"><h3>ECADMemoryNode</h3><p>Memory chip (RAM, ROM, EEPROM, Flash).</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with address/data</td></tr><tr><th>Input Ports</th><td>4+</td></tr><tr><th>Output Ports</th><td>4+</td></tr></table></div><div id="ecadtracenode"><h3>ECADTraceNode</h3><p>PCB trace/routing line with configurable width.</p><table><tr><th style="width:30%">Shape</th><td>Line with width</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty when the node moves or resizes.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>ECADResistorNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ECADCapacitorNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ECADDiodeNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ECADFuseNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ECADICNode</code></td><td>4+ (left)</td><td>4+ (right)</td><td>—</td></tr>
+<tr><td><code>ECADInductorNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ECADOpAmpNode</code></td><td>2</td><td>1</td><td>—</td></tr>
+<tr><td><code>ECADTransistorNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ECADGroundNode</code></td><td>1</td><td>0</td><td>—</td></tr>
+<tr><td><code>ECADBatteryNode</code></td><td>0</td><td>1</td><td>—</td></tr>
+<tr><td><code>ECADPowerSupplyNode</code></td><td>0</td><td>1+</td><td>—</td></tr>
+<tr><td><code>ECADVoltageRegulatorNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>ECADTransformerNode</code></td><td>2</td><td>2</td><td>—</td></tr>
+<tr><td><code>ECADLogicGateNode</code></td><td>2+</td><td>1</td><td>—</td></tr>
+<tr><td><code>ECADMicrocontrollerNode</code></td><td>8+</td><td>8+</td><td>—</td></tr>
+<tr><td><code>ECADMemoryNode</code></td><td>4+</td><td>4+</td><td>—</td></tr>
+<tr><td><code>ECADTraceNode</code></td><td>0</td><td>0</td><td>—</td></tr></tbody></table></section><section class="section" id="conventions"><h2>Connection Conventions</h2><p>When building diagrams with this family, follow these conventions:</p><ul><li>Components follow IEEE/ANSI standard symbols</li><li>IC pins are configurable via NodeProperties</li><li>Ground and power are global reference nodes</li><li>Traces connect component ports</li></ul></section><section class="section" id="example"><h2>Usage Example</h2><p>Complete example showing creation, node placement, and connection:</p><div class="code-example"><h3>C# Example</h3>
+<pre><code class="language-csharp">var ecad = new ECADControl
+{
+    X = 50, Y = 50,
+    Width = 700, Height = 500
+};
+drawingManager.AddComponent(ecad);
+
+var bat = new ECADBatteryNode { X = 100, Y = 200, Voltage = "9V" };
+var res = new ECADResistorNode { X = 250, Y = 150, Resistance = "1kΩ" };
+var led = new ECADDiodeNode { X = 400, Y = 150, ForwardVoltage = "2.1V" };
+var gnd = new ECADGroundNode { X = 400, Y = 300 };
+
+drawingManager.AddComponent(bat);
+drawingManager.AddComponent(res);
+drawingManager.AddComponent(led);
+drawingManager.AddComponent(gnd);
+
+drawingManager.Connect(bat.OutPoints[0], res.InPoints[0]);
+drawingManager.Connect(res.OutPoints[0], led.InPoints[0]);
+drawingManager.Connect(led.OutPoints[0], gnd.InPoints[0]);</code></pre></div></section>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Button | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="button.html">UI Components</a><span>&rsaquo;</span> <span>Button</span></nav>
+<div class="page-header"><h1>Button</h1><p class="page-subtitle">Material Design 3.0 push button with text, icon, and multiple style variants</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia.Controls</code> &mdash; <strong>Inherits:</strong> <code>MaterialControl</code> &rarr; <code>SkiaComponent</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#properties">Properties</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#variants">Variants</a></li>
+    <li><a href="#code-example">Code Example</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p>The <code>Button</code> control is a Material Design 3.0 push button rendered entirely with SkiaSharp. It supports text labels, optional icons, and five visual style variants matching the MD3 specification. Buttons respond to hover, press, and focus states with animated state layers and elevation changes, all drawn without using any WinForms or WPF primitives.</p>
+
+  <p>Every <code>Button</code> is a <code>MaterialControl</code>, meaning it inherits the full Material Design 3.0 theming system including elevation shadows, state-layer overlays, ripple animations on press, and automatic color resolution from the active theme tokens.</p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h4>Material State Layers</h4>
+      <p>Hover, focus, and pressed states render translucent overlays using theme-aware opacity values.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Ripple Animation</h4>
+      <p>Touch and click interactions trigger a circular ripple emanating from the contact point.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Icon Support</h4>
+      <p>Render a leading or trailing icon glyph alongside the button text using an <code>SKBitmap</code> or path.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Elevation Changes</h4>
+      <p>Elevated and Filled tonal variants animate shadow depth on hover and press.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="properties">
+  <h2>Properties</h2>
+  <p>In addition to inherited properties from <code>MaterialControl</code> and <code>SkiaComponent</code> (<code>X</code>, <code>Y</code>, <code>Width</code>, <code>Height</code>, <code>Enabled</code>, <code>Visible</code>), the Button control exposes the following:</p>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Text</code></td>
+        <td><code>string</code></td>
+        <td>The label displayed on the button. Supports UTF-8 text rendered via <code>SKPaint</code>. Default is <code>""</code>.</td>
+      </tr>
+      <tr>
+        <td><code>Icon</code></td>
+        <td><code>SKBitmap</code></td>
+        <td>Optional icon image rendered before the text. When set, the text shifts to accommodate the icon with internal padding. Set to <code>null</code> for text-only buttons.</td>
+      </tr>
+      <tr>
+        <td><code>IconPath</code></td>
+        <td><code>SKPath</code></td>
+        <td>Alternative to <code>Icon</code> &mdash; a vector path for the icon drawn with the current theme's <code>OnSurface</code> color. Scales to <code>IconSize</code>.</td>
+      </tr>
+      <tr>
+        <td><code>IconSize</code></td>
+        <td><code>float</code></td>
+        <td>Desired size of the icon in logical pixels. Default is <code>18f</code>. The icon is centered vertically within the button.</td>
+      </tr>
+      <tr>
+        <td><code>ButtonStyle</code></td>
+        <td><code>ButtonStyle</code></td>
+        <td>Enum controlling the visual variant. See <a href="#variants">Variants</a> below. Default is <code>Filled</code>.</td>
+      </tr>
+      <tr>
+        <td><code>IsPressed</code></td>
+        <td><code>bool</code></td>
+        <td>Read-only. Indicates whether the button is currently in a pressed (mouse-down or touch-down) state. Used internally for state-layer rendering.</td>
+      </tr>
+      <tr>
+        <td><code>IsHovered</code></td>
+        <td><code>bool</code></td>
+        <td>Read-only. Indicates whether the mouse cursor is over the button's bounding rectangle. Activates the hover state layer.</td>
+      </tr>
+      <tr>
+        <td><code>IsFocused</code></td>
+        <td><code>bool</code></td>
+        <td>Read-only. Indicates keyboard focus. When true, a focus ring is drawn around the button perimeter.</td>
+      </tr>
+      <tr>
+        <td><code>CornerRadius</code></td>
+        <td><code>float</code></td>
+        <td>Radius of the rounded rectangle corners. Default is <code>20f</code> (fully rounded pill shape). Set to <code>4f</code> for a more squared appearance.</td>
+      </tr>
+      <tr>
+        <td><code>Elevation</code></td>
+        <td><code>int</code></td>
+        <td>Material Design elevation level (0&ndash;5). Controls the shadow depth rendered beneath the button. Elevated and Filled styles use elevation changes for hover/press feedback. Default is <code>0</code>.</td>
+      </tr>
+      <tr>
+        <td><code>MinimumWidth</code></td>
+        <td><code>float</code></td>
+        <td>Minimum width constraint. The button will not shrink below this value regardless of text length. Default is <code>64f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>PaddingHorizontal</code></td>
+        <td><code>float</code></td>
+        <td>Internal horizontal padding between the text/icon and the button edges. Default is <code>24f</code> per MD3 specification.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="events">
+  <h2>Events</h2>
+
+  <table>
+    <thead>
+      <tr><th>Event</th><th>Signature</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Click</code></td>
+        <td><code>EventHandler</code></td>
+        <td>Raised when the button is released after a press within its bounds. This is the primary interaction event. Does not fire if the pointer leaves the button before release.</td>
+      </tr>
+      <tr>
+        <td><code>PressedChanged</code></td>
+        <td><code>EventHandler&lt;bool&gt;</code></td>
+        <td>Raised when the <code>IsPressed</code> state changes. The boolean argument is <code>true</code> on press and <code>false</code> on release. Useful for press-and-hold interactions.</td>
+      </tr>
+      <tr>
+        <td><code>HoverChanged</code></td>
+        <td><code>EventHandler&lt;bool&gt;</code></td>
+        <td>Raised when the mouse enters or leaves the button bounds. The boolean argument reflects <code>IsHovered</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="variants">
+  <h2>Variants</h2>
+  <p>Material Design 3.0 defines five button styles. Set the <code>ButtonStyle</code> property to choose:</p>
+
+  <table>
+    <thead>
+      <tr><th>Style</th><th>Description</th><th>Use When</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>ButtonStyle.Filled</code></td>
+        <td>Solid fill using the <code>Primary</code> theme color with white text. Has a subtle elevation shadow. The default style.</td>
+        <td>Primary actions, call-to-action, submit.</td>
+      </tr>
+      <tr>
+        <td><code>ButtonStyle.Outlined</code></td>
+        <td>Transparent background with a 1px border in <code>Outline</code> color. Text is <code>Primary</code> color.</td>
+        <td>Secondary actions, less emphasis than filled.</td>
+      </tr>
+      <tr>
+        <td><code>ButtonStyle.Text</code></td>
+        <td>No background, no border. Only the label text is visible in <code>Primary</code> color. Minimal visual weight.</td>
+        <td>Tertiary actions, inline links, icon-only toolbars.</td>
+      </tr>
+      <tr>
+        <td><code>ButtonStyle.Elevated</code></td>
+        <td>White/light background with a visible shadow. Elevation increases on hover and press.</td>
+        <td>Cards, dialogs, surfaces where the button needs to stand out from a colored background.</td>
+      </tr>
+      <tr>
+        <td><code>ButtonStyle.Tonal</code></td>
+        <td>Filled with the <code>SecondaryContainer</code> color and <code>OnSecondaryContainer</code> text. No shadow.</td>
+        <td>Medium-emphasis actions that should feel related to the surface.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Each style automatically applies the correct theme tokens. You do not need to manually set colors; the button resolves colors from the active <code>MaterialTheme</code> based on its style and state.</p>
+</section>
+
+<section class="section" id="code-example">
+  <h2>Code Example</h2>
+
+  <div class="code-example">
+    <h3>Creating a Filled Button</h3>
+    <pre><code class="language-csharp">var submitButton = new Button
+{
+    Text = "Submit",
+    ButtonStyle = ButtonStyle.Filled,
+    X = 100,
+    Y = 50,
+    Width = 120,
+    Height = 40,
+    CornerRadius = 20f,
+    Elevation = 1
+};
+
+submitButton.Initialize();
+submitButton.Click += (s, e) => Console.WriteLine("Button clicked!");
+
+drawingManager.AddComponent(submitButton);
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Outlined Button with Icon</h3>
+    <pre><code class="language-csharp">var iconPath = SKPath.ParseSvgPathData(
+    "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z");
+
+var addButton = new Button
+{
+    Text = "Add Item",
+    IconPath = iconPath,
+    IconSize = 18f,
+    ButtonStyle = ButtonStyle.Outlined,
+    X = 250,
+    Y = 50,
+    Width = 140,
+    Height = 40
+};
+
+addButton.Initialize();
+drawingManager.AddComponent(addButton);</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Setting Up All Five Variants</h3>
+    <pre><code class="language-csharp">var styles = new[]
+{
+    (ButtonStyle.Filled,   100f, "Filled"),
+    (ButtonStyle.Outlined, 160f, "Outlined"),
+    (ButtonStyle.Text,     220f, "Text"),
+    (ButtonStyle.Elevated, 280f, "Elevated"),
+    (ButtonStyle.Tonal,    340f, "Tonal")
+};
+
+foreach (var (style, y, label) in styles)
+{
+    var btn = new Button
+    {
+        Text = label,
+        ButtonStyle = style,
+        X = 100,
+        Y = y,
+        Width = 140,
+        Height = 40
+    };
+    btn.Initialize();
+    drawingManager.AddComponent(btn);
+}
+
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Handling Press State for Press-and-Hold</h3>
+    <pre><code class="language-csharp">var holdButton = new Button
+{
+    Text = "Hold Me",
+    ButtonStyle = ButtonStyle.Tonal,
+    X = 100,
+    Y = 420,
+    Width = 140,
+    Height = 40
+};
+
+holdButton.Initialize();
+holdButton.PressedChanged += (s, pressed) =>
+{
+    if (pressed)
+        Console.WriteLine("Press started - begin long-press timer");
+    else
+        Console.WriteLine("Press released - cancel timer");
+};
+
+drawingManager.AddComponent(holdButton);</code></pre>
+  </div>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Tip</p>
+    <p>Use <code>ButtonStyle.Text</code> icon-only buttons for toolbar actions. Set <code>Text = ""</code> and only provide an <code>IconPath</code> or <code>Icon</code> bitmap. The button will render as a compact 40&times;40 icon button with a circular ripple.</p>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

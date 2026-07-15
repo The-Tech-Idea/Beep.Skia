@@ -31,7 +31,7 @@ namespace Beep.Skia
 
             var paint = new SKPaint
             {
-                Color = new SKColor(200, 200, 200, 100),
+                Color = ThemeManager.Current.GridColor,
                 StrokeWidth = 1,
                 Style = SKPaintStyle.Stroke
             };
@@ -154,30 +154,11 @@ namespace Beep.Skia
             {
                 try
                 {
-                    // Log before and after calling Update to determine if Update is executed or throws
-                        try
-                        {
-                            var updateLog = Path.Combine(Path.GetTempPath(), "beepskia_update.log");
-                            File.AppendAllText(updateLog, $"[Rendering.PreUpdate] {DateTime.UtcNow:o} Calling Update on {comp.GetType().FullName} State={comp.State}\\n");
-                            var logPath = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
-                            File.AppendAllText(logPath, $"[Rendering.PreUpdate] Calling Update on {comp.GetType().FullName}\\n");
-                        }
-                        catch { }
-
-                        comp.Update(preContext);
-
-                        try
-                        {
-                            var updateLog = Path.Combine(Path.GetTempPath(), "beepskia_update.log");
-                            File.AppendAllText(updateLog, $"[Rendering.PostUpdate] {DateTime.UtcNow:o} Completed Update on {comp.GetType().FullName} State={comp.State}\\n");
-                            var logPath = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
-                            File.AppendAllText(logPath, $"[Rendering.PostUpdate] Completed Update on {comp.GetType().FullName}\\n");
-                        }
-                        catch { }
+                    comp.Update(preContext);
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[Rendering] Pre-update error for {comp?.GetType().Name}: {ex.Message}");
+                    Debug.WriteLine($"[Rendering] Update error for {comp?.GetType().Name}: {ex.Message}");
                 }
             }
 

@@ -1,4 +1,5 @@
 using SkiaSharp;
+using System;
 using System.Collections.Generic;
 using Beep.Skia.Model;
 namespace Beep.Skia
@@ -194,6 +195,64 @@ namespace Beep.Skia
         public override void Undo()
         {
             _manager.ConnectComponents(_component1, _component2);
+        }
+    }
+
+    /// <summary>
+    /// Action for pasting components from the clipboard.
+    /// </summary>
+    public class PasteComponentsAction : DrawingAction
+    {
+        private readonly DrawingManager _manager;
+        private readonly List<SkiaComponent> _components;
+
+        public PasteComponentsAction(DrawingManager manager, List<SkiaComponent> components)
+        {
+            _manager = manager;
+            _components = components;
+        }
+
+        public override void Execute()
+        {
+        }
+
+        public override void Undo()
+        {
+            foreach (var component in _components.ToList())
+            {
+                _manager.RemoveComponent(component);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Action for alignment/distribution operations.
+    /// </summary>
+    public class AlignComponentsAction : DrawingAction
+    {
+        private readonly DrawingManager _manager;
+        private readonly List<SkiaComponent> _components;
+        private readonly List<SKPoint> _beforePositions;
+
+        public AlignComponentsAction(DrawingManager manager, List<SkiaComponent> components, List<SKPoint> beforePositions)
+        {
+            _manager = manager;
+            _components = components;
+            _beforePositions = beforePositions;
+        }
+
+        public override void Execute()
+        {
+        }
+
+        public override void Undo()
+        {
+            for (int i = 0; i < Math.Min(_components.Count, _beforePositions.Count); i++)
+            {
+                _components[i].X = _beforePositions[i].X;
+                _components[i].Y = _beforePositions[i].Y;
+                _manager.RefreshConnectionPoints(_components[i]);
+            }
         }
     }
 

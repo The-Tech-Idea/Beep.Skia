@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Installation Guide | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+
+<nav class="breadcrumb-nav"><a href="../home.html">Home</a> &gt; Getting Started &gt; Installation</nav>
+
+<div class="page-header">
+  <h1>Installation Guide</h1>
+  <p class="page-subtitle">Set up Beep.Skia in your .NET project with NuGet packages and configure the development environment</p>
+</div>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#nuget-installation">NuGet Installation</a></li>
+    <li><a href="#project-setup">Project Setup</a></li>
+    <li><a href="#required-dependencies">Required Dependencies</a></li>
+    <li><a href="#solution-structure">Solution Structure</a></li>
+    <li><a href="#verifying-installation">Verifying Installation</a></li>
+  </ul>
+</div>
+
+<section class="section" id="nuget-installation">
+  <h2>NuGet Installation</h2>
+  <p>Beep.Skia is distributed as a set of NuGet packages. Install the core package to begin:</p>
+
+  <div class="code-example">
+    <h3>Install via .NET CLI</h3>
+    <pre><code class="language-csharp">dotnet add package Beep.Skia</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Install via Package Manager Console</h3>
+    <pre><code class="language-csharp">Install-Package Beep.Skia</code></pre>
+  </div>
+
+  <p>Additional packages are available for specialized functionality:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Package</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Beep.Skia</code></td>
+        <td>Core diagramming and rendering framework</td>
+      </tr>
+      <tr>
+        <td><code>Beep.Skia.Canvas</code></td>
+        <td>Canvas controls and viewport management</td>
+      </tr>
+      <tr>
+        <td><code>Beep.Skia.Nodes</code></td>
+        <td>Node types and specialized diagram elements</td>
+      </tr>
+      <tr>
+        <td><code>Beep.Skia.Connections</code></td>
+        <td>Connection routing, ports, and pathfinding</td>
+      </tr>
+      <tr>
+        <td><code>Beep.Skia.Serialization</code></td>
+        <td>JSON and binary diagram serialization</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="project-setup">
+  <h2>Project Setup</h2>
+  <p>After installing the NuGet package, add the required using directives to your project:</p>
+
+  <div class="code-example">
+    <h3>Required Using Directives</h3>
+    <pre><code class="language-csharp">using Beep.Skia;
+using Beep.Skia.Canvas;
+using Beep.Skia.Nodes;
+using Beep.Skia.Connections;
+using SkiaSharp;</code></pre>
+  </div>
+
+  <p>Configure your project file to target .NET 8 or .NET 9:</p>
+
+  <div class="code-example">
+    <h3>Project File Configuration</h3>
+    <pre><code class="language-csharp">&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+  &lt;PropertyGroup&gt;
+    &lt;TargetFramework&gt;net8.0&lt;/TargetFramework&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+  &lt;/PropertyGroup&gt;
+&lt;/Project&gt;</code></pre>
+  </div>
+</section>
+
+<section class="section" id="required-dependencies">
+  <h2>Required Dependencies</h2>
+  <p>Beep.Skia relies on the following foundational libraries. These are automatically resolved when installing via NuGet:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Dependency</th>
+        <th>Version</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>SkiaSharp</td>
+        <td>2.88+</td>
+        <td>Cross-platform 2D graphics rendering engine</td>
+      </tr>
+      <tr>
+        <td>SkiaSharp.Views.Desktop</td>
+        <td>2.88+</td>
+        <td>Desktop-specific SkiaSharp view controls</td>
+      </tr>
+      <tr>
+        <td>SkiaSharp.HarfBuzz</td>
+        <td>2.88+</td>
+        <td>Advanced text shaping and layout</td>
+      </tr>
+      <tr>
+        <td>System.Text.Json</td>
+        <td>8.0+</td>
+        <td>JSON serialization and deserialization</td>
+      </tr>
+      <tr>
+        <td>Microsoft.Extensions.DependencyInjection</td>
+        <td>8.0+</td>
+        <td>Dependency injection container</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="solution-structure">
+  <h2>Solution Structure</h2>
+  <p>The Beep.Skia solution is organized into modular projects for separation of concerns:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Project</th>
+        <th>Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Beep.Skia</strong></td>
+        <td>Core framework and shared abstractions</td>
+      </tr>
+      <tr>
+        <td><strong>Beep.Skia.Canvas</strong></td>
+        <td>Rendering surface, viewport, and interaction handling</td>
+      </tr>
+      <tr>
+        <td><strong>Beep.Skia.Nodes</strong></td>
+        <td>Node model, rendering, and interaction logic</td>
+      </tr>
+      <tr>
+        <td><strong>Beep.Skia.Connections</strong></td>
+        <td>Connection lines, routing algorithms, and ports</td>
+      </tr>
+      <tr>
+        <td><strong>Beep.Skia.Serialization</strong></td>
+        <td>Diagram persistence and interchange formats</td>
+      </tr>
+      <tr>
+        <td><strong>Beep.Skia.Theming</strong></td>
+        <td>Material Design 3.0 theme engine</td>
+      </tr>
+      <tr>
+        <td><strong>Beep.Skia.Workflow</strong></td>
+        <td>Workflow automation and execution engine</td>
+      </tr>
+      <tr>
+        <td><strong>Beep.Skia.Editor</strong></td>
+        <td>Visual diagram editor host and tooling</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="verifying-installation">
+  <h2>Verifying Installation</h2>
+  <p>Confirm that Beep.Skia is correctly installed by running a minimal render test:</p>
+
+  <div class="code-example">
+    <h3>Verification Test</h3>
+    <pre><code class="language-csharp">using Beep.Skia;
+using Beep.Skia.Canvas;
+using Beep.Skia.Nodes;
+using SkiaSharp;
+
+var canvas = new SkiaCanvas(800, 600);
+var manager = new DrawingManager();
+manager.AttachCanvas(canvas);
+
+var node = new BasicNode("Hello Beep.Skia");
+node.Position = new SKPoint(50, 50);
+manager.AddNode(node);
+
+Console.WriteLine($"Canvas nodes: {manager.Nodes.Count}");
+Console.WriteLine("Beep.Skia installation verified successfully.");</code></pre>
+  </div>
+
+  <p>If the code compiles and runs without errors, Beep.Skia is ready for development. For further guidance, proceed to the <a href="quick-start.html">Quick Start Tutorial</a>.</p>
+</section>
+
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

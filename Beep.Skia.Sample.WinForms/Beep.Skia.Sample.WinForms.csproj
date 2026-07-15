@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="4.150.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Beep.Skia\Beep.Skia.csproj" />
     <ProjectReference Include="..\Beep.Skia.UML\Beep.Skia.UML.csproj" />
     <ProjectReference Include="..\Beep.Skia.ETL\Beep.Skia.ETL.csproj" />

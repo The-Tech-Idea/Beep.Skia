@@ -23,13 +23,37 @@ namespace Beep.Skia.Business
         Message,
         Error,
         Signal,
-        Conditional
+        Conditional,
+        Escalation,
+        Compensation,
+        Link,
+        Terminate,
+        Cancel,
+        Multiple
     }
 
     /// <summary>
-    /// Specifies the type of flow between components.
+    /// Specifies the type of event position (start, intermediate, end).
     /// </summary>
-    public enum FlowType
+    public enum EventPosition
+    {
+        Start,
+        IntermediateCatch,
+        IntermediateThrow,
+        End
+    }
+
+    /// <summary>
+    /// Specifies the type of gateway.
+    /// </summary>
+    public enum GatewayType
+    {
+        Exclusive,   // XOR - diamond with X
+        Inclusive,   // OR  - diamond with circle
+        Parallel,    // AND - diamond with +
+        Complex,     // diamond with *
+        EventBased   // diamond with pentagon
+    }
     {
         Sequence,
         Conditional,

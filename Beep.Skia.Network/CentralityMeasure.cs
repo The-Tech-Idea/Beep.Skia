@@ -130,22 +130,81 @@ namespace Beep.Skia.Network
         }
 
         /// <summary>
-        /// Calculates betweenness centrality (control of information flow).
+        /// Calculates betweenness centrality (Brandes algorithm).
         /// </summary>
         private void CalculateBetweennessCentrality(List<NetworkNode> nodes, List<NetworkLink> links)
         {
-            // Simplified betweenness calculation
-            // In a full implementation, this would use Floyd-Warshall or similar algorithm
-            foreach (var node in nodes)
+            int n = nodes.Count;
+            var nodeIndex = new Dictionary<NetworkNode, int>();
+            for (int i = 0; i < n; i++) nodeIndex[nodes[i]] = i;
+
+            var adj = new List<int>[n];
+            for (int i = 0; i < n; i++) adj[i] = new List<int>();
+
+            foreach (var link in links)
             {
-                double betweenness = 0;
-                // Count shortest paths that pass through this node
-                // This is a placeholder - real implementation would be more complex
+                int si = nodeIndex[link.SourceNode];
+                int ti = nodeIndex[link.TargetNode];
+                if (si != ti) { adj[si].Add(ti); adj[ti].Add(si); }
+            }
+
+            var cb = new double[n];
+
+            for (int s = 0; s < n; s++)
+            {
+                var stack = new Stack<int>();
+                var pred = new List<int>[n];
+                for (int i = 0; i < n; i++) pred[i] = new List<int>();
+
+                var sigma = new int[n];
+                var dist = new int[n];
+                for (int i = 0; i < n; i++) dist[i] = -1;
+
+                sigma[s] = 1;
+                dist[s] = 0;
+                var queue = new Queue<int>();
+                queue.Enqueue(s);
+
+                while (queue.Count > 0)
+                {
+                    int v = queue.Dequeue();
+                    stack.Push(v);
+                    foreach (int w in adj[v])
+                    {
+                        if (dist[w] < 0)
+                        {
+                            dist[w] = dist[v] + 1;
+                            queue.Enqueue(w);
+                        }
+                        if (dist[w] == dist[v] + 1)
+                        {
+                            sigma[w] += sigma[v];
+                            pred[w].Add(v);
+                        }
+                    }
+                }
+
+                var delta = new double[n];
+                while (stack.Count > 0)
+                {
+                    int w = stack.Pop();
+                    foreach (int v in pred[w])
+                    {
+                        delta[v] += (double)sigma[v] / sigma[w] * (1.0 + delta[w]);
+                    }
+                    if (w != s)
+                        cb[w] += delta[w];
+                }
+            }
+
+            double norm = n > 2 ? 1.0 / ((n - 1) * (n - 2)) : 1.0;
+            for (int i = 0; i < n; i++)
+            {
                 NodeCentralities.Add(new NodeCentrality
                 {
-                    Node = node,
-                    Score = betweenness,
-                    NormalizedScore = betweenness / Math.Max(1, (nodes.Count - 1) * (nodes.Count - 2) / 2.0)
+                    Node = nodes[i],
+                    Score = cb[i],
+                    NormalizedScore = cb[i] * norm
                 });
             }
         }

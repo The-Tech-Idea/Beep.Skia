@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Diagram Family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="diagram-families/flowchart.html">Diagram Families</a><span>&rsaquo;</span> <span>Security Diagram Family</span></nav><div class="page-header"><h1>Security Diagram Family</h1><p class="page-subtitle">Security and threat modeling diagrams with 9 node types including assets, threats, controls, vulnerabilities, risk assessments, and mitigation links.</p></div>
+<div class="toc"><h3>Table of Contents</h3><ul><li><a href="#overview">Overview</a></li><li><a href="#node-types">Node Types</a></li><li><a href="#ports">Connection Points</a></li><li><a href="#conventions">Connection Conventions</a></li><li><a href="#example">Usage Example</a></li></ul></div><section class="section" id="overview"><h2>Overview</h2><p><strong>Base Control:</strong> <code>SecurityControl : MaterialControl</code><br><strong>Namespace:</strong> <code>Beep.Skia.Security</code></p><p>The <strong>SecurityControl</strong> is the root control for this diagram family. It inherits <code>MaterialControl</code> and provides shared port management, styling, and template methods for all nodes in the family.</p><p>This family contains <strong>9 node types</strong>.</p></section><section class="section" id="node-types"><h2>Node Types</h2><table><thead><tr><th>Node Class</th><th>Shape</th><th>Description</th></tr></thead><tbody><tr><td><code>AssetNode</code></td><td>Diamond/server</td><td>Valuable asset (data, system, service, personnel).</td></tr>
+<tr><td><code>ThreatNode</code></td><td>Lightning bolt</td><td>Threat actor/event with type, likelihood, and impact.</td></tr>
+<tr><td><code>ControlNode</code></td><td>Shield</td><td>Security control/safeguard (preventive, detective, corrective).</td></tr>
+<tr><td><code>VulnerabilityNode</code></td><td>Crack/broken shield</td><td>Vulnerability with CVE, CVSS score, and remediation.</td></tr>
+<tr><td><code>PolicyNode</code></td><td>Document</td><td>Security policy/standard with compliance mapping.</td></tr>
+<tr><td><code>RiskAssessmentNode</code></td><td>Risk matrix</td><td>Risk assessment: inherent and residual risk levels.</td></tr>
+<tr><td><code>IncidentNode</code></td><td>Alert triangle</td><td>Security incident with timeline and response status.</td></tr>
+<tr><td><code>FindingNode</code></td><td>Checklist/document</td><td>Audit/assessment finding with recommendation.</td></tr>
+<tr><td><code>MitigationLink</code></td><td>Dashed line</td><td>Mitigation relationship: control mitigates threat/vulnerability.</td></tr></tbody></table></section><div id="assetnode"><h3>AssetNode</h3><p>Valuable asset (data, system, service, personnel).</p><table><tr><th style="width:30%">Shape</th><td>Diamond/server</td></tr><tr><th>Input Ports</th><td>1+</td></tr><tr><th>Output Ports</th><td>2+</td></tr></table></div><div id="threatnode"><h3>ThreatNode</h3><p>Threat actor/event with type, likelihood, and impact.</p><table><tr><th style="width:30%">Shape</th><td>Lightning bolt</td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>2+</td></tr></table></div><div id="controlnode"><h3>ControlNode</h3><p>Security control/safeguard (preventive, detective, corrective).</p><table><tr><th style="width:30%">Shape</th><td>Shield</td></tr><tr><th>Input Ports</th><td>1+</td></tr><tr><th>Output Ports</th><td>1+</td></tr></table></div><div id="vulnerabilitynode"><h3>VulnerabilityNode</h3><p>Vulnerability with CVE, CVSS score, and remediation.</p><table><tr><th style="width:30%">Shape</th><td>Crack/broken shield</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="policynode"><h3>PolicyNode</h3><p>Security policy/standard with compliance mapping.</p><table><tr><th style="width:30%">Shape</th><td>Document</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="riskassessmentnode"><h3>RiskAssessmentNode</h3><p>Risk assessment: inherent and residual risk levels.</p><table><tr><th style="width:30%">Shape</th><td>Risk matrix</td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>1+</td></tr></table></div><div id="incidentnode"><h3>IncidentNode</h3><p>Security incident with timeline and response status.</p><table><tr><th style="width:30%">Shape</th><td>Alert triangle</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="findingnode"><h3>FindingNode</h3><p>Audit/assessment finding with recommendation.</p><table><tr><th style="width:30%">Shape</th><td>Checklist/document</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="mitigationlink"><h3>MitigationLink</h3><p>Mitigation relationship: control mitigates threat/vulnerability.</p><table><tr><th style="width:30%">Shape</th><td>Dashed line</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty when the node moves or resizes.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>AssetNode</code></td><td>1+</td><td>2+</td><td>—</td></tr>
+<tr><td><code>ThreatNode</code></td><td>2+</td><td>2+</td><td>—</td></tr>
+<tr><td><code>ControlNode</code></td><td>1+</td><td>1+</td><td>—</td></tr>
+<tr><td><code>VulnerabilityNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>PolicyNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>RiskAssessmentNode</code></td><td>2+</td><td>1+</td><td>—</td></tr>
+<tr><td><code>IncidentNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>FindingNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>MitigationLink</code></td><td>0</td><td>0</td><td>—</td></tr></tbody></table></section><section class="section" id="conventions"><h2>Connection Conventions</h2><p>When building diagrams with this family, follow these conventions:</p><ul><li>Assets connect to threats they face</li><li>Controls mitigate threats and reduce vulnerabilities</li><li>Vulnerabilities link to assets they affect</li><li>Mitigation links use dashed lines to distinguish from data flow</li></ul></section><section class="section" id="example"><h2>Usage Example</h2><p>Complete example showing creation, node placement, and connection:</p><div class="code-example"><h3>C# Example</h3>
+<pre><code class="language-csharp">var sec = new SecurityControl
+{
+    X = 50, Y = 50,
+    Width = 700, Height = 500
+};
+drawingManager.AddComponent(sec);
+
+var asset = new AssetNode
+{
+    X = 100, Y = 150,
+    Text = "Customer Database",
+    AssetType = "Data"
+};
+var threat = new ThreatNode
+{
+    X = 350, Y = 80,
+    ThreatType = "SQL Injection",
+    Severity = "High"
+};
+var control = new ControlNode
+{
+    X = 350, Y = 220,
+    ControlType = "Input Validation",
+    ControlCategory = "Preventive"
+};
+var vuln = new VulnerabilityNode
+{
+    X = 600, Y = 150,
+    CVE = "CVE-2023-XXXXX"
+};
+
+drawingManager.AddComponent(asset);
+drawingManager.AddComponent(threat);
+drawingManager.AddComponent(control);
+drawingManager.AddComponent(vuln);
+
+drawingManager.Connect(asset.OutPoints[0], threat.InPoints[0]);
+drawingManager.Connect(threat.OutPoints[1], vuln.InPoints[0]);
+drawingManager.Connect(control.OutPoints[0], threat.InPoints[1]);</code></pre></div></section>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

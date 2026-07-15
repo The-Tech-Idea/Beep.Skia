@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowChart Diagram Family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="diagram-families/flowchart.html">Diagram Families</a><span>&rsaquo;</span> <span>FlowChart Diagram Family</span></nav><div class="page-header"><h1>FlowChart Diagram Family</h1><p class="page-subtitle">Classic flowchart diagrams with 32 node types covering process, decision, I/O, loops, and annotations. Based on ISO 5807 standard shapes.</p></div>
+<div class="toc"><h3>Table of Contents</h3><ul><li><a href="#overview">Overview</a></li><li><a href="#node-types">Node Types</a></li><li><a href="#ports">Connection Points</a></li><li><a href="#conventions">Connection Conventions</a></li><li><a href="#example">Usage Example</a></li></ul></div><section class="section" id="overview"><h2>Overview</h2><p><strong>Base Control:</strong> <code>FlowchartControl : MaterialControl</code><br><strong>Namespace:</strong> <code>Beep.Skia.FlowChart</code></p><p>The <strong>FlowchartControl</strong> is the root control for this diagram family. It inherits <code>MaterialControl</code> and provides shared port management, styling, and template methods for all nodes in the family.</p><p>This family contains <strong>36 node types</strong>.</p></section><section class="section" id="node-types"><h2>Node Types</h2><table><thead><tr><th>Node Class</th><th>Shape</th><th>Description</th></tr></thead><tbody><tr><td><code>ProcessNode</code></td><td>Rectangle</td><td>Standard process/action step. The most common flowchart node.</td></tr>
+<tr><td><code>DecisionNode</code></td><td>Diamond</td><td>Conditional branching. Yes/No or True/False paths.</td></tr>
+<tr><td><code>StartEndNode</code></td><td>Rounded Rectangle</td><td>Start or End terminal. Use NodeType to specify.</td></tr>
+<tr><td><code>DocumentNode</code></td><td>Document (wavy bottom)</td><td>Represents a document or report output.</td></tr>
+<tr><td><code>DataNode</code></td><td>Parallelogram</td><td>Data input/output operation.</td></tr>
+<tr><td><code>InputOutputNode</code></td><td>Parallelogram</td><td>Input or output operation (alternative shape).</td></tr>
+<tr><td><code>PredefinedProcessNode</code></td><td>Rectangle with vertical bars</td><td>Subroutine or predefined process.</td></tr>
+<tr><td><code>SubProcessNode</code></td><td>Rectangle with vertical bars</td><td>Nested sub-process expandable node.</td></tr>
+<tr><td><code>ForLoopNode</code></td><td>Hexagon</td><td>For-loop construct with initialization, condition, increment.</td></tr>
+<tr><td><code>WhileLoopNode</code></td><td>Hexagon</td><td>While-loop construct with pre-condition.</td></tr>
+<tr><td><code>DoWhileLoopNode</code></td><td>Hexagon</td><td>Do-while loop construct with post-condition.</td></tr>
+<tr><td><code>LoopLimitNode</code></td><td>Hexagon</td><td>Loop with defined iteration limit.</td></tr>
+<tr><td><code>DelayNode</code></td><td>Rectangle with curved side</td><td>Delay or wait operation.</td></tr>
+<tr><td><code>DisplayNode</code></td><td>Screen/display shape</td><td>Display output on screen.</td></tr>
+<tr><td><code>ManualInputNode</code></td><td>Rectangle with angled top</td><td>Manual data entry step.</td></tr>
+<tr><td><code>ManualOperationNode</code></td><td>Trapezoid</td><td>Manual operation by user.</td></tr>
+<tr><td><code>PreparationNode</code></td><td>Hexagon</td><td>Initialization or preparation step.</td></tr>
+<tr><td><code>MergeNode</code></td><td>Inverted triangle</td><td>Merge multiple flows into one.</td></tr>
+<tr><td><code>ForkNode</code></td><td>Triangle</td><td>Split one flow into multiple parallel paths.</td></tr>
+<tr><td><code>JoinNode</code></td><td>Inverted triangle</td><td>Wait for all parallel flows to complete.</td></tr>
+<tr><td><code>OrNode</code></td><td>Circle</td><td>OR-logic junction for alternative paths.</td></tr>
+<tr><td><code>CollateNode</code></td><td>Hourglass</td><td>Organize/sequence parallel data.</td></tr>
+<tr><td><code>SortNode</code></td><td>Diamond variant</td><td>Sort operation step.</td></tr>
+<tr><td><code>ExtractNode</code></td><td>Rectangle</td><td>Extract subset from data.</td></tr>
+<tr><td><code>ConnectorNode</code></td><td>Circle (small)</td><td>On-page connector reference.</td></tr>
+<tr><td><code>OffPageReferenceNode</code></td><td>Pentagon</td><td>Off-page connector reference.</td></tr>
+<tr><td><code>SummingJunctionNode</code></td><td>Circle with X</td><td>Summing junction for parallel flows.</td></tr>
+<tr><td><code>InternalStorageNode</code></td><td>Rectangle</td><td>Internal storage/persistence.</td></tr>
+<tr><td><code>StoredDataNode</code></td><td>Cylinder</td><td>Data stored in database/persistent storage.</td></tr>
+<tr><td><code>SequentialAccessNode</code></td><td>Rolled paper</td><td>Sequential access storage (tape).</td></tr>
+<tr><td><code>DirectAccessNode</code></td><td>Drum</td><td>Direct access storage (disk).</td></tr>
+<tr><td><code>MultiDocumentNode</code></td><td>Stacked documents</td><td>Multiple documents.</td></tr>
+<tr><td><code>TapeNode</code></td><td>Data block</td><td>Magnetic tape data representation.</td></tr>
+<tr><td><code>CardNode</code></td><td>Card/punched card</td><td>Punched card input.</td></tr>
+<tr><td><code>AnnotationNode</code></td><td>Open bracket</td><td>Annotation/comment connected to any node.</td></tr>
+<tr><td><code>CommentNode</code></td><td>Note/callout</td><td>Free-text comment box.</td></tr></tbody></table></section><div id="processnode"><h3>ProcessNode</h3><p>Standard process/action step. The most common flowchart node.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle</td></tr><tr><th>Input Ports</th><td>1 (top-center)</td></tr><tr><th>Output Ports</th><td>1 (bottom-center)</td></tr></table></div><div id="decisionnode"><h3>DecisionNode</h3><p>Conditional branching. Yes/No or True/False paths.</p><table><tr><th style="width:30%">Shape</th><td>Diamond</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>2+ (left/right/bottom)</td></tr></table></div><div id="startendnode"><h3>StartEndNode</h3><p>Start or End terminal. Use NodeType to specify.</p><table><tr><th style="width:30%">Shape</th><td>Rounded Rectangle</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="documentnode"><h3>DocumentNode</h3><p>Represents a document or report output.</p><table><tr><th style="width:30%">Shape</th><td>Document (wavy bottom)</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="datanode"><h3>DataNode</h3><p>Data input/output operation.</p><table><tr><th style="width:30%">Shape</th><td>Parallelogram</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="inputoutputnode"><h3>InputOutputNode</h3><p>Input or output operation (alternative shape).</p><table><tr><th style="width:30%">Shape</th><td>Parallelogram</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="predefinedprocessnode"><h3>PredefinedProcessNode</h3><p>Subroutine or predefined process.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with vertical bars</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="subprocessnode"><h3>SubProcessNode</h3><p>Nested sub-process expandable node.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with vertical bars</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="forloopnode"><h3>ForLoopNode</h3><p>For-loop construct with initialization, condition, increment.</p><table><tr><th style="width:30%">Shape</th><td>Hexagon</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="whileloopnode"><h3>WhileLoopNode</h3><p>While-loop construct with pre-condition.</p><table><tr><th style="width:30%">Shape</th><td>Hexagon</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="dowhileloopnode"><h3>DoWhileLoopNode</h3><p>Do-while loop construct with post-condition.</p><table><tr><th style="width:30%">Shape</th><td>Hexagon</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="looplimitnode"><h3>LoopLimitNode</h3><p>Loop with defined iteration limit.</p><table><tr><th style="width:30%">Shape</th><td>Hexagon</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="delaynode"><h3>DelayNode</h3><p>Delay or wait operation.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with curved side</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="displaynode"><h3>DisplayNode</h3><p>Display output on screen.</p><table><tr><th style="width:30%">Shape</th><td>Screen/display shape</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="manualinputnode"><h3>ManualInputNode</h3><p>Manual data entry step.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with angled top</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="manualoperationnode"><h3>ManualOperationNode</h3><p>Manual operation by user.</p><table><tr><th style="width:30%">Shape</th><td>Trapezoid</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="preparationnode"><h3>PreparationNode</h3><p>Initialization or preparation step.</p><table><tr><th style="width:30%">Shape</th><td>Hexagon</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="mergenode"><h3>MergeNode</h3><p>Merge multiple flows into one.</p><table><tr><th style="width:30%">Shape</th><td>Inverted triangle</td></tr><tr><th>Input Ports</th><td>2+ (top/sides)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="forknode"><h3>ForkNode</h3><p>Split one flow into multiple parallel paths.</p><table><tr><th style="width:30%">Shape</th><td>Triangle</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>2+ (bottom/sides)</td></tr></table></div><div id="joinnode"><h3>JoinNode</h3><p>Wait for all parallel flows to complete.</p><table><tr><th style="width:30%">Shape</th><td>Inverted triangle</td></tr><tr><th>Input Ports</th><td>2+ (top/sides)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="ornode"><h3>OrNode</h3><p>OR-logic junction for alternative paths.</p><table><tr><th style="width:30%">Shape</th><td>Circle</td></tr><tr><th>Input Ports</th><td>2+ (sides)</td></tr><tr><th>Output Ports</th><td>1+ (sides)</td></tr></table></div><div id="collatenode"><h3>CollateNode</h3><p>Organize/sequence parallel data.</p><table><tr><th style="width:30%">Shape</th><td>Hourglass</td></tr><tr><th>Input Ports</th><td>2+ (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="sortnode"><h3>SortNode</h3><p>Sort operation step.</p><table><tr><th style="width:30%">Shape</th><td>Diamond variant</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="extractnode"><h3>ExtractNode</h3><p>Extract subset from data.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="connectornode"><h3>ConnectorNode</h3><p>On-page connector reference.</p><table><tr><th style="width:30%">Shape</th><td>Circle (small)</td></tr><tr><th>Input Ports</th><td>1 (any)</td></tr><tr><th>Output Ports</th><td>1 (any)</td></tr></table></div><div id="offpagereferencenode"><h3>OffPageReferenceNode</h3><p>Off-page connector reference.</p><table><tr><th style="width:30%">Shape</th><td>Pentagon</td></tr><tr><th>Input Ports</th><td>1 (any)</td></tr><tr><th>Output Ports</th><td>1 (any)</td></tr></table></div><div id="summingjunctionnode"><h3>SummingJunctionNode</h3><p>Summing junction for parallel flows.</p><table><tr><th style="width:30%">Shape</th><td>Circle with X</td></tr><tr><th>Input Ports</th><td>2+ (sides)</td></tr><tr><th>Output Ports</th><td>1 (side)</td></tr></table></div><div id="internalstoragenode"><h3>InternalStorageNode</h3><p>Internal storage/persistence.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="storeddatanode"><h3>StoredDataNode</h3><p>Data stored in database/persistent storage.</p><table><tr><th style="width:30%">Shape</th><td>Cylinder</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="sequentialaccessnode"><h3>SequentialAccessNode</h3><p>Sequential access storage (tape).</p><table><tr><th style="width:30%">Shape</th><td>Rolled paper</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="directaccessnode"><h3>DirectAccessNode</h3><p>Direct access storage (disk).</p><table><tr><th style="width:30%">Shape</th><td>Drum</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="multidocumentnode"><h3>MultiDocumentNode</h3><p>Multiple documents.</p><table><tr><th style="width:30%">Shape</th><td>Stacked documents</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="tapenode"><h3>TapeNode</h3><p>Magnetic tape data representation.</p><table><tr><th style="width:30%">Shape</th><td>Data block</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="cardnode"><h3>CardNode</h3><p>Punched card input.</p><table><tr><th style="width:30%">Shape</th><td>Card/punched card</td></tr><tr><th>Input Ports</th><td>1 (top)</td></tr><tr><th>Output Ports</th><td>1 (bottom)</td></tr></table></div><div id="annotationnode"><h3>AnnotationNode</h3><p>Annotation/comment connected to any node.</p><table><tr><th style="width:30%">Shape</th><td>Open bracket</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="commentnode"><h3>CommentNode</h3><p>Free-text comment box.</p><table><tr><th style="width:30%">Shape</th><td>Note/callout</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty when the node moves or resizes.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>ProcessNode</code></td><td>1 (top-center)</td><td>1 (bottom-center)</td><td>—</td></tr>
+<tr><td><code>DecisionNode</code></td><td>1 (top)</td><td>2+ (left/right/bottom)</td><td>—</td></tr>
+<tr><td><code>StartEndNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>DocumentNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>DataNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>InputOutputNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>PredefinedProcessNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>SubProcessNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>ForLoopNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>WhileLoopNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>DoWhileLoopNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>LoopLimitNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>DelayNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>DisplayNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>ManualInputNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>ManualOperationNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>PreparationNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>MergeNode</code></td><td>2+ (top/sides)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>ForkNode</code></td><td>1 (top)</td><td>2+ (bottom/sides)</td><td>—</td></tr>
+<tr><td><code>JoinNode</code></td><td>2+ (top/sides)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>OrNode</code></td><td>2+ (sides)</td><td>1+ (sides)</td><td>—</td></tr>
+<tr><td><code>CollateNode</code></td><td>2+ (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>SortNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>ExtractNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>ConnectorNode</code></td><td>1 (any)</td><td>1 (any)</td><td>—</td></tr>
+<tr><td><code>OffPageReferenceNode</code></td><td>1 (any)</td><td>1 (any)</td><td>—</td></tr>
+<tr><td><code>SummingJunctionNode</code></td><td>2+ (sides)</td><td>1 (side)</td><td>—</td></tr>
+<tr><td><code>InternalStorageNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>StoredDataNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>SequentialAccessNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>DirectAccessNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>MultiDocumentNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>TapeNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>CardNode</code></td><td>1 (top)</td><td>1 (bottom)</td><td>—</td></tr>
+<tr><td><code>AnnotationNode</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>CommentNode</code></td><td>0</td><td>0</td><td>—</td></tr></tbody></table></section><section class="section" id="conventions"><h2>Connection Conventions</h2><p>When building diagrams with this family, follow these conventions:</p><ul><li>Top ports are inputs; bottom ports are outputs</li><li>DecisionNode uses Yes (right) and No (bottom) ports</li><li>StartEndNode uses NodeType enum (Start/Stop)</li><li>Flow lines default to orthogonal routing with arrowheads</li></ul></section><section class="section" id="example"><h2>Usage Example</h2><p>Complete example showing creation, node placement, and connection:</p><div class="code-example"><h3>C# Example</h3>
+<pre><code class="language-csharp">// Create a FlowChart control
+var fc = new FlowchartControl
+{
+    X = 100, Y = 50,
+    Width = 600, Height = 400
+};
+drawingManager.AddComponent(fc);
+
+// Add nodes
+var start = new StartEndNode { X = 250, Y = 60, NodeType = NodeType.Start };
+var process = new ProcessNode { X = 250, Y = 130, Text = "Process Data" };
+var decision = new DecisionNode { X = 250, Y = 200, Text = "Valid?" };
+var stop = new StartEndNode { X = 250, Y = 280, NodeType = NodeType.Stop };
+
+drawingManager.AddComponent(start);
+drawingManager.AddComponent(process);
+drawingManager.AddComponent(decision);
+drawingManager.AddComponent(stop);
+
+// Connect
+drawingManager.Connect(start.OutPoints[0], process.InPoints[0]);
+drawingManager.Connect(process.OutPoints[0], decision.InPoints[0]);
+drawingManager.Connect(decision.OutPoints[0], stop.InPoints[0]);</code></pre></div></section>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

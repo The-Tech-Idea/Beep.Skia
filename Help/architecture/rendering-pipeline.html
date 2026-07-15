@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rendering Pipeline Architecture | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="../architecture/component-registry.html">Architecture & Internals</a><span>&rsaquo;</span> <span>Rendering Pipeline Architecture</span></nav><div class="page-header"><h1>Rendering Pipeline Architecture</h1><p class="page-subtitle">The complete rendering pipeline from DrawingManager through SkiaComponent to the SkiaSharp canvas.</p></div>
+<p>The rendering pipeline transforms component state into pixels on screen through a multi-stage process managed by <code>RenderingHelper</code>.</p>
+<h3>Pipeline Stages</h3>
+<ol>
+<li><strong>Canvas Preparation:</strong> Clear canvas, apply pan/zoom transform</li>
+<li><strong>Grid Rendering:</strong> Draw background grid if enabled (minor + major lines)</li>
+<li><strong>Connection Lines:</strong> Render all connection lines (behind components)</li>
+<li><strong>Component Rendering:</strong> For each component: render background, text, icon, overlay</li>
+<li><strong>Port Rendering:</strong> Draw connection points (visible when component selected)</li>
+<li><strong>Selection Overlay:</strong> Marquee rectangle, resize handles, focus indicator</li>
+</ol>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

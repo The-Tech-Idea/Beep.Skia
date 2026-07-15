@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dropdown &amp; ComboBox | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="button.html">UI Components</a><span>&rsaquo;</span> <span>Dropdown &amp; ComboBox</span></nav>
+<div class="page-header"><h1>Dropdown &amp; ComboBox</h1><p class="page-subtitle">Dropdown selection with ComboBox and ListBoxItem</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia.Controls</code> &mdash; <strong>Inherits:</strong> <code>ComboBox</code> &rarr; <code>MaterialControl</code> &rarr; <code>SkiaComponent</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#combobox">ComboBox Properties</a></li>
+    <li><a href="#dropdown">Dropdown Properties</a></li>
+    <li><a href="#comboboxitem">ComboBoxItem Model</a></li>
+    <li><a href="#code-example">Code Example</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p>The <code>ComboBox</code> control combines an MD3-styled text field with a popup <code>Dropdown</code> list of selectable items, all rendered with SkiaSharp. When the user clicks the field or presses the dropdown arrow, the <code>Dropdown</code> overlay opens below (or above, if insufficient space) displaying the available items. The selected item is shown in the field with its text and optional icon. The dropdown closes on selection, outside click, or Escape key.</p>
+
+  <p>The <code>Dropdown</code> is an overlay component managed by <code>OverlayManager</code>. It renders with MD3 elevation shadow and a surface background. Items are rendered with hover and selection state layers. An animated chevron icon on the field indicates the open/closed state.</p>
+</section>
+
+<section class="section" id="combobox">
+  <h2>ComboBox Properties</h2>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Items</code></td>
+        <td><code>List&lt;ComboBoxItem&gt;</code></td>
+        <td>The collection of selectable items displayed in the dropdown.</td>
+      </tr>
+      <tr>
+        <td><code>SelectedIndex</code></td>
+        <td><code>int</code></td>
+        <td>Zero-based index of the selected item. <code>-1</code> when no item is selected. Setting this updates the displayed text in the field.</td>
+      </tr>
+      <tr>
+        <td><code>SelectedItem</code></td>
+        <td><code>ComboBoxItem</code></td>
+        <td>Read-only. The currently selected <code>ComboBoxItem</code> instance, or <code>null</code>.</td>
+      </tr>
+      <tr>
+        <td><code>IsOpen</code></td>
+        <td><code>bool</code></td>
+        <td>Read-only. Indicates whether the dropdown popup is currently visible.</td>
+      </tr>
+      <tr>
+        <td><code>Placeholder</code></td>
+        <td><code>string</code></td>
+        <td>Text displayed in the field when no item is selected. Rendered in <code>OnSurfaceVariant</code> color. Default is <code>"Select..."</code>.</td>
+      </tr>
+      <tr>
+        <td><code>FieldStyle</code></td>
+        <td><code>TextFieldStyle</code></td>
+        <td>Enum: <code>Filled</code> (default) or <code>Outlined</code>. Controls the visual style of the combo box field.</td>
+      </tr>
+      <tr>
+        <td><code>IsEditable</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, the user can type in the field to filter items. The dropdown shows only items whose text contains the typed substring (case-insensitive). Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+        <td><code>MaxDropdownHeight</code></td>
+        <td><code>float</code></td>
+        <td>Maximum height of the dropdown popup. If the total item height exceeds this, the dropdown becomes scrollable. Default is <code>300f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>DropdownItemHeight</code></td>
+        <td><code>float</code></td>
+        <td>Height of each item row in the dropdown. Default is <code>48f</code> per MD3 list item spec.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="dropdown">
+  <h2>Dropdown Properties</h2>
+  <p>The <code>Dropdown</code> is the popup list rendered when the ComboBox opens. While typically managed automatically, it can also be used standalone or customized:</p>
+
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>IsOpen</code></td>
+        <td><code>bool</code></td>
+        <td>Controls visibility of the dropdown overlay. Setting to <code>true</code> registers with <code>OverlayManager</code> and begins the open animation.</td>
+      </tr>
+      <tr>
+        <td><code>OpenAnimation</code></td>
+        <td><code>AnimationType</code></td>
+        <td>The animation played when the dropdown opens. Default is a vertical expand with fade (<code>AnimationType.ExpandDown</code>). Duration is typically 150&ndash;200ms.</td>
+      </tr>
+      <tr>
+        <td><code>CloseAnimation</code></td>
+        <td><code>AnimationType</code></td>
+        <td>The animation played when the dropdown closes. Default is <code>AnimationType.CollapseUp</code>.</td>
+      </tr>
+      <tr>
+        <td><code>Elevation</code></td>
+        <td><code>int</code></td>
+        <td>Material elevation shadow level. Default is <code>3</code>.</td>
+      </tr>
+      <tr>
+        <td><code>CornerRadius</code></td>
+        <td><code>float</code></td>
+        <td>Corner rounding for the dropdown surface. Default is <code>4f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>DropDirection</code></td>
+        <td><code>DropDirection</code></td>
+        <td>Enum: <code>Auto</code> (default), <code>Down</code>, or <code>Up</code>. <code>Auto</code> opens below unless there is insufficient space, in which case it opens above.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="comboboxitem">
+  <h2>ComboBoxItem Model</h2>
+
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Text</code></td>
+        <td><code>string</code></td>
+        <td>The display text for this item. Rendered using <code>BodyLarge</code> typography.</td>
+      </tr>
+      <tr>
+        <td><code>Value</code></td>
+        <td><code>object</code></td>
+        <td>Arbitrary value associated with the item. Typically a string, integer, or enum. Used for programmatic lookup when <code>SelectedItem</code> changes.</td>
+      </tr>
+      <tr>
+        <td><code>Icon</code></td>
+        <td><code>SKPath</code></td>
+        <td>Optional vector icon displayed before the text in the dropdown list. Not shown in the collapsed field.</td>
+      </tr>
+      <tr>
+        <td><code>IsEnabled</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>false</code>, the item is greyed out and not selectable. Default is <code>true</code>.</td>
+      </tr>
+      <tr>
+        <td><code>Tooltip</code></td>
+        <td><code>string</code></td>
+        <td>Optional tooltip text shown on hover when the dropdown is open.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="code-example">
+  <h2>Code Example</h2>
+
+  <div class="code-example">
+    <h3>Basic ComboBox</h3>
+    <pre><code class="language-csharp">var fontCombo = new ComboBox
+{
+    Placeholder = "Select a font...",
+    FieldStyle = TextFieldStyle.Outlined,
+    X = 40,
+    Y = 40,
+    Width = 280,
+    Height = 56,
+    Items = new List&lt;ComboBoxItem&gt;
+    {
+        new() { Text = "Inter",           Value = "Inter" },
+        new() { Text = "Roboto",          Value = "Roboto" },
+        new() { Text = "Source Sans Pro", Value = "SourceSansPro" },
+        new() { Text = "Open Sans",       Value = "OpenSans" },
+        new() { Text = "Fira Code",       Value = "FiraCode" },
+        new() { Text = "JetBrains Mono",  Value = "JetBrainsMono" }
+    }
+};
+
+fontCombo.Initialize();
+
+fontCombo.SelectedIndexChanged += (s, idx) =>
+{
+    var item = fontCombo.SelectedItem;
+    Console.WriteLine($"Selected: {item.Text} ({item.Value})");
+};
+
+drawingManager.AddComponent(fontCombo);
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Editable ComboBox with Filtering</h3>
+    <pre><code class="language-csharp">var countryCombo = new ComboBox
+{
+    Placeholder = "Search countries...",
+    IsEditable = true,
+    FieldStyle = TextFieldStyle.Filled,
+    X = 40,
+    Y = 120,
+    Width = 300,
+    Height = 56,
+    Items = new List&lt;ComboBoxItem&gt;
+    {
+        new() { Text = "Argentina",    Value = "AR" },
+        new() { Text = "Australia",    Value = "AU" },
+        new() { Text = "Brazil",       Value = "BR" },
+        new() { Text = "Canada",       Value = "CA" },
+        new() { Text = "France",       Value = "FR" },
+        new() { Text = "Germany",      Value = "DE" },
+        new() { Text = "India",        Value = "IN" },
+        new() { Text = "Japan",        Value = "JP" },
+        new() { Text = "Mexico",       Value = "MX" },
+        new() { Text = "Netherlands",  Value = "NL" },
+        new() { Text = "Spain",        Value = "ES" },
+        new() { Text = "United Kingdom", Value = "UK" },
+        new() { Text = "United States",  Value = "US" }
+    }
+};
+
+countryCombo.Initialize();
+drawingManager.AddComponent(countryCombo);</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Programmatic Selection</h3>
+    <pre><code class="language-csharp">themeCombo.SelectedIndex = 1;
+
+var targetItem = themeCombo.Items
+    .FirstOrDefault(i => i.Value?.ToString() == "Dark");
+if (targetItem != null)
+    themeCombo.SelectedIndex = themeCombo.Items.IndexOf(targetItem);
+
+themeCombo.OpenDropdown();
+themeCombo.CloseDropdown();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>ComboBox with Icons</h3>
+    <pre><code class="language-csharp">var sizeIcon = SKPath.ParseSvgPathData(
+    "M3 3h18v2H3V3zm0 4h14v2H3V7zm0 4h18v2H3v-2zm0 4h12v2H3v-2z");
+
+var sizeCombo = new ComboBox
+{
+    Placeholder = "Text Size",
+    X = 40, Y = 200,
+    Width = 200, Height = 56,
+    Items = new List&lt;ComboBoxItem&gt;
+    {
+        new() { Text = "Small",  Value = 12f, Icon = sizeIcon },
+        new() { Text = "Medium", Value = 16f, Icon = sizeIcon },
+        new() { Text = "Large",  Value = 20f, Icon = sizeIcon },
+        new() { Text = "Extra Large", Value = 24f, Icon = sizeIcon }
+    }
+};
+
+sizeCombo.Initialize();
+sizeCombo.SelectedIndex = 1;
+drawingManager.AddComponent(sizeCombo);</code></pre>
+  </div>
+
+  <div class="admonition note">
+    <p class="admonition-title">Note</p>
+    <p>The <code>Dropdown</code> overlay is positioned relative to the ComboBox's location on the canvas. It does not account for window bounds automatically &mdash; use <code>DropDirection.Auto</code> and ensure the ComboBox is placed with enough vertical space. For window-edge detection, listen to <code>OverlayManager.BoundsChanged</code>.</p>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

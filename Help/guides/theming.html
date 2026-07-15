@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Theming Guide | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="creating-custom-family.html">Guides</a><span>&rsaquo;</span> <span>Theming Guide</span></nav>
+<div class="page-header"><h1>Theming Guide</h1><p class="page-subtitle">Material Design 3.0 theming, custom color tokens, and visual customization</p></div>
+
+<p>Beep.Skia implements a comprehensive Material Design 3.0 theming system modeled after the Material You design language. Every visual component &mdash; from diagram nodes to UI controls &mdash; resolves its colors through a centralized token system that supports light, dark, and custom themes.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#material-tokens">Material Design 3.0 Tokens</a></li>
+    <li><a href="#color-presets">MaterialDesignColors</a></li>
+    <li><a href="#custom-themes">Custom Themes</a></li>
+    <li><a href="#border-styles">Border Styles</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#shadows-elevation">Shadows &amp; Elevation</a></li>
+  </ul>
+</div>
+
+<section class="section" id="material-tokens">
+  <h2>Material Design 3.0 Tokens</h2>
+
+  <p>The theme system is built on a set of named color tokens that propagate through the component tree. Each token represents a semantic role in the UI, not a specific hex color. Tokens are resolved at render time based on the current theme, dark/light mode, and component-level overrides.</p>
+
+  <h3>Core Color Tokens</h3>
+  <table>
+    <thead>
+      <tr><th>Token</th><th>Role</th><th>Light Theme Default</th><th>Dark Theme Default</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Primary</code></td><td>Brand color, primary actions, active states</td><td><span style="display:inline-block;width:14px;height:14px;background:#6750A4;border-radius:3px;vertical-align:middle;"></span> #6750A4</td><td><span style="display:inline-block;width:14px;height:14px;background:#D0BCFF;border-radius:3px;vertical-align:middle;"></span> #D0BCFF</td></tr>
+      <tr><td><code>OnPrimary</code></td><td>Text/icons on primary-colored surfaces</td><td><span style="display:inline-block;width:14px;height:14px;background:#FFFFFF;border:1px solid #ccc;border-radius:3px;vertical-align:middle;"></span> #FFFFFF</td><td><span style="display:inline-block;width:14px;height:14px;background:#381E72;border-radius:3px;vertical-align:middle;"></span> #381E72</td></tr>
+      <tr><td><code>PrimaryContainer</code></td><td>Prominent container for key UI elements</td><td><span style="display:inline-block;width:14px;height:14px;background:#EADDFF;border-radius:3px;vertical-align:middle;"></span> #EADDFF</td><td><span style="display:inline-block;width:14px;height:14px;background:#4F378B;border-radius:3px;vertical-align:middle;"></span> #4F378B</td></tr>
+      <tr><td><code>Surface</code></td><td>Default background of components</td><td><span style="display:inline-block;width:14px;height:14px;background:#FFFBFE;border:1px solid #ccc;border-radius:3px;vertical-align:middle;"></span> #FFFBFE</td><td><span style="display:inline-block;width:14px;height:14px;background:#1C1B1F;border-radius:3px;vertical-align:middle;"></span> #1C1B1F</td></tr>
+      <tr><td><code>OnSurface</code></td><td>Primary text and iconography on surfaces</td><td><span style="display:inline-block;width:14px;height:14px;background:#1C1B1F;border-radius:3px;vertical-align:middle;"></span> #1C1B1F</td><td><span style="display:inline-block;width:14px;height:14px;background:#E6E1E5;border-radius:3px;vertical-align:middle;"></span> #E6E1E5</td></tr>
+      <tr><td><code>SurfaceVariant</code></td><td>Alternative surface for differentiation</td><td><span style="display:inline-block;width:14px;height:14px;background:#E7E0EC;border-radius:3px;vertical-align:middle;"></span> #E7E0EC</td><td><span style="display:inline-block;width:14px;height:14px;background:#49454F;border-radius:3px;vertical-align:middle;"></span> #49454F</td></tr>
+      <tr><td><code>Outline</code></td><td>Borders, dividers, and structural lines</td><td><span style="display:inline-block;width:14px;height:14px;background:#79747E;border-radius:3px;vertical-align:middle;"></span> #79747E</td><td><span style="display:inline-block;width:14px;height:14px;background:#938F99;border-radius:3px;vertical-align:middle;"></span> #938F99</td></tr>
+      <tr><td><code>Error</code></td><td>Validation errors, destructive actions</td><td><span style="display:inline-block;width:14px;height:14px;background:#B3261E;border-radius:3px;vertical-align:middle;"></span> #B3261E</td><td><span style="display:inline-block;width:14px;height:14px;background:#F2B8B5;border-radius:3px;vertical-align:middle;"></span> #F2B8B5</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Token Propagation</h3>
+  <p>Tokens flow through the component tree via <code>MaterialControl</code>. Each component inherits the theme from its parent <code>DrawingManager</code> unless explicitly overridden:</p>
+
+  <div class="code-example">
+    <h3>Token Resolution Chain</h3>
+    <pre><code class="language-csharp">// 1. DrawingManager holds the active MaterialDesignTheme
+var theme = drawingManager.Theme;
+
+// 2. Each MaterialControl resolves tokens through the chain:
+//    Control override > Parent theme > DrawingManager theme > Default theme
+public SKColor PrimaryColor => _primaryOverride ?? Parent?.PrimaryColor
+    ?? DrawingManager?.Theme?.Primary ?? MaterialDesignColors.Default.Primary;
+
+public SKColor SurfaceColor => _surfaceOverride ?? Parent?.SurfaceColor
+    ?? DrawingManager?.Theme?.Surface ?? MaterialDesignColors.Default.Surface;
+
+public SKColor OutlineColor => _outlineOverride ?? Parent?.OutlineColor
+    ?? DrawingManager?.Theme?.Outline ?? MaterialDesignColors.Default.Outline;</code></pre>
+  </div>
+
+  <p>This resolution chain means you can change the entire application theme by assigning a new <code>MaterialDesignTheme</code> to the <code>DrawingManager</code>, and all 5,000 components instantly reflect the new colors on the next frame.</p>
+
+  <h3>State Layer Colors</h3>
+  <p>Material Design 3.0 uses state layers for interactive feedback (hover, focus, pressed, dragged). These are computed from the <code>Primary</code> token with varying opacity:</p>
+
+  <table>
+    <thead>
+      <tr><th>State</th><th>Opacity Overlay</th><th>Use Case</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Hover</strong></td><td>8% Primary</td><td>Mouse cursor over component</td></tr>
+      <tr><td><strong>Focus</strong></td><td>12% Primary</td><td>Keyboard focus ring</td></tr>
+      <tr><td><strong>Pressed</strong></td><td>12% Primary</td><td>Mouse button down</td></tr>
+      <tr><td><strong>Dragged</strong></td><td>16% Primary</td><td>Active drag operation</td></tr>
+      <tr><td><strong>Selected</strong></td><td>8% Secondary</td><td>Component is selected</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="color-presets">
+  <h2>MaterialDesignColors</h2>
+
+  <p><code>MaterialDesignColors</code> provides pre-configured color scheme presets based on the Material Design 3.0 palette system. Each preset defines all core tokens for both light and dark modes.</p>
+
+  <h3>Built-in Presets</h3>
+  <table>
+    <thead>
+      <tr><th>Preset</th><th>Primary Hue</th><th>Character</th><th>Best For</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Blue</code></td><td>#1A73E8</td><td>Professional, trustworthy</td><td>Enterprise applications, ERD, network diagrams</td></tr>
+      <tr><td><code>Green</code></td><td>#0B8043</td><td>Natural, growth-oriented</td><td>Sustainability, process flow, ETL</td></tr>
+      <tr><td><code>Purple</code></td><td>#6750A4</td><td>Creative, premium</td><td>Default &mdash; Design tools, general purpose</td></tr>
+      <tr><td><code>Orange</code></td><td>#E8710A</td><td>Energetic, alert</td><td>Alerts, security diagrams, state machines</td></tr>
+      <tr><td><code>Teal</code></td><td>#007B83</td><td>Calm, technical</td><td>Cloud architecture, networking, UML</td></tr>
+      <tr><td><code>Pink</code></td><td>#C2185B</td><td>Expressive, bold</td><td>Marketing diagrams, mind maps</td></tr>
+      <tr><td><code>Dark</code></td><td>#D0BCFF</td><td>Modern, low-light</td><td>Dark-mode-first applications</td></tr>
+      <tr><td><code>Monochrome</code></td><td>#5C5C5C</td><td>Minimal, neutral</td><td>Print-ready diagrams, grayscale output</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Applying a Color Preset</h3>
+    <pre><code class="language-csharp">// Apply a built-in preset
+drawingManager.Theme = MaterialDesignColors.Blue;
+
+// Toggle dark/light mode
+drawingManager.Theme.Mode = ThemeMode.Dark;
+
+// Create a custom preset from a seed color (Material You style)
+var customTheme = MaterialDesignColors.FromSeed(SKColors.Coral);
+drawingManager.Theme = customTheme;</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Defining a Custom Color Scheme</h3>
+    <pre><code class="language-csharp">public static MaterialDesignTheme CorporateTheme => new()
+{
+    Name = "Corporate",
+    LightScheme = new ColorScheme
+    {
+        Primary = new SKColor(0x00, 0x56, 0x9B),       // Deep blue
+        OnPrimary = SKColors.White,
+        PrimaryContainer = new SKColor(0xD3, 0xE3, 0xFD),
+        Secondary = new SKColor(0x56, 0x8E, 0xB4),
+        Surface = new SKColor(0xFA, 0xFA, 0xFA),
+        OnSurface = new SKColor(0x1A, 0x1A, 0x1A),
+        SurfaceVariant = new SKColor(0xE8, 0xEE, 0xF4),
+        Outline = new SKColor(0x72, 0x7D, 0x8A),
+        Error = new SKColor(0xBA, 0x1A, 0x1A)
+    },
+    DarkScheme = new ColorScheme
+    {
+        Primary = new SKColor(0xA8, 0xC7, 0xFA),
+        OnPrimary = new SKColor(0x00, 0x2E, 0x5D),
+        PrimaryContainer = new SKColor(0x00, 0x45, 0x7A),
+        Secondary = new SKColor(0x90, 0xCA, 0xF1),
+        Surface = new SKColor(0x11, 0x13, 0x18),
+        OnSurface = new SKColor(0xE2, 0xE2, 0xE9),
+        SurfaceVariant = new SKColor(0x41, 0x48, 0x53),
+        Outline = new SKColor(0x8E, 0x94, 0xA0),
+        Error = new SKColor(0xFF, 0xB4, 0xAB)
+    }
+};</code></pre>
+  </div>
+</section>
+
+<section class="section" id="custom-themes">
+  <h2>Custom Themes</h2>
+
+  <h3>Per-Component Color Overrides</h3>
+  <p>Any <code>MaterialControl</code> can override individual color tokens without affecting siblings or children:</p>
+
+  <div class="code-example">
+    <h3>Component-Level Token Override</h3>
+    <pre><code class="language-csharp">public class CriticalNode : FlowChartNode
+{
+    public CriticalNode()
+    {
+        // Override just the primary color for this specific node
+        OverridePrimary(SKColors.Red);
+
+        // Override the surface (background) color
+        OverrideSurface(new SKColor(0xFF, 0xF0, 0xF0));
+
+        // Override outline color
+        OverrideOutline(new SKColor(0xCC, 0x00, 0x00));
+    }
+}</code></pre>
+  </div>
+
+  <h3>Per-Family Theme Overrides</h3>
+  <p>Set theme overrides at the family base-class level to give an entire diagram family a distinctive look:</p>
+
+  <div class="code-example">
+    <h3>Family-Level Theming</h3>
+    <pre><code class="language-csharp">public abstract class SecurityNodeBase : MaterialControl
+{
+    protected override void Initialize()
+    {
+        base.Initialize();
+
+        // All security diagram nodes get a dark, high-contrast theme
+        OverrideSurface(new SKColor(0x1A, 0x1A, 0x2E));
+        OverrideOnSurface(new SKColor(0xE0, 0xE0, 0xFF));
+        OverridePrimary(new SKColor(0x00, 0xFF, 0x88));
+        OverrideOutline(new SKColor(0x44, 0x44, 0x66));
+    }
+}</code></pre>
+  </div>
+
+  <h3>Dynamic Theme Switching</h3>
+  <p>Themes can be changed at runtime without disrupting the user's diagram. The <code>DrawingManager</code> handles theme changes by invalidating all components:</p>
+
+  <div class="code-example">
+    <h3>Runtime Theme Toggle</h3>
+    <pre><code class="language-csharp">public void ToggleDarkMode()
+{
+    var theme = drawingManager.Theme;
+
+    if (theme.Mode == ThemeMode.Light)
+    {
+        theme.Mode = ThemeMode.Dark;
+    }
+    else
+    {
+        theme.Mode = ThemeMode.Light;
+    }
+
+    // Theme change invalidates all components automatically
+    drawingManager.InvalidateAll();
+
+    // Alternative: switch to a completely different theme
+    drawingManager.Theme = userPreferences.UseHighContrast
+        ? MaterialDesignColors.HighContrast
+        : MaterialDesignColors.Purple;
+}</code></pre>
+  </div>
+
+  <div class="admonition note">
+    <p class="admonition-title">Theme Persistence</p>
+    <p>Theme settings (preset name and mode) are serialized as part of the diagram document. When a user saves a diagram with a custom theme and reopens it, the theme is restored automatically. To opt out, set <code>DrawingManager.PersistTheme = false</code> and manage theme state at the application level.</p>
+  </div>
+</section>
+
+<section class="section" id="border-styles">
+  <h2>Border Styles</h2>
+
+  <p>Beep.Skia supports 14 built-in border styles through the <code>BorderStyle</code> enumeration. Borders are rendered using <code>SKPaint</code> with appropriate <code>SKPathEffect</code> and <code>SKStrokeCap</code> settings:</p>
+
+  <table>
+    <thead>
+      <tr><th>Style</th><th>Visual</th><th>Paint Configuration</th><th>Uses</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>None</code></td><td>No border</td><td><code>StrokeWidth = 0</code></td><td>Subtle components, background elements</td></tr>
+      <tr><td><code>Solid</code></td><td>&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;</td><td>Default. Solid stroke, no path effect</td><td>Standard component borders</td></tr>
+      <tr><td><code>Dashed</code></td><td>&#x2504;&#x2504;&#x2504;&#x2504;&#x2504;</td><td><code>SKPathEffect.CreateDash([6, 4], 0)</code></td><td>Group boundaries, virtual containers</td></tr>
+      <tr><td><code>Dotted</code></td><td>&#x2508;&#x2508;&#x2508;&#x2508;&#x2508;</td><td><code>SKPathEffect.CreateDash([2, 4], 0)</code> + <code>StrokeCap = Round</code></td><td>Optional relationships, future states</td></tr>
+      <tr><td><code>Double</code></td><td>&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;</td><td>Two parallel strokes, 3px apart</td><td>Emphasized containers, master entities</td></tr>
+      <tr><td><code>Groove</code></td><td>Carved-in 3D effect</td><td>Two strokes: dark + light offset by 1px</td><td>Panels, frames, tab containers</td></tr>
+      <tr><td><code>Ridge</code></td><td>Raised 3D effect</td><td>Two strokes: light + dark offset by 1px</td><td>Buttons, toolbars, raised panels</td></tr>
+      <tr><td><code>Inset</code></td><td>Sunken appearance</td><td>Dark top/left + light bottom/right</td><td>Text fields, input areas</td></tr>
+      <tr><td><code>Outset</code></td><td>Raised appearance</td><td>Light top/left + dark bottom/right</td><td>Buttons, clickable areas</td></tr>
+      <tr><td><code>DashDot</code></td><td>&#x2504;&#x2508;&#x2504;&#x2508;&#x2504;</td><td><code>SKPathEffect.CreateDash([6, 4, 2, 4], 0)</code></td><td>Alternate paths, commentary</td></tr>
+      <tr><td><code>DashDotDot</code></td><td>&#x2504;&#x2508;&#x2508;&#x2504;&#x2508;</td><td><code>SKPathEffect.CreateDash([6, 4, 2, 4, 2, 4], 0)</code></td><td>Sequence markers, annotations</td></tr>
+      <tr><td><code>Wavy</code></td><td>~ ~ ~ ~ ~</td><td>Custom path effect with sine displacement</td><td>Torn edges, informal separation</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Applying Border Styles</h3>
+    <pre><code class="language-csharp">public class DashedContainer : MaterialControl
+{
+    public DashedContainer()
+    {
+        BorderStyle = BorderStyle.Dashed;
+        BorderWidth = 2f;
+        BorderColor = OutlineColor;
+    }
+}
+
+// Or set via NodeProperties
+NodeProperties["BorderStyle"] = new ParameterInfo
+{
+    Name = "BorderStyle",
+    DisplayName = "Border Style",
+    Value = BorderStyle.Dashed,
+    DataType = typeof(BorderStyle),
+    Category = "Appearance",
+    EditorHint = "ComboBox"
+};</code></pre>
+  </div>
+</section>
+
+<section class="section" id="typography">
+  <h2>Typography</h2>
+
+  <p>The typography system is built on Material Design 3.0's type scale. Each role defines font family, size, weight, line height, and letter spacing. Components can reference roles directly or override individual properties.</p>
+
+  <h3>Type Scale Roles</h3>
+  <table>
+    <thead>
+      <tr><th>Role</th><th>Size</th><th>Weight</th><th>Letter Spacing</th><th>Use Case</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Display</code></td><td>57px</td><td>400</td><td>-0.25px</td><td>Hero headlines, diagram titles</td></tr>
+      <tr><td><code>Headline</code></td><td>28px</td><td>400</td><td>0px</td><td>Section headers, family names</td></tr>
+      <tr><td><code>Title</code></td><td>22px</td><td>500</td><td>0px</td><td>Component titles, node labels</td></tr>
+      <tr><td><code>Body</code></td><td>16px</td><td>400</td><td>0.5px</td><td>Component body text, descriptions</td></tr>
+      <tr><td><code>Label</code></td><td>14px</td><td>500</td><td>0.1px</td><td>Connection labels, port names</td></tr>
+      <tr><td><code>Caption</code></td><td>12px</td><td>400</td><td>0.4px</td><td>Metadata, tooltips, small annotations</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Typography Configuration</h3>
+    <pre><code class="language-csharp">public class TypedLabelComponent : MaterialControl
+{
+    protected override void Initialize()
+    {
+        base.Initialize();
+
+        NodeProperties["FontFamily"] = new ParameterInfo
+        {
+            Name = "FontFamily",
+            DisplayName = "Font",
+            Value = "Inter",
+            DataType = typeof(string),
+            Category = "Typography",
+            EditorHint = "FontPicker"
+        };
+
+        NodeProperties["FontSize"] = new ParameterInfo
+        {
+            Name = "FontSize",
+            DisplayName = "Size",
+            Value = 14f,
+            DataType = typeof(float),
+            Category = "Typography",
+            EditorHint = "Slider:8-48"
+        };
+
+        NodeProperties["FontWeight"] = new ParameterInfo
+        {
+            Name = "FontWeight",
+            DisplayName = "Weight",
+            Value = SKFontStyleWeight.Normal,
+            DataType = typeof(SKFontStyleWeight),
+            Category = "Typography",
+            EditorHint = "ComboBox"
+        };
+
+        NodeProperties["TextAlign"] = new ParameterInfo
+        {
+            Name = "TextAlign",
+            DisplayName = "Alignment",
+            Value = SKTextAlign.Center,
+            DataType = typeof(SKTextAlign),
+            Category = "Typography",
+            EditorHint = "ComboBox"
+        };
+
+        NodeProperties["TextDecoration"] = new ParameterInfo
+        {
+            Name = "TextDecoration",
+            DisplayName = "Decoration",
+            Value = TextDecoration.None,
+            DataType = typeof(TextDecoration),
+            Category = "Typography",
+            EditorHint = "ComboBox"
+        };
+    }
+}</code></pre>
+  </div>
+
+  <h3>Text Decoration Options</h3>
+  <table>
+    <thead>
+      <tr><th>Decoration</th><th>Description</th><th>Typical Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>None</code></td><td>Plain text</td><td>Default for all components</td></tr>
+      <tr><td><code>Underline</code></td><td>Line beneath text</td><td>Hyperlinks, emphasized labels</td></tr>
+      <tr><td><code>Strikethrough</code></td><td>Line through text</td><td>Deprecated items, completed tasks</td></tr>
+      <tr><td><code>Overline</code></td><td>Line above text</td><td>NOT gates in logic diagrams</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="shadows-elevation">
+  <h2>Shadows &amp; Elevation</h2>
+
+  <p>Material Design defines 6 elevation levels (0&ndash;5), each producing a different shadow rendering on <code>MaterialControl</code> subclasses. Shadows are rendered using <code>SKImageFilter.CreateDropShadow()</code> and cached per elevation level.</p>
+
+  <h3>Elevation Levels</h3>
+  <table>
+    <thead>
+      <tr><th>Level</th><th>Offset Y</th><th>Blur</th><th>Opacity</th><th>Use Case</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>0</strong></td><td>0px</td><td>0px</td><td>0%</td><td>Flat components: labels, text nodes</td></tr>
+      <tr><td><strong>1</strong></td><td>1px</td><td>3px</td><td>12%</td><td>Standard nodes, buttons, inputs</td></tr>
+      <tr><td><strong>2</strong></td><td>2px</td><td>6px</td><td>16%</td><td>Cards, panels, selected components</td></tr>
+      <tr><td><strong>3</strong></td><td>4px</td><td>8px</td><td>19%</td><td>Floating toolbars, modal dialogs</td></tr>
+      <tr><td><strong>4</strong></td><td>6px</td><td>12px</td><td>24%</td><td>Menus, dropdowns, popovers</td></tr>
+      <tr><td><strong>5</strong></td><td>8px</td><td>16px</td><td>28%</td><td>Dialogs, notifications, alerts</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Shadow Rendering</h3>
+    <pre><code class="language-csharp">protected override void DrawBackgroundContent(SKCanvas canvas)
+{
+    if (Elevation > 0)
+    {
+        // Shadow is rendered first, offset by elevation parameters
+        var shadowFilter = SKImageFilter.CreateDropShadow(
+            0f,                                  // dx
+            Elevation * 2f,                      // dy (proportional to elevation)
+            Elevation * 2f,                      // sigmaX (blur)
+            Elevation * 2f,                      // sigmaY (blur)
+            new SKColor(0, 0, 0, (byte)(Elevation * 30)),  // opacity scales with elevation
+            null                                 // no crop rect
+        );
+
+        using var shadowPaint = new SKPaint
+        {
+            IsAntialias = true,
+            ImageFilter = shadowFilter,
+            Style = SKPaintStyle.Fill,
+            Color = SurfaceColor
+        };
+
+        canvas.DrawRoundRect(GetContentRect(), CornerRadius, CornerRadius, shadowPaint);
+    }
+    // ... then draw the actual component on top ...
+}</code></pre>
+  </div>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Performance Note</p>
+    <p>Drop shadows are computed per-component on the CPU via SkiaSharp. On large diagrams (&gt;500 components), consider disabling shadows (<code>Elevation = 0</code>) globally with <code>drawingManager.EnableShadows = false</code>. The default theme uses elevation 1 for most components, which is a good balance between visual depth and performance.</p>
+  </div>
+
+  <h3>Complete Theming Example: Custom Dark Theme Application</h3>
+  <div class="code-example">
+    <h3>Applying a Complete Custom Theme</h3>
+    <pre><code class="language-csharp">public void ApplyCorporateDarkTheme(DrawingManager drawingManager)
+{
+    var theme = new MaterialDesignTheme
+    {
+        Name = "Corporate Dark",
+        Mode = ThemeMode.Dark,
+        LightScheme = MaterialDesignColors.Purple.LightScheme,
+        DarkScheme = new ColorScheme
+        {
+            Primary = new SKColor(0x7B, 0xA4, 0xFF),
+            OnPrimary = new SKColor(0x00, 0x1A, 0x40),
+            PrimaryContainer = new SKColor(0x00, 0x2D, 0x6D),
+            Secondary = new SKColor(0x90, 0xCA, 0xF1),
+            Surface = new SKColor(0x0D, 0x0E, 0x13),
+            OnSurface = new SKColor(0xE2, 0xE2, 0xE9),
+            SurfaceVariant = new SKColor(0x2A, 0x2B, 0x33),
+            Outline = new SKColor(0x6B, 0x6D, 0x7B),
+            Error = new SKColor(0xFF, 0xB4, 0xAB)
+        }
+    };
+
+    drawingManager.Theme = theme;
+    drawingManager.EnableShadows = true;
+    drawingManager.DefaultElevation = 1;
+
+    // Set default typography
+    drawingManager.DefaultFontFamily = "Inter";
+    drawingManager.DefaultFontSize = 14f;
+    drawingManager.DefaultBorderStyle = BorderStyle.Solid;
+    drawingManager.DefaultBorderWidth = 1.5f;
+
+    // Apply globally
+    drawingManager.InvalidateAll();
+}</code></pre>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

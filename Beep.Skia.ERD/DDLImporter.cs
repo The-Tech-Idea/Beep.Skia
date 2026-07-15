@@ -1,0 +1,255 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace Beep.Skia.ERD
+{
+    /// <summary>
+    /// Parses SQL CREATE TABLE statements into entity definitions.
+    /// Dialect-aware parsing for SQL Server, PostgreSQL, MySQL, Oracle, and SQLite.
+    /// </summary>
+    public class DDLImporter
+    {
+        public enum SQLDialect { ANSI, SQLServer, PostgreSQL, MySQL, Oracle, SQLite }
+
+        private readonly SQLDialect _dialect;
+
+        public class TableInfo
+        {
+            public string TableName { get; set; }
+            public string SchemaName { get; set; }
+            public List<ColumnInfo> Columns { get; set; } = new();
+            public List<ConstraintInfo> Constraints { get; set; } = new();
+        }
+
+        public class ColumnInfo
+        {
+            public string Name { get; set; }
+            public string DataType { get; set; }
+            public bool IsPrimaryKey { get; set; }
+            public bool IsNullable { get; set; } = true;
+            public bool IsAutoIncrement { get; set; }
+            public string DefaultValue { get; set; }
+            public int? MaxLength { get; set; }
+            public int? Precision { get; set; }
+            public int? Scale { get; set; }
+        }
+
+        public class ConstraintInfo
+        {
+            public string Name { get; set; }
+            public string Type { get; set; }
+            public string Columns { get; set; }
+            public string ReferencedTable { get; set; }
+            public string ReferencedColumns { get; set; }
+            public string OnDelete { get; set; }
+            public string OnUpdate { get; set; }
+        }
+
+        public DDLImporter(SQLDialect dialect = SQLDialect.ANSI) { _dialect = dialect; }
+
+        /// <summary>Parses DDL and returns table definitions.</summary>
+        public List<TableInfo> Parse(string ddl)
+        {
+            var tables = new List<TableInfo>();
+            if (string.IsNullOrWhiteSpace(ddl)) return tables;
+
+            ddl = Regex.Replace(ddl, @"--.*$", "", RegexOptions.Multiline);
+            ddl = Regex.Replace(ddl, @"/\*.*?\*/", "", RegexOptions.Singleline);
+            ddl = ddl.Replace("\r\n", "\n").Replace("\r", "\n");
+
+            var matches = Regex.Matches(ddl,
+                @"CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:`?\[?""?)?""?(\w+(?:\.\w+)?)""?""?\]?`?\s*\(([\s\S]*?)\)\s*;",
+                RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+            foreach (Match match in matches)
+            {
+                var table = new TableInfo
+                {
+                    TableName = match.Groups[1].Value.Contains(".") ? match.Groups[1].Value.Split('.')[1] : match.Groups[1].Value,
+                    SchemaName = match.Groups[1].Value.Contains(".") ? match.Groups[1].Value.Split('.')[0] : null
+                };
+                ParseTableBody(match.Groups[2].Value, table);
+                ApplyPkConstraints(table);
+                tables.Add(table);
+            }
+            return tables;
+        }
+
+        /// <summary>Creates ERDEntity instances from a DDL string.</summary>
+        public List<ERDEntity> ImportToEntities(string ddl, SQLDialect dialect)
+        {
+            var importer = new DDLImporter(dialect);
+            var tables = importer.Parse(ddl);
+            return tables.Select(t => ERDEntity.FromTableInfo(t)).ToList();
+        }
+
+        // ── private parsing helpers ──────────────────────────────────────
+
+        private void ParseTableBody(string body, TableInfo table)
+        {
+            foreach (var part in SplitColumns(body))
+            {
+                var t = part.Trim();
+                if (string.IsNullOrWhiteSpace(t)) continue;
+                if (IsConstraint(t)) ParseConstraint(t, table);
+                else ParseColumn(t, table);
+            }
+        }
+
+        private void ApplyPkConstraints(TableInfo table)
+        {
+            foreach (var c in table.Constraints.Where(x => x.Type == "PRIMARY KEY"))
+            {
+                foreach (var pk in (c.Columns ?? "").Split(','))
+                {
+                    var col = table.Columns.FirstOrDefault(x =>
+                        string.Equals(x.Name, pk.Trim(), StringComparison.OrdinalIgnoreCase));
+                    if (col != null) col.IsPrimaryKey = true;
+                }
+            }
+        }
+
+        private List<string> SplitColumns(string body)
+        {
+            var r = new List<string>();
+            int d = 0, s = 0;
+            for (int i = 0; i < body.Length; i++)
+            {
+                if (body[i] == '(') d++;
+                else if (body[i] == ')') d--;
+                else if (body[i] == ',' && d == 0) { r.Add(body.Substring(s, i - s)); s = i + 1; }
+            }
+            if (s < body.Length) r.Add(body.Substring(s));
+            return r;
+        }
+
+        private bool IsConstraint(string p) => Regex.IsMatch(p.TrimStart(), @"^(CONSTRAINT|PRIMARY\s+KEY|FOREIGN\s+KEY|UNIQUE\s|UNIQUE\(|CHECK\s|CHECK\()", RegexOptions.IgnoreCase);
+
+        private void ParseConstraint(string part, TableInfo table)
+        {
+            var constraint = new ConstraintInfo();
+            var up = part.TrimStart().ToUpperInvariant();
+
+            if (up.StartsWith("CONSTRAINT"))
+            {
+                var m = Regex.Match(part, @"CONSTRAINT\s+(?:`?\[?""?)?""?(\w+)""?""?\]?`?\s+(PRIMARY\s+KEY|FOREIGN\s+KEY|UNIQUE|CHECK)\s*(.*)", RegexOptions.IgnoreCase);
+                if (!m.Success) return;
+                constraint.Name = m.Groups[1].Value;
+                constraint.Type = m.Groups[2].Value.ToUpperInvariant();
+                ParseDetail(m.Groups[3].Value, constraint);
+            }
+            else if (up.StartsWith("PRIMARY KEY")) { constraint.Type = "PRIMARY KEY"; ParseDetail(part.Substring("PRIMARY KEY".Length), constraint); }
+            else if (up.StartsWith("FOREIGN KEY")) { constraint.Type = "FOREIGN KEY"; ParseDetail(part.Substring("FOREIGN KEY".Length), constraint); }
+            else if (up.StartsWith("UNIQUE")) { constraint.Type = "UNIQUE"; ParseDetail(part.Substring("UNIQUE".Length), constraint); }
+            else if (up.StartsWith("CHECK")) { constraint.Type = "CHECK"; ParseDetail(part.Substring("CHECK".Length), constraint); }
+            else return;
+
+            table.Constraints.Add(constraint);
+        }
+
+        private void ParseDetail(string detail, ConstraintInfo c)
+        {
+            var colsM = Regex.Match(detail, @"\(\s*([^)]+)\s*\)");
+            if (colsM.Success) c.Columns = colsM.Groups[1].Value;
+
+            var fkM = Regex.Match(detail,
+                @"REFERENCES\s+(?:`?\[?""?)?""?(\w+\.?\w*)""?""?\]?`?\s*\(\s*([^)]+)\s*\)(?:\s+ON\s+DELETE\s+(CASCADE|SET\s+NULL|SET\s+DEFAULT|NO\s+ACTION|RESTRICT))?(?:\s+ON\s+UPDATE\s+(CASCADE|SET\s+NULL|SET\s+DEFAULT|NO\s+ACTION|RESTRICT))?",
+                RegexOptions.IgnoreCase);
+            if (fkM.Success)
+            {
+                c.Type = "FOREIGN KEY";
+                c.ReferencedTable = fkM.Groups[1].Value;
+                c.ReferencedColumns = fkM.Groups[2].Value;
+                c.OnDelete = fkM.Groups[3].Success ? fkM.Groups[3].Value : null;
+                c.OnUpdate = fkM.Groups[4].Success ? fkM.Groups[4].Value : null;
+            }
+        }
+
+        private void ParseColumn(string part, TableInfo table)
+        {
+            var m = Regex.Match(part,
+                @"^(?:`?\[?""?)?""?(\w+)""?""?\]?`?\s+(\w[\w\s]*?\w|\w)(?:\s*\(\s*(\d+(?:\s*,\s*\d+)?)\s*\))?\s*(.*)",
+                RegexOptions.IgnoreCase);
+            if (!m.Success) return;
+
+            var col = new ColumnInfo
+            {
+                Name = m.Groups[1].Value,
+                DataType = NormalizeType(m.Groups[2].Value.Trim().ToUpperInvariant())
+            };
+
+            if (m.Groups[3].Success)
+            {
+                var parts = m.Groups[3].Value.Replace(" ", "").Split(',');
+                if (int.TryParse(parts[0], out int len)) col.MaxLength = len;
+                if (parts.Length > 1 && int.TryParse(parts[1], out int scale))
+                {
+                    col.Precision = col.MaxLength;
+                    col.Scale = scale;
+                    col.MaxLength = null;
+                }
+            }
+
+            var attrs = m.Groups[4].Value.ToUpperInvariant();
+
+            // Oracle GENERATED AS IDENTITY
+            if (Regex.IsMatch(m.Groups[4].Value, @"GENERATED\s+(ALWAYS\s+)?(BY\s+DEFAULT\s+)?AS\s+IDENTITY", RegexOptions.IgnoreCase))
+                col.IsAutoIncrement = true;
+
+            if (attrs.Contains("NOT NULL") || attrs.Contains("NOTNULL")) col.IsNullable = false;
+            if (attrs.Contains("PRIMARY KEY") || attrs.Contains("PRIMARYKEY")) col.IsPrimaryKey = true;
+            if (attrs.Contains("AUTO_INCREMENT") || attrs.Contains("AUTOINCREMENT")
+                || attrs.Contains("IDENTITY") || attrs.Contains("SERIAL"))
+                col.IsAutoIncrement = true;
+
+            var defM = Regex.Match(part, @"DEFAULT\s+('[^']*'|\([^)]*\)|\S+)", RegexOptions.IgnoreCase);
+            if (defM.Success) col.DefaultValue = defM.Groups[1].Value.Trim('\'').Trim('(').Trim(')');
+
+            table.Columns.Add(col);
+        }
+
+        private string NormalizeType(string raw)
+        {
+            // Strip whitespace prefixes
+            raw = Regex.Replace(raw.Trim(), @"\s+(UNSIGNED|SIGNED|ZEROFILL)$", "", RegexOptions.IgnoreCase);
+
+            return _dialect switch
+            {
+                SQLDialect.Oracle => raw switch
+                {
+                    "VARCHAR2" => "VARCHAR", "NUMBER" => "DECIMAL", "CLOB" => "TEXT",
+                    "BLOB" => "BYTEA", "NVARCHAR2" => "NVARCHAR", "RAW" => "BYTEA",
+                    "DATE" when raw == "DATE" => "TIMESTAMP",
+                    _ => raw
+                },
+                SQLDialect.PostgreSQL => raw switch
+                {
+                    "SERIAL" => "INT", "BIGSERIAL" => "BIGINT", "SMALLSERIAL" => "SMALLINT",
+                    "BOOLEAN" => "BOOL", "CHARACTER VARYING" => "VARCHAR",
+                    "CHARACTER" => "CHAR", "JSONB" => "JSON", "TIMESTAMPTZ" => "TIMESTAMP",
+                    "FLOAT8" => "DOUBLE", "FLOAT4" => "FLOAT", "INT8" => "BIGINT",
+                    "INT4" => "INT", "INT2" => "SMALLINT",
+                    _ => raw
+                },
+                SQLDialect.MySQL => raw switch
+                {
+                    "TINYINT" => "SMALLINT", "MEDIUMINT" => "INT",
+                    "LONGTEXT" => "TEXT", "MEDIUMTEXT" => "TEXT", "TINYTEXT" => "TEXT",
+                    "LONGBLOB" => "BYTEA", "MEDIUMBLOB" => "BYTEA", "TINYBLOB" => "BYTEA",
+                    "DATETIME" => "TIMESTAMP",
+                    _ when raw.StartsWith("ENUM") => "VARCHAR",
+                    _ when raw.StartsWith("SET") => "VARCHAR",
+                    _ => raw
+                },
+                SQLDialect.SQLite => raw switch
+                {
+                    _ when raw == "INTEGER" => "INT",
+                    _ => raw
+                },
+                _ => raw
+            };
+        }
+    }
+}

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interaction Model | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="skia-component.html">Core Concepts</a><span>&rsaquo;</span> <span>Interaction Model</span></nav>
+<div class="page-header"><h1>Interaction Model</h1><p class="page-subtitle">SelectionManager, InteractionHelper, drag-drop, and HistoryManager undo/redo</p></div>
+
+<p><strong>Key Classes:</strong> <code>SelectionManager</code> (355 lines), <code>InteractionHelper</code>, <code>HistoryManager</code> &mdash; <strong>Key File:</strong> <code>DrawingManager.Interaction.cs</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#selection-manager">SelectionManager</a></li>
+    <li><a href="#interaction-helper">InteractionHelper</a></li>
+    <li><a href="#hit-test-priority">Hit-Test Priority Chain</a></li>
+    <li><a href="#drag-drop">Drag &amp; Drop</a></li>
+    <li><a href="#history-manager">HistoryManager</a></li>
+    <li><a href="#keyboard-shortcuts">Keyboard Shortcuts</a></li>
+  </ul>
+</div>
+
+<section class="section" id="selection-manager">
+  <h2>SelectionManager</h2>
+  <p><code>SelectionManager</code> (355 lines) handles all selection-state logic for components, connection lines, and connection points. It works in tandem with <code>DrawingManager</code> to provide a cohesive selection experience:</p>
+
+  <h3>Selection Operations</h3>
+  <table>
+    <thead>
+      <tr><th>Operation</th><th>Method</th><th>Behavior</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Single Select</strong></td><td><code>Select(IDrawableComponent)</code></td><td>Clears current selection, selects the given component, fires <code>SelectionChanged</code>.</td></tr>
+      <tr><td><strong>Add to Selection</strong></td><td><code>AddToSelection(IDrawableComponent)</code></td><td>Adds the component to the existing selection without clearing. Triggered by <kbd>Ctrl</kbd>+click.</td></tr>
+      <tr><td><strong>Toggle Selection</strong></td><td><code>ToggleSelection(IDrawableComponent)</code></td><td>If selected, deselects; if not selected, selects. Triggered by <kbd>Ctrl</kbd>+click on an already-selected item.</td></tr>
+      <tr><td><strong>Rubber-Band Select</strong></td><td><code>SelectInRect(SKRect rect)</code></td><td>Selects all components whose bounds intersect the marquee rectangle. Drawn as a dashed rectangle during drag.</td></tr>
+      <tr><td><strong>Select All</strong></td><td><code>SelectAll()</code></td><td>Selects every component on the canvas. Does not select connection lines.</td></tr>
+      <tr><td><strong>Clear Selection</strong></td><td><code>ClearSelection()</code></td><td>Deselects everything. Clicking on empty canvas space triggers this.</td></tr>
+      <tr><td><strong>Select Connection</strong></td><td><code>Select(ConnectionLine)</code></td><td>Selects a connection line. Only one connection can be selected at a time. Clicking near a line&#39;s path triggers this.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Clipboard Operations</h3>
+  <table>
+    <thead>
+      <tr><th>Operation</th><th>Method</th><th>Behavior</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Copy</strong></td><td><code>CopySelected()</code></td><td>Serializes selected components (and their internal connections) to a <code>DiagramDto</code> JSON string, stored in the system clipboard.</td></tr>
+      <tr><td><strong>Cut</strong></td><td><code>CutSelected()</code></td><td>Copies selected components to clipboard, then removes them from the canvas. Pushes remove actions onto the undo stack.</td></tr>
+      <tr><td><strong>Paste</strong></td><td><code>PasteClipboard()</code></td><td>Deserializes clipboard JSON, instantiates new components with a positional offset (+20, +20 per paste), adds to canvas, pushes onto undo stack.</td></tr>
+      <tr><td><strong>Duplicate</strong></td><td><code>DuplicateSelected()</code></td><td>Copy + paste in one operation. Offset is cumulative per duplicate within the same session.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Selection Usage</h3>
+    <pre><code class="language-csharp">drawingManager.Select(node1);
+
+drawingManager.AddToSelection(node2);
+
+var selected = drawingManager.SelectedComponents;
+foreach (var comp in selected)
+{
+    comp.NodeProperties["StrokeColor"].Value = SKColors.DodgerBlue;
+}
+
+drawingManager.SelectInRect(
+    new SKRect(100, 100, 500, 400));
+
+drawingManager.CutSelected();
+
+drawingManager.PasteClipboard();
+
+drawingManager.ClearSelection();</code></pre>
+  </div>
+</section>
+
+<section class="section" id="interaction-helper">
+  <h2>InteractionHelper</h2>
+  <p><code>InteractionHelper</code> processes raw mouse and keyboard events from the canvas surface and routes them to the appropriate handler based on the current interaction context. It manages a state machine with distinct drag modes:</p>
+
+  <table>
+    <thead>
+      <tr><th>Drag Mode</th><th>Enum Value</th><th>Trigger</th><th>Behavior</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Component Move</strong></td><td><code>DragMode.ComponentMove</code></td><td>Mouse down on a component body, then drag.</td><td>Repositions the component (and all selected components if part of a multi-select). Snaps to grid if enabled. Fires <code>ComponentMoved</code> on mouse up.</td></tr>
+      <tr><td><strong>Port Connect</strong></td><td><code>DragMode.PortConnect</code></td><td>Mouse down on a connection point (port), then drag.</td><td>Draws a temporary rubber-band line from the port to the cursor. On mouse up over a compatible port, creates a <code>ConnectionLine</code>. Otherwise, cancels.</td></tr>
+      <tr><td><strong>Marquee Select</strong></td><td><code>DragMode.MarqueeSelect</code></td><td>Mouse down on empty canvas, then drag.</td><td>Draws a dashed selection rectangle. On mouse up, selects all components that intersect the rectangle.</td></tr>
+      <tr><td><strong>Canvas Pan</strong></td><td><code>DragMode.CanvasPan</code></td><td>Mouse down with middle button, or <kbd>Space</kbd>+drag with left button, then drag.</td><td>Scrolls the viewport by adjusting <code>PanOffset</code>. The cursor changes to a hand icon.</td></tr>
+      <tr><td><strong>Resize</strong></td><td><code>DragMode.Resize</code></td><td>Mouse down on a resize handle, then drag.</td><td>Adjusts component Width/Height. Eight handles: N, NE, E, SE, S, SW, W, NW. Snaps to grid if enabled.</td></tr>
+      <tr><td><strong>None</strong></td><td><code>DragMode.None</code></td><td>Default idle state.</td><td>Cursor updates based on what is under the mouse (pointer, move, crosshair).</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Mouse Event Routing</h3>
+    <pre><code class="language-csharp">public void OnMouseDown(SKPoint screenPoint, MouseButton button)
+{
+    var worldPoint = drawingManager.ScreenToWorld(screenPoint);
+
+    if (button == MouseButton.Middle ||
+        (button == MouseButton.Left && IsSpaceHeld))
+    {
+        _dragMode = DragMode.CanvasPan;
+        _dragStart = screenPoint;
+        _panStart = drawingManager.PanOffset;
+        return;
+    }
+
+    var hitResult = HitTestChain(worldPoint);
+
+    switch (hitResult.Type)
+    {
+        case HitTestType.ConnectionPoint:
+            _dragMode = DragMode.PortConnect;
+            _connectSource = hitResult.Point;
+            break;
+
+        case HitTestType.ResizeHandle:
+            _dragMode = DragMode.Resize;
+            _resizeHandle = hitResult.Handle;
+            _dragStart = worldPoint;
+            break;
+
+        case HitTestType.Component:
+            _dragMode = DragMode.ComponentMove;
+            _dragStart = worldPoint;
+            if (!IsCtrlHeld)
+                SelectionManager.ClearSelection();
+            SelectionManager.Select(hitResult.Component);
+            break;
+
+        case HitTestType.ConnectionLine:
+            SelectionManager.Select(hitResult.Connection);
+            break;
+
+        case HitTestType.None:
+            _dragMode = DragMode.MarqueeSelect;
+            _marqueeStart = worldPoint;
+            SelectionManager.ClearSelection();
+            break;
+    }
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="hit-test-priority">
+  <h2>Hit-Test Priority Chain</h2>
+  <p>When the user clicks on the canvas, the hit-test chain determines which entity receives the event. The chain is evaluated in strict priority order — the first match wins:</p>
+
+  <div class="hit-test-diagram">
+    <div class="hit-step">
+      <div class="hit-number">1</div>
+      <div class="hit-content">
+        <strong>Connection Points (Ports)</strong>
+        <p>Highest priority. Each port has a small hit-test radius (typically 8 pixels in screen-space). This ensures users can reliably grab connection ports even on small components.</p>
+      </div>
+    </div>
+    <div class="hit-step">
+      <div class="hit-number">2</div>
+      <div class="hit-content">
+        <strong>Resize Handles</strong>
+        <p>If the hit misses ports but falls within a resize handle&#39;s 6-pixel radius, the resize operation starts. Only active on selected components.</p>
+      </div>
+    </div>
+    <div class="hit-step">
+      <div class="hit-number">3</div>
+      <div class="hit-content">
+        <strong>Component Bodies</strong>
+        <p>Tests components in reverse Z-order (topmost first). Uses <code>Bounds.Contains(point)</code> for axis-aligned hit testing. Components can override <code>HitTest(SKPoint)</code> for precise path-based hit testing.</p>
+      </div>
+    </div>
+    <div class="hit-step">
+      <div class="hit-number">4</div>
+      <div class="hit-content">
+        <strong>Connection Lines</strong>
+        <p>Tests against the computed path geometry of each connection line. Uses distance-to-path calculation with a configurable tolerance (default: 6 pixels).</p>
+      </div>
+    </div>
+    <div class="hit-step">
+      <div class="hit-number">5</div>
+      <div class="hit-content">
+        <strong>Canvas Background</strong>
+        <p>Lowest priority. If nothing else is hit, the canvas background receives the event. Triggers <code>ClearSelection()</code> and starts marquee selection if dragging.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-example">
+    <h3>Hit-Test Chain Implementation</h3>
+    <pre><code class="language-csharp">private HitTestResult HitTestChain(SKPoint worldPoint)
+{
+    var portHit = FindConnectionPointAt(worldPoint, PortHitRadius);
+    if (portHit != null)
+        return HitTestResult.ConnectionPoint(portHit);
+
+    foreach (var comp in GetSelectedComponents())
+    {
+        var handle = comp.GetResizeHandleAt(worldPoint, ResizeHandleRadius);
+        if (handle != ResizeHandle.None)
+            return HitTestResult.ResizeHandle(comp, handle);
+    }
+
+    for (int i = Components.Count - 1; i >= 0; i--)
+    {
+        var comp = Components[i];
+        if (comp.HitTest(worldPoint))
+            return HitTestResult.Component(comp);
+    }
+
+    foreach (var conn in Connections)
+    {
+        if (conn.HitTest(worldPoint, ConnectionHitTolerance))
+            return HitTestResult.ConnectionLine(conn);
+    }
+
+    return HitTestResult.None;
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="drag-drop">
+  <h2>Drag &amp; Drop</h2>
+  <p>Beep.Skia supports two distinct drag-and-drop workflows:</p>
+
+  <h3>1. Component Palette Drag-Drop</h3>
+  <p>Users drag a component type from the <code>ComponentPalette</code> UI control and drop it onto the canvas. The palette serializes the component type name into the drag data; the canvas deserializes it, instantiates the component via <code>SkiaComponentRegistry</code>, and places it at the drop location:</p>
+
+  <div class="code-example">
+    <h3>Palette-to-Canvas Drag-Drop</h3>
+    <pre><code class="language-csharp">void OnDragOver(DragEventArgs e)
+{
+    if (e.Data.GetDataPresent("Beep.ComponentType"))
+    {
+        e.Effects = DragDropEffects.Copy;
+        e.Handled = true;
+    }
+}
+
+void OnDrop(DragEventArgs e)
+{
+    var typeName = (string)e.Data.GetData("Beep.ComponentType");
+    var worldPoint = drawingManager.ScreenToWorld(
+        new SKPoint((float)e.GetPosition(canvas).X,
+                    (float)e.GetPosition(canvas).Y));
+
+    var type = SkiaComponentRegistry.ResolveType(typeName);
+    var component = (SkiaComponent)Activator.CreateInstance(type);
+    component.Initialize();
+    component.X = SnapToGrid(worldPoint.X);
+    component.Y = SnapToGrid(worldPoint.Y);
+
+    drawingManager.AddComponent(component);
+    HistoryManager.Push(new AddComponentAction(component));
+}</code></pre>
+  </div>
+
+  <h3>2. Within-Canvas Repositioning</h3>
+  <p>Drag to reposition existing components uses the <code>DragMode.ComponentMove</code> state machine. During drag, the component position updates in real-time. On mouse up, the final position is committed and a <code>MoveComponentAction</code> is pushed onto the undo stack:</p>
+
+  <div class="code-example">
+    <h3>Within-Canvas Component Drag</h3>
+    <pre><code class="language-csharp">public void OnMouseMove(SKPoint screenPoint)
+{
+    if (_dragMode != DragMode.ComponentMove) return;
+
+    var worldPoint = drawingManager.ScreenToWorld(screenPoint);
+    var deltaX = worldPoint.X - _dragStart.X;
+    var deltaY = worldPoint.Y - _dragStart.Y;
+
+    foreach (var comp in drawingManager.SelectedComponents)
+    {
+        comp.X += deltaX;
+        comp.Y += deltaY;
+        comp.MarkPortsDirty();
+    }
+
+    _dragStart = worldPoint;
+    drawingManager.Invalidate();
+}
+
+public void OnMouseUp(SKPoint screenPoint)
+{
+    if (_dragMode == DragMode.ComponentMove)
+    {
+        var actions = drawingManager.SelectedComponents
+            .Select(c => new MoveComponentAction(c, _originalPositions[c]));
+        HistoryManager.Push(new CompositeAction(actions));
+    }
+    _dragMode = DragMode.None;
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="history-manager">
+  <h2>HistoryManager</h2>
+  <p><code>HistoryManager</code> implements a command-pattern undo/redo system that records every mutation to the diagram state. Each operation is represented as a <code>DrawingAction</code> subclass with <code>Execute()</code> and <code>Undo()</code> methods:</p>
+
+  <table>
+    <thead>
+      <tr><th>Action Class</th><th>Description</th><th>Undo Behavior</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>AddComponentAction</code></td><td>Records a component addition.</td><td>Removes the component from the canvas and disconnects all its connections.</td></tr>
+      <tr><td><code>RemoveComponentAction</code></td><td>Records a component removal with all its connections.</td><td>Re-adds the component and restores all its connections using saved GUIDs.</td></tr>
+      <tr><td><code>MoveComponentAction</code></td><td>Records a component position change.</td><td>Restores the component to its previous X, Y position. Multiple moves during a single drag are coalesced.</td></tr>
+      <tr><td><code>ConnectAction</code></td><td>Records a connection creation between two ports.</td><td>Disconnects the line and unbinds the ports.</td></tr>
+      <tr><td><code>DisconnectAction</code></td><td>Records a connection removal.</td><td>Re-establishes the connection using the saved port GUIDs.</td></tr>
+      <tr><td><code>PropertyChangeAction</code></td><td>Records a change to one or more <code>NodeProperties</code> values.</td><td>Restores the previous property values and invalidates the component.</td></tr>
+      <tr><td><code>ResizeComponentAction</code></td><td>Records a change to Width/Height via resize handles.</td><td>Restores previous Width and Height values.</td></tr>
+      <tr><td><code>CompositeAction</code></td><td>Groups multiple actions into a single undoable unit.</td><td>Undoes all child actions in reverse order. Used for multi-select operations.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Undo/Redo Architecture</h3>
+  <p>The history manager maintains two stacks: an <strong>undo stack</strong> (past actions) and a <strong>redo stack</strong> (undone actions that can be re-applied). The redo stack is cleared whenever a new action is pushed, following the standard undo/redo model:</p>
+
+  <div class="code-example">
+    <h3>HistoryManager Core Logic</h3>
+    <pre><code class="language-csharp">public class HistoryManager
+{
+    private Stack&lt;DrawingAction&gt; _undoStack = new();
+    private Stack&lt;DrawingAction&gt; _redoStack = new();
+    private const int MaxHistory = 256;
+
+    public bool CanUndo => _undoStack.Count > 0;
+    public bool CanRedo => _redoStack.Count > 0;
+
+    public void Push(DrawingAction action)
+    {
+        _undoStack.Push(action);
+        _redoStack.Clear();
+
+        if (_undoStack.Count > MaxHistory)
+        {
+            var oldest = new Stack&lt;DrawingAction&gt;(
+                _undoStack.Take(MaxHistory));
+            _undoStack = oldest;
+        }
+    }
+
+    public void Undo()
+    {
+        if (!CanUndo) return;
+        var action = _undoStack.Pop();
+        action.Undo(drawingManager);
+        _redoStack.Push(action);
+        drawingManager.Invalidate();
+    }
+
+    public void Redo()
+    {
+        if (!CanRedo) return;
+        var action = _redoStack.Pop();
+        action.Execute(drawingManager);
+        _undoStack.Push(action);
+        drawingManager.Invalidate();
+    }
+}</code></pre>
+  </div>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Tip</p>
+    <p>The <code>CompositeAction</code> is essential for multi-select operations. When a user drags 5 selected components, all 5 positions are recorded in a single composite action — so one <kbd>Ctrl+Z</kbd> moves all 5 back, not just one.</p>
+  </div>
+</section>
+
+<section class="section" id="keyboard-shortcuts">
+  <h2>Keyboard Shortcuts</h2>
+  <p>The interaction system defines a standard set of keyboard shortcuts that are processed by <code>InteractionHelper</code> before any canvas-level key handling:</p>
+
+  <table>
+    <thead>
+      <tr><th>Shortcut</th><th>Action</th><th>Scope</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td><td>Undo</td><td>Global</td><td>Reverts the most recent diagram mutation. Repeated presses continue undoing through the history stack.</td></tr>
+      <tr><td><kbd>Ctrl</kbd> + <kbd>Y</kbd></td><td>Redo</td><td>Global</td><td>Re-applies the most recently undone action. Disabled after any new action is performed.</td></tr>
+      <tr><td><kbd>Ctrl</kbd> + <kbd>A</kbd></td><td>Select All</td><td>Global</td><td>Selects every component on the canvas. Connection lines are not selected by Select All.</td></tr>
+      <tr><td><kbd>Delete</kbd> / <kbd>Backspace</kbd></td><td>Delete Selected</td><td>Selection</td><td>Removes all selected components and connections. Pushes <code>CompositeAction</code> onto the undo stack.</td></tr>
+      <tr><td><kbd>Ctrl</kbd> + <kbd>C</kbd></td><td>Copy</td><td>Selection</td><td>Copies selected components and their internal connections to the clipboard as JSON.</td></tr>
+      <tr><td><kbd>Ctrl</kbd> + <kbd>X</kbd></td><td>Cut</td><td>Selection</td><td>Copies selected components to clipboard, then removes them from the canvas.</td></tr>
+      <tr><td><kbd>Ctrl</kbd> + <kbd>V</kbd></td><td>Paste</td><td>Global</td><td>Pastes clipboard contents onto the canvas with a cascading offset from the original positions.</td></tr>
+      <tr><td><kbd>Ctrl</kbd> + <kbd>D</kbd></td><td>Duplicate</td><td>Selection</td><td>Copy + paste in one operation. Convenience shortcut for rapidly cloning components.</td></tr>
+      <tr><td><kbd>Escape</kbd></td><td>Cancel / Deselect</td><td>Global</td><td>Cancels the current drag operation (port connect, resize, move) or clears selection if idle.</td></tr>
+      <tr><td><kbd>Ctrl</kbd> + <kbd>G</kbd></td><td>Toggle Grid</td><td>Global</td><td>Toggles <code>ShowGrid</code> on the drawing manager.</td></tr>
+      <tr><td><kbd>Ctrl</kbd> + <kbd>+</kbd> / <kbd>=</kbd></td><td>Zoom In</td><td>Global</td><td>Increases <code>ZoomFactor</code> by one step. Centers zoom on the viewport center.</td></tr>
+      <tr><td><kbd>Ctrl</kbd> + <kbd>-</kbd></td><td>Zoom Out</td><td>Global</td><td>Decreases <code>ZoomFactor</code> by one step. Centers zoom on the viewport center.</td></tr>
+      <tr><td><kbd>Ctrl</kbd> + <kbd>0</kbd></td><td>Reset Zoom</td><td>Global</td><td>Resets <code>ZoomFactor</code> to 1.0 and centers the diagram via <code>ResetView()</code>.</td></tr>
+      <tr><td><kbd>Space</kbd> + Drag</td><td>Canvas Pan</td><td>Global</td><td>Holding <kbd>Space</kbd> temporarily switches to canvas pan mode. Left-click drag scrolls the viewport.</td></tr>
+      <tr><td><kbd>Arrow Keys</kbd></td><td>Nudge Selection</td><td>Selection</td><td>Moves selected components by 1 grid unit in the arrow direction. Hold <kbd>Shift</kbd> for 10x nudge distance.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<style>
+.hit-test-diagram { margin: 1.5rem 0; }
+.hit-step { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+.hit-number { flex-shrink: 0; width: 2rem; height: 2rem; border-radius: 50%; background: var(--color-brand-content); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+.hit-content { flex: 1; }
+.hit-content strong { display: block; margin-bottom: 0.15rem; }
+.hit-content p { margin: 0; font-size: 0.9rem; color: var(--color-foreground-secondary); }
+</style>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

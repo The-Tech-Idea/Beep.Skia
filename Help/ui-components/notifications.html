@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications &amp; Dialogs | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="button.html">UI Components</a><span>&rsaquo;</span> <span>Notifications &amp; Dialogs</span></nav>
+<div class="page-header"><h1>Notifications &amp; Dialogs</h1><p class="page-subtitle">Toast notifications, status bars, and dialog overlays</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia.Controls</code> &mdash; <strong>Inherits:</strong> <code>Notification</code> &rarr; <code>MaterialControl</code> &rarr; <code>SkiaComponent</code> &bull; <code>Dialog</code> &rarr; <code>MaterialControl</code> &rarr; <code>SkiaComponent</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#notification">Notification Properties</a></li>
+    <li><a href="#statusbar">StatusBar &amp; StatusBarItem</a></li>
+    <li><a href="#dialog">Dialog Support</a></li>
+    <li><a href="#types">Notification Types</a></li>
+    <li><a href="#code-example">Code Example</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p>The <code>Notification</code>, <code>StatusBar</code>, and <code>Dialog</code> controls provide Material Design 3.0 messaging and overlay feedback entirely rendered with SkiaSharp. <code>Notification</code> (toast/snackbar) displays transient messages at a configurable screen position with automatic dismissal. <code>StatusBar</code> is a persistent bottom strip for status information, progress, and quick actions. <code>Dialog</code> renders a modal overlay with a title, body content, and action buttons, blocking interaction with the canvas beneath until dismissed.</p>
+
+  <p>All overlay components are managed by the <code>OverlayManager</code>, which handles z-ordering, focus trapping (for dialogs), and dismiss-on-escape behavior. Notifications and dialogs use enter/exit animations following MD3 motion guidelines.</p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h4>Auto-Dismiss Timers</h4>
+      <p>Notifications support configurable duration with a progress bar indicating time remaining before dismissal.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Modal Overlay</h4>
+      <p>Dialogs render a semi-transparent scrim over the entire canvas, blocking pointer events to components behind.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Action Buttons</h4>
+      <p>Snackbars and dialogs support inline action buttons for undo, confirm, cancel, and dismiss operations.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Status Icons</h4>
+      <p>Each notification type renders a distinct icon (checkmark, warning triangle, error circle, info circle) using theme-aware colors.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="notification">
+  <h2>Notification Properties</h2>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Message</code></td>
+        <td><code>string</code></td>
+        <td>The notification body text. Supports multi-line for longer messages. Rendered using <code>BodyMedium</code> typography.</td>
+      </tr>
+      <tr>
+        <td><code>Type</code></td>
+        <td><code>NotificationType</code></td>
+        <td>Enum: <code>Info</code>, <code>Success</code>, <code>Warning</code>, <code>Error</code>. Controls the icon, accent color, and background tint. See <a href="#types">Notification Types</a> below.</td>
+      </tr>
+      <tr>
+        <td><code>Duration</code></td>
+        <td><code>float</code></td>
+        <td>Display duration in milliseconds. After this time elapses, the notification plays its exit animation and is removed. Default is <code>4000</code> (4 seconds). Set to <code>0</code> for persistent notifications that require manual dismissal.</td>
+      </tr>
+      <tr>
+        <td><code>Position</code></td>
+        <td><code>NotificationPosition</code></td>
+        <td>Enum: <code>Top</code>, <code>Bottom</code> (default), <code>TopLeft</code>, <code>TopRight</code>, <code>BottomLeft</code>, <code>BottomRight</code>, <code>Center</code>. Controls where the notification appears within the canvas/client area.</td>
+      </tr>
+      <tr>
+        <td><code>IsDismissible</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, a close (X) button is rendered at the trailing edge. Clicking it dismisses the notification immediately. Default is <code>true</code>.</td>
+      </tr>
+      <tr>
+        <td><code>ShowProgress</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, a thin progress bar is rendered at the bottom of the notification indicating time remaining. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+        <td><code>ActionText</code></td>
+        <td><code>string</code></td>
+        <td>Optional text for an action button (e.g., <code>"Undo"</code>, <code>"Retry"</code>). The button is rendered at the trailing edge using <code>LabelLarge</code> typography in <code>Primary</code> color.</td>
+      </tr>
+      <tr>
+        <td><code>CornerRadius</code></td>
+        <td><code>float</code></td>
+        <td>Corner rounding of the notification surface. Default is <code>4f</code> per MD3 snackbar spec.</td>
+      </tr>
+      <tr>
+        <td><code>Elevation</code></td>
+        <td><code>int</code></td>
+        <td>Material elevation shadow. Default is <code>6</code>.</td>
+      </tr>
+      <tr>
+        <td><code>MinWidth</code></td>
+        <td><code>float</code></td>
+        <td>Minimum width of the notification. Default is <code>344f</code>. Notifications auto-size to content up to <code>MaxWidth</code>.</td>
+      </tr>
+      <tr>
+        <td><code>MaxWidth</code></td>
+        <td><code>float</code></td>
+        <td>Maximum width before text wraps. Default is <code>568f</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="statusbar">
+  <h2>StatusBar &amp; StatusBarItem</h2>
+  <p>The <code>StatusBar</code> is a persistent horizontal strip typically rendered at the bottom of the canvas. It contains <code>StatusBarItem</code> children that display text, icons, or progress indicators.</p>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Items</code></td>
+        <td><code>List&lt;StatusBarItem&gt;</code></td>
+        <td>Collection of status items displayed left-to-right in the bar.</td>
+      </tr>
+      <tr>
+        <td><code>BarHeight</code></td>
+        <td><code>float</code></td>
+        <td>Height of the status bar. Default is <code>24f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>ShowGrip</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, a resize grip icon is rendered at the right edge. Default is <code>false</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>StatusBarItem</h3>
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Text</code></td><td><code>string</code></td><td>The status text label.</td></tr>
+      <tr><td><code>Icon</code></td><td><code>SKPath</code></td><td>Optional icon rendered before the text.</td></tr>
+      <tr><td><code>Width</code></td><td><code>float</code></td><td>Fixed width of the item cell. Items with <code>Width = 0</code> auto-size to their content.</td></tr>
+      <tr><td><code>Alignment</code></td><td><code>StatusAlignment</code></td><td>Enum: <code>Left</code> (default) or <code>Right</code>. Right-aligned items are pushed to the bar's right edge.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="dialog">
+  <h2>Dialog Support</h2>
+  <p>The <code>Dialog</code> control renders a modal overlay dialog following MD3 dialog specifications. A semi-transparent scrim covers the canvas behind the dialog, and pointer events outside the dialog bounds are intercepted to enforce modality.</p>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Title</code></td>
+        <td><code>string</code></td>
+        <td>Dialog headline text. Rendered using <code>HeadlineSmall</code> typography. Set to <code>null</code> to hide.</td>
+      </tr>
+      <tr>
+        <td><code>Body</code></td>
+        <td><code>string</code> or <code>SkiaComponent</code></td>
+        <td>The dialog's body content. Can be a simple string (rendered as <code>BodyMedium</code> text) or a <code>SkiaComponent</code> for custom content (forms, lists, etc.).</td>
+      </tr>
+      <tr>
+        <td><code>Buttons</code></td>
+        <td><code>List&lt;Button&gt;</code></td>
+        <td>Action buttons rendered in the dialog footer, right-aligned. Typical use: one or two <code>Button</code> instances (e.g., Cancel + Confirm).</td>
+      </tr>
+      <tr>
+        <td><code>IsOpen</code></td>
+        <td><code>bool</code></td>
+        <td>Controls dialog visibility. Setting to <code>true</code> registers the scrim and dialog with <code>OverlayManager</code> and plays the enter animation.</td>
+      </tr>
+      <tr>
+        <td><code>IsModal</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code> (default), the scrim is rendered and background interaction is blocked. When <code>false</code>, the dialog is non-modal and background clicks pass through.</td>
+      </tr>
+      <tr>
+        <td><code>ScrimOpacity</code></td>
+        <td><code>float</code></td>
+        <td>Opacity of the background scrim (0.0&ndash;1.0). Default is <code>0.32f</code> per MD3 spec.</td>
+      </tr>
+      <tr>
+        <td><code>CornerRadius</code></td>
+        <td><code>float</code></td>
+        <td>Dialog surface corner rounding. Default is <code>28f</code> per MD3 dialog spec.</td>
+      </tr>
+      <tr>
+        <td><code>Elevation</code></td>
+        <td><code>int</code></td>
+        <td>Material elevation shadow. Default is <code>8</code>.</td>
+      </tr>
+      <tr>
+        <td><code>MaxWidth</code></td>
+        <td><code>float</code></td>
+        <td>Maximum dialog width. Default is <code>560f</code>. The dialog auto-sizes to content within this constraint.</td>
+      </tr>
+      <tr>
+        <td><code>MinHeight</code></td>
+        <td><code>float</code></td>
+        <td>Minimum dialog height. Default is <code>0</code> (auto-size).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table>
+    <thead>
+      <tr><th>Event</th><th>Signature</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Opened</code></td><td><code>EventHandler</code></td><td>Raised after the dialog enter animation completes.</td></tr>
+      <tr><td><code>Closed</code></td><td><code>EventHandler</code></td><td>Raised after the dialog exit animation completes and the dialog is removed from the overlay layer.</td></tr>
+      <tr><td><code>ActionClicked</code></td><td><code>EventHandler&lt;string&gt;</code></td><td>Raised when an action button is clicked. The argument is the <code>Tag</code> of the button.</td></tr>
+      <tr><td><code>ActionClicked</code></td><td><code>EventHandler&lt;string&gt;</code> (Notification)</td><td>Raised when the notification's <code>ActionText</code> button is clicked.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="types">
+  <h2>Notification Types</h2>
+
+  <table>
+    <thead>
+      <tr><th>Type</th><th>Icon</th><th>Accent Color</th><th>Use When</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>NotificationType.Info</code></td>
+        <td>Information circle (i)</td>
+        <td><code>Primary</code> from theme</td>
+        <td>Neutral status messages, tips, procedural feedback</td>
+      </tr>
+      <tr>
+        <td><code>NotificationType.Success</code></td>
+        <td>Checkmark circle</td>
+        <td><code>#4CAF50</code> (MD3 green)</td>
+        <td>Successful operations: save, export, upload, apply</td>
+      </tr>
+      <tr>
+        <td><code>NotificationType.Warning</code></td>
+        <td>Warning triangle</td>
+        <td><code>#FF9800</code> (MD3 orange)</td>
+        <td>Non-critical issues: unsaved changes, deprecated feature, approaching limits</td>
+      </tr>
+      <tr>
+        <td><code>NotificationType.Error</code></td>
+        <td>Error circle with X</td>
+        <td><code>#F44336</code> (MD3 red)</td>
+        <td>Failed operations: save error, connection lost, validation failure</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The accent color tints the leading icon and the left border of the notification surface. The background is always <code>InverseSurface</code> with <code>InverseOnSurface</code> text for high contrast.</p>
+</section>
+
+<section class="section" id="code-example">
+  <h2>Code Example</h2>
+
+  <div class="code-example">
+    <h3>Showing a Success Notification</h3>
+    <pre><code class="language-csharp">var notification = new Notification
+{
+    Message = "Project saved successfully.",
+    Type = NotificationType.Success,
+    Duration = 3000,
+    Position = NotificationPosition.Bottom,
+    ShowProgress = true
+};
+
+notification.ActionClicked += (s, action) =>
+    Console.WriteLine($"Action: {action}");
+
+notification.Initialize();
+notification.Show();
+
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Snackbar with Undo Action</h3>
+    <pre><code class="language-csharp">var snackbar = new Notification
+{
+    Message = "Item deleted.",
+    Type = NotificationType.Info,
+    Duration = 5000,
+    Position = NotificationPosition.Bottom,
+    ActionText = "Undo",
+    ShowProgress = true
+};
+
+snackbar.Initialize();
+
+snackbar.ActionClicked += (s, action) =>
+{
+    if (action == "Undo")
+    {
+        RestoreDeletedItem();
+    }
+};
+
+snackbar.Show();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>StatusBar with Multiple Items</h3>
+    <pre><code class="language-csharp">var statusBar = new StatusBar
+{
+    X = 0, Y = 0,
+    Width = 800,
+    BarHeight = 28,
+    Items = new List&lt;StatusBarItem&gt;
+    {
+        new() { Text = "Ready", Icon = null, Width = 120 },
+        new() { Text = "", Width = 0 },
+        new() { Text = "Ln 24, Col 12", Alignment = StatusAlignment.Right, Width = 140 },
+        new() { Text = "UTF-8", Alignment = StatusAlignment.Right, Width = 80 },
+        new() { Text = "100%", Alignment = StatusAlignment.Right, Width = 60 }
+    }
+};
+
+statusBar.Initialize();
+drawingManager.AddComponent(statusBar);
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Modal Confirmation Dialog</h3>
+    <pre><code class="language-csharp">var cancelButton = new Button
+{
+    Text = "Cancel",
+    ButtonStyle = ButtonStyle.Text,
+    Width = 80, Height = 40,
+    Tag = "cancel"
+};
+
+var confirmButton = new Button
+{
+    Text = "Delete",
+    ButtonStyle = ButtonStyle.Filled,
+    Width = 80, Height = 40,
+    Tag = "confirm"
+};
+
+cancelButton.Initialize();
+confirmButton.Initialize();
+
+var dialog = new Dialog
+{
+    Title = "Delete Project?",
+    Body = "This action cannot be undone. All associated files and configurations will be permanently removed.",
+    Buttons = new List&lt;Button&gt; { cancelButton, confirmButton },
+    IsModal = true,
+    MaxWidth = 480
+};
+
+dialog.Initialize();
+
+dialog.ActionClicked += (s, tag) =>
+{
+    if (tag == "confirm")
+    {
+        DeleteProject();
+        ShowNotification("Project deleted.", NotificationType.Success);
+    }
+    dialog.Close();
+};
+
+dialog.Open();
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Error Notification (Top-Right, Persistent)</h3>
+    <pre><code class="language-csharp">var errorNotification = new Notification
+{
+    Message = "Failed to connect to database.\nCheck your connection settings and try again.",
+    Type = NotificationType.Error,
+    Duration = 0,
+    Position = NotificationPosition.TopRight,
+    IsDismissible = true,
+    ActionText = "Retry"
+};
+
+errorNotification.Initialize();
+
+errorNotification.ActionClicked += (s, action) =>
+{
+    if (action == "Retry") RetryConnection();
+};
+
+errorNotification.Show();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Notification Manager (Helper Pattern)</h3>
+    <pre><code class="language-csharp">public static class NotificationManager
+{
+    public static void ShowInfo(string message, string actionText = null,
+        Action action = null)
+    {
+        Show(message, NotificationType.Info, actionText, action);
+    }
+
+    public static void ShowSuccess(string message)
+    {
+        Show(message, NotificationType.Success);
+    }
+
+    public static void ShowError(string message, string actionText = null,
+        Action action = null)
+    {
+        Show(message, NotificationType.Error, actionText, action, duration: 0);
+    }
+
+    private static void Show(string message, NotificationType type,
+        string actionText = null, Action action = null, float duration = 4000)
+    {
+        var notification = new Notification
+        {
+            Message = message,
+            Type = type,
+            Duration = duration,
+            Position = NotificationPosition.Bottom,
+            ActionText = actionText
+        };
+        notification.Initialize();
+
+        if (actionText != null && action != null)
+            notification.ActionClicked += (s, a) => action();
+
+        notification.Show();
+    }
+}</code></pre>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

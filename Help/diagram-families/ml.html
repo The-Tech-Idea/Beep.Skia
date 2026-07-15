@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine Learning Diagram Family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="diagram-families/flowchart.html">Diagram Families</a><span>&rsaquo;</span> <span>Machine Learning Diagram Family</span></nav><div class="page-header"><h1>Machine Learning Diagram Family</h1><p class="page-subtitle">Machine learning pipeline diagrams with 20 node types covering data preparation, model training, evaluation, inference, and neural network architectures.</p></div>
+<div class="toc"><h3>Table of Contents</h3><ul><li><a href="#overview">Overview</a></li><li><a href="#node-types">Node Types</a></li><li><a href="#ports">Connection Points</a></li><li><a href="#conventions">Connection Conventions</a></li><li><a href="#example">Usage Example</a></li></ul></div><section class="section" id="overview"><h2>Overview</h2><p><strong>Base Control:</strong> <code>MLControl : MaterialControl</code><br><strong>Namespace:</strong> <code>Beep.Skia.ML</code></p><p>The <strong>MLControl</strong> is the root control for this diagram family. It inherits <code>MaterialControl</code> and provides shared port management, styling, and template methods for all nodes in the family.</p><p>This family contains <strong>18 node types</strong>.</p></section><section class="section" id="node-types"><h2>Node Types</h2><table><thead><tr><th>Node Class</th><th>Shape</th><th>Description</th></tr></thead><tbody><tr><td><code>MLDataSourceNode</code></td><td>Database/table</td><td>Training/test data source with format, size, and schema.</td></tr>
+<tr><td><code>MLPreprocessNode</code></td><td>Gear/clean icon</td><td>Data preprocessing: normalization, encoding, imputation.</td></tr>
+<tr><td><code>MLFeatureEngineeringNode</code></td><td>Feature icon</td><td>Feature creation, selection, transformation.</td></tr>
+<tr><td><code>MLDataAugmentationNode</code></td><td>Multiply icon</td><td>Data augmentation (rotation, flip, noise, synthetic).</td></tr>
+<tr><td><code>MLDataSplitterNode</code></td><td>Split arrow</td><td>Train/validation/test split with configurable ratios.</td></tr>
+<tr><td><code>MLModelNode</code></td><td>Brain/model icon</td><td>ML model with hyperparameters: learning rate, layers, epochs.</td></tr>
+<tr><td><code>MLTrainerNode</code></td><td>Training icon</td><td>Model training node with optimizer, loss function, batch size.</td></tr>
+<tr><td><code>MLEvaluateNode</code></td><td>Checkmark/target</td><td>Model evaluation: accuracy, precision, recall, F1, ROC.</td></tr>
+<tr><td><code>MLInferenceNode</code></td><td>Forward arrow</td><td>Real-time inference/prediction node.</td></tr>
+<tr><td><code>MLBatchPredictionNode</code></td><td>Batch icon</td><td>Batch prediction on dataset.</td></tr>
+<tr><td><code>MLCrossValidationNode</code></td><td>K-fold icon</td><td>K-fold cross-validation with fold metrics.</td></tr>
+<tr><td><code>MLHyperparameterTuningNode</code></td><td>Tuning knob</td><td>Grid/random/Bayesian hyperparameter optimization.</td></tr>
+<tr><td><code>MLModelExportNode</code></td><td>Export/disk icon</td><td>Export model to ONNX, PMML, pickle, TensorFlow SavedModel.</td></tr>
+<tr><td><code>MLModelLoadNode</code></td><td>Import/disk icon</td><td>Load pre-trained model from file/registry.</td></tr>
+<tr><td><code>MLCNNNode</code></td><td>Convolution grid</td><td>Convolutional Neural Network: conv, pool, flatten, dense.</td></tr>
+<tr><td><code>MLRNNNode</code></td><td>Recurrent icon</td><td>Recurrent Neural Network: LSTM/GRU with sequence length.</td></tr>
+<tr><td><code>MLNeuralNetworkNode</code></td><td>Network layers</td><td>Dense/feedforward neural network with configurable layers.</td></tr>
+<tr><td><code>MLTransformerNode</code></td><td>Attention grid</td><td>Transformer architecture: attention, feedforward, layer norm.</td></tr></tbody></table></section><div id="mldatasourcenode"><h3>MLDataSourceNode</h3><p>Training/test data source with format, size, and schema.</p><table><tr><th style="width:30%">Shape</th><td>Database/table</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>1+</td></tr></table></div><div id="mlpreprocessnode"><h3>MLPreprocessNode</h3><p>Data preprocessing: normalization, encoding, imputation.</p><table><tr><th style="width:30%">Shape</th><td>Gear/clean icon</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="mlfeatureengineeringnode"><h3>MLFeatureEngineeringNode</h3><p>Feature creation, selection, transformation.</p><table><tr><th style="width:30%">Shape</th><td>Feature icon</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="mldataaugmentationnode"><h3>MLDataAugmentationNode</h3><p>Data augmentation (rotation, flip, noise, synthetic).</p><table><tr><th style="width:30%">Shape</th><td>Multiply icon</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="mldatasplitternode"><h3>MLDataSplitterNode</h3><p>Train/validation/test split with configurable ratios.</p><table><tr><th style="width:30%">Shape</th><td>Split arrow</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>2-3</td></tr></table></div><div id="mlmodelnode"><h3>MLModelNode</h3><p>ML model with hyperparameters: learning rate, layers, epochs.</p><table><tr><th style="width:30%">Shape</th><td>Brain/model icon</td></tr><tr><th>Input Ports</th><td>1+</td></tr><tr><th>Output Ports</th><td>1+</td></tr></table></div><div id="mltrainernode"><h3>MLTrainerNode</h3><p>Model training node with optimizer, loss function, batch size.</p><table><tr><th style="width:30%">Shape</th><td>Training icon</td></tr><tr><th>Input Ports</th><td>2 (data + model)</td></tr><tr><th>Output Ports</th><td>1 (trained model)</td></tr></table></div><div id="mlevaluatenode"><h3>MLEvaluateNode</h3><p>Model evaluation: accuracy, precision, recall, F1, ROC.</p><table><tr><th style="width:30%">Shape</th><td>Checkmark/target</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="mlinferencenode"><h3>MLInferenceNode</h3><p>Real-time inference/prediction node.</p><table><tr><th style="width:30%">Shape</th><td>Forward arrow</td></tr><tr><th>Input Ports</th><td>2 (data + model)</td></tr><tr><th>Output Ports</th><td>1 (predictions)</td></tr></table></div><div id="mlbatchpredictionnode"><h3>MLBatchPredictionNode</h3><p>Batch prediction on dataset.</p><table><tr><th style="width:30%">Shape</th><td>Batch icon</td></tr><tr><th>Input Ports</th><td>2</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="mlcrossvalidationnode"><h3>MLCrossValidationNode</h3><p>K-fold cross-validation with fold metrics.</p><table><tr><th style="width:30%">Shape</th><td>K-fold icon</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="mlhyperparametertuningnode"><h3>MLHyperparameterTuningNode</h3><p>Grid/random/Bayesian hyperparameter optimization.</p><table><tr><th style="width:30%">Shape</th><td>Tuning knob</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="mlmodelexportnode"><h3>MLModelExportNode</h3><p>Export model to ONNX, PMML, pickle, TensorFlow SavedModel.</p><table><tr><th style="width:30%">Shape</th><td>Export/disk icon</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="mlmodelloadnode"><h3>MLModelLoadNode</h3><p>Load pre-trained model from file/registry.</p><table><tr><th style="width:30%">Shape</th><td>Import/disk icon</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="mlcnnnode"><h3>MLCNNNode</h3><p>Convolutional Neural Network: conv, pool, flatten, dense.</p><table><tr><th style="width:30%">Shape</th><td>Convolution grid</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="mlrnnnode"><h3>MLRNNNode</h3><p>Recurrent Neural Network: LSTM/GRU with sequence length.</p><table><tr><th style="width:30%">Shape</th><td>Recurrent icon</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="mlneuralnetworknode"><h3>MLNeuralNetworkNode</h3><p>Dense/feedforward neural network with configurable layers.</p><table><tr><th style="width:30%">Shape</th><td>Network layers</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="mltransformernode"><h3>MLTransformerNode</h3><p>Transformer architecture: attention, feedforward, layer norm.</p><table><tr><th style="width:30%">Shape</th><td>Attention grid</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty when the node moves or resizes.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>MLDataSourceNode</code></td><td>0</td><td>1+</td><td>—</td></tr>
+<tr><td><code>MLPreprocessNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>MLFeatureEngineeringNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>MLDataAugmentationNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>MLDataSplitterNode</code></td><td>1</td><td>2-3</td><td>—</td></tr>
+<tr><td><code>MLModelNode</code></td><td>1+</td><td>1+</td><td>—</td></tr>
+<tr><td><code>MLTrainerNode</code></td><td>2 (data + model)</td><td>1 (trained model)</td><td>—</td></tr>
+<tr><td><code>MLEvaluateNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>MLInferenceNode</code></td><td>2 (data + model)</td><td>1 (predictions)</td><td>—</td></tr>
+<tr><td><code>MLBatchPredictionNode</code></td><td>2</td><td>1</td><td>—</td></tr>
+<tr><td><code>MLCrossValidationNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>MLHyperparameterTuningNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>MLModelExportNode</code></td><td>1</td><td>0</td><td>—</td></tr>
+<tr><td><code>MLModelLoadNode</code></td><td>0</td><td>1</td><td>—</td></tr>
+<tr><td><code>MLCNNNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>MLRNNNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>MLNeuralNetworkNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>MLTransformerNode</code></td><td>1</td><td>1</td><td>—</td></tr></tbody></table></section><section class="section" id="conventions"><h2>Connection Conventions</h2><p>When building diagrams with this family, follow these conventions:</p><ul><li>Data flows left to right through the pipeline</li><li>Data splitter produces train/val/test outputs</li><li>Trainer takes separate data and model inputs</li><li>Model export is a terminal node (no outputs)</li></ul></section><section class="section" id="example"><h2>Usage Example</h2><p>Complete example showing creation, node placement, and connection:</p><div class="code-example"><h3>C# Example</h3>
+<pre><code class="language-csharp">var ml = new MLControl
+{
+    X = 50, Y = 50,
+    Width = 800, Height = 500
+};
+drawingManager.AddComponent(ml);
+
+var data = new MLDataSourceNode { X = 80, Y = 100, Text = "Training Data" };
+var pre = new MLPreprocessNode { X = 220, Y = 100, Text = "Normalize" };
+var split = new MLDataSplitterNode { X = 360, Y = 100, TrainRatio = 0.8 };
+var model = new MLModelNode { X = 500, Y = 60, ModelType = "RandomForest" };
+var eval = new MLEvaluateNode { X = 640, Y = 100 };
+
+drawingManager.AddComponent(data);
+drawingManager.AddComponent(pre);
+drawingManager.AddComponent(split);
+drawingManager.AddComponent(model);
+drawingManager.AddComponent(eval);
+
+drawingManager.Connect(data.OutPoints[0], pre.InPoints[0]);
+drawingManager.Connect(pre.OutPoints[0], split.InPoints[0]);
+drawingManager.Connect(split.OutPoints[0], model.InPoints[0]);
+drawingManager.Connect(model.OutPoints[0], eval.InPoints[0]);</code></pre></div></section>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

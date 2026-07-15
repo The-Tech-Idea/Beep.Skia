@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkiaComponent Base Class | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="skia-component.html">Core Concepts</a><span>&rsaquo;</span> <span>SkiaComponent Base Class</span></nav>
+<div class="page-header"><h1>SkiaComponent Base Class</h1><p class="page-subtitle">The abstract base class for all visual components — 1386 lines of core infrastructure</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia</code> &mdash; <strong>Lines:</strong> 1386 &mdash; <strong>File:</strong> <code>SkiaComponent.cs</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#key-properties">Key Properties</a></li>
+    <li><a href="#nodeproperties-system">NodeProperties System</a></li>
+    <li><a href="#connection-points">Connection Points</a></li>
+    <li><a href="#lifecycle">Lifecycle</a></li>
+    <li><a href="#inheritance">Inheritance Hierarchy</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p><code>SkiaComponent</code> is the abstract base class for <strong>every</strong> visual element rendered on a Beep.Skia canvas. It provides the foundational infrastructure that all diagram nodes, UI controls, and custom visual components share:</p>
+  <ul>
+    <li><strong>Position &amp; Sizing:</strong> Absolute X/Y position, Width, Height, and computed bounding boxes in both local and world coordinate spaces.</li>
+    <li><strong>IDisposable:</strong> Proper resource cleanup for SkiaSharp objects (paints, surfaces, paths) through the <code>Dispose()</code> pattern.</li>
+    <li><strong>NodeProperties:</strong> A configurable parameter dictionary that enables dynamic property editors without requiring reflection. Every component can expose its editable fields as a <code>Dictionary&lt;string, ParameterInfo&gt;</code>.</li>
+    <li><strong>ConnectionPoints:</strong> Collections of input and output ports (<code>InPoints</code> / <code>OutPoints</code>) with lazy layout recomputation for performance.</li>
+    <li><strong>DrawContent:</strong> A <code>virtual</code> method that subclasses override to render their specific visual content using a <code>SKCanvas</code>.</li>
+    <li><strong>Invalidation:</strong> Mark the component or its region as dirty to trigger a redraw on the next render cycle.</li>
+    <li><strong>Hit Testing:</strong> Point-inside-bounds and per-feature hit test methods for precise mouse interaction routing.</li>
+    <li><strong>Absolute Coordinate System:</strong> All positioning uses an absolute, unscrolled coordinate space. Pan and zoom transforms are applied once globally by <code>RenderingHelper</code>.</li>
+  </ul>
+  <p>The class implements <code>IDrawableComponent</code> and serves as the trunk of a deep inheritance tree spanning 200+ node types across 18 diagram families.</p>
+</section>
+
+<section class="section" id="key-properties">
+  <h2>Key Properties</h2>
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>X</code></td><td><code>float</code></td><td>Absolute X coordinate of the component&#39;s top-left corner in world space.</td></tr>
+      <tr><td><code>Y</code></td><td><code>float</code></td><td>Absolute Y coordinate of the component&#39;s top-left corner in world space.</td></tr>
+      <tr><td><code>Width</code></td><td><code>float</code></td><td>Width of the component in logical units. Default sizes vary by component family.</td></tr>
+      <tr><td><code>Height</code></td><td><code>float</code></td><td>Height of the component in logical units. Default sizes vary by component family.</td></tr>
+      <tr><td><code>Bounds</code></td><td><code>SKRect</code></td><td>Computed bounding rectangle from (X, Y, X+Width, Y+Height). Used for hit testing and invalidation.</td></tr>
+      <tr><td><code>NodeProperties</code></td><td><code>Dictionary&lt;string, ParameterInfo&gt;</code></td><td>Configurable parameter map powering dynamic property editors. See <a href="#nodeproperties-system">NodeProperties System</a>.</td></tr>
+      <tr><td><code>InPoints</code></td><td><code>List&lt;ConnectionPoint&gt;</code></td><td>Input connection ports. Positions recomputed lazily when dirty.</td></tr>
+      <tr><td><code>OutPoints</code></td><td><code>List&lt;ConnectionPoint&gt;</code></td><td>Output connection ports. Positions recomputed lazily when dirty.</td></tr>
+      <tr><td><code>IsSelected</code></td><td><code>bool</code></td><td>Selection state. Affects rendering (selection highlight, resize handles) and keyboard operations.</td></tr>
+      <tr><td><code>IsVisible</code></td><td><code>bool</code></td><td>Visibility flag. Invisible components are skipped during rendering and hit testing.</td></tr>
+      <tr><td><code>ZOrder</code></td><td><code>int</code></td><td>Z-order index controlling draw order and hit-test priority. Higher values render on top.</td></tr>
+      <tr><td><code>Id</code></td><td><code>Guid</code></td><td>Unique identifier for serialization, connection tracking, and lookup operations.</td></tr>
+      <tr><td><code>Tag</code></td><td><code>object</code></td><td>Arbitrary user-defined data attached to the component. Not serialized by default.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="nodeproperties-system">
+  <h2>NodeProperties System</h2>
+  <p>Every <code>SkiaComponent</code> exposes its configurable fields as a <code>Dictionary&lt;string, ParameterInfo&gt;</code>. This enables rich, dynamic property editors — such as the in-app property grid — to discover and edit component settings without runtime reflection overhead.</p>
+
+  <p>The <code>ParameterInfo</code> class captures:</p>
+  <ul>
+    <li><strong>Name &amp; DisplayName:</strong> Internal key and human-readable label.</li>
+    <li><strong>Value:</strong> The current value (as <code>object</code>).</li>
+    <li><strong>DataType:</strong> Underlying CLR type (<code>string</code>, <code>int</code>, <code>float</code>, <code>bool</code>, <code>Color</code>, <code>enum</code>, etc.).</li>
+    <li><strong>Category:</strong> Grouping key for property grid sections (e.g., &quot;Appearance&quot;, &quot;Layout&quot;, &quot;Data&quot;).</li>
+    <li><strong>EditorHint:</strong> Hints for the UI to choose the right editor widget (combobox, color picker, slider, checkbox).</li>
+    <li><strong>IsReadOnly / IsRequired:</strong> Constraint flags.</li>
+  </ul>
+
+  <p>Subclasses populate the dictionary in their constructor or <code>Initialize()</code> method:</p>
+
+  <div class="code-example">
+    <h3>Defining NodeProperties</h3>
+    <pre><code class="language-csharp">protected override void Initialize()
+{
+    base.Initialize();
+
+    NodeProperties["Text"] = new ParameterInfo
+    {
+        Name = "Text",
+        DisplayName = "Label Text",
+        Value = "New Node",
+        DataType = typeof(string),
+        Category = "Content",
+        EditorHint = "TextBox"
+    };
+
+    NodeProperties["FillColor"] = new ParameterInfo
+    {
+        Name = "FillColor",
+        DisplayName = "Fill Color",
+        Value = SKColors.CornflowerBlue,
+        DataType = typeof(SKColor),
+        Category = "Appearance",
+        EditorHint = "ColorPicker"
+    };
+
+    NodeProperties["FontSize"] = new ParameterInfo
+    {
+        Name = "FontSize",
+        DisplayName = "Font Size",
+        Value = 14f,
+        DataType = typeof(float),
+        Category = "Typography",
+        EditorHint = "Slider:8-48"
+    };
+}</code></pre>
+  </div>
+
+  <p>At runtime, the property grid calls <code>GetProperties()</code> to retrieve the dictionary and <code>SetProperties(dict)</code> to apply changes. The component is then invalidated to reflect the new values on the next draw:</p>
+
+  <div class="code-example">
+    <h3>Getting and Setting Properties</h3>
+    <pre><code class="language-csharp">var properties = myComponent.GetProperties();
+
+var fontSizeParam = properties["FontSize"];
+float currentSize = (float)fontSizeParam.Value;
+
+fontSizeParam.Value = 18f;
+myComponent.SetProperties(properties);
+
+myComponent.Invalidate();
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="admonition note">
+    <p class="admonition-title">Note</p>
+    <p>Changes to <code>NodeProperties</code> values do not automatically trigger <code>Invalidate()</code>. The caller (property editor) is responsible for invalidating the component and canvas after applying changes.</p>
+  </div>
+</section>
+
+<section class="section" id="connection-points">
+  <h2>Connection Points</h2>
+  <p>Connection points (ports) are the anchor locations where <code>ConnectionLine</code> segments attach to a component. Each point is an instance of <code>IConnectionPoint</code> stored in either <code>InPoints</code> (input) or <code>OutPoints</code> (output) collections.</p>
+
+  <h3>Lazy Port Layout</h3>
+  <p>Port positions are recomputed only when the component moves, resizes, or explicitly marks ports as dirty via <code>MarkPortsDirty()</code>. The <code>EnsurePortLayout()</code> method recalculates the screen positions of all ports when needed. This lazy-evaluation approach avoids unnecessary computation during rapid drag operations.</p>
+
+  <h3>ConnectionPoint Properties</h3>
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Type</code></td><td><code>PortType</code></td><td><code>In</code> or <code>Out</code>. Determines which side of a component the port appears on.</td></tr>
+      <tr><td><code>DataType</code></td><td><code>Type</code></td><td>The CLR type of data expected to flow through this port. Used for connection validation.</td></tr>
+      <tr><td><code>Position</code></td><td><code>SKPoint</code></td><td>Absolute world-space position of the port anchor. Updated by <code>EnsurePortLayout()</code>.</td></tr>
+      <tr><td><code>RowId</code></td><td><code>string</code></td><td>Optional identifier for ERD row-level connections. Enables per-field linking in entity diagrams.</td></tr>
+      <tr><td><code>Id</code></td><td><code>Guid</code></td><td>Unique identifier used for serialization and connection restoration.</td></tr>
+      <tr><td><code>IsConnected</code></td><td><code>bool</code></td><td>Whether a connection line is currently attached to this port.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Creating and Layouting Ports</h3>
+    <pre><code class="language-csharp">protected override void EnsurePortLayout()
+{
+    if (!_portsDirty) return;
+
+    InPoints.Clear();
+    OutPoints.Clear();
+
+    InPoints.Add(new ConnectionPoint
+    {
+        Type = PortType.In,
+        Position = new SKPoint(X, Y + Height / 2),
+        DataType = typeof(string),
+        Owner = this
+    });
+
+    OutPoints.Add(new ConnectionPoint
+    {
+        Type = PortType.Out,
+        Position = new SKPoint(X + Width, Y + Height / 2),
+        DataType = typeof(string),
+        Owner = this
+    });
+
+    _portsDirty = false;
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="lifecycle">
+  <h2>Lifecycle</h2>
+  <p>Every <code>SkiaComponent</code> follows a defined lifecycle from creation through disposal:</p>
+
+  <table>
+    <thead>
+      <tr><th>Phase</th><th>Method</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Construction</strong></td><td><code>SkiaComponent()</code></td><td>Sets default values for X, Y, Width, Height, ZOrder. Initializes empty connection-point collections and the NodeProperties dictionary. Assigns a new <code>Guid</code>.</td></tr>
+      <tr><td><strong>Initialization</strong></td><td><code>Initialize()</code></td><td>Virtual method called once after construction. Subclasses populate NodeProperties, create initial ports, set up paints, and define default visual parameters. Call <code>base.Initialize()</code> to ensure ports are marked dirty.</td></tr>
+      <tr><td><strong>Render</strong></td><td><code>DrawContent(SKCanvas)</code></td><td>Abstract/virtual method called every frame. Renders the component&#39;s visual representation. The canvas already has pan/zoom transforms applied. Subclasses should use <code>canvas.Save()</code> / <code>canvas.Restore()</code> for local transformations.</td></tr>
+      <tr><td><strong>Invalidation</strong></td><td><code>Invalidate()</code></td><td>Marks the component region as needing redraw. Triggers <code>Canvas.Invalidate()</code> on the attached canvas.</td></tr>
+      <tr><td><strong>Hit Testing</strong></td><td><code>HitTest(SKPoint)</code></td><td>Returns <code>true</code> if the point falls within the component&#39;s bounds. Override for precise per-shape hit testing.</td></tr>
+      <tr><td><strong>Disposal</strong></td><td><code>Dispose()</code></td><td>Releases all <code>SKPaint</code>, <code>SKPath</code>, <code>SKBitmap</code>, and other unmanaged SkiaSharp resources. Sets disposed flag to prevent use-after-free.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <h3>Typical Component Lifecycle Usage</h3>
+    <pre><code class="language-csharp">var node = new FlowChartNode("Process Step");
+node.Initialize();
+node.X = 100;
+node.Y = 200;
+
+drawingManager.AddComponent(node);
+
+canvas.Invalidate();
+
+drawingManager.RemoveComponent(node);
+node.Dispose();</code></pre>
+  </div>
+</section>
+
+<section class="section" id="inheritance">
+  <h2>Inheritance Hierarchy</h2>
+  <p>The <code>SkiaComponent</code> class sits at the center of a deep inheritance chain that spans from the abstract interface down to concrete diagram nodes:</p>
+
+  <div class="inheritance-diagram">
+    <div class="inheritance-level">
+      <div class="inheritance-card interface">IDrawableComponent</div>
+      <div class="inheritance-arrow">&darr;</div>
+    </div>
+    <div class="inheritance-level">
+      <div class="inheritance-card abstract">SkiaComponent</div>
+      <div class="inheritance-subtitle">1386 lines &mdash; abstract base</div>
+      <div class="inheritance-arrow">&darr;</div>
+    </div>
+    <div class="inheritance-level">
+      <div class="inheritance-card abstract">MaterialControl</div>
+      <div class="inheritance-subtitle">Material Design 3.0 theming, elevation, state layers, ripple</div>
+      <div class="inheritance-arrow">&darr;</div>
+    </div>
+    <div class="inheritance-level">
+      <div class="inheritance-card">Family Base Controls</div>
+      <div class="inheritance-subtitle">FlowChartNodeBase, ERDEntityBase, UMLClassifierBase, etc.</div>
+      <div class="inheritance-arrow">&darr;</div>
+    </div>
+    <div class="inheritance-level">
+      <div class="inheritance-card">Concrete Nodes</div>
+      <div class="inheritance-subtitle">FlowChartNode, ERDEntity, UMLClass, NetworkDevice, etc. (200+)</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Level</th><th>Type</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>0</td><td><code>IDrawableComponent</code> (interface)</td><td>Contract: Draw, hit test, bounds, dispose, connection points.</td></tr>
+      <tr><td>1</td><td><code>SkiaComponent</code> (abstract)</td><td>Position, size, NodeProperties, ConnectionPoints, base rendering. All diagram nodes derive from here.</td></tr>
+      <tr><td>2</td><td><code>MaterialControl</code> (abstract)</td><td>Material Design 3.0 theming: elevation shadows, state layers (hover, focus, pressed), ripple animation, theme-aware color resolution.</td></tr>
+      <tr><td>3</td><td>Family-level base classes</td><td>Shared behavior per diagram family: flowchart routing rules, ERD entity rendering, UML notation, network device icons. Override <code>DrawContent</code> for family-specific appearance.</td></tr>
+      <tr><td>4</td><td>Concrete leaf nodes</td><td>Fully rendered diagram nodes: <code>FlowChartNode</code>, <code>ProcessNode</code>, <code>DecisionNode</code>, <code>ERDEntity</code>, <code>UMLClass</code>, <code>NetworkRouter</code>, etc.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Tip</p>
+    <p>When creating a custom component, inherit from the <strong>family-level base class</strong> rather than <code>SkiaComponent</code> directly. This gives you free Material Design theming, family-specific behavior, and proper palette integration through <code>SkiaComponentRegistry</code>.</p>
+  </div>
+</section>
+
+<style>
+.inheritance-diagram { margin: 1.5rem 0; font-family: var(--font-mono, 'Cascadia Code', 'Fira Code', monospace); }
+.inheritance-level { text-align: center; margin-bottom: 0; }
+.inheritance-card { display: inline-block; padding: 0.5rem 1.5rem; border-radius: var(--border-radius); border: 2px solid var(--color-brand-content); background: var(--color-code-background); color: var(--color-foreground-primary); font-weight: 600; font-size: 0.95rem; }
+.inheritance-card.interface { border-style: dashed; border-color: var(--color-foreground-muted); }
+.inheritance-card.abstract { border-color: var(--color-brand-content); background: #eef2ff; }
+[data-theme="dark"] .inheritance-card.abstract { background: #1a2040; }
+.inheritance-subtitle { font-size: 0.8rem; color: var(--color-foreground-muted); margin-top: 0.2rem; margin-bottom: 0; }
+.inheritance-arrow { font-size: 1.5rem; font-weight: 700; color: var(--color-brand-content); margin: 0.1rem 0; }
+</style>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

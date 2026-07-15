@@ -253,6 +253,10 @@ namespace Beep.Skia.Components
             var dataCategory = new ComponentCategory("Data", "table");
             _categories.Add(dataCategory);
 
+            // Well Log Components
+            var wellLogCategory = new ComponentCategory("Well Logs", "monitoring");
+            _categories.Add(wellLogCategory);
+
             // Load components from registry
             LoadComponentsFromRegistry();
         }
@@ -305,6 +309,13 @@ namespace Beep.Skia.Components
                 return _categories.FirstOrDefault(); // Default to first category
 
             var className = component.className.ToLower();
+            var componentNamespace = (component.Namespace ?? component.type?.Namespace ?? string.Empty).ToLowerInvariant();
+
+            if (className.Contains("welllog") || className.Contains("gamma") || className.Contains("resistivity") ||
+                className.Contains("porosity") || className.Contains("lithology") || componentNamespace.Contains("welllogs"))
+            {
+                return _categories.FirstOrDefault(c => c.Name == "Well Logs");
+            }
 
             // UI Components
             if (className.Contains("button") || className.Contains("label") || className.Contains("text") ||

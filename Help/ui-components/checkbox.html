@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CheckBox &amp; Radio Group | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="button.html">UI Components</a><span>&rsaquo;</span> <span>CheckBox &amp; Radio Group</span></nav>
+<div class="page-header"><h1>CheckBox &amp; Radio Group</h1><p class="page-subtitle">Toggle controls with label, icon, and group support</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia.Controls</code> &mdash; <strong>Inherits:</strong> <code>CheckBox</code> &rarr; <code>MaterialControl</code> &rarr; <code>SkiaComponent</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#checkbox">CheckBox Properties</a></li>
+    <li><a href="#checkboxgroup">CheckBoxGroup Properties</a></li>
+    <li><a href="#radiogroup">RadioGroup Properties</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#code-example">Code Example</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p>The <code>CheckBox</code>, <code>CheckBoxGroup</code>, and <code>RadioGroup</code> controls provide Material Design 3.0 toggle selection, rendered entirely with SkiaSharp. <code>CheckBox</code> is an independent toggle with a square checkmark icon that animates between checked and unchecked states. <code>CheckBoxGroup</code> manages a collection of checkboxes with multi-select support. <code>RadioGroup</code> enforces single-selection among a set of radio buttons with circular indicators.</p>
+
+  <p>All toggle controls follow MD3 design: the check/radio icon animates with a 200ms easing curve, ripple effects emanate from the pointer contact point, and state layers provide hover/focus/pressed feedback. Labels are rendered using <code>BodyLarge</code> typography with configurable text positioning relative to the icon.</p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h4>Animated Check/Uncheck</h4>
+      <p>The checkmark and radio fill animate with a smooth scale+fade transition managed by the Material motion system.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Indeterminate State</h4>
+      <p>CheckBox supports a third state (indeterminate) drawn as a horizontal dash, useful for parent checkboxes with mixed child states.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Group Coordination</h4>
+      <p>RadioGroup enforces mutual exclusion. CheckBoxGroup tracks collective state with <code>SelectedIndices</code>.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Keyboard Navigation</h4>
+      <p>Tab to focus, Space to toggle. Arrow keys navigate between items in a group.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="checkbox">
+  <h2>CheckBox Properties</h2>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>IsChecked</code></td>
+        <td><code>bool?</code></td>
+        <td>The toggle state. <code>true</code> = checked, <code>false</code> = unchecked, <code>null</code> = indeterminate (dash icon). Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+        <td><code>Text</code></td>
+        <td><code>string</code></td>
+        <td>Label text displayed to the right of the check box icon. Can be <code>null</code> for icon-only checkboxes.</td>
+      </tr>
+      <tr>
+        <td><code>CheckBoxStyle</code></td>
+        <td><code>CheckBoxStyle</code></td>
+        <td>Enum: <code>Square</code> (default, standard checkbox) or <code>Toggle</code> (switch-style with a pill-shaped thumb).</td>
+      </tr>
+      <tr>
+        <td><code>IconSize</code></td>
+        <td><code>float</code></td>
+        <td>Size of the check box icon square. Default is <code>18f</code> per MD3 spec.</td>
+      </tr>
+      <tr>
+        <td><code>LabelPosition</code></td>
+        <td><code>LabelPosition</code></td>
+        <td>Enum: <code>Right</code> (default) or <code>Left</code>. Controls whether the label text appears to the right or left of the icon.</td>
+      </tr>
+      <tr>
+        <td><code>IsThreeState</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, clicking cycles through <code>false</code> &rarr; <code>true</code> &rarr; <code>null</code> (indeterminate) &rarr; <code>false</code>. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+        <td><code>IsHovered</code></td>
+        <td><code>bool</code></td>
+        <td>Read-only. Whether the mouse is over the touch target (icon + label area).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CheckBoxStyle.Toggle (Switch) Properties</h3>
+  <p>When <code>CheckBoxStyle</code> is set to <code>Toggle</code>, the control renders as a Material Design switch with additional properties:</p>
+
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>ToggleTrackWidth</code></td><td><code>float</code></td><td>Width of the switch track. Default is <code>52f</code>.</td></tr>
+      <tr><td><code>ToggleTrackHeight</code></td><td><code>float</code></td><td>Height of the switch track. Default is <code>32f</code>.</td></tr>
+      <tr><td><code>ToggleThumbSize</code></td><td><code>float</code></td><td>Diameter of the circular thumb. Default is <code>24f</code>.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="checkboxgroup">
+  <h2>CheckBoxGroup Properties</h2>
+  <p><code>CheckBoxGroup</code> is a container control that manages a collection of <code>CheckBox</code> children:</p>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Items</code></td>
+        <td><code>List&lt;CheckBox&gt;</code></td>
+        <td>The child checkboxes managed by this group. Each maintains its own <code>IsChecked</code> state independently.</td>
+      </tr>
+      <tr>
+        <td><code>SelectedIndices</code></td>
+        <td><code>HashSet&lt;int&gt;</code></td>
+        <td>Read-only. The zero-based indices of currently checked items. Updated automatically when any child checkbox toggles.</td>
+      </tr>
+      <tr>
+        <td><code>LayoutDirection</code></td>
+        <td><code>LayoutDirection</code></td>
+        <td>Enum: <code>Vertical</code> (default) or <code>Horizontal</code>. Controls how child checkboxes are arranged.</td>
+      </tr>
+      <tr>
+        <td><code>ItemSpacing</code></td>
+        <td><code>float</code></td>
+        <td>Gap between child checkboxes. Default is <code>8f</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="radiogroup">
+  <h2>RadioGroup Properties</h2>
+  <p><code>RadioGroup</code> manages a mutually-exclusive set of radio buttons. Unlike <code>CheckBoxGroup</code>, only one item can be selected at a time.</p>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Items</code></td>
+        <td><code>List&lt;RadioItem&gt;</code></td>
+        <td>The radio button items. Each <code>RadioItem</code> has <code>Text</code>, <code>Value</code>, and optional <code>Icon</code> properties. The radio circle is drawn by the group, not per-item.</td>
+      </tr>
+      <tr>
+        <td><code>SelectedIndex</code></td>
+        <td><code>int</code></td>
+        <td>Index of the selected radio button. <code>-1</code> when nothing is selected. Setting this updates all child radio circles.</td>
+      </tr>
+      <tr>
+        <td><code>SelectedValue</code></td>
+        <td><code>object</code></td>
+        <td>Read-only. The <code>Value</code> property of the selected <code>RadioItem</code>, or <code>null</code>.</td>
+      </tr>
+      <tr>
+        <td><code>RadioDiameter</code></td>
+        <td><code>float</code></td>
+        <td>Diameter of the radio circle. Default is <code>20f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>LayoutDirection</code></td>
+        <td><code>LayoutDirection</code></td>
+        <td>Enum: <code>Vertical</code> (default) or <code>Horizontal</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="events">
+  <h2>Events</h2>
+
+  <table>
+    <thead>
+      <tr><th>Event</th><th>Owner</th><th>Signature</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>CheckedChanged</code></td>
+        <td><code>CheckBox</code></td>
+        <td><code>EventHandler&lt;bool?&gt;</code></td>
+        <td>Raised when <code>IsChecked</code> changes. The argument is the new value (<code>true</code>, <code>false</code>, or <code>null</code> for indeterminate).</td>
+      </tr>
+      <tr>
+        <td><code>SelectedIndicesChanged</code></td>
+        <td><code>CheckBoxGroup</code></td>
+        <td><code>EventHandler&lt;HashSet&lt;int&gt;&gt;</code></td>
+        <td>Raised when any child checkbox toggles. The argument is the updated <code>SelectedIndices</code> set.</td>
+      </tr>
+      <tr>
+        <td><code>SelectedIndexChanged</code></td>
+        <td><code>RadioGroup</code></td>
+        <td><code>EventHandler&lt;int&gt;</code></td>
+        <td>Raised when the selected radio button changes. The argument is the new <code>SelectedIndex</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="code-example">
+  <h2>Code Example</h2>
+
+  <div class="code-example">
+    <h3>Basic CheckBox and Toggle Switch</h3>
+    <pre><code class="language-csharp">var darkModeCheck = new CheckBox
+{
+    Text = "Enable Dark Mode",
+    IsChecked = false,
+    X = 40, Y = 40,
+    Width = 200, Height = 40
+};
+
+darkModeCheck.Initialize();
+darkModeCheck.CheckedChanged += (s, state) =>
+    Console.WriteLine($"Dark mode: {state}");
+
+var notificationsToggle = new CheckBox
+{
+    Text = "Push Notifications",
+    CheckBoxStyle = CheckBoxStyle.Toggle,
+    IsChecked = true,
+    X = 40, Y = 90,
+    Width = 220, Height = 40
+};
+
+notificationsToggle.Initialize();
+
+drawingManager.AddComponent(darkModeCheck);
+drawingManager.AddComponent(notificationsToggle);
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Three-State CheckBox (Indeterminate)</h3>
+    <pre><code class="language-csharp">var child1 = new CheckBox { Text = "Option A", X = 0, Y = 0 };
+var child2 = new CheckBox { Text = "Option B", X = 0, Y = 0 };
+var child3 = new CheckBox { Text = "Option C", X = 0, Y = 0 };
+
+var selectAll = new CheckBox
+{
+    Text = "Select All",
+    IsThreeState = true,
+    IsChecked = false,
+    X = 40, Y = 150,
+    Width = 200, Height = 40
+};
+selectAll.Initialize();
+
+selectAll.CheckedChanged += (s, state) =>
+{
+    if (state == true || state == false)
+    {
+        child1.IsChecked = state;
+        child2.IsChecked = state;
+        child3.IsChecked = state;
+    }
+};
+
+Action updateParent = () =>
+{
+    var states = new[] { child1.IsChecked, child2.IsChecked, child3.IsChecked };
+    if (states.All(c => c == true)) selectAll.IsChecked = true;
+    else if (states.All(c => c == false)) selectAll.IsChecked = false;
+    else selectAll.IsChecked = null;
+};
+
+child1.CheckedChanged += (s, v) => updateParent();
+child2.CheckedChanged += (s, v) => updateParent();
+child3.CheckedChanged += (s, v) => updateParent();
+
+drawingManager.AddComponent(selectAll);</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>CheckBoxGroup with Vertical Layout</h3>
+    <pre><code class="language-csharp">var group = new CheckBoxGroup
+{
+    X = 300, Y = 40,
+    Width = 250,
+    LayoutDirection = LayoutDirection.Vertical,
+    ItemSpacing = 4f,
+    Items = new List&lt;CheckBox&gt;
+    {
+        new() { Text = "Feature A: Auto-save" },
+        new() { Text = "Feature B: Spell check" },
+        new() { Text = "Feature C: Live preview" },
+        new() { Text = "Feature D: Dark theme" },
+        new() { Text = "Feature E: Compact mode" }
+    }
+};
+
+foreach (var cb in group.Items) cb.Initialize();
+
+group.Initialize();
+group.SelectedIndicesChanged += (s, indices) =>
+    Console.WriteLine($"Selected: {string.Join(", ", indices)}");
+
+drawingManager.AddComponent(group);</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>RadioGroup</h3>
+    <pre><code class="language-csharp">var radioGroup = new RadioGroup
+{
+    X = 300, Y = 280,
+    Width = 250,
+    LayoutDirection = LayoutDirection.Vertical,
+    SelectedIndex = 0,
+    Items = new List&lt;RadioItem&gt;
+    {
+        new() { Text = "Small (12px)",  Value = 12 },
+        new() { Text = "Medium (16px)", Value = 16 },
+        new() { Text = "Large (20px)",  Value = 20 },
+        new() { Text = "Extra Large (24px)", Value = 24 }
+    }
+};
+
+radioGroup.Initialize();
+radioGroup.SelectedIndexChanged += (s, idx) =>
+{
+    int fontSize = (int)radioGroup.SelectedValue;
+    Console.WriteLine($"Font size set to: {fontSize}px");
+};
+
+drawingManager.AddComponent(radioGroup);
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="admonition tip">
+    <p class="admonition-title">Tip</p>
+    <p>When using <code>CheckBoxGroup</code> or <code>RadioGroup</code>, add the <strong>group</strong> to the drawing manager, not individual child items. The group manages child layout, event routing, and invalidation automatically. Child coordinates are relative to the group's origin.</p>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

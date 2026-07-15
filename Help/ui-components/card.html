@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="button.html">UI Components</a><span>&rsaquo;</span> <span>Card</span></nav>
+<div class="page-header"><h1>Card</h1><p class="page-subtitle">Elevated surface container with header, content, and action areas</p></div>
+
+<p><strong>Namespace:</strong> <code>Beep.Skia.Controls</code> &mdash; <strong>Inherits:</strong> <code>MaterialControl</code> &rarr; <code>SkiaComponent</code></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#properties">Properties</a></li>
+    <li><a href="#layout-areas">Layout Areas</a></li>
+    <li><a href="#code-example">Code Example</a></li>
+  </ul>
+</div>
+
+<section class="section" id="overview">
+  <h2>Overview</h2>
+  <p>The <code>Card</code> control is a Material Design 3.0 surface container that groups related content and actions into a single elevated panel. Cards are rendered entirely with SkiaSharp and provide three distinct layout areas: a header for titles and subtitles, a body for arbitrary content, and a footer for action buttons. The card's surface responds to the active Material theme, rendering the correct background color, elevation shadow, and corner shape automatically.</p>
+
+  <p>Cards are the primary container primitive in Beep.Skia's UI system. They are used for property editors, tool palettes, detail panels, and any grouped information display. Nested <code>SkiaComponent</code> children are laid out inside the body area using the configured layout engine.</p>
+</section>
+
+<section class="section" id="properties">
+  <h2>Properties</h2>
+
+  <table class="property-table">
+    <thead>
+      <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Title</code></td>
+        <td><code>string</code></td>
+        <td>Header title text. Rendered in <code>TitleLarge</code> typography. Set to <code>null</code> to hide the header entirely.</td>
+      </tr>
+      <tr>
+        <td><code>Subtitle</code></td>
+        <td><code>string</code></td>
+        <td>Optional subtitle rendered below the title in <code>BodyMedium</code> typography and muted color.</td>
+      </tr>
+      <tr>
+        <td><code>Content</code></td>
+        <td><code>SkiaComponent</code></td>
+        <td>The root component rendered in the card body area. Can be any <code>SkiaComponent</code> or a container with multiple children.</td>
+      </tr>
+      <tr>
+        <td><code>Elevation</code></td>
+        <td><code>int</code></td>
+        <td>Material Design elevation level (0&ndash;5). Controls the shadow cast by the card. Default is <code>1</code>. Set to <code>0</code> for flat cards.</td>
+      </tr>
+      <tr>
+        <td><code>CornerRadius</code></td>
+        <td><code>float</code></td>
+        <td>Radius of the card's rounded corners. Default is <code>12f</code> (MD3 medium rounding).</td>
+      </tr>
+      <tr>
+        <td><code>HasShadow</code></td>
+        <td><code>bool</code></td>
+        <td>Enables or disables the elevation shadow. Default is <code>true</code>. Disable when the card is on a same-color surface.</td>
+      </tr>
+      <tr>
+        <td><code>IsOutlined</code></td>
+        <td><code>bool</code></td>
+        <td>When <code>true</code>, renders an <code>Outline</code>-colored border instead of (or in addition to) an elevation shadow. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+        <td><code>HeaderPadding</code></td>
+        <td><code>float</code></td>
+        <td>Internal padding for the header area. Default is <code>16f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>BodyPadding</code></td>
+        <td><code>float</code></td>
+        <td>Internal padding for the body area. Default is <code>16f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>FooterPadding</code></td>
+        <td><code>float</code></td>
+        <td>Internal padding for the footer area. Default is <code>8f</code>.</td>
+      </tr>
+      <tr>
+        <td><code>HeaderHeight</code></td>
+        <td><code>float</code></td>
+        <td>Fixed height of the header area. If <code>0</code> (default), the header auto-sizes to fit its content.</td>
+      </tr>
+      <tr>
+        <td><code>FooterHeight</code></td>
+        <td><code>float</code></td>
+        <td>Fixed height of the footer area. If <code>0</code> (default), the footer auto-sizes to fit its content.</td>
+      </tr>
+      <tr>
+        <td><code>ShowHeader</code></td>
+        <td><code>bool</code></td>
+        <td>Controls header visibility. When <code>false</code> (and no <code>Title</code> is set), the header area collapses to zero height.</td>
+      </tr>
+      <tr>
+        <td><code>ShowFooter</code></td>
+        <td><code>bool</code></td>
+        <td>Controls footer visibility. When <code>false</code>, the footer area collapses to zero height.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="layout-areas">
+  <h2>Layout Areas</h2>
+  <p>The Card control divides its surface into three vertical zones, drawn top-to-bottom:</p>
+
+  <table>
+    <thead>
+      <tr><th>Area</th><th>Position</th><th>Content</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Header</strong></td>
+        <td>Top of the card, below the rounded top corners</td>
+        <td>Renders the <code>Title</code> and <code>Subtitle</code> using theme typography. Optional leading icon can be set. A separator line is drawn between the header and body.</td>
+      </tr>
+      <tr>
+        <td><strong>Body</strong></td>
+        <td>Between the header and footer</td>
+        <td>The main content area. The <code>Content</code> component is drawn here using its own <code>DrawContent</code> method. Its coordinate space is relative to the body's top-left corner.</td>
+      </tr>
+      <tr>
+        <td><strong>Footer</strong></td>
+        <td>Bottom of the card, above the rounded bottom corners</td>
+        <td>Optional action area. Typically contains <code>Button</code> components arranged horizontally (right-aligned by default). A separator line is drawn between the body and footer.</td>
+      </tr>
+      <tr>
+        <td><strong>Image</strong></td>
+        <td>Top of the card, above the header</td>
+        <td>Optional hero image. An <code>SKBitmap</code> rendered full-width with a <code>16:9</code> aspect ratio. The image clips to the card's corner radius.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="admonition note">
+    <p class="admonition-title">Note</p>
+    <p>The header, body, and footer are rendered as separate clip regions. Content in the body area cannot overflow into the header or footer zones. Use a <code>ScrollContainer</code> as the <code>Content</code> component to handle overflow.</p>
+  </div>
+</section>
+
+<section class="section" id="code-example">
+  <h2>Code Example</h2>
+
+  <div class="code-example">
+    <h3>Basic Card with Title and Content</h3>
+    <pre><code class="language-csharp">var contentLabel = new Label
+{
+    Text = "This is the card body content.\nIt can contain any SkiaComponent.",
+    X = 0,
+    Y = 0,
+    Width = 300,
+    Height = 80
+};
+contentLabel.Initialize();
+
+var card = new Card
+{
+    Title = "Settings",
+    Subtitle = "Configure your preferences",
+    X = 50,
+    Y = 50,
+    Width = 350,
+    Height = 200,
+    Elevation = 2,
+    CornerRadius = 12f,
+    HasShadow = true,
+    Content = contentLabel
+};
+
+card.Initialize();
+drawingManager.AddComponent(card);
+canvas.Invalidate();</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Card with Header Image and Footer Actions</h3>
+    <pre><code class="language-csharp">var heroBitmap = SKBitmap.Decode("path/to/image.png");
+
+var closeButton = new Button
+{
+    Text = "Close",
+    ButtonStyle = ButtonStyle.Text,
+    X = 0, Y = 0,
+    Width = 80, Height = 36
+};
+closeButton.Initialize();
+
+var saveButton = new Button
+{
+    Text = "Save",
+    ButtonStyle = ButtonStyle.Filled,
+    X = 90, Y = 0,
+    Width = 80, Height = 36
+};
+saveButton.Initialize();
+
+var footerContainer = new Container
+{
+    X = 0, Y = 0,
+    Width = 350, Height = 44,
+    Children = new List<SkiaComponent> { closeButton, saveButton }
+};
+
+var bodyText = new Label
+{
+    Text = "Project configuration saved successfully.",
+    X = 0, Y = 0,
+    Width = 300, Height = 60
+};
+bodyText.Initialize();
+
+var card = new Card
+{
+    Title = "Project Status",
+    Image = heroBitmap,
+    Content = bodyText,
+    Footer = footerContainer,
+    ShowFooter = true,
+    X = 50, Y = 50,
+    Width = 350,
+    Elevation = 3
+};
+
+card.Initialize();
+drawingManager.AddComponent(card);</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Outlined Card (No Shadow)</h3>
+    <pre><code class="language-csharp">var card = new Card
+{
+    Title = "Quick Actions",
+    IsOutlined = true,
+    HasShadow = false,
+    Elevation = 0,
+    CornerRadius = 8f,
+    X = 450,
+    Y = 50,
+    Width = 300,
+    Height = 160
+};
+
+card.Initialize();
+drawingManager.AddComponent(card);</code></pre>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

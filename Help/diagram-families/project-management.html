@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Management Diagram Family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="diagram-families/flowchart.html">Diagram Families</a><span>&rsaquo;</span> <span>Project Management Diagram Family</span></nav><div class="page-header"><h1>Project Management Diagram Family</h1><p class="page-subtitle">Project management diagrams with 13 node types including tasks, milestones, Gantt bars, resources, risks, and critical path visualization.</p></div>
+<div class="toc"><h3>Table of Contents</h3><ul><li><a href="#overview">Overview</a></li><li><a href="#node-types">Node Types</a></li><li><a href="#ports">Connection Points</a></li><li><a href="#conventions">Connection Conventions</a></li><li><a href="#example">Usage Example</a></li></ul></div><section class="section" id="overview"><h2>Overview</h2><p><strong>Base Control:</strong> <code>PMControl : MaterialControl</code><br><strong>Namespace:</strong> <code>Beep.Skia.PM</code></p><p>The <strong>PMControl</strong> is the root control for this diagram family. It inherits <code>MaterialControl</code> and provides shared port management, styling, and template methods for all nodes in the family.</p><p>This family contains <strong>12 node types</strong>.</p></section><section class="section" id="node-types"><h2>Node Types</h2><table><thead><tr><th>Node Class</th><th>Shape</th><th>Description</th></tr></thead><tbody><tr><td><code>TaskNode</code></td><td>Rectangle with bars</td><td>Work task with duration, start/end dates, completion %.</td></tr>
+<tr><td><code>MilestoneNode</code></td><td>Diamond</td><td>Key milestone with target date.</td></tr>
+<tr><td><code>PhaseNode</code></td><td>Rounded rectangle</td><td>Project phase grouping tasks.</td></tr>
+<tr><td><code>SummaryNode</code></td><td>Black bar/rectangle</td><td>Summary task aggregating child tasks.</td></tr>
+<tr><td><code>DependencyNode</code></td><td>Arrow/diamond</td><td>Task dependency (FS, FF, SS, SF).</td></tr>
+<tr><td><code>GanttBarNode</code></td><td>Horizontal bar</td><td>Visual Gantt chart bar representing task duration.</td></tr>
+<tr><td><code>ResourceNode</code></td><td>Person/resource icon</td><td>Team member or resource with allocation %.</td></tr>
+<tr><td><code>BudgetNode</code></td><td>Dollar/metric rectangle</td><td>Budget/cost tracking with planned vs actual.</td></tr>
+<tr><td><code>CriticalPathNode</code></td><td>Red-highlighted path</td><td>Critical path indicator for longest dependency chain.</td></tr>
+<tr><td><code>DeliverableNode</code></td><td>Package/box icon</td><td>Project deliverable with acceptance criteria.</td></tr>
+<tr><td><code>IssueNode</code></td><td>Warning triangle</td><td>Issue/bug tracker with severity and status.</td></tr>
+<tr><td><code>RiskNode</code></td><td>Risk matrix rectangle</td><td>Risk with probability, impact, and mitigation plan.</td></tr></tbody></table></section><div id="tasknode"><h3>TaskNode</h3><p>Work task with duration, start/end dates, completion %.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with bars</td></tr><tr><th>Input Ports</th><td>1 (left)</td></tr><tr><th>Output Ports</th><td>1 (right)</td></tr></table></div><div id="milestonenode"><h3>MilestoneNode</h3><p>Key milestone with target date.</p><table><tr><th style="width:30%">Shape</th><td>Diamond</td></tr><tr><th>Input Ports</th><td>1+</td></tr><tr><th>Output Ports</th><td>1+</td></tr></table></div><div id="phasenode"><h3>PhaseNode</h3><p>Project phase grouping tasks.</p><table><tr><th style="width:30%">Shape</th><td>Rounded rectangle</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="summarynode"><h3>SummaryNode</h3><p>Summary task aggregating child tasks.</p><table><tr><th style="width:30%">Shape</th><td>Black bar/rectangle</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="dependencynode"><h3>DependencyNode</h3><p>Task dependency (FS, FF, SS, SF).</p><table><tr><th style="width:30%">Shape</th><td>Arrow/diamond</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="ganttbarnode"><h3>GanttBarNode</h3><p>Visual Gantt chart bar representing task duration.</p><table><tr><th style="width:30%">Shape</th><td>Horizontal bar</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="resourcenode"><h3>ResourceNode</h3><p>Team member or resource with allocation %.</p><table><tr><th style="width:30%">Shape</th><td>Person/resource icon</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="budgetnode"><h3>BudgetNode</h3><p>Budget/cost tracking with planned vs actual.</p><table><tr><th style="width:30%">Shape</th><td>Dollar/metric rectangle</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="criticalpathnode"><h3>CriticalPathNode</h3><p>Critical path indicator for longest dependency chain.</p><table><tr><th style="width:30%">Shape</th><td>Red-highlighted path</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="deliverablenode"><h3>DeliverableNode</h3><p>Project deliverable with acceptance criteria.</p><table><tr><th style="width:30%">Shape</th><td>Package/box icon</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="issuenode"><h3>IssueNode</h3><p>Issue/bug tracker with severity and status.</p><table><tr><th style="width:30%">Shape</th><td>Warning triangle</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><div id="risknode"><h3>RiskNode</h3><p>Risk with probability, impact, and mitigation plan.</p><table><tr><th style="width:30%">Shape</th><td>Risk matrix rectangle</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>1</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty when the node moves or resizes.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>TaskNode</code></td><td>1 (left)</td><td>1 (right)</td><td>—</td></tr>
+<tr><td><code>MilestoneNode</code></td><td>1+</td><td>1+</td><td>—</td></tr>
+<tr><td><code>PhaseNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>SummaryNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>DependencyNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>GanttBarNode</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>ResourceNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>BudgetNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>CriticalPathNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>DeliverableNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>IssueNode</code></td><td>1</td><td>1</td><td>—</td></tr>
+<tr><td><code>RiskNode</code></td><td>1</td><td>1</td><td>—</td></tr></tbody></table></section><section class="section" id="conventions"><h2>Connection Conventions</h2><p>When building diagrams with this family, follow these conventions:</p><ul><li>Task dependencies follow standard FS/FF/SS/SF notation</li><li>Gantt bars are time-scaled horizontally</li><li>Critical path is highlighted in red/orange</li><li>Milestones typically connect to preceding tasks</li></ul></section><section class="section" id="example"><h2>Usage Example</h2><p>Complete example showing creation, node placement, and connection:</p><div class="code-example"><h3>C# Example</h3>
+<pre><code class="language-csharp">var pm = new PMControl
+{
+    X = 50, Y = 50,
+    Width = 700, Height = 400
+};
+drawingManager.AddComponent(pm);
+
+var task = new TaskNode
+{
+    X = 150, Y = 100,
+    Text = "Implement Login",
+    Duration = TimeSpan.FromDays(5)
+};
+var milestone = new MilestoneNode
+{
+    X = 400, Y = 100,
+    Text = "M1: Alpha Release",
+    Date = DateTime.Now.AddDays(30)
+};
+var dep = new DependencyNode
+{
+    X = 300, Y = 100,
+    DependencyType = "FS" // Finish-to-Start
+};
+
+drawingManager.AddComponent(task);
+drawingManager.AddComponent(milestone);
+drawingManager.AddComponent(dep);
+
+drawingManager.Connect(task.OutPoints[0], dep.InPoints[0]);
+drawingManager.Connect(dep.OutPoints[0], milestone.InPoints[0]);</code></pre></div></section>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

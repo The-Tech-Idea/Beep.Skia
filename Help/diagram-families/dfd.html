@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DFD (Data Flow Diagram) Family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="diagram-families/flowchart.html">Diagram Families</a><span>&rsaquo;</span> <span>DFD (Data Flow Diagram) Family</span></nav><div class="page-header"><h1>DFD (Data Flow Diagram) Family</h1><p class="page-subtitle">Data Flow Diagrams with 19 node types including Gane-Sarson and Yourdon notation processes, data stores, external entities, and trust boundaries.</p></div>
+<div class="toc"><h3>Table of Contents</h3><ul><li><a href="#overview">Overview</a></li><li><a href="#node-types">Node Types</a></li><li><a href="#ports">Connection Points</a></li><li><a href="#conventions">Connection Conventions</a></li><li><a href="#example">Usage Example</a></li></ul></div><section class="section" id="overview"><h2>Overview</h2><p><strong>Base Control:</strong> <code>DFDControl : MaterialControl</code><br><strong>Namespace:</strong> <code>Beep.Skia.DFD</code></p><p>The <strong>DFDControl</strong> is the root control for this diagram family. It inherits <code>MaterialControl</code> and provides shared port management, styling, and template methods for all nodes in the family.</p><p>This family contains <strong>18 node types</strong>.</p></section><section class="section" id="node-types"><h2>Node Types</h2><table><thead><tr><th>Node Class</th><th>Shape</th><th>Description</th></tr></thead><tbody><tr><td><code>DFDProcess</code></td><td>Circle</td><td>Standard process transforming data flows.</td></tr>
+<tr><td><code>DFDProcessCircle</code></td><td>Circle</td><td>Simple circle notation process.</td></tr>
+<tr><td><code>DFDProcessGaneSarson</code></td><td>Rounded rectangle</td><td>Gane-Sarson notation process with ID and location.</td></tr>
+<tr><td><code>DFDProcessOval</code></td><td>Oval</td><td>Oval-shaped process variant.</td></tr>
+<tr><td><code>DFDProcessNumbered</code></td><td>Rounded rectangle + number</td><td>Numbered process for decomposition.</td></tr>
+<tr><td><code>DFDProcessMultiIO</code></td><td>Rectangle with multiple ports</td><td>Process with multiple input/output ports.</td></tr>
+<tr><td><code>DFDProcessGroupBoundary</code></td><td>Dashed rectangle</td><td>Container grouping related processes.</td></tr>
+<tr><td><code>DFDDataStore</code></td><td>Open-ended rectangle</td><td>Standard data store notation.</td></tr>
+<tr><td><code>DFDDataStoreCylinder</code></td><td>Cylinder</td><td>Database-style data store.</td></tr>
+<tr><td><code>DFDDataStoreOpenEnded</code></td><td>Rectangle open right</td><td>Yourdon-style open-ended store.</td></tr>
+<tr><td><code>DFDDataStoreParallel</code></td><td>Double line rectangle</td><td>Parallel data store notation.</td></tr>
+<tr><td><code>DFDDataStoreShared</code></td><td>Rectangle with label</td><td>Shared data store across systems.</td></tr>
+<tr><td><code>DFDExternalEntity</code></td><td>Rectangle</td><td>External entity (source/sink of data).</td></tr>
+<tr><td><code>DFDExternalEntityGaneSarson</code></td><td>Rectangle with shadow</td><td>Gane-Sarson external entity notation.</td></tr>
+<tr><td><code>DFDNote</code></td><td>Rounded note</td><td>Annotation/comment node.</td></tr>
+<tr><td><code>DFDTrustBoundary</code></td><td>Dashed enclosure</td><td>Trust/security boundary marking.</td></tr>
+<tr><td><code>DFDSubsystemContainer</code></td><td>Rounded rectangle container</td><td>Container for decomposed subsystem.</td></tr>
+<tr><td><code>DFDControl</code></td><td>Database container</td><td>Control and coordination process.</td></tr></tbody></table></section><div id="dfdprocess"><h3>DFDProcess</h3><p>Standard process transforming data flows.</p><table><tr><th style="width:30%">Shape</th><td>Circle</td></tr><tr><th>Input Ports</th><td>2+ (any side)</td></tr><tr><th>Output Ports</th><td>2+ (any side)</td></tr></table></div><div id="dfdprocesscircle"><h3>DFDProcessCircle</h3><p>Simple circle notation process.</p><table><tr><th style="width:30%">Shape</th><td>Circle</td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>2+</td></tr></table></div><div id="dfdprocessganesarson"><h3>DFDProcessGaneSarson</h3><p>Gane-Sarson notation process with ID and location.</p><table><tr><th style="width:30%">Shape</th><td>Rounded rectangle</td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>2+</td></tr></table></div><div id="dfdprocessoval"><h3>DFDProcessOval</h3><p>Oval-shaped process variant.</p><table><tr><th style="width:30%">Shape</th><td>Oval</td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>2+</td></tr></table></div><div id="dfdprocessnumbered"><h3>DFDProcessNumbered</h3><p>Numbered process for decomposition.</p><table><tr><th style="width:30%">Shape</th><td>Rounded rectangle + number</td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>2+</td></tr></table></div><div id="dfdprocessmultiio"><h3>DFDProcessMultiIO</h3><p>Process with multiple input/output ports.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with multiple ports</td></tr><tr><th>Input Ports</th><td>4+</td></tr><tr><th>Output Ports</th><td>4+</td></tr></table></div><div id="dfdprocessgroupboundary"><h3>DFDProcessGroupBoundary</h3><p>Container grouping related processes.</p><table><tr><th style="width:30%">Shape</th><td>Dashed rectangle</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="dfddatastore"><h3>DFDDataStore</h3><p>Standard data store notation.</p><table><tr><th style="width:30%">Shape</th><td>Open-ended rectangle</td></tr><tr><th>Input Ports</th><td>2 (left/right)</td></tr><tr><th>Output Ports</th><td>2 (left/right)</td></tr></table></div><div id="dfddatastorecylinder"><h3>DFDDataStoreCylinder</h3><p>Database-style data store.</p><table><tr><th style="width:30%">Shape</th><td>Cylinder</td></tr><tr><th>Input Ports</th><td>2</td></tr><tr><th>Output Ports</th><td>2</td></tr></table></div><div id="dfddatastoreopenended"><h3>DFDDataStoreOpenEnded</h3><p>Yourdon-style open-ended store.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle open right</td></tr><tr><th>Input Ports</th><td>2</td></tr><tr><th>Output Ports</th><td>2</td></tr></table></div><div id="dfddatastoreparallel"><h3>DFDDataStoreParallel</h3><p>Parallel data store notation.</p><table><tr><th style="width:30%">Shape</th><td>Double line rectangle</td></tr><tr><th>Input Ports</th><td>2</td></tr><tr><th>Output Ports</th><td>2</td></tr></table></div><div id="dfddatastoreshared"><h3>DFDDataStoreShared</h3><p>Shared data store across systems.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with label</td></tr><tr><th>Input Ports</th><td>2</td></tr><tr><th>Output Ports</th><td>2</td></tr></table></div><div id="dfdexternalentity"><h3>DFDExternalEntity</h3><p>External entity (source/sink of data).</p><table><tr><th style="width:30%">Shape</th><td>Rectangle</td></tr><tr><th>Input Ports</th><td>2</td></tr><tr><th>Output Ports</th><td>2</td></tr></table></div><div id="dfdexternalentityganesarson"><h3>DFDExternalEntityGaneSarson</h3><p>Gane-Sarson external entity notation.</p><table><tr><th style="width:30%">Shape</th><td>Rectangle with shadow</td></tr><tr><th>Input Ports</th><td>2</td></tr><tr><th>Output Ports</th><td>2</td></tr></table></div><div id="dfdnote"><h3>DFDNote</h3><p>Annotation/comment node.</p><table><tr><th style="width:30%">Shape</th><td>Rounded note</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="dfdtrustboundary"><h3>DFDTrustBoundary</h3><p>Trust/security boundary marking.</p><table><tr><th style="width:30%">Shape</th><td>Dashed enclosure</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><div id="dfdsubsystemcontainer"><h3>DFDSubsystemContainer</h3><p>Container for decomposed subsystem.</p><table><tr><th style="width:30%">Shape</th><td>Rounded rectangle container</td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>2+</td></tr></table></div><div id="dfdcontrol"><h3>DFDControl</h3><p>Control and coordination process.</p><table><tr><th style="width:30%">Shape</th><td>Database container</td></tr><tr><th>Input Ports</th><td>2+</td></tr><tr><th>Output Ports</th><td>2+</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty when the node moves or resizes.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>DFDProcess</code></td><td>2+ (any side)</td><td>2+ (any side)</td><td>—</td></tr>
+<tr><td><code>DFDProcessCircle</code></td><td>2+</td><td>2+</td><td>—</td></tr>
+<tr><td><code>DFDProcessGaneSarson</code></td><td>2+</td><td>2+</td><td>—</td></tr>
+<tr><td><code>DFDProcessOval</code></td><td>2+</td><td>2+</td><td>—</td></tr>
+<tr><td><code>DFDProcessNumbered</code></td><td>2+</td><td>2+</td><td>—</td></tr>
+<tr><td><code>DFDProcessMultiIO</code></td><td>4+</td><td>4+</td><td>—</td></tr>
+<tr><td><code>DFDProcessGroupBoundary</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>DFDDataStore</code></td><td>2 (left/right)</td><td>2 (left/right)</td><td>—</td></tr>
+<tr><td><code>DFDDataStoreCylinder</code></td><td>2</td><td>2</td><td>—</td></tr>
+<tr><td><code>DFDDataStoreOpenEnded</code></td><td>2</td><td>2</td><td>—</td></tr>
+<tr><td><code>DFDDataStoreParallel</code></td><td>2</td><td>2</td><td>—</td></tr>
+<tr><td><code>DFDDataStoreShared</code></td><td>2</td><td>2</td><td>—</td></tr>
+<tr><td><code>DFDExternalEntity</code></td><td>2</td><td>2</td><td>—</td></tr>
+<tr><td><code>DFDExternalEntityGaneSarson</code></td><td>2</td><td>2</td><td>—</td></tr>
+<tr><td><code>DFDNote</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>DFDTrustBoundary</code></td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td><code>DFDSubsystemContainer</code></td><td>2+</td><td>2+</td><td>—</td></tr>
+<tr><td><code>DFDControl</code></td><td>2+</td><td>2+</td><td>—</td></tr></tbody></table></section><section class="section" id="conventions"><h2>Connection Conventions</h2><p>When building diagrams with this family, follow these conventions:</p><ul><li>Processes use consistent naming: 'Verb + Object'</li><li>Data flows are labeled with the data being transferred</li><li>External entities represent systems outside scope</li><li>Data stores use DB cylinder or open-ended rectangle shapes</li></ul></section><section class="section" id="example"><h2>Usage Example</h2><p>Complete example showing creation, node placement, and connection:</p><div class="code-example"><h3>C# Example</h3>
+<pre><code class="language-csharp">var dfd = new DFDControl
+{
+    X = 100, Y = 50,
+    Width = 600, Height = 400
+};
+drawingManager.AddComponent(dfd);
+
+var proc = new DFDProcess { X = 300, Y = 150, Text = "Process Order" };
+var store = new DFDDataStore { X = 450, Y = 80, Text = "Orders DB" };
+var ext = new DFDExternalEntity { X = 150, Y = 80, Text = "Customer" };
+
+drawingManager.AddComponent(proc);
+drawingManager.AddComponent(store);
+drawingManager.AddComponent(ext);
+
+drawingManager.Connect(ext.OutPoints[0], proc.InPoints[0]);
+drawingManager.Connect(proc.OutPoints[0], store.InPoints[0]);</code></pre></div></section>
+</div></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>
