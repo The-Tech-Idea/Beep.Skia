@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="4.150.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Beep.Skia\Beep.Skia.csproj" />
     <ProjectReference Include="..\Beep.Skia.Model\Beep.Skia.Model.csproj" />
   </ItemGroup>
