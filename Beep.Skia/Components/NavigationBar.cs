@@ -440,7 +440,7 @@ namespace Beep.Skia.Components
                 paint.Color = IsSelected ? _navigationBar.ActiveColor : _navigationBar.InactiveColor;
                 paint.IsAntialias = true;
                 string displayIcon = string.IsNullOrEmpty(_icon) ? "●" : _icon;
-                using (var iconFont = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), _navigationBar.IconSize))
+                using (var iconFont = new SKFont(TypefaceCache.Get(null, SKFontStyle.Normal), _navigationBar.IconSize))
                 {
                     canvas.DrawText(displayIcon, centerX, iconY, SKTextAlign.Center, iconFont, paint);
                 }
@@ -450,7 +450,7 @@ namespace Beep.Skia.Components
                 {
                     paint.Color = IsSelected ? _navigationBar.ActiveColor : _navigationBar.InactiveColor;
                     var style = IsSelected ? SKFontStyle.Bold : SKFontStyle.Normal;
-                    using (var labelFont = new SKFont(SKTypeface.FromFamilyName(null, style), _navigationBar.LabelFontSize))
+                    using (var labelFont = new SKFont(TypefaceCache.Get(null, style), _navigationBar.LabelFontSize))
                     {
                         canvas.DrawText(_label, centerX, labelY, SKTextAlign.Center, labelFont, paint);
                     }
@@ -472,7 +472,7 @@ namespace Beep.Skia.Components
                     if (!string.IsNullOrEmpty(BadgeText))
                     {
                         paint.Color = MaterialDesignColors.OnError;
-                        using (var badgeFont = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Bold), 10f))
+                        using (var badgeFont = new SKFont(TypefaceCache.Get(null, SKFontStyle.Bold), 10f))
                         {
                             canvas.DrawText(BadgeText, badgeX, badgeY + 3, SKTextAlign.Center, badgeFont, paint);
                         }

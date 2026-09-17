@@ -37,13 +37,6 @@ namespace Beep.Skia
             {
                 if (_x != value)
                 {
-                    try
-                    {
-                        var logPath = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
-                        File.AppendAllText(logPath, $"[SkiaComponent.PositionChange] {DateTime.UtcNow:o} Type={GetType().FullName} Name={Name} X:{_x}->{value} Y:{Y}\n");
-                    }
-                    catch { }
-
                     _x = value;
                     UpdateBounds();
                 }
@@ -61,28 +54,45 @@ namespace Beep.Skia
             {
                 if (_y != value)
                 {
-                    try
-                    {
-                        var logPath = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
-                        File.AppendAllText(logPath, $"[SkiaComponent.PositionChange] {DateTime.UtcNow:o} Type={GetType().FullName} Name={Name} X:{X} Y:{_y}->{value}\n");
-                    }
-                    catch { }
-
                     _y = value;
                     UpdateBounds();
                 }
             }
         }
 
+        private float _width;
         /// <summary>
         /// Gets or sets the width of this component.
         /// </summary>
-        public float Width { get; set; }
+        public float Width
+        {
+            get => _width;
+            set
+            {
+                if (_width != value)
+                {
+                    _width = value;
+                    UpdateBounds();
+                }
+            }
+        }
 
+        private float _height;
         /// <summary>
         /// Gets or sets the height of this component.
         /// </summary>
-        public float Height { get; set; }
+        public float Height
+        {
+            get => _height;
+            set
+            {
+                if (_height != value)
+                {
+                    _height = value;
+                    UpdateBounds();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the name or identifier of this component.
@@ -601,39 +611,12 @@ namespace Beep.Skia
         /// <param name="context">The drawing context.</param>
         public virtual void Update(DrawingContext context)
         {
-            // Aggressive logging at method entry so we capture calls even when Update returns early.
-            try
-            {
-                var logPath = Path.Combine(Path.GetTempPath(), "beepskia_update.log");
-                File.AppendAllText(logPath, $"[SkiaComponent.Update.Entry] {DateTime.UtcNow:o} Type={GetType().FullName} State={State} X={X} Y={Y} W={Width} H={Height}\n");
-
-                // also mirror to main render log for convenience
-                var mainLog = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
-                File.AppendAllText(mainLog, $"[SkiaComponent.Update.Entry] {DateTime.UtcNow:o} Type={GetType().FullName} State={State}\\n");
-            }
-            catch { /* swallow logging errors */ }
-
             if (State == ComponentState.Disposing || State == ComponentState.Inactive)
             {
-                try
-                {
-                    var logPath = Path.Combine(Path.GetTempPath(), "beepskia_update.log");
-                    File.AppendAllText(logPath, $"[SkiaComponent.Update.EarlyReturn] {DateTime.UtcNow:o} Type={GetType().FullName} State={State}\\n");
-                }
-                catch { }
-
                 return;
             }
 
             State = ComponentState.Updating;
-
-            // Lightweight diagnostic logging to help debug why Bounds may remain empty at runtime.
-            try
-            {
-                var logPath = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
-                File.AppendAllText(logPath, $"[SkiaComponent.Update] {GetType().FullName} X={X},Y={Y},W={Width},H={Height}\n");
-            }
-            catch { /* swallow logging errors */ }
 
             UpdateBounds();
             UpdateChildren(context);
@@ -647,13 +630,6 @@ namespace Beep.Skia
         protected virtual void UpdateBounds()
         {
             Bounds = new SKRect(X, Y, X + Width, Y + Height);
-
-            try
-            {
-                var logPath = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
-                File.AppendAllText(logPath, $"[SkiaComponent.UpdateBounds] {GetType().FullName} Bounds={Bounds}\n");
-            }
-            catch { /* swallow logging errors */ }
         }
 
         /// <summary>

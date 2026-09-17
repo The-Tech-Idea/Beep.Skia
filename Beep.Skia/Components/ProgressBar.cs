@@ -330,10 +330,11 @@ namespace Beep.Skia.Components
                 {
                     // Draw arc from 12 o'clock position
                     float sweepAngle = _progress * 360.0f;
-                    using (var path = new SKPath())
+                    using (var pathBuilder = new SKPathBuilder())
                     {
-                        path.AddArc(new SKRect(centerX - radius, centerY - radius, centerX + radius, centerY + radius),
+                        pathBuilder.AddArc(new SKRect(centerX - radius, centerY - radius, centerX + radius, centerY + radius),
                                   -90, sweepAngle);
+                        using var path = pathBuilder.Detach();
                         canvas.DrawPath(path, progressPaint);
                     }
                 }
@@ -361,10 +362,11 @@ namespace Beep.Skia.Components
                 float segmentAngle = 90.0f; // 90-degree arc
                 float startAngle = -90 + (_animationOffset * 360.0f);
 
-                using (var path = new SKPath())
+                using (var pathBuilder = new SKPathBuilder())
                 {
-                    path.AddArc(new SKRect(centerX - radius, centerY - radius, centerX + radius, centerY + radius),
+                    pathBuilder.AddArc(new SKRect(centerX - radius, centerY - radius, centerX + radius, centerY + radius),
                               startAngle, segmentAngle);
+                    using var path = pathBuilder.Detach();
                     canvas.DrawPath(path, progressPaint);
                 }
             }

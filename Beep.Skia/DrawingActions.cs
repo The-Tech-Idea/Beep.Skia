@@ -1,16 +1,19 @@
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Beep.Skia.Model;
 namespace Beep.Skia
 {
     /// <summary>
     /// Base class for all drawing actions that can be undone/redone.
+    /// Actions are created after their change has been applied by the caller;
+    /// <see cref="Execute"/> re-applies the change when redone, <see cref="Undo"/> reverses it.
     /// </summary>
     public abstract class DrawingAction
     {
         /// <summary>
-        /// Executes the action.
+        /// Re-applies the action (used for redo).
         /// </summary>
         public abstract void Execute();
 
@@ -36,7 +39,7 @@ namespace Beep.Skia
 
         public override void Execute()
         {
-            // Component is already added in the manager
+            _manager.AddComponent(_component);
         }
 
         public override void Undo()
@@ -63,7 +66,7 @@ namespace Beep.Skia
 
         public override void Execute()
         {
-            // Component is already removed in the manager
+            _manager.RemoveComponent(_component);
         }
 
         public override void Undo()
@@ -94,7 +97,10 @@ namespace Beep.Skia
 
         public override void Execute()
         {
-            // Components are already deleted in the manager
+            foreach (var component in _components.ToList())
+            {
+                _manager.RemoveComponent(component);
+            }
         }
 
         public override void Undo()
@@ -128,14 +134,19 @@ namespace Beep.Skia
 
         public override void Execute()
         {
-            // Components are already moved in the manager
+            foreach (var component in _components)
+            {
+                component.MoveBy(_offset.X, _offset.Y);
+                _manager.RefreshConnectionPoints(component);
+            }
         }
 
         public override void Undo()
         {
             foreach (var component in _components)
             {
-                component.Move(new SKPoint(-_offset.X, -_offset.Y));
+                component.MoveBy(-_offset.X, -_offset.Y);
+                _manager.RefreshConnectionPoints(component);
             }
         }
     }
@@ -160,7 +171,7 @@ namespace Beep.Skia
 
         public override void Execute()
         {
-            // Components are already connected in the manager
+            _manager.ConnectComponents(_component1, _component2);
         }
 
         public override void Undo()
@@ -189,7 +200,7 @@ namespace Beep.Skia
 
         public override void Execute()
         {
-            // Components are already disconnected in the manager
+            _manager.DisconnectComponents(_component1, _component2);
         }
 
         public override void Undo()
@@ -205,15 +216,25 @@ namespace Beep.Skia
     {
         private readonly DrawingManager _manager;
         private readonly List<SkiaComponent> _components;
+        private readonly List<IConnectionLine> _lines;
 
-        public PasteComponentsAction(DrawingManager manager, List<SkiaComponent> components)
+        public PasteComponentsAction(DrawingManager manager, List<SkiaComponent> components, List<IConnectionLine> lines = null)
         {
             _manager = manager;
-            _components = components;
+            _components = components ?? new List<SkiaComponent>();
+            _lines = lines ?? new List<IConnectionLine>();
         }
 
         public override void Execute()
         {
+            foreach (var component in _components)
+            {
+                _manager.AddComponent(component);
+            }
+            foreach (var line in _lines)
+            {
+                _manager.AddLine(line);
+            }
         }
 
         public override void Undo()
@@ -233,16 +254,25 @@ namespace Beep.Skia
         private readonly DrawingManager _manager;
         private readonly List<SkiaComponent> _components;
         private readonly List<SKPoint> _beforePositions;
+        private readonly List<SKPoint> _afterPositions;
 
         public AlignComponentsAction(DrawingManager manager, List<SkiaComponent> components, List<SKPoint> beforePositions)
         {
             _manager = manager;
             _components = components;
             _beforePositions = beforePositions;
+            // Captured after the alignment was applied by the caller.
+            _afterPositions = components?.Select(c => new SKPoint(c.X, c.Y)).ToList() ?? new List<SKPoint>();
         }
 
         public override void Execute()
         {
+            for (int i = 0; i < Math.Min(_components.Count, _afterPositions.Count); i++)
+            {
+                _components[i].X = _afterPositions[i].X;
+                _components[i].Y = _afterPositions[i].Y;
+                _manager.RefreshConnectionPoints(_components[i]);
+            }
         }
 
         public override void Undo()
@@ -282,7 +312,7 @@ namespace Beep.Skia
 
         public override void Execute()
         {
-            // Line is already moved in the manager
+            _manager.MoveConnectionLine(_line, _newStartPoint, _newEndPoint);
         }
 
         public override void Undo()
@@ -316,24 +346,20 @@ namespace Beep.Skia
 
         public override void Execute()
         {
-            // Nodes are already connected in the manager
+            _outputPoint.IsAvailable = false;
+            _inputPoint.IsAvailable = false;
+            _outputPoint.Connection = _inputPoint;
+            _inputPoint.Connection = _outputPoint;
+            _manager.AddLine(_line);
         }
 
         public override void Undo()
         {
-            // Disconnect the automation nodes
             _outputPoint.IsAvailable = true;
             _inputPoint.IsAvailable = true;
             _outputPoint.Connection = null;
             _inputPoint.Connection = null;
-
-            // Remove the line from the manager's lines collection
-            var linesField = _manager.GetType().GetField("_lines", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (linesField != null)
-            {
-                var lines = linesField.GetValue(_manager) as System.Collections.Generic.List<IConnectionLine>;
-                lines?.Remove(_line);
-            }
+            _manager.RemoveLine(_line);
         }
     }
 }

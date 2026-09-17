@@ -107,7 +107,7 @@ namespace Beep.Skia.Components
             return null;
         }
 
-        public override void DrawContent(SKCanvas canvas)
+        protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
             _lastBounds = new SKRect(0, 0, Width, Height);
             var layout = CalculateLaneLayout();
@@ -121,10 +121,11 @@ namespace Beep.Skia.Components
             using var headerTextPaint = new SKPaint
             {
                 Color = MaterialColors.OnSurface,
-                TextSize = 12f,
-                IsAntialias = true,
-                Typeface = SKTypeface.FromFamilyName("Segoe UI", SKFontStyleWeight.SemiBold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright)
+                IsAntialias = true
             };
+            using var headerFont = new SKFont(
+                TypefaceCache.Get("Segoe UI", SKFontStyleWeight.SemiBold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright),
+                12f);
             using var borderPaint = new SKPaint
             {
                 Color = MaterialColors.Outline,
@@ -160,17 +161,17 @@ namespace Beep.Skia.Components
                 if (_orientationHorizontal)
                 {
                     textX = headerRect.Left + 8f;
-                    textY = headerRect.Top + (_headerSize + headerTextPaint.TextSize) / 2f - 2f;
+                    textY = headerRect.Top + (_headerSize + headerFont.Size) / 2f - 2f;
                 }
                 else
                 {
                     canvas.Save();
                     canvas.RotateDegrees(-90, headerRect.Left + _headerSize / 2f, headerRect.Top + headerRect.Height / 2f);
                     textX = headerRect.Left + 8f;
-                    textY = headerRect.Top + headerRect.Height / 2f + headerTextPaint.TextSize / 3f;
+                    textY = headerRect.Top + headerRect.Height / 2f + headerFont.Size / 3f;
                 }
 
-                canvas.DrawText(lane.Title, textX, textY, headerTextPaint);
+                canvas.DrawText(lane.Title, textX, textY, SKTextAlign.Left, headerFont, headerTextPaint);
 
                 if (!_orientationHorizontal)
                     canvas.Restore();

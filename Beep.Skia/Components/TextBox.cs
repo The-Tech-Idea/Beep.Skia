@@ -80,6 +80,40 @@ namespace Beep.Skia.Components
         }
 
         /// <summary>
+        /// Gets the start index of the current selection (-1 when nothing is selected).
+        /// </summary>
+        public int SelectionStart => _selectionStart;
+
+        /// <summary>
+        /// Gets the end index of the current selection (-1 when nothing is selected).
+        /// </summary>
+        public int SelectionEnd => _selectionEnd;
+
+        /// <summary>
+        /// Gets whether any text is currently selected.
+        /// </summary>
+        public bool HasSelection => _selectionStart >= 0 && _selectionEnd > _selectionStart;
+
+        /// <summary>
+        /// Gets or sets the highlight color used for selected text.
+        /// </summary>
+        public SKColor SelectionColor { get; set; } = MaterialControl.MaterialColors.Primary.WithAlpha(70);
+
+        /// <summary>
+        /// Gets the currently selected text (empty when nothing is selected).
+        /// </summary>
+        public string SelectedText
+        {
+            get
+            {
+                if (!HasSelection) return string.Empty;
+                var start = _selectionStart;
+                var end = Math.Min(_selectionEnd, _text.Length);
+                return end <= start ? string.Empty : _text.Substring(start, end - start);
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the placeholder text.
         /// </summary>
         public string Placeholder
@@ -553,7 +587,7 @@ namespace Beep.Skia.Components
         /// </summary>
         private void DrawLabel(SKCanvas canvas)
         {
-            using var font = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), 12);
+            using var font = new SKFont(TypefaceCache.Get("Roboto", SKFontStyle.Normal), 12);
             using var paint = new SKPaint { Color = _hasFocus || !string.IsNullOrEmpty(_text) ? LabelColor : PlaceholderColor, IsAntialias = true };
             float baseline = Y - 8; // Preserve original positioning logic
             canvas.DrawText(_label, X, baseline, SKTextAlign.Left, font, paint);
@@ -592,7 +626,7 @@ namespace Beep.Skia.Components
         {
             string displayText = GetDisplayText();
             bool isPlaceholder = string.IsNullOrEmpty(displayText);
-            using var font = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), _fontSize);
+            using var font = new SKFont(TypefaceCache.Get("Roboto", SKFontStyle.Normal), _fontSize);
             using var paint = new SKPaint { Color = isPlaceholder ? PlaceholderColor : TextColor, IsAntialias = true };
             string textToDraw = isPlaceholder ? _placeholder : displayText;
             float textX = X + leadingOffset + 16;
@@ -601,8 +635,36 @@ namespace Beep.Skia.Components
             float maxTextWidth = Width - leadingOffset - trailingOffset - 32;
             if (maxTextWidth > 0)
             {
+                DrawSelectionHighlight(canvas, font, displayText, textX, isPlaceholder);
                 canvas.DrawText(textToDraw, textX, baseline, SKTextAlign.Left, font, paint);
             }
+        }
+
+        /// <summary>
+        /// Draws the selection highlight behind the text.
+        /// </summary>
+        private void DrawSelectionHighlight(SKCanvas canvas, SKFont font, string displayText, float textX, bool isPlaceholder)
+        {
+            if (isPlaceholder || !HasSelection) return;
+
+            var start = Math.Max(0, Math.Min(_selectionStart, displayText.Length));
+            var end = Math.Max(start, Math.Min(_selectionEnd, displayText.Length));
+            if (end <= start) return;
+
+            var before = start == 0 ? string.Empty : displayText.Substring(0, start);
+            var selected = displayText.Substring(start, end - start);
+
+            var selectionX = textX + (before.Length == 0 ? 0f : font.MeasureText(before));
+            var selectionWidth = font.MeasureText(selected);
+            if (selectionWidth <= 0) return;
+
+            var metrics = font.Metrics;
+            var midY = Y + Height / 2f;
+            var top = midY - metrics.CapHeight / 2f - 2f;
+            var bottom = midY + metrics.CapHeight / 2f + 2f;
+
+            using var selectionPaint = new SKPaint { Color = SelectionColor, IsAntialias = true, Style = SKPaintStyle.Fill };
+            canvas.DrawRect(new SKRect(selectionX, top, selectionX + selectionWidth, bottom), selectionPaint);
         }
 
         /// <summary>
@@ -612,7 +674,7 @@ namespace Beep.Skia.Components
         {
             if (_cursorPosition < 0 || _cursorPosition > _text.Length) return;
             using var cursorPaint = new SKPaint { Color = TextColor, StrokeWidth = 1, Style = SKPaintStyle.Stroke };
-            using var font = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), _fontSize);
+            using var font = new SKFont(TypefaceCache.Get("Roboto", SKFontStyle.Normal), _fontSize);
             string textBeforeCursor = GetDisplayText().Substring(0, _cursorPosition);
             // Include component X so the caret is in absolute canvas coordinates
             float cursorX = X + leadingOffset + 16;
@@ -632,7 +694,7 @@ namespace Beep.Skia.Components
         /// </summary>
         private void DrawErrorMessage(SKCanvas canvas)
         {
-            using var font = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), 12);
+            using var font = new SKFont(TypefaceCache.Get("Roboto", SKFontStyle.Normal), 12);
             using var paint = new SKPaint { Color = MaterialControl.MaterialColors.Error, IsAntialias = true };
             float baseline = Y + Height + 20;
             canvas.DrawText(_errorMessage, X, baseline, SKTextAlign.Left, font, paint);
@@ -650,7 +712,7 @@ namespace Beep.Skia.Components
                 float leadingOffset = 0f;
                 if (!string.IsNullOrEmpty(_leadingIcon)) leadingOffset = 20 + 24; // keep in sync with DrawLeadingIcon
                 float contentStartX = X + leadingOffset + 16;
-                using var font = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), _fontSize);
+                using var font = new SKFont(TypefaceCache.Get("Roboto", SKFontStyle.Normal), _fontSize);
                 string displayText = GetDisplayText();
                 // Default to end
                 _cursorPosition = displayText.Length;

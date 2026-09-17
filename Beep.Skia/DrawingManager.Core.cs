@@ -2,6 +2,7 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.Versioning;
 using Beep.Skia.Model;
 namespace Beep.Skia
 {
@@ -128,6 +129,12 @@ namespace Beep.Skia
             return _connectionPointsById.TryGetValue(id, out var cp) ? cp : null;
         }
 
+        private static IConnectionPoint FirstOutPoint(SkiaComponent component)
+            => component?.OutConnectionPoints?.FirstOrDefault();
+
+        private static IConnectionPoint FirstInPoint(SkiaComponent component)
+            => component?.InConnectionPoints?.FirstOrDefault();
+
         /// <summary>
         /// Gets the owning component for a connection point.
         /// </summary>
@@ -141,6 +148,13 @@ namespace Beep.Skia
         /// Occurs when the drawing surface needs to be updated.
         /// </summary>
         public event EventHandler<ConnectionEventArgs> DrawSurface;
+
+        /// <summary>
+        /// Optional world-space overlay drawn on interactive renders after components, lines,
+        /// and selection adorners (pan/zoom transform applied). Use for annotations such as
+        /// comment pins. Not included in exports.
+        /// </summary>
+        public Action<SKCanvas> WorldOverlay { get; set; }
 
         /// <summary>
         /// Occurs when a component is dropped.
@@ -356,18 +370,28 @@ namespace Beep.Skia
         /// Builds a serializable DTO representing the current diagram state.
         /// Components are captured minimally (type/geometry/name) and lines capture endpoint connection point IDs.
         /// </summary>
+        /// <summary>
+        /// Replaces non-finite geometry with 0 so a diagram containing NaN/Infinity can still be
+        /// serialized to JSON (which has no representation for those values).
+        /// </summary>
+        private static float SanitizeCoordinate(float value)
+            => float.IsNaN(value) || float.IsInfinity(value) ? 0f : value;
+
         public Beep.Skia.Serialization.DiagramDto ToDto()
         {
-            var dto = new Beep.Skia.Serialization.DiagramDto();
+            var dto = new Beep.Skia.Serialization.DiagramDto
+            {
+                ThemeName = ThemeManager.Current?.Name
+            };
             foreach (var c in _components)
             {
                 var comp = new Beep.Skia.Serialization.ComponentDto
                 {
                     Type = c.GetType().AssemblyQualifiedName,
-                    X = c.X,
-                    Y = c.Y,
-                    Width = c.Width,
-                    Height = c.Height,
+                    X = SanitizeCoordinate(c.X),
+                    Y = SanitizeCoordinate(c.Y),
+                    Width = SanitizeCoordinate(c.Width),
+                    Height = SanitizeCoordinate(c.Height),
                     Name = c.Name
                 };
                 // Persist all NodeProperties generically — covers ALL diagram families
@@ -378,8 +402,19 @@ namespace Beep.Skia
                     {
                         try
                         {
-                            if (kvp.Value != null)
-                                comp.PropertyBag[kvp.Key] = Convert.ToString(kvp.Value);
+                            var value = kvp.Value;
+                            if (value == null) continue;
+
+                            // Simple values round-trip through strings (existing behavior).
+                            if (value is string || value is bool || value is Enum || value is SKColor || value is IConvertible)
+                            {
+                                comp.PropertyBag[kvp.Key] = Convert.ToString(value);
+                            }
+                            else
+                            {
+                                // Complex values (lists, dictionaries, nested objects) are stored typed.
+                                comp.TypedPropertyBag[kvp.Key] = System.Text.Json.JsonSerializer.SerializeToElement(value, value.GetType());
+                            }
                         }
                         catch { }
                     }
@@ -394,6 +429,15 @@ namespace Beep.Skia
                 {
                     if (p != null) comp.OutPointIds.Add(p.Id);
                 }
+
+                // Automation nodes carry their runtime configuration (transform mappings, filters,
+                // credentials references, ...) which is not part of the NodeProperties bag.
+                if (c is Model.IAutomationNode automation && automation.Configuration != null && automation.Configuration.Count > 0)
+                {
+                    try { comp.TypedPropertyBag["Configuration"] = System.Text.Json.JsonSerializer.SerializeToElement(automation.Configuration); }
+                    catch { }
+                }
+
                 dto.Components.Add(comp);
             }
             foreach (var l in _lines)
@@ -409,6 +453,9 @@ namespace Beep.Skia
                     Label2 = l.Label2,
                     Label3 = l.Label3,
                     DataTypeLabel = (l as ConnectionLine)?.DataTypeLabel,
+                    GuardCondition = (l as ConnectionLine)?.GuardCondition,
+                    TransitionAction = (l as ConnectionLine)?.TransitionAction,
+                    TriggerEvent = (l as ConnectionLine)?.TriggerEvent,
                     LineColor = (uint)l.LineColor,
 
                     // Extended
@@ -451,13 +498,25 @@ namespace Beep.Skia
             if (dto == null) return;
             ClearComponents();
 
+            // Apply the persisted theme before rendering the restored diagram.
+            if (!string.IsNullOrWhiteSpace(dto.ThemeName))
+            {
+                try { ThemeManager.ApplyTheme(dto.ThemeName); } catch { }
+            }
+
             // Create components first
-            foreach (var comp in dto.Components)
+            var componentDtos = dto.Components ?? new List<Beep.Skia.Serialization.ComponentDto>();
+            var loadedComponents = new List<SkiaComponent>(componentDtos.Count);
+            foreach (var comp in componentDtos)
             {
                 try
                 {
                     var type = Type.GetType(comp.Type, throwOnError: false);
-                    if (type == null) continue;
+                    if (type == null)
+                    {
+                        loadedComponents.Add(null);
+                        continue;
+                    }
                     if (Activator.CreateInstance(type) is SkiaComponent instance)
                     {
                         instance.X = comp.X;
@@ -469,11 +528,19 @@ namespace Beep.Skia
                         // (InPortCount/OutPortCount must be set first so CP arrays match)
                         try
                         {
-                            if (comp.PropertyBag != null && comp.PropertyBag.Count > 0)
+                            var propValues = new Dictionary<string, object>();
+                            if (comp.PropertyBag != null)
                             {
-                                var propValues = new Dictionary<string, object>();
                                 foreach (var kvp in comp.PropertyBag)
                                     propValues[kvp.Key] = kvp.Value;
+                            }
+                            if (comp.TypedPropertyBag != null)
+                            {
+                                foreach (var kvp in comp.TypedPropertyBag)
+                                    propValues[kvp.Key] = ConvertJsonElement(kvp.Value);
+                            }
+                            if (propValues.Count > 0)
+                            {
                                 instance.SetPropperties(propValues, updateNodeProperties: true, applyToPublicSetters: true);
                             }
                         }
@@ -496,16 +563,30 @@ namespace Beep.Skia
                             }
                         }
                         AddComponent(instance);
+                        loadedComponents.Add(instance);
+                    }
+                    else
+                    {
+                        loadedComponents.Add(null);
                     }
                 }
-                catch { }
+                catch { loadedComponents.Add(null); }
             }
 
-            // Then connect lines using registry
-            foreach (var line in dto.Lines)
+            // Then connect lines using registry (by connection point id, or by component index)
+            foreach (var line in dto.Lines ?? new List<Beep.Skia.Serialization.LineDto>())
             {
-                var start = GetConnectionPoint(line.StartPointId);
-                var end = GetConnectionPoint(line.EndPointId);
+                IConnectionPoint start = line.StartPointId != Guid.Empty ? GetConnectionPoint(line.StartPointId) : null;
+                IConnectionPoint end = line.EndPointId != Guid.Empty ? GetConnectionPoint(line.EndPointId) : null;
+
+                if ((start == null || end == null) &&
+                    line.StartComponentIndex >= 0 && line.StartComponentIndex < loadedComponents.Count &&
+                    line.EndComponentIndex >= 0 && line.EndComponentIndex < loadedComponents.Count)
+                {
+                    start ??= FirstOutPoint(loadedComponents[line.StartComponentIndex]);
+                    end ??= FirstInPoint(loadedComponents[line.EndComponentIndex]);
+                }
+
                 if (start == null || end == null) continue;
                 var l = new ConnectionLine(start, end, () => RequestRedraw())
                 {
@@ -520,6 +601,9 @@ namespace Beep.Skia
                 l.Label2 = line.Label2;
                 l.Label3 = line.Label3;
                 l.DataTypeLabel = line.DataTypeLabel;
+                l.GuardCondition = line.GuardCondition;
+                l.TransitionAction = line.TransitionAction;
+                l.TriggerEvent = line.TriggerEvent;
                 l.Label1Placement = (LabelPlacement)line.Label1Placement;
                 l.Label2Placement = (LabelPlacement)line.Label2Placement;
                 l.Label3Placement = (LabelPlacement)line.Label3Placement;
@@ -544,6 +628,38 @@ namespace Beep.Skia
             }
 
             DrawSurface?.Invoke(this, null);
+        }
+
+        /// <summary>
+        /// Converts a persisted JSON value back to CLR primitives, lists, and dictionaries
+        /// so complex node properties survive a save/load round-trip.
+        /// </summary>
+        private static object ConvertJsonElement(System.Text.Json.JsonElement element)
+        {
+            switch (element.ValueKind)
+            {
+                case System.Text.Json.JsonValueKind.String:
+                    return element.GetString();
+                case System.Text.Json.JsonValueKind.Number:
+                    if (element.TryGetInt64(out var l)) return l;
+                    return element.GetDouble();
+                case System.Text.Json.JsonValueKind.True:
+                    return true;
+                case System.Text.Json.JsonValueKind.False:
+                    return false;
+                case System.Text.Json.JsonValueKind.Array:
+                    var list = new List<object>();
+                    foreach (var item in element.EnumerateArray())
+                        list.Add(ConvertJsonElement(item));
+                    return list;
+                case System.Text.Json.JsonValueKind.Object:
+                    var dict = new Dictionary<string, object>();
+                    foreach (var prop in element.EnumerateObject())
+                        dict[prop.Name] = ConvertJsonElement(prop.Value);
+                    return dict;
+                default:
+                    return null;
+            }
         }
 
         /// <summary>
@@ -607,7 +723,17 @@ namespace Beep.Skia
                 {
                     var nodeId = Guid.NewGuid().ToString("N")[..8];
                     idMap[c] = nodeId;
-                    wf.AddNode(new NodeDefinition(nodeId, c.Name ?? auto.GetType().Name, NodeType.Action, auto.GetType().FullName ?? auto.GetType().Name));
+
+                    var nodeDef = new NodeDefinition(
+                        nodeId,
+                        c.Name ?? auto.GetType().Name,
+                        auto.NodeType,
+                        auto.GetType().FullName ?? auto.GetType().Name);
+
+                    if (auto.Configuration != null)
+                        nodeDef.Configuration = new Dictionary<string, object>(auto.Configuration);
+
+                    wf.AddNode(nodeDef);
                 }
             }
 
@@ -638,8 +764,6 @@ namespace Beep.Skia
             if (cropToContent)
             {
                 bounds = GetContentBounds();
-                bounds.Left = Math.Max(0, bounds.Left);
-                bounds.Top = Math.Max(0, bounds.Top);
             }
             else
             {
@@ -656,7 +780,7 @@ namespace Beep.Skia
             canvas.Scale(scale);
             canvas.Translate(-bounds.Left, -bounds.Top);
 
-            Draw(canvas);
+            DrawForExport(canvas);
             canvas.Flush();
 
             using var image = surface.Snapshot();
@@ -670,14 +794,13 @@ namespace Beep.Skia
         /// </summary>
         /// <param name="filePath">Output file path.</param>
         /// <param name="cropToContent">When true, crops to content bounds.</param>
-        public void ExportToSvg(string filePath, bool cropToContent = true)
+        /// <param name="background">Optional background fill color; null keeps the SVG transparent.</param>
+        public void ExportToSvg(string filePath, bool cropToContent = true, SKColor? background = null)
         {
             SKRect bounds;
             if (cropToContent)
             {
                 bounds = GetContentBounds();
-                bounds.Left = Math.Max(0, bounds.Left);
-                bounds.Top = Math.Max(0, bounds.Top);
             }
             else
             {
@@ -689,41 +812,75 @@ namespace Beep.Skia
             using var svgCanvas = SKSvgCanvas.Create(new SKRect(0, 0, size.Width, size.Height), stream);
 
             svgCanvas.Save();
+            if (background.HasValue)
+            {
+                using var bgPaint = new SKPaint { Color = background.Value, Style = SKPaintStyle.Fill };
+                svgCanvas.DrawRect(new SKRect(0, 0, size.Width, size.Height), bgPaint);
+            }
             svgCanvas.Translate(-bounds.Left, -bounds.Top);
-            Draw(svgCanvas);
+            DrawForExport(svgCanvas);
             svgCanvas.Restore();
             svgCanvas.Flush();
         }
 
         /// <summary>
-        /// Exports the current diagram to a PDF file.
+        /// Exports the current diagram to a PDF file. Content is scaled to fit a single page when
+        /// it fits; larger diagrams are tiled at natural scale across multiple pages.
         /// </summary>
         /// <param name="filePath">Output file path.</param>
         /// <param name="pageWidth">Page width in points (default A4 landscape).</param>
         /// <param name="pageHeight">Page height in points (default A4 landscape).</param>
-        public void ExportToPdf(string filePath, float pageWidth = 842f, float pageHeight = 595f)
+        /// <param name="margin">Page margin in points.</param>
+        public void ExportToPdf(string filePath, float pageWidth = 842f, float pageHeight = 595f, float margin = 24f)
         {
             var bounds = GetContentBounds();
+            float contentWidth = Math.Max(bounds.Width, 1f);
+            float contentHeight = Math.Max(bounds.Height, 1f);
+            float usableW = Math.Max(1f, pageWidth - margin * 2f);
+            float usableH = Math.Max(1f, pageHeight - margin * 2f);
+
+            float scaleToFit = Math.Min(Math.Min(usableW / contentWidth, usableH / contentHeight), 1f);
 
             using var stream = System.IO.File.Create(filePath);
             using var document = SKDocument.CreatePdf(stream);
 
-            float scaleToFit = Math.Min(
-                pageWidth / bounds.Width,
-                pageHeight / bounds.Height,
-                1f
-            );
+            bool fitsAtNaturalSize = scaleToFit >= 0.999f;
+            bool scaleDownIsLegible = contentWidth <= usableW * 2f && contentHeight <= usableH * 2f;
 
-            float offsetX = (pageWidth - bounds.Width * scaleToFit) / 2f;
-            float offsetY = (pageHeight - bounds.Height * scaleToFit) / 2f;
+            if (fitsAtNaturalSize || scaleDownIsLegible)
+            {
+                RenderPdfPage(document, pageWidth, pageHeight, margin, scaleToFit, bounds.Left, bounds.Top);
+            }
+            else
+            {
+                // Tile at natural scale so large diagrams stay legible.
+                int cols = (int)Math.Ceiling(contentWidth / usableW);
+                int rows = (int)Math.Ceiling(contentHeight / usableH);
+                for (int row = 0; row < rows; row++)
+                {
+                    for (int col = 0; col < cols; col++)
+                    {
+                        float srcX = bounds.Left + col * usableW;
+                        float srcY = bounds.Top + row * usableH;
+                        RenderPdfPage(document, pageWidth, pageHeight, margin, 1f, srcX, srcY);
+                    }
+                }
+            }
 
+            document.Close();
+        }
+
+        private void RenderPdfPage(SKDocument document, float pageWidth, float pageHeight, float margin, float scale, float originX, float originY)
+        {
             using var pageCanvas = document.BeginPage(pageWidth, pageHeight);
-            pageCanvas.Scale(scaleToFit);
-            pageCanvas.Translate(-bounds.Left + offsetX / scaleToFit, -bounds.Top + offsetY / scaleToFit);
-            Draw(pageCanvas);
+            pageCanvas.Save();
+            pageCanvas.Translate(margin, margin);
+            pageCanvas.Scale(scale);
+            pageCanvas.Translate(-originX, -originY);
+            DrawForExport(pageCanvas);
+            pageCanvas.Restore();
             pageCanvas.Flush();
             document.EndPage();
-            document.Close();
         }
 
         /// <summary>
@@ -739,7 +896,7 @@ namespace Beep.Skia
             using var surface = SKSurface.Create(new SKImageInfo(width, height));
             var canvas = surface.Canvas;
             canvas.Clear(bgColor);
-            Draw(canvas);
+            DrawForExport(canvas);
             canvas.Flush();
 
             var bitmap = new SKBitmap(width, height);
@@ -754,13 +911,14 @@ namespace Beep.Skia
         /// </summary>
         /// <param name="documentName">Name shown in the print queue.</param>
         /// <returns>A configured PrintDocument ready for printing or preview.</returns>
+        [SupportedOSPlatform("windows")]
         public System.Drawing.Printing.PrintDocument CreatePrintDocument(string documentName = "Beep.Skia Diagram")
         {
             var doc = new System.Drawing.Printing.PrintDocument();
             doc.DocumentName = documentName;
             var bounds = GetContentBounds();
             int currentPage = 0;
-            int totalPages;
+            int totalPages = 0;
 
             doc.BeginPrint += (s, e) =>
             {
@@ -797,22 +955,26 @@ namespace Beep.Skia
                 float srcW = Math.Min(pageW, bounds.Right - srcX);
                 float srcH = Math.Min(pageH, bounds.Bottom - srcY);
 
-                using var bitmap = new SKBitmap((int)srcW, (int)srcH);
-                using var surface = SKSurface.Create(new SKImageInfo((int)srcW, (int)srcH));
-                var canvas = surface.Canvas;
-                canvas.Clear(SKColors.White);
-                canvas.Translate(-srcX, -srcY);
-                Draw(canvas);
-                canvas.Flush();
+                if (srcW > 0 && srcH > 0)
+                {
+                    using var surface = SKSurface.Create(new SKImageInfo((int)Math.Ceiling(srcW), (int)Math.Ceiling(srcH)));
+                    var canvas = surface.Canvas;
+                    canvas.Clear(SKColors.White);
+                    canvas.Translate(-srcX, -srcY);
+                    DrawForExport(canvas);
+                    canvas.Flush();
 
-                using var image = surface.Snapshot();
-                using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-                using var ms = new System.IO.MemoryStream();
-                data.SaveTo(ms);
-                ms.Seek(0, System.IO.SeekOrigin.Begin);
+                    using var image = surface.Snapshot();
+                    using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+                    using var ms = new System.IO.MemoryStream();
+                    data.SaveTo(ms);
+                    ms.Seek(0, System.IO.SeekOrigin.Begin);
 
-                using var gdiBitmap = new System.Drawing.Bitmap(ms);
-                e.Graphics.DrawImage(gdiBitmap, marginX, marginY, pageW, pageH);
+                    using var gdiBitmap = new System.Drawing.Bitmap(ms);
+                    // Draw the tile at natural size (1:1 with world pixels), not stretched to the page.
+                    e.Graphics.DrawImage(gdiBitmap, marginX, marginY, srcW, srcH);
+                }
+
                 e.Graphics.DrawString(
                     $"Page {currentPage + 1} of {totalPages}",
                     new System.Drawing.Font("Segoe UI", 8),

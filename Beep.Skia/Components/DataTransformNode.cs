@@ -168,14 +168,18 @@ namespace Beep.Skia.Components
                     TransformConfig = configDict;
                 }
 
-                if (Configuration.TryGetValue("FieldMappings", out var mappingsObj) && mappingsObj is List<FieldMapping> mappingsList)
+                if (Configuration.TryGetValue("FieldMappings", out var mappingsObj))
                 {
-                    FieldMappings = mappingsList;
+                    // Tolerate both strongly typed mappings (in-process) and the dictionary form
+                    // produced when configuration is restored from a serialized diagram.
+                    var mappings = ConvertMappings(mappingsObj);
+                    if (mappings != null) FieldMappings = mappings;
                 }
 
-                if (Configuration.TryGetValue("Filters", out var filtersObj) && filtersObj is List<FilterCondition> filtersList)
+                if (Configuration.TryGetValue("Filters", out var filtersObj))
                 {
-                    Filters = filtersList;
+                    var filters = ConvertFilters(filtersObj);
+                    if (filters != null) Filters = filters;
                 }
 
                 Status = NodeStatus.Idle;
@@ -187,6 +191,61 @@ namespace Beep.Skia.Components
                 return Task.FromResult(false);
             }
         }
+
+        /// <summary>
+        /// Converts a configuration value into field mappings, accepting either the strongly typed
+        /// list or the dictionary form produced when configuration is restored from serialized JSON.
+        /// </summary>
+        private static List<FieldMapping> ConvertMappings(object value)
+        {
+            if (value is List<FieldMapping> typed) return typed;
+            if (!(value is System.Collections.IEnumerable items) || value is string) return null;
+
+            var result = new List<FieldMapping>();
+            foreach (var item in items)
+            {
+                if (item is FieldMapping mapping) { result.Add(mapping); continue; }
+                if (item is IDictionary<string, object> dict)
+                {
+                    result.Add(new FieldMapping
+                    {
+                        SourceField = GetString(dict, "SourceField"),
+                        TargetField = GetString(dict, "TargetField"),
+                        Transform = GetString(dict, "Transform")
+                    });
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Converts a configuration value into filter conditions, accepting either the strongly typed
+        /// list or the dictionary form produced when configuration is restored from serialized JSON.
+        /// </summary>
+        private static List<FilterCondition> ConvertFilters(object value)
+        {
+            if (value is List<FilterCondition> typed) return typed;
+            if (!(value is System.Collections.IEnumerable items) || value is string) return null;
+
+            var result = new List<FilterCondition>();
+            foreach (var item in items)
+            {
+                if (item is FilterCondition filter) { result.Add(filter); continue; }
+                if (item is IDictionary<string, object> dict)
+                {
+                    result.Add(new FilterCondition
+                    {
+                        Field = GetString(dict, "Field"),
+                        Operator = GetString(dict, "Operator"),
+                        Value = dict.TryGetValue("Value", out var v) ? v : null
+                    });
+                }
+            }
+            return result;
+        }
+
+        private static string GetString(IDictionary<string, object> dict, string key)
+            => dict.TryGetValue(key, out var value) ? value?.ToString() : null;
 
         /// <summary>
         /// Validates the current configuration and input data for this node.
@@ -926,7 +985,7 @@ namespace Beep.Skia.Components
             DrawTransformBadge(canvas, bounds);
 
             // Draw node title
-            using var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Bold), 12);
+            using var font = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Bold), 12);
             using var textPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -937,14 +996,14 @@ namespace Beep.Skia.Components
             var titleWidth = font.MeasureText(title);
             var titleX = bounds.MidX - titleWidth / 2;
             var titleY = bounds.Top + 16;
-            canvas.DrawText(title, titleX, titleY, font, textPaint);
+            canvas.DrawText(title, titleX, titleY, SKTextAlign.Left, font, textPaint);
 
             // Draw transform type
-            using var typeFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI"), 10);
+            using var typeFont = new SKFont(TypefaceCache.Get("Segoe UI"), 10);
             var typeWidth = typeFont.MeasureText(TransformType);
             var typeX = bounds.MidX - typeWidth / 2;
             var typeY = bounds.Bottom - 8;
-            canvas.DrawText(TransformType, typeX, typeY, typeFont, textPaint);
+            canvas.DrawText(TransformType, typeX, typeY, SKTextAlign.Left, typeFont, textPaint);
         }
 
         /// <summary>

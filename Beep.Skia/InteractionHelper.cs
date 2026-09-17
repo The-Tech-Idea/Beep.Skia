@@ -13,6 +13,8 @@ namespace Beep.Skia
         private bool _isDraggingLine;
         private bool _isSelecting;
         private bool _isPanning;
+        private SKPoint _panStartScreen;
+        private SKPoint _panStartOffset;
         private bool _isDrawingLine;
         private SkiaComponent _draggingComponent;
         private IConnectionLine _draggingLine;
@@ -102,6 +104,15 @@ namespace Beep.Skia
         /// <param name="mouseButton">Mouse button pressed (0=left, 1=right, 2=middle).</param>
         public void HandleMouseDown(SKPoint point, SKKeyModifiers modifiers = SKKeyModifiers.None, int mouseButton = 0)
         {
+            // Middle button drag pans the view (standard diagram-editor gesture).
+            if (mouseButton == 2)
+            {
+                _isPanning = true;
+                _panStartScreen = point;
+                _panStartOffset = _drawingManager.PanOffset;
+                return;
+            }
+
             // Convert screen point to canvas point (world space)
             var canvasPoint = ScreenToCanvas(point);
 
@@ -239,6 +250,13 @@ namespace Beep.Skia
         /// <param name="mouseButton">Mouse button released (0=left, 1=right, 2=middle).</param>
         public void HandleMouseUp(SKPoint point, SKKeyModifiers modifiers = SKKeyModifiers.None, int mouseButton = 0)
         {
+            // End a middle-button pan without touching selection or components.
+            if (_isPanning && mouseButton == 2)
+            {
+                _isPanning = false;
+                return;
+            }
+
             var canvasPoint = ScreenToCanvas(point);
 
             // If a component consumed the mouse interaction, forward the up and clear
@@ -510,6 +528,15 @@ namespace Beep.Skia
         {
             var canvasPoint = ScreenToCanvas(point);
             _mousePosition = canvasPoint;
+
+            // Middle-button pan in progress: move the view, leave the diagram alone.
+            if (_isPanning)
+            {
+                var delta = point - _panStartScreen;
+                _drawingManager.PanOffset = new SKPoint(_panStartOffset.X + delta.X, _panStartOffset.Y + delta.Y);
+                _mousePosition = ScreenToCanvas(point);
+                return;
+            }
 
             // If a component consumed the mouse interaction, forward the move
             if (_componentHandlingMouse != null)

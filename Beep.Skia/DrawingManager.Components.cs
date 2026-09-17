@@ -102,6 +102,27 @@ namespace Beep.Skia
         }
 
         /// <summary>
+        /// Selects all components in the diagram.
+        /// </summary>
+        public void SelectAllComponents()
+        {
+            _selectionManager.SelectAll();
+            DrawSurface?.Invoke(this, null);
+        }
+
+        /// <summary>
+        /// Selects the next (or previous) component in reading order (keyboard accessibility).
+        /// </summary>
+        /// <param name="forward">True for next (Tab), false for previous (Shift+Tab).</param>
+        /// <returns>The newly selected component, or null when the diagram is empty.</returns>
+        public SkiaComponent SelectNextComponent(bool forward = true)
+        {
+            var selected = _selectionManager.SelectNext(forward);
+            DrawSurface?.Invoke(this, null);
+            return selected;
+        }
+
+        /// <summary>
         /// Copies selected components to an internal clipboard.
         /// Also copies connection lines that connect only selected components.
         /// </summary>
@@ -128,8 +149,8 @@ namespace Beep.Skia
                 {
                     try
                     {
-                        if (kvp.Value?.Value != null)
-                            comp.PropertyBag[kvp.Key] = Convert.ToString(kvp.Value.Value);
+                        if (kvp.Value != null)
+                            comp.PropertyBag[kvp.Key] = Convert.ToString(kvp.Value);
                     }
                     catch { }
                 }
@@ -300,6 +321,7 @@ namespace Beep.Skia
             }
 
             // Create connection lines using mapped GUIDs
+            var createdLines = new List<IConnectionLine>();
             foreach (var lineDto in dto.Lines)
             {
                 try
@@ -341,6 +363,7 @@ namespace Beep.Skia
                         ExpectedSchemaJson = lineDto.ExpectedSchemaJson
                     };
                     _lines.Add(l);
+                    createdLines.Add(l);
                 }
                 catch { }
             }
@@ -348,7 +371,7 @@ namespace Beep.Skia
             // Record undo action
             if (createdComponents.Count > 0)
             {
-                _historyManager.ExecuteAction(new PasteComponentsAction(this, createdComponents));
+                _historyManager.ExecuteAction(new PasteComponentsAction(this, createdComponents, createdLines));
             }
 
             DrawSurface?.Invoke(this, null);
@@ -418,7 +441,7 @@ namespace Beep.Skia
 
             foreach (var component in _selectionManager.SelectedComponents)
             {
-                component.Move(snappedOffset);
+                component.MoveBy(snappedOffset.X, snappedOffset.Y);
                 // Keep connection point registry in sync
                 RefreshConnectionPoints(component);
             }
@@ -461,6 +484,11 @@ namespace Beep.Skia
         public IReadOnlyList<SkiaComponent> GetComponents() => _components.AsReadOnly();
 
         /// <summary>
+        /// Gets all connection lines in the diagram.
+        /// </summary>
+        public IReadOnlyList<IConnectionLine> GetLines() => _lines.AsReadOnly();
+
+        /// <summary>
         /// Loads a diagram template — creates components and auto-connects sequential components
         /// (component[i].OutPoints[0] → component[i+1].InPoints[0]) for each line in the template.
         /// For more complex connections, use LoadFromDto() with proper GUID-based serialization.
@@ -500,27 +528,40 @@ namespace Beep.Skia
                 catch { }
             }
 
-            // Auto-connect: for each line in the template, connect sequential component pairs
-            // This works for flow-based templates where the line order matches component order
-            for (int i = 0; i < dto.Lines.Count && i < created.Count - 1; i++)
+            // Connect lines using explicit component indices when provided (templates),
+            // otherwise fall back to sequential auto-connect for legacy DTOs.
+            for (int i = 0; i < dto.Lines.Count; i++)
             {
                 try
                 {
-                    var src = created[i];
-                    var dst = created[i + 1];
+                    var lineDto = dto.Lines[i];
+                    int srcIdx = lineDto.StartComponentIndex;
+                    int dstIdx = lineDto.EndComponentIndex;
+
+                    if (srcIdx < 0 || dstIdx < 0)
+                    {
+                        srcIdx = i;
+                        dstIdx = i + 1;
+                    }
+
+                    if (srcIdx < 0 || srcIdx >= created.Count) continue;
+                    if (dstIdx < 0 || dstIdx >= created.Count) continue;
+
+                    var src = created[srcIdx];
+                    var dst = created[dstIdx];
                     if (src.OutConnectionPoints.Count > 0 && dst.InConnectionPoints.Count > 0)
                     {
                         var l = new ConnectionLine(src.OutConnectionPoints[0], dst.InConnectionPoints[0], () => RequestRedraw())
                         {
-                            ShowStartArrow = dto.Lines[i].ShowStartArrow,
-                            ShowEndArrow = dto.Lines[i].ShowEndArrow,
-                            Label1 = dto.Lines[i].Label1,
-                            Label2 = dto.Lines[i].Label2,
-                            Label3 = dto.Lines[i].Label3,
-                            LineColor = dto.Lines[i].LineColor != 0 ? new SKColor(dto.Lines[i].LineColor) : new SKColor(0x75, 0x75, 0x75),
-                            RoutingMode = (LineRoutingMode)dto.Lines[i].RoutingMode,
-                            StartMultiplicity = (ERDMultiplicity)dto.Lines[i].StartMultiplicity,
-                            EndMultiplicity = (ERDMultiplicity)dto.Lines[i].EndMultiplicity
+                            ShowStartArrow = lineDto.ShowStartArrow,
+                            ShowEndArrow = lineDto.ShowEndArrow,
+                            Label1 = lineDto.Label1,
+                            Label2 = lineDto.Label2,
+                            Label3 = lineDto.Label3,
+                            LineColor = lineDto.LineColor != 0 ? new SKColor(lineDto.LineColor) : new SKColor(0x75, 0x75, 0x75),
+                            RoutingMode = (LineRoutingMode)lineDto.RoutingMode,
+                            StartMultiplicity = (ERDMultiplicity)lineDto.StartMultiplicity,
+                            EndMultiplicity = (ERDMultiplicity)lineDto.EndMultiplicity
                         };
                         _lines.Add(l);
                     }

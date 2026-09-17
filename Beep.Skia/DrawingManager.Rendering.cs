@@ -12,5 +12,15 @@ namespace Beep.Skia
         {
             _renderingHelper.DrawAll(canvas);
         }
+
+        /// <summary>
+        /// Renders the diagram for export: no pan/zoom, no grid, no selection adorners,
+        /// and no static screen-space overlays (palette, property editor).
+        /// </summary>
+        /// <param name="canvas">The canvas to draw on.</param>
+        internal void DrawForExport(SKCanvas canvas)
+        {
+            _renderingHelper.DrawForExport(canvas);
+        }
     }
 }

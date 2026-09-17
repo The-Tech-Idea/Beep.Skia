@@ -732,7 +732,7 @@ namespace Beep.Skia.Components
             DrawConditionalShape(canvas, bounds);
 
             // Draw node title
-            using var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Bold), 12);
+            using var font = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Bold), 12);
             using var textPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -743,19 +743,19 @@ namespace Beep.Skia.Components
             var titleWidth = font.MeasureText(title);
             var titleX = bounds.MidX - titleWidth / 2;
             var titleY = bounds.MidY + 2;
-            canvas.DrawText(title, titleX, titleY, font, textPaint);
+            canvas.DrawText(title, titleX, titleY, SKTextAlign.Left, font, textPaint);
 
             // Draw logic operator badge
             DrawLogicOperatorBadge(canvas, bounds);
 
             // Draw condition count
-            using var countFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI"), 9);
+            using var countFont = new SKFont(TypefaceCache.Get("Segoe UI"), 9);
             var conditionCount = Conditions?.Count ?? 0;
             var countText = $"{conditionCount} rule{(conditionCount != 1 ? "s" : "")}";
             var countWidth = countFont.MeasureText(countText);
             var countX = bounds.MidX - countWidth / 2;
             var countY = bounds.Bottom - 8;
-            canvas.DrawText(countText, countX, countY, countFont, textPaint);
+            canvas.DrawText(countText, countX, countY, SKTextAlign.Left, countFont, textPaint);
         }
 
         /// <summary>
@@ -770,12 +770,12 @@ namespace Beep.Skia.Components
             var halfWidth = bounds.Width / 2 - 4;
             var halfHeight = bounds.Height / 2 - 4;
 
-            using var path = new SKPath();
-            path.MoveTo(centerX, bounds.Top + 4);           // Top
-            path.LineTo(bounds.Right - 4, centerY);         // Right
-            path.LineTo(centerX, bounds.Bottom - 4);        // Bottom
-            path.LineTo(bounds.Left + 4, centerY);          // Left
-            path.Close();
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(centerX, bounds.Top + 4);           // Top
+            pathBuilder.LineTo(bounds.Right - 4, centerY);         // Right
+            pathBuilder.LineTo(centerX, bounds.Bottom - 4);        // Bottom
+            pathBuilder.LineTo(bounds.Left + 4, centerY);          // Left
+            pathBuilder.Close();
 
             using var outlinePaint = new SKPaint
             {
@@ -785,6 +785,7 @@ namespace Beep.Skia.Components
                 StrokeWidth = 2
             };
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, outlinePaint);
         }
 
@@ -813,7 +814,7 @@ namespace Beep.Skia.Components
             canvas.DrawRoundRect(badgeRect, 2, 2, badgePaint);
             
             // Draw operator text
-            using var opFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Bold), 8);
+            using var opFont = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Bold), 8);
             using var opTextPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -824,7 +825,7 @@ namespace Beep.Skia.Components
             var opWidth = opFont.MeasureText(opText);
             var opX = badgeX + (badgeSize - opWidth) / 2;
             var opY = badgeY + badgeSize / 2 + 2;
-            canvas.DrawText(opText, opX, opY, opFont, opTextPaint);
+            canvas.DrawText(opText, opX, opY, SKTextAlign.Left, opFont, opTextPaint);
         }
 
         /// <summary>

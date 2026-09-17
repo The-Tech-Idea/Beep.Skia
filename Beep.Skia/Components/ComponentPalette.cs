@@ -309,7 +309,7 @@ namespace Beep.Skia.Components
                 return _categories.FirstOrDefault(); // Default to first category
 
             var className = component.className.ToLower();
-            var componentNamespace = (component.Namespace ?? component.type?.Namespace ?? string.Empty).ToLowerInvariant();
+            var componentNamespace = (component.type?.Namespace ?? string.Empty).ToLowerInvariant();
 
             if (className.Contains("welllog") || className.Contains("gamma") || className.Contains("resistivity") ||
                 className.Contains("porosity") || className.Contains("lithology") || componentNamespace.Contains("welllogs"))
@@ -424,7 +424,7 @@ namespace Beep.Skia.Components
             {
                 paint.Color = MaterialColors.OnSurface;
                 font.Size = 14;
-                font.Typeface = SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal);
+                font.Typeface = TypefaceCache.Get("Segoe UI", SKFontStyle.Normal);
                 canvas.DrawText(category.Name, iconX, currentY + _categoryHeaderHeight / 2 + 5, SKTextAlign.Left, font, paint);
             }
 
@@ -524,7 +524,7 @@ namespace Beep.Skia.Components
             {
                 paint.Color = MaterialColors.OnSurface;
                 font.Size = 12;
-                font.Typeface = SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal);
+                font.Typeface = TypefaceCache.Get("Segoe UI", SKFontStyle.Normal);
 
                 canvas.DrawText(componentItem.DisplayName, indent + 36, currentY + _itemHeight / 2 + 4, SKTextAlign.Left, font, paint);
             }

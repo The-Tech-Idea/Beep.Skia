@@ -461,8 +461,9 @@ namespace Beep.Skia.Components
                 backgroundPaint.IsAntialias = true;
 
                 // Create rounded rectangle path for background
-                var backgroundPath = new SKPath();
-                backgroundPath.AddRoundRect(bounds, _cornerRadius, _cornerRadius);
+                var backgroundPathBuilder = new SKPathBuilder();
+                backgroundPathBuilder.AddRoundRect(bounds, _cornerRadius, _cornerRadius);
+                using var backgroundPath = backgroundPathBuilder.Detach();
                 canvas.DrawPath(backgroundPath, backgroundPaint);
             }
 
@@ -511,41 +512,42 @@ namespace Beep.Skia.Components
                     selectedPaint.IsAntialias = true;
 
                     // Create path for selected segment with proper rounded corners
-                    var selectedPath = new SKPath();
+                    var selectedPathBuilder = new SKPathBuilder();
                     float leftRadius = isFirst ? _cornerRadius : 0;
                     float rightRadius = isLast ? _cornerRadius : 0;
 
                     if (isFirst && isLast)
                     {
                         // Single segment
-                        selectedPath.AddRoundRect(bounds, _cornerRadius, _cornerRadius);
+                        selectedPathBuilder.AddRoundRect(bounds, _cornerRadius, _cornerRadius);
                     }
                     else if (isFirst)
                     {
                         // First segment
-                        selectedPath.MoveTo(bounds.Left, bounds.Top);
-                        selectedPath.LineTo(bounds.Right, bounds.Top);
-                        selectedPath.LineTo(bounds.Right, bounds.Bottom);
-                        selectedPath.LineTo(bounds.Left + _cornerRadius, bounds.Bottom);
-                        selectedPath.ArcTo(_cornerRadius, _cornerRadius, 0, SKPathArcSize.Small, SKPathDirection.Clockwise, bounds.Left + _cornerRadius, bounds.Top);
-                        selectedPath.Close();
+                        selectedPathBuilder.MoveTo(bounds.Left, bounds.Top);
+                        selectedPathBuilder.LineTo(bounds.Right, bounds.Top);
+                        selectedPathBuilder.LineTo(bounds.Right, bounds.Bottom);
+                        selectedPathBuilder.LineTo(bounds.Left + _cornerRadius, bounds.Bottom);
+                        selectedPathBuilder.ArcTo(_cornerRadius, _cornerRadius, 0, SKPathArcSize.Small, SKPathDirection.Clockwise, bounds.Left + _cornerRadius, bounds.Top);
+                        selectedPathBuilder.Close();
                     }
                     else if (isLast)
                     {
                         // Last segment
-                        selectedPath.MoveTo(bounds.Left, bounds.Top);
-                        selectedPath.LineTo(bounds.Right - _cornerRadius, bounds.Top);
-                        selectedPath.ArcTo(_cornerRadius, _cornerRadius, 0, SKPathArcSize.Small, SKPathDirection.Clockwise, bounds.Right, bounds.Top + _cornerRadius);
-                        selectedPath.LineTo(bounds.Right, bounds.Bottom);
-                        selectedPath.LineTo(bounds.Left, bounds.Bottom);
-                        selectedPath.Close();
+                        selectedPathBuilder.MoveTo(bounds.Left, bounds.Top);
+                        selectedPathBuilder.LineTo(bounds.Right - _cornerRadius, bounds.Top);
+                        selectedPathBuilder.ArcTo(_cornerRadius, _cornerRadius, 0, SKPathArcSize.Small, SKPathDirection.Clockwise, bounds.Right, bounds.Top + _cornerRadius);
+                        selectedPathBuilder.LineTo(bounds.Right, bounds.Bottom);
+                        selectedPathBuilder.LineTo(bounds.Left, bounds.Bottom);
+                        selectedPathBuilder.Close();
                     }
                     else
                     {
                         // Middle segment
-                        selectedPath.AddRect(bounds);
+                        selectedPathBuilder.AddRect(bounds);
                     }
 
+                    using var selectedPath = selectedPathBuilder.Detach();
                     canvas.DrawPath(selectedPath, selectedPaint);
                 }
             }

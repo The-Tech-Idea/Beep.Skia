@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Beep.Skia.Model;
+using Beep.Skia.Automation;
 using TheTechIdea.Beep;
 using TheTechIdea.Beep.DataBase;
 using TheTechIdea.Beep.Editor;
@@ -12,6 +13,7 @@ using TheTechIdea.Beep.Logger;
 using TheTechIdea.Beep.Utilities;
 using TheTechIdea.Beep.ConfigUtil;
 using TheTechIdea.Beep.Report;
+using ValidationResult = Beep.Skia.Model.ValidationResult;
 
 namespace Beep.Skia.Components
 {
@@ -463,6 +465,25 @@ namespace Beep.Skia.Components
         /// <returns>Query results.</returns>
         private async Task<IEnumerable<object>> ExecuteDataQuery(Dictionary<string, object> parameters, CancellationToken cancellationToken)
         {
+            // Preferred path: a host-registered automation data-source provider (BeepDataSources bridge).
+            var provider = AutomationDataSourceRegistry.Provider;
+            if (provider != null)
+            {
+                if (string.IsNullOrEmpty(DataSourceName))
+                {
+                    throw new InvalidOperationException("DataSourceName is required but not specified");
+                }
+
+                var rows = await provider.QueryAsync(
+                    DataSourceName,
+                    EntityName,
+                    QueryString,
+                    MaxRows,
+                    cancellationToken).ConfigureAwait(false);
+
+                return rows?.Cast<object>() ?? Enumerable.Empty<object>();
+            }
+
             // Check if data source manager is available
             if (_dmeEditor == null)
             {
@@ -719,7 +740,7 @@ namespace Beep.Skia.Components
             DrawDataSourceIcon(canvas, bounds);
 
             // Draw node title
-            using var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Bold), 12);
+            using var font = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Bold), 12);
             using var textPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -730,28 +751,28 @@ namespace Beep.Skia.Components
             var titleWidth = font.MeasureText(title);
             var titleX = bounds.MidX - titleWidth / 2;
             var titleY = bounds.Top + 16;
-            canvas.DrawText(title, titleX, titleY, font, textPaint);
+            canvas.DrawText(title, titleX, titleY, SKTextAlign.Left, font, textPaint);
 
             // Draw data source name if configured
             if (!string.IsNullOrWhiteSpace(DataSourceName))
             {
-                using var nameFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI"), 10);
+                using var nameFont = new SKFont(TypefaceCache.Get("Segoe UI"), 10);
                 var nameText = DataSourceName.Length > 15 ? DataSourceName.Substring(0, 12) + "..." : DataSourceName;
                 var nameWidth = nameFont.MeasureText(nameText);
                 var nameX = bounds.MidX - nameWidth / 2;
                 var nameY = bounds.Top + 32;
-                canvas.DrawText(nameText, nameX, nameY, nameFont, textPaint);
+                canvas.DrawText(nameText, nameX, nameY, SKTextAlign.Left, nameFont, textPaint);
             }
 
             // Draw entity name if configured
             if (!string.IsNullOrWhiteSpace(EntityName))
             {
-                using var entityFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Italic), 9);
+                using var entityFont = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Italic), 9);
                 var entityText = EntityName.Length > 18 ? EntityName.Substring(0, 15) + "..." : EntityName;
                 var entityWidth = entityFont.MeasureText(entityText);
                 var entityX = bounds.MidX - entityWidth / 2;
                 var entityY = bounds.Bottom - 8;
-                canvas.DrawText(entityText, entityX, entityY, entityFont, textPaint);
+                canvas.DrawText(entityText, entityX, entityY, SKTextAlign.Left, entityFont, textPaint);
             }
         }
 

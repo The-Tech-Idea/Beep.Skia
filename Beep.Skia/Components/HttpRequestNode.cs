@@ -653,7 +653,7 @@ namespace Beep.Skia.Components
             DrawMethodBadge(canvas, bounds);
 
             // Draw node title
-            using var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Bold), 12);
+            using var font = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Bold), 12);
             using var textPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -664,17 +664,17 @@ namespace Beep.Skia.Components
             var titleWidth = font.MeasureText(title);
             var titleX = bounds.MidX - titleWidth / 2;
             var titleY = bounds.Top + 16;
-            canvas.DrawText(title, titleX, titleY, font, textPaint);
+            canvas.DrawText(title, titleX, titleY, SKTextAlign.Left, font, textPaint);
 
             // Draw URL if configured
             if (!string.IsNullOrWhiteSpace(Url))
             {
-                using var urlFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI"), 9);
+                using var urlFont = new SKFont(TypefaceCache.Get("Segoe UI"), 9);
                 var urlText = Url.Length > 20 ? Url.Substring(0, 17) + "..." : Url;
                 var urlWidth = urlFont.MeasureText(urlText);
                 var urlX = bounds.MidX - urlWidth / 2;
                 var urlY = bounds.Bottom - 8;
-                canvas.DrawText(urlText, urlX, urlY, urlFont, textPaint);
+                canvas.DrawText(urlText, urlX, urlY, SKTextAlign.Left, urlFont, textPaint);
             }
         }
 
@@ -702,7 +702,7 @@ namespace Beep.Skia.Components
             canvas.DrawRoundRect(badgeRect, 2, 2, badgePaint);
 
             // Draw method text
-            using var methodFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Bold), 8);
+            using var methodFont = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Bold), 8);
             using var methodTextPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -713,7 +713,7 @@ namespace Beep.Skia.Components
             var textWidth = methodFont.MeasureText(methodText);
             var textX = badgeRect.MidX - textWidth / 2;
             var textY = badgeRect.MidY + methodFont.Size / 3;
-            canvas.DrawText(methodText, textX, textY, methodFont, methodTextPaint);
+            canvas.DrawText(methodText, textX, textY, SKTextAlign.Left, methodFont, methodTextPaint);
         }
 
         /// <summary>

@@ -361,6 +361,39 @@ namespace Beep.Skia
         }
 
         /// <summary>
+        /// Moves selection to the next (or previous) component in reading order
+        /// (top-to-bottom, then left-to-right), wrapping around. Returns the newly selected component.
+        /// </summary>
+        public SkiaComponent SelectNext(bool forward = true)
+        {
+            var components = _drawingManager.GetComponents()
+                .Where(c => c != null && !c.IsStatic)
+                .OrderBy(c => Math.Round(c.Y / 10f))
+                .ThenBy(c => c.X)
+                .ToList();
+
+            if (components.Count == 0)
+            {
+                ClearSelection();
+                return null;
+            }
+
+            var current = _selectedComponents.FirstOrDefault();
+            int index = current == null ? -1 : components.IndexOf(current);
+
+            int nextIndex;
+            if (index < 0)
+                nextIndex = forward ? 0 : components.Count - 1;
+            else
+                nextIndex = ((index + (forward ? 1 : -1)) % components.Count + components.Count) % components.Count;
+
+            var next = components[nextIndex];
+            ClearSelection();
+            AddToSelection(next);
+            return next;
+        }
+
+        /// <summary>
         /// Gets the number of selected components.
         /// </summary>
     public int SelectionCount => _selectedComponents.Count;

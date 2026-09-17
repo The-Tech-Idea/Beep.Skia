@@ -259,12 +259,13 @@ namespace Beep.Skia.Components
             float bottom = bounds.Bottom - padding;
 
             // Checkmark path: start at bottom-left, go to middle-right, then to top-right
-            using (var path = new SKPath())
+            using (var pathBuilder = new SKPathBuilder())
             {
-                path.MoveTo(left + 2, top + 6); // Start point (bottom-left of checkmark)
-                path.LineTo(left + 4, top + 8); // Middle point
-                path.LineTo(left + 8, top + 4); // End point (top-right of checkmark)
+                pathBuilder.MoveTo(left + 2, top + 6); // Start point (bottom-left of checkmark)
+                pathBuilder.LineTo(left + 4, top + 8); // Middle point
+                pathBuilder.LineTo(left + 8, top + 4); // End point (top-right of checkmark)
 
+                using var path = pathBuilder.Detach();
                 canvas.DrawPath(path, paint);
             }
         }

@@ -735,7 +735,7 @@ namespace Beep.Skia.Components
             canvas.DrawRoundRect(buttonRect, 4, 4, borderPaint);
 
             // Draw button text
-            using var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Bold), 11);
+            using var font = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Bold), 11);
             using var textPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -745,7 +745,7 @@ namespace Beep.Skia.Components
             var textWidth = font.MeasureText(TriggerText);
             var textX = buttonRect.MidX - textWidth / 2;
             var textY = buttonRect.MidY + 3;
-            canvas.DrawText(TriggerText, textX, textY, font, textPaint);
+            canvas.DrawText(TriggerText, textX, textY, SKTextAlign.Left, font, textPaint);
 
             // Draw play icon
             if (canTrigger)
@@ -769,12 +769,13 @@ namespace Beep.Skia.Components
                 Color = SKColors.White
             };
 
-            using var path = new SKPath();
-            path.MoveTo(center.X - size / 3, center.Y - size / 2);
-            path.LineTo(center.X + size / 2, center.Y);
-            path.LineTo(center.X - size / 3, center.Y + size / 2);
-            path.Close();
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(center.X - size / 3, center.Y - size / 2);
+            pathBuilder.LineTo(center.X + size / 2, center.Y);
+            pathBuilder.LineTo(center.X - size / 3, center.Y + size / 2);
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, iconPaint);
         }
 
@@ -785,7 +786,7 @@ namespace Beep.Skia.Components
         /// <param name="bounds">The node bounds.</param>
         private void DrawKeyboardShortcut(SKCanvas canvas, SKRect bounds)
         {
-            using var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI"), 8);
+            using var font = new SKFont(TypefaceCache.Get("Segoe UI"), 8);
             using var textPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -796,7 +797,7 @@ namespace Beep.Skia.Components
             var textWidth = font.MeasureText(shortcutText);
             var textX = bounds.Right - textWidth - 4;
             var textY = bounds.Top + 12;
-            canvas.DrawText(shortcutText, textX, textY, font, textPaint);
+            canvas.DrawText(shortcutText, textX, textY, SKTextAlign.Left, font, textPaint);
         }
 
         /// <summary>
@@ -806,7 +807,7 @@ namespace Beep.Skia.Components
         /// <param name="bounds">The node bounds.</param>
         private void DrawExecutionInfo(SKCanvas canvas, SKRect bounds)
         {
-            using var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI"), 8);
+            using var font = new SKFont(TypefaceCache.Get("Segoe UI"), 8);
             using var textPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -822,7 +823,7 @@ namespace Beep.Skia.Components
             var textWidth = font.MeasureText(infoText);
             var textX = bounds.MidX - textWidth / 2;
             var textY = bounds.Bottom - 6;
-            canvas.DrawText(infoText, textX, textY, font, textPaint);
+            canvas.DrawText(infoText, textX, textY, SKTextAlign.Left, font, textPaint);
         }
 
         /// <summary>
@@ -858,7 +859,7 @@ namespace Beep.Skia.Components
             canvas.DrawRect(progressRect, progressPaint);
 
             // Draw cooldown text
-            using var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI"), 7);
+            using var font = new SKFont(TypefaceCache.Get("Segoe UI"), 7);
             using var textPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -868,7 +869,7 @@ namespace Beep.Skia.Components
             var cooldownText = $"Cooldown: {remaining.TotalSeconds:F0}s";
             var textX = bounds.Left + 10;
             var textY = bounds.Bottom - 8;
-            canvas.DrawText(cooldownText, textX, textY, font, textPaint);
+            canvas.DrawText(cooldownText, textX, textY, SKTextAlign.Left, font, textPaint);
         }
 
         /// <summary>

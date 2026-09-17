@@ -623,22 +623,23 @@ namespace Beep.Skia.Components
                 paint.IsAntialias = true;
                 paint.Style = SKPaintStyle.Fill;
 
-                var path = new SKPath();
+                var pathBuilder = new SKPathBuilder();
                 if (_isExpanded)
                 {
                     // Up arrow
-                    path.MoveTo(arrowX, arrowY + arrowSize);
-                    path.LineTo(arrowX + arrowSize / 2, arrowY);
-                    path.LineTo(arrowX + arrowSize, arrowY + arrowSize);
+                    pathBuilder.MoveTo(arrowX, arrowY + arrowSize);
+                    pathBuilder.LineTo(arrowX + arrowSize / 2, arrowY);
+                    pathBuilder.LineTo(arrowX + arrowSize, arrowY + arrowSize);
                 }
                 else
                 {
                     // Down arrow
-                    path.MoveTo(arrowX, arrowY);
-                    path.LineTo(arrowX + arrowSize / 2, arrowY + arrowSize);
-                    path.LineTo(arrowX + arrowSize, arrowY);
+                    pathBuilder.MoveTo(arrowX, arrowY);
+                    pathBuilder.LineTo(arrowX + arrowSize / 2, arrowY + arrowSize);
+                    pathBuilder.LineTo(arrowX + arrowSize, arrowY);
                 }
-                path.Close();
+                pathBuilder.Close();
+                using var path = pathBuilder.Detach();
                 canvas.DrawPath(path, paint);
             }
         }

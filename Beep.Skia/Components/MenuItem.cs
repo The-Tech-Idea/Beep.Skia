@@ -327,7 +327,7 @@ namespace Beep.Skia.Components
             if (!string.IsNullOrEmpty(_icon) &&
                 (_itemType == MenuItemType.WithIcon || _itemType == MenuItemType.WithIconAndShortcut))
             {
-                using var iconFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), _iconSize);
+                using var iconFont = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Normal), _iconSize);
                 using var iconPaint = new SKPaint { Color = IsEnabled ? _iconColor : MaterialDesignColors.OnSurfaceVariant.WithAlpha(100), IsAntialias = true };
                 var metrics = iconFont.Metrics;
                 float baseline = centerY + metrics.CapHeight / 2f;
@@ -338,7 +338,7 @@ namespace Beep.Skia.Components
             // Draw text (SKFont)
             if (!string.IsNullOrEmpty(_text))
             {
-                using var textFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), 14);
+                using var textFont = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Normal), 14);
                 using var textPaint = new SKPaint { Color = IsEnabled ? _textColor : MaterialDesignColors.OnSurfaceVariant.WithAlpha(100), IsAntialias = true };
                 var metrics = textFont.Metrics;
                 float baseline = centerY + metrics.CapHeight / 2f;
@@ -349,7 +349,7 @@ namespace Beep.Skia.Components
             if (!string.IsNullOrEmpty(_shortcut) &&
                 (_itemType == MenuItemType.WithShortcut || _itemType == MenuItemType.WithIconAndShortcut))
             {
-                using var shortcutFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), 12);
+                using var shortcutFont = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Normal), 12);
                 using var shortcutPaint = new SKPaint { Color = IsEnabled ? MaterialDesignColors.OnSurfaceVariant : MaterialDesignColors.OnSurfaceVariant.WithAlpha(100), IsAntialias = true };
                 var metrics = shortcutFont.Metrics;
                 float baseline = centerY + metrics.CapHeight / 2f;

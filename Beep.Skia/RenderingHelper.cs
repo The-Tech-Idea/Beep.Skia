@@ -12,6 +12,14 @@ namespace Beep.Skia
     {
         private readonly DrawingManager _drawingManager;
 
+        // Reused across frames: the render loop runs at interactive rates, so per-frame
+        // list/LINQ/context allocations are avoided on the hot path.
+        private readonly System.Collections.Generic.List<SkiaComponent> _dynamicComponents = new System.Collections.Generic.List<SkiaComponent>();
+        private readonly System.Collections.Generic.List<SkiaComponent> _staticComponents = new System.Collections.Generic.List<SkiaComponent>();
+        private readonly DrawingContext _preContext = new DrawingContext();
+        private readonly DrawingContext _drawingContext = new DrawingContext();
+        private readonly DrawingContext _staticContext = new DrawingContext();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderingHelper"/> class.
         /// </summary>
@@ -139,122 +147,132 @@ namespace Beep.Skia
         /// <param name="canvas">The canvas to draw on.</param>
         public void DrawAll(SKCanvas canvas)
         {
+            DrawAll(canvas,
+                applyPanZoom: true,
+                includeStatic: true,
+                includeGrid: true,
+                includeSelection: true,
+                zoom: _drawingManager.Zoom,
+                pan: _drawingManager.PanOffset);
+        }
+
+        /// <summary>
+        /// Draws the diagram for export: no pan/zoom transform, no grid, no selection
+        /// adorners, and no static screen-space overlays (palette, property editor).
+        /// </summary>
+        /// <param name="canvas">The canvas to draw on.</param>
+        public void DrawForExport(SKCanvas canvas)
+        {
+            DrawAll(canvas,
+                applyPanZoom: false,
+                includeStatic: false,
+                includeGrid: false,
+                includeSelection: false,
+                zoom: 1f,
+                pan: new SKPoint(0, 0));
+        }
+
+        private void DrawAll(SKCanvas canvas, bool applyPanZoom, bool includeStatic, bool includeGrid, bool includeSelection, float zoom, SKPoint pan)
+        {
             canvas.Save();
 
-            // Ensure components have up-to-date Bounds and state before drawing.
-            var preContext = new DrawingContext
-            {
-                PanOffset = _drawingManager.PanOffset,
-                Zoom = _drawingManager.Zoom,
-                Bounds = new SKRect(0, 0, canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height)
-            };
+            // Ensure components have up-to-date Bounds and state before drawing, and partition
+            // them into dynamic (world space) vs static (screen space overlays) in one pass.
+            _preContext.PanOffset = pan;
+            _preContext.Zoom = zoom;
+            _preContext.Bounds = new SKRect(0, 0, canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height);
 
-            // Update all components once per frame
-            foreach (var comp in _drawingManager.Components.ToList())
+            _dynamicComponents.Clear();
+            _staticComponents.Clear();
+
+            var components = _drawingManager.Components;
+            for (var i = 0; i < components.Count; i++)
             {
+                var comp = components[i];
+                if (comp == null) continue;
+
                 try
                 {
-                    comp.Update(preContext);
+                    comp.Update(_preContext);
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[Rendering] Update error for {comp?.GetType().Name}: {ex.Message}");
+                    Debug.WriteLine($"[Rendering] Update error for {comp.GetType().Name}: {ex.Message}");
                 }
+
+                if (comp.IsStatic) _staticComponents.Add(comp);
+                else _dynamicComponents.Add(comp);
             }
 
-            // Partition components into dynamic (world space) vs static (screen space overlays)
-            var dynamicComponents = _drawingManager.Components.Where(c => !(c?.IsStatic ?? false)).ToList();
-            var staticComponents = _drawingManager.Components.Where(c => (c?.IsStatic ?? false)).ToList();
+            var staticComponents = _staticComponents;
 
             // Apply world transform for dynamic content
-            canvas.Translate(_drawingManager.PanOffset.X, _drawingManager.PanOffset.Y);
-            canvas.Scale(_drawingManager.Zoom);
-
-            // Diagnostic logging: report transform and component bounds (helpful to debug invisible palette)
-            try
+            if (applyPanZoom)
             {
-                var header = $"[Rendering] PanOffset={_drawingManager.PanOffset}, Zoom={_drawingManager.Zoom}, Components={_drawingManager.Components.Count}";
-                Debug.WriteLine(header);
-                Console.WriteLine(header);
-                try
-                {
-                    var logPath = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
-                    File.AppendAllText(logPath, header + Environment.NewLine);
-                }
-                catch { }
-
-                foreach (var c in _drawingManager.Components)
-                {
-                    try
-                    {
-                        var line = $"[Rendering] Component: Type={c.GetType().FullName}, X={c.X}, Y={c.Y}, W={c.Width}, H={c.Height}, Bounds={c.Bounds}";
-                        Debug.WriteLine(line);
-                        Console.WriteLine(line);
-                        try
-                        {
-                            var logPath = Path.Combine(Path.GetTempPath(), "beepskia_render.log");
-                            File.AppendAllText(logPath, line + Environment.NewLine);
-                        }
-                        catch { }
-                    }
-                    catch { }
-                }
+                canvas.Translate(pan.X, pan.Y);
+                canvas.Scale(zoom);
             }
-            catch { }
 
             // Draw grid if enabled (grid lives in world space)
-            DrawGrid(canvas);
+            if (includeGrid)
+                DrawGrid(canvas);
 
             // Create a single, correct context to be passed to all components
-            var drawingContext = new DrawingContext
-            {
-                PanOffset = _drawingManager.PanOffset,
-                Zoom = _drawingManager.Zoom,
-                Bounds = canvas.DeviceClipBounds
-            };
+            _drawingContext.PanOffset = pan;
+            _drawingContext.Zoom = zoom;
+            _drawingContext.Bounds = canvas.DeviceClipBounds;
+            var drawingContext = _drawingContext;
 
             // Draw dynamic (world-space) components only
-            foreach (var component in dynamicComponents)
+            foreach (var component in _dynamicComponents)
             {
-                component.Draw(canvas, drawingContext);
+                try { component.Draw(canvas, drawingContext); } catch { }
             }
 
             // Draw connection lines
             foreach (var line in _drawingManager.Lines)
             {
-                DrawConnectionLineWithZoom(canvas, line);
+                if (line is ConnectionLine hidden && !hidden.IsVisible) continue;
+                DrawConnectionLineWithZoom(canvas, line, zoom);
             }
 
             // Draw current line being drawn
             if (_drawingManager.InteractionHelper.IsDrawingLine && _drawingManager.CurrentLine != null)
             {
-                DrawConnectionLineWithZoom(canvas, _drawingManager.CurrentLine, isPreview: true);
+                DrawConnectionLineWithZoom(canvas, _drawingManager.CurrentLine, zoom, isPreview: true);
             }
 
-            // Draw selection rectangle
-            if (_drawingManager.InteractionHelper.IsSelecting)
+            if (includeSelection)
             {
-                DrawSelectionRectangle(canvas, _drawingManager.InteractionHelper.SelectionRect);
-            }
+                // Draw selection rectangle
+                if (_drawingManager.InteractionHelper.IsSelecting)
+                {
+                    DrawSelectionRectangle(canvas, _drawingManager.InteractionHelper.SelectionRect);
+                }
 
-            // Draw selection handles for selected components
-            DrawSelectionHandles(canvas);
+                // Draw selection handles for selected components
+                DrawSelectionHandles(canvas);
+
+                // Draw host-provided world-space annotations (e.g. comment pins)
+                if (_drawingManager.WorldOverlay != null)
+                {
+                    try { _drawingManager.WorldOverlay(canvas); } catch { }
+                }
+            }
 
             // Restore the canvas state
             canvas.Restore();
 
             // Draw static (screen-space) overlay components without world transforms
-            if (staticComponents.Count > 0)
+            if (includeStatic && staticComponents.Count > 0)
             {
-                var uiContext = new DrawingContext
-                {
-                    PanOffset = new SKPoint(0, 0),
-                    Zoom = 1f,
-                    Bounds = canvas.DeviceClipBounds
-                };
+                _staticContext.PanOffset = new SKPoint(0, 0);
+                _staticContext.Zoom = 1f;
+                _staticContext.Bounds = canvas.DeviceClipBounds;
+
                 foreach (var component in staticComponents)
                 {
-                    try { component.Draw(canvas, uiContext); } catch { }
+                    try { component.Draw(canvas, _staticContext); } catch { }
                 }
             }
         }
@@ -262,12 +280,12 @@ namespace Beep.Skia
         /// <summary>
         /// Draw a connection line while adapting visual properties to current zoom and flow settings.
         /// </summary>
-        private void DrawConnectionLineWithZoom(SKCanvas canvas, IConnectionLine line, bool isPreview = false)
+        private void DrawConnectionLineWithZoom(SKCanvas canvas, IConnectionLine line, float zoom, bool isPreview = false)
         {
             if (line == null)
                 return;
 
-            float zoom = Math.Max(0.0001f, _drawingManager.Zoom);
+            zoom = Math.Max(0.0001f, zoom);
 
             // Ensure paint exists
             line.Paint ??= new SKPaint { Style = SKPaintStyle.Stroke, StrokeWidth = 2, IsAntialias = true, StrokeCap = SKStrokeCap.Round };

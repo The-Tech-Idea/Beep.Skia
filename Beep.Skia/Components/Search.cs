@@ -362,11 +362,12 @@ namespace Beep.Skia.Components
             var iconY = bounds.Top + (bounds.Height - iconSize) / 2f;
 
             // Simple search icon (magnifying glass)
-            var path = new SKPath();
-            path.AddCircle(iconX + iconSize * 0.3f, iconY + iconSize * 0.3f, iconSize * 0.25f, SKPathDirection.Clockwise);
-            path.MoveTo(iconX + iconSize * 0.55f, iconY + iconSize * 0.55f);
-            path.LineTo(iconX + iconSize * 0.8f, iconY + iconSize * 0.8f);
+            var pathBuilder = new SKPathBuilder();
+            pathBuilder.AddCircle(iconX + iconSize * 0.3f, iconY + iconSize * 0.3f, iconSize * 0.25f, SKPathDirection.Clockwise);
+            pathBuilder.MoveTo(iconX + iconSize * 0.55f, iconY + iconSize * 0.55f);
+            pathBuilder.LineTo(iconX + iconSize * 0.8f, iconY + iconSize * 0.8f);
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, iconPaint);
         }
 
@@ -404,11 +405,12 @@ namespace Beep.Skia.Components
             var iconY = bounds.Top + bounds.Height / 2f;
 
             // Draw back arrow
-            var path = new SKPath();
-            path.MoveTo(iconX + iconSize * 0.7f, iconY - iconSize * 0.3f);
-            path.LineTo(iconX + iconSize * 0.3f, iconY);
-            path.LineTo(iconX + iconSize * 0.7f, iconY + iconSize * 0.3f);
+            var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(iconX + iconSize * 0.7f, iconY - iconSize * 0.3f);
+            pathBuilder.LineTo(iconX + iconSize * 0.3f, iconY);
+            pathBuilder.LineTo(iconX + iconSize * 0.7f, iconY + iconSize * 0.3f);
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, iconPaint);
         }
 
@@ -420,12 +422,12 @@ namespace Beep.Skia.Components
             if (string.IsNullOrEmpty(_text))
             {
                 // Draw placeholder
-                canvas.DrawText(_placeholderText, textX, textY, _font, _placeholderPaint);
+                canvas.DrawText(_placeholderText, textX, textY, SKTextAlign.Left, _font, _placeholderPaint);
             }
             else
             {
                 // Draw text
-                canvas.DrawText(_text, textX, textY, _font, _textPaint);
+                canvas.DrawText(_text, textX, textY, SKTextAlign.Left, _font, _textPaint);
             }
         }
 
@@ -436,11 +438,11 @@ namespace Beep.Skia.Components
 
             if (string.IsNullOrEmpty(_text))
             {
-                canvas.DrawText(_placeholderText, textX, textY, _font, _placeholderPaint);
+                canvas.DrawText(_placeholderText, textX, textY, SKTextAlign.Left, _font, _placeholderPaint);
             }
             else
             {
-                canvas.DrawText(_text, textX, textY, _font, _textPaint);
+                canvas.DrawText(_text, textX, textY, SKTextAlign.Left, _font, _textPaint);
             }
         }
 

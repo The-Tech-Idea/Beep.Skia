@@ -5,12 +5,26 @@ namespace Beep.Skia
 {
     /// <summary>
     /// Helper class for managing undo/redo operations in the drawing manager.
+    /// Callers apply a change first and then record the action with <see cref="ExecuteAction"/>;
+    /// the action's Execute/Undo methods are used when replaying history.
     /// </summary>
     public class HistoryManager
     {
         private readonly DrawingManager _drawingManager;
-        private readonly Stack<DrawingAction> _undoStack;
-        private readonly Stack<DrawingAction> _redoStack;
+        private readonly List<DrawingAction> _undoStack = new List<DrawingAction>();
+        private readonly List<DrawingAction> _redoStack = new List<DrawingAction>();
+        private bool _isApplyingHistory;
+
+        /// <summary>
+        /// Gets or sets the maximum number of undo steps retained. 0 means unlimited.
+        /// </summary>
+        public int MaxHistoryDepth { get; set; } = 100;
+
+        /// <summary>
+        /// Gets a value indicating whether an undo/redo replay is currently in progress.
+        /// While replaying, nested history recording is suppressed to protect the stacks.
+        /// </summary>
+        public bool IsApplyingHistory => _isApplyingHistory;
 
         /// <summary>
         /// Gets a value indicating whether undo is available.
@@ -34,19 +48,20 @@ namespace Beep.Skia
         public HistoryManager(DrawingManager drawingManager)
         {
             _drawingManager = drawingManager;
-            _undoStack = new Stack<DrawingAction>();
-            _redoStack = new Stack<DrawingAction>();
         }
 
         /// <summary>
-        /// Executes an action and adds it to the undo stack.
+        /// Records an already-applied action on the undo stack.
         /// </summary>
-        /// <param name="action">The action to execute.</param>
+        /// <param name="action">The action to record.</param>
         public void ExecuteAction(DrawingAction action)
         {
-            action.Execute();
-            _undoStack.Push(action);
-            _redoStack.Clear(); // Clear redo stack when new action is executed
+            if (action == null) return;
+            if (_isApplyingHistory) return; // mutations made while undoing/redoing are not new history
+
+            _undoStack.Add(action);
+            TrimHistory();
+            _redoStack.Clear(); // Clear redo stack when new action is recorded
             HistoryChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -55,14 +70,24 @@ namespace Beep.Skia
         /// </summary>
         public void Undo()
         {
-            if (_undoStack.Count > 0)
+            if (_undoStack.Count == 0) return;
+
+            var action = _undoStack[_undoStack.Count - 1];
+            _undoStack.RemoveAt(_undoStack.Count - 1);
+
+            _isApplyingHistory = true;
+            try
             {
-                var action = _undoStack.Pop();
                 action.Undo();
-                _redoStack.Push(action);
-                HistoryChanged?.Invoke(this, EventArgs.Empty);
-                // Note: DrawSurface is invoked by the DrawingManager's Undo method
             }
+            finally
+            {
+                _isApplyingHistory = false;
+            }
+
+            _redoStack.Add(action);
+            HistoryChanged?.Invoke(this, EventArgs.Empty);
+            // Note: DrawSurface is invoked by the DrawingManager's Undo method
         }
 
         /// <summary>
@@ -70,13 +95,33 @@ namespace Beep.Skia
         /// </summary>
         public void Redo()
         {
-            if (_redoStack.Count > 0)
+            if (_redoStack.Count == 0) return;
+
+            var action = _redoStack[_redoStack.Count - 1];
+            _redoStack.RemoveAt(_redoStack.Count - 1);
+
+            _isApplyingHistory = true;
+            try
             {
-                var action = _redoStack.Pop();
                 action.Execute();
-                _undoStack.Push(action);
-                HistoryChanged?.Invoke(this, EventArgs.Empty);
-                // Note: DrawSurface is invoked by the DrawingManager's Redo method
+            }
+            finally
+            {
+                _isApplyingHistory = false;
+            }
+
+            _undoStack.Add(action);
+            TrimHistory();
+            HistoryChanged?.Invoke(this, EventArgs.Empty);
+            // Note: DrawSurface is invoked by the DrawingManager's Redo method
+        }
+
+        private void TrimHistory()
+        {
+            if (MaxHistoryDepth <= 0) return;
+            while (_undoStack.Count > MaxHistoryDepth)
+            {
+                _undoStack.RemoveAt(0);
             }
         }
 

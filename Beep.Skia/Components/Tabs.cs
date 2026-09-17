@@ -273,7 +273,7 @@ namespace Beep.Skia.Components
             if (!string.IsNullOrEmpty(tabItem.Text))
             {
                 float size = _variant == TabVariant.Primary ? 14 : 13;
-                using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), size))
+                using (var font = new SKFont(TypefaceCache.Get(null, SKFontStyle.Normal), size))
                 {
                     textWidth = font.MeasureText(tabItem.Text);
                 }
@@ -393,7 +393,7 @@ namespace Beep.Skia.Components
             if (!string.IsNullOrEmpty(tabItem.Text))
             {
                 float size = _variant == TabVariant.Primary ? 14 : 13;
-                using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), size))
+                using (var font = new SKFont(TypefaceCache.Get(null, SKFontStyle.Normal), size))
                 using (var textPaint = new SKPaint { IsAntialias = true, Color = isSelected ?
                         (_variant == TabVariant.Primary ? MaterialColors.OnPrimary : MaterialColors.OnSurface) :
                         MaterialColors.OnSurfaceVariant })

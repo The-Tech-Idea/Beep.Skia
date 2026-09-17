@@ -7,10 +7,12 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>The Tech Idea</Authors>
 		<Company>The Tech Idea</Company>
-		<Copyright>2022</Copyright>
-		<PackageProjectUrl>https://github.com/The-Tech-Idea/</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/The-Tech-Idea/</RepositoryUrl>
+		<Copyright>2025</Copyright>
+		<PackageProjectUrl>https://github.com/The-Tech-Idea/Beep.Skia</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/The-Tech-Idea/Beep.Skia</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Description>SkiaSharp diagramming and automation framework: component canvas, 16 diagram families (Flowchart, ERD, UML, DFD, ETL, BPMN, PM, State Machine, Mind Map, Network, charts, security, ML, ECAD, well logs, cloud), an executable workflow runtime, collaboration, and an extension SDK.</Description>
+		<PackageTags>skia, skiasharp, diagram, diagramming, flowchart, erd, uml, bpmn, automation, workflow</PackageTags>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Include="..\..\InstallationScripts\LogoGFx\128\SimpleODM.png">
@@ -28,8 +30,6 @@
     <PackageReference Include="SkiaSharp" Version="4.150.1" />
     <PackageReference Include="SkiaSharp.Extended" Version="3.0.0" />
     <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
-    <PackageReference Include="SkiaSharp.Views.Desktop.Common" Version="4.150.1" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.10" />
     <PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="3.1.1" />
     <PackageReference Include="TheTechIdea.Beep.Vis.Modules" Version="2.0.44" />
   </ItemGroup>

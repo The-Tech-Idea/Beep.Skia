@@ -11,7 +11,13 @@ namespace Beep.Skia
     /// </summary>
     public static class DiagramTemplates
     {
-        private static string AQN(string ns, string cls) => $"Beep.Skia.{ns}.{cls}, Beep.Skia.{ns}";
+        private static string AQN(string ns, string cls)
+        {
+            // The Flowchart project uses the "Beep.Skia.Flowchart" namespace
+            // while the assembly is named "Beep.Skia.FlowChart".
+            var namespaceName = ns == "FlowChart" ? "Flowchart" : ns;
+            return $"Beep.Skia.{namespaceName}.{cls}, Beep.Skia.{ns}";
+        }
 
         private static ComponentDto MakeComp(string fullName, float x, float y, float w, float h, string name = null, params (string key, string val)[] props)
         {
@@ -67,9 +73,9 @@ namespace Beep.Skia
             dto.Components.AddRange(new[] { customers, orders, products, items });
             dto.Lines = new List<LineDto>
             {
-                ERDRel("Customers", "Orders", "places", ERDMultiplicity.One, ERDMultiplicity.Many),
-                ERDRel("Orders", "OrderItems", "contains", ERDMultiplicity.One, ERDMultiplicity.Many),
-                ERDRel("Products", "OrderItems", "has", ERDMultiplicity.One, ERDMultiplicity.Many)
+                ERDRel(0, 1, "places", ERDMultiplicity.One, ERDMultiplicity.Many),
+                ERDRel(1, 3, "contains", ERDMultiplicity.One, ERDMultiplicity.Many),
+                ERDRel(2, 3, "has", ERDMultiplicity.One, ERDMultiplicity.Many)
             };
             return dto;
         }
@@ -131,8 +137,8 @@ namespace Beep.Skia
             dto.Components.AddRange(new[] { user, order, product, paySvc });
             dto.Lines = new List<LineDto>
             {
-                UMLAssoc(AQN("UML", "UMLClass"), AQN("UML", "UMLClass"), "places"),
-                UMLInherit(AQN("UML", "UMLInterface"))
+                UMLAssoc(0, 1, "places"),
+                UMLInherit(1, 3)
             };
             return dto;
         }
@@ -241,11 +247,51 @@ namespace Beep.Skia
             return dto;
         }
 
+        // ── FlowChart: Purchase Approval ─────────────────────────────────────
+
+        public static DiagramDto FlowChartApproval()
+        {
+            var dto = new DiagramDto();
+            var start = MakeComp(AQN("FlowChart", "StartEndNode"), 260, 40, 100, 40, "Start", ("Title", "Start"));
+            var submit = MakeComp(AQN("FlowChart", "ProcessNode"), 230, 110, 160, 50, "Submit Request", ("Title", "Submit Request"));
+            var review = MakeComp(AQN("FlowChart", "ProcessNode"), 230, 190, 160, 50, "Manager Review", ("Title", "Manager Review"));
+            var decision = MakeComp(AQN("FlowChart", "DecisionNode"), 240, 270, 140, 80, "Approved?", ("Title", "Approved?"));
+            var archive = MakeComp(AQN("FlowChart", "ProcessNode"), 440, 285, 150, 50, "Archive Request", ("Title", "Archive Request"));
+            var notify = MakeComp(AQN("FlowChart", "ProcessNode"), 230, 380, 160, 50, "Notify Requester", ("Title", "Notify Requester"));
+            var end = MakeComp(AQN("FlowChart", "StartEndNode"), 260, 460, 100, 40, "End", ("Title", "End"));
+            dto.Components.AddRange(new[] { start, submit, review, decision, archive, notify, end });
+            dto.Lines = new List<LineDto>
+            {
+                Conn(0, 1), Conn(1, 2), Conn(2, 3), Conn(3, 4, "Yes"), Conn(3, 5, "No"), Conn(4, 6), Conn(5, 6)
+            };
+            return dto;
+        }
+
+        // ── StateMachine: Order Lifecycle ────────────────────────────────────
+
+        public static DiagramDto StateMachineOrder()
+        {
+            var dto = new DiagramDto();
+            var initial = MakeComp(AQN("StateMachine", "InitialStateNode"), 80, 110, 40, 40, "Initial");
+            var created = MakeComp(AQN("StateMachine", "StateNode"), 200, 100, 140, 60, "Created", ("Title", "Created"));
+            var paid = MakeComp(AQN("StateMachine", "StateNode"), 400, 100, 140, 60, "Paid", ("Title", "Paid"));
+            var shipped = MakeComp(AQN("StateMachine", "StateNode"), 600, 100, 140, 60, "Shipped", ("Title", "Shipped"));
+            var cancelled = MakeComp(AQN("StateMachine", "StateNode"), 400, 240, 140, 60, "Cancelled", ("Title", "Cancelled"));
+            var final = MakeComp(AQN("StateMachine", "FinalStateNode"), 800, 110, 40, 40, "Final");
+            dto.Components.AddRange(new[] { initial, created, paid, shipped, cancelled, final });
+            dto.Lines = new List<LineDto>
+            {
+                Conn(0, 1), Conn(1, 2, "pay"), Conn(2, 3, "ship"), Conn(3, 5), Conn(1, 4, "cancel"), Conn(2, 4, "refund")
+            };
+            return dto;
+        }
+
         // ── All templates list ───────────────────────────────────────────────
 
         public static IReadOnlyDictionary<string, Func<DiagramDto>> All => new Dictionary<string, Func<DiagramDto>>
         {
             ["FlowChart: Order Validation"] = FlowChartOrderValidation,
+            ["FlowChart: Purchase Approval"] = FlowChartApproval,
             ["ERD: E-Commerce Schema"] = ERDEcommerce,
             ["ETL: Data Warehouse Pipeline"] = ETLPipeline,
             ["DFD: Order System Level 0"] = DFDOrderSystem,
@@ -253,6 +299,7 @@ namespace Beep.Skia
             ["Network: Social Graph"] = NetworkSocialGraph,
             ["MindMap: Product Strategy"] = MindMapProductStrategy,
             ["StateMachine: Login Process"] = StateMachineLogin,
+            ["StateMachine: Order Lifecycle"] = StateMachineOrder,
             ["Business: Purchase Approval"] = BusinessPurchaseApproval,
             ["PM: Sprint Plan"] = PMSprintPlan
         };
@@ -265,18 +312,22 @@ namespace Beep.Skia
             {
                 StartPointId = Guid.Empty,  // Placeholder — resolved during LoadFromDto renumbering
                 EndPointId = Guid.Empty,
+                StartComponentIndex = srcIdx,
+                EndComponentIndex = dstIdx,
                 ShowStartArrow = false,
                 ShowEndArrow = true,
                 Label1 = label
             };
         }
 
-        private static LineDto ERDRel(string srcName, string dstName, string label, ERDMultiplicity startMul, ERDMultiplicity endMul)
+        private static LineDto ERDRel(int srcIdx, int dstIdx, string label, ERDMultiplicity startMul, ERDMultiplicity endMul)
         {
             return new LineDto
             {
                 StartPointId = Guid.Empty,
                 EndPointId = Guid.Empty,
+                StartComponentIndex = srcIdx,
+                EndComponentIndex = dstIdx,
                 ShowStartArrow = false,
                 ShowEndArrow = true,
                 Label1 = label,
@@ -285,14 +336,14 @@ namespace Beep.Skia
             };
         }
 
-        private static LineDto UMLAssoc(string srcType, string dstType, string label)
+        private static LineDto UMLAssoc(int srcIdx, int dstIdx, string label)
         {
-            return new LineDto { StartPointId = Guid.Empty, EndPointId = Guid.Empty, ShowStartArrow = false, ShowEndArrow = true, Label1 = label };
+            return new LineDto { StartPointId = Guid.Empty, EndPointId = Guid.Empty, StartComponentIndex = srcIdx, EndComponentIndex = dstIdx, ShowStartArrow = false, ShowEndArrow = true, Label1 = label };
         }
 
-        private static LineDto UMLInherit(string type)
+        private static LineDto UMLInherit(int childIdx, int parentIdx)
         {
-            return new LineDto { StartPointId = Guid.Empty, EndPointId = Guid.Empty, ShowStartArrow = false, ShowEndArrow = true, Label1 = "extends" };
+            return new LineDto { StartPointId = Guid.Empty, EndPointId = Guid.Empty, StartComponentIndex = childIdx, EndComponentIndex = parentIdx, ShowStartArrow = false, ShowEndArrow = true, Label1 = "implements" };
         }
     }
 

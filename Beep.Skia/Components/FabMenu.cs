@@ -378,7 +378,7 @@ namespace Beep.Skia.Components
                 // Draw icon
                 if (!string.IsNullOrEmpty(item.Icon))
                 {
-                    using var iconFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), 20);
+                    using var iconFont = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Normal), 20);
                     using var iconPaint = new SKPaint { Color = MaterialColors.OnSecondaryContainer, IsAntialias = true };
                     var iconMetrics = iconFont.Metrics;
                     float iconBaseline = itemY + itemSize / 2 + iconMetrics.CapHeight / 2f;
@@ -389,7 +389,7 @@ namespace Beep.Skia.Components
                 // Draw label if provided
                 if (!string.IsNullOrEmpty(item.Label) && progress > 0.5f)
                 {
-                    using var labelFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), 14);
+                    using var labelFont = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Normal), 14);
                     using var labelPaint = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
                     float labelX = itemX - 8; // anchor reference
                     var metrics = labelFont.Metrics;

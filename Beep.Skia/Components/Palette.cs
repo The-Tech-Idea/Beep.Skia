@@ -2,6 +2,7 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Beep.Skia.Model;
 namespace Beep.Skia.Components
@@ -248,10 +249,58 @@ namespace Beep.Skia.Components
         // Public helper to force refresh when external code adds/removes items
         public void RefreshLayout()
         {
-            EnsureCategories();
+            RebuildCategories();
             if (_autoSize) RecalculateHeight();
             if (_autoWidth) RecalculateWidth();
             UpdateBounds();
+        }
+
+        private string _searchText = string.Empty;
+
+        /// <summary>
+        /// Filters visible palette items by name or category (case-insensitive substring).
+        /// Empty clears the filter and shows all items.
+        /// </summary>
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_searchText == v) return;
+                _searchText = v;
+                RebuildCategories();
+                if (_autoSize) RecalculateHeight();
+                if (_autoWidth) RecalculateWidth();
+                UpdateBounds();
+            }
+        }
+
+        /// <summary>Applies a search filter (alias for <see cref="SearchText"/>).</summary>
+        public void ApplyFilter(string query) => SearchText = query;
+
+        /// <summary>Gets the number of items currently visible after filtering.</summary>
+        public int VisibleItemCount => Categories.Sum(c => c.Items.Count);
+
+        private void RebuildCategories()
+        {
+            Categories.Clear();
+
+            IEnumerable<PaletteItem> source = Items;
+            if (!string.IsNullOrWhiteSpace(_searchText))
+            {
+                var query = _searchText.Trim();
+                source = source.Where(i =>
+                    (i.Name ?? string.Empty).IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    (i.Category ?? "General").IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+            foreach (var group in source.GroupBy(i => i.Category ?? "General"))
+            {
+                var category = new PaletteCategory { Name = group.Key };
+                category.Items.AddRange(group);
+                Categories.Add(category);
+            }
         }
 
         // Convenience add/remove wrappers to auto-size
@@ -515,12 +564,7 @@ namespace Beep.Skia.Components
         {
             if (Categories.Count == 0 && Items.Count > 0)
             {
-                foreach (var grp in Items.GroupBy(i => i.Category ?? "General"))
-                {
-                    var cat = new PaletteCategory { Name = grp.Key };
-                    cat.Items.AddRange(grp);
-                    Categories.Add(cat);
-                }
+                RebuildCategories();
             }
         }
 

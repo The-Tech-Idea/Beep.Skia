@@ -271,7 +271,7 @@ namespace Beep.Skia.Components
             // Draw icon (modern SKFont API)
             if (!string.IsNullOrEmpty(_icon))
             {
-                using (var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), _iconSize))
+                using (var font = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Normal), _iconSize))
                 using (var textPaint = new SKPaint { Color = _iconColor, IsAntialias = true })
                 {
                     float textX = centerX;
@@ -283,7 +283,7 @@ namespace Beep.Skia.Components
             // Draw extended text
             if (_isExtended && !string.IsNullOrEmpty(_extendedText))
             {
-                using (var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal), 16))
+                using (var font = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Normal), 16))
                 using (var textPaint = new SKPaint { Color = _iconColor, IsAntialias = true })
                 {
                     // Measure text using font

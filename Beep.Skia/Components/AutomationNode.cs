@@ -19,8 +19,6 @@ namespace Beep.Skia.Components
         private NodeStatus _status = NodeStatus.Idle;
         private Dictionary<string, object> _configuration = new Dictionary<string, object>();
         private bool _isEnabled = true;
-        private readonly List<IConnectionPoint> _inputConnections = new List<IConnectionPoint>();
-        private readonly List<IConnectionPoint> _outputConnections = new List<IConnectionPoint>();
         #endregion
 
         #region IAutomationNode Properties
@@ -66,6 +64,15 @@ namespace Beep.Skia.Components
         }
 
         /// <summary>
+        /// Sets the execution status from a host (used for live workflow run visualization).
+        /// </summary>
+        /// <param name="status">The node status to display.</param>
+        public void SetExecutionStatus(NodeStatus status)
+        {
+            Status = status;
+        }
+
+        /// <summary>
         /// Gets or sets the configuration parameters for this node.
         /// </summary>
         public Dictionary<string, object> Configuration
@@ -76,13 +83,17 @@ namespace Beep.Skia.Components
 
         /// <summary>
         /// Gets the input connection points for this automation node.
+        /// Backed by the component's canvas connection points so serialization and the drawing
+        /// manager see exactly the ports the automation runtime uses.
         /// </summary>
-        public IList<IConnectionPoint> InputConnections => _inputConnections;
+        public IList<IConnectionPoint> InputConnections => InConnectionPoints;
 
         /// <summary>
         /// Gets the output connection points for this automation node.
+        /// Backed by the component's canvas connection points so serialization and the drawing
+        /// manager see exactly the ports the automation runtime uses.
         /// </summary>
-        public IList<IConnectionPoint> OutputConnections => _outputConnections;
+        public IList<IConnectionPoint> OutputConnections => OutConnectionPoints;
 
         /// <summary>
         /// Gets a value indicating whether this node is currently enabled for execution.
@@ -206,7 +217,7 @@ namespace Beep.Skia.Components
                     Shape = ComponentShape.Circle,
                     DataType = "any" // Default input accepts any data type
                 };
-                _inputConnections.Add(inputPoint);
+                InConnectionPoints.Add(inputPoint);
             }
 
             var outputPoint = new ConnectionPoint
@@ -218,7 +229,7 @@ namespace Beep.Skia.Components
                 Shape = ComponentShape.Circle,
                 DataType = GetOutputDataType() // Determine output data type
             };
-            _outputConnections.Add(outputPoint);
+            OutConnectionPoints.Add(outputPoint);
         }
 
         /// <summary>
@@ -463,7 +474,7 @@ namespace Beep.Skia.Components
         protected virtual void DrawNodeContent(SKCanvas canvas, SKRect bounds, DrawingContext context)
         {
             // Draw node name using SKFont
-            using var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI"), 14);
+            using var font = new SKFont(TypefaceCache.Get("Segoe UI"), 14);
             using var textPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -476,7 +487,7 @@ namespace Beep.Skia.Components
             var textX = bounds.MidX - textBounds / 2;
             var textY = bounds.MidY + font.Size / 3; // Adjust for baseline
             
-            canvas.DrawText(text, textX, textY, font, textPaint);
+            canvas.DrawText(text, textX, textY, SKTextAlign.Left, font, textPaint);
         }
 
         /// <summary>
@@ -752,8 +763,8 @@ namespace Beep.Skia.Components
         protected override void DisposeManagedResources()
         {
             // Clean up any automation-specific resources
-            _inputConnections.Clear();
-            _outputConnections.Clear();
+            InConnectionPoints.Clear();
+            OutConnectionPoints.Clear();
             _configuration.Clear();
             
             base.DisposeManagedResources();

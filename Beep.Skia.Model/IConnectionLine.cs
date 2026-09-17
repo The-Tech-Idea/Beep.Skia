@@ -131,6 +131,12 @@ namespace Beep.Skia.Model
         /// </summary>
         bool IsSelected { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the connection line is visible.
+        /// Hidden lines are skipped by the renderer (used by collapse/expand behavior).
+        /// </summary>
+        bool IsVisible { get; set; }
+
     /// <summary>
     /// Gets or sets a value indicating whether the connection line is currently hovered.
     /// Used for showing transient UI like tooltips.

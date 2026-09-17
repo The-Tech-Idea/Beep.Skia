@@ -680,7 +680,7 @@ namespace Beep.Skia.Components
                         MaterialDesignColors.OnSecondaryContainer :
                         _navigationDrawer?.UnselectedItemColor ?? MaterialDesignColors.OnSurfaceVariant;
                     paint.IsAntialias = true;
-                    using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), 24f))
+                    using (var font = new SKFont(TypefaceCache.Get(null, SKFontStyle.Normal), 24f))
                     {
                         float iconX = bounds.Left + 16;
                         float iconY = bounds.Top + (bounds.Height + 12) / 2;
@@ -695,7 +695,7 @@ namespace Beep.Skia.Components
                         MaterialDesignColors.OnSecondaryContainer :
                         _navigationDrawer?.UnselectedItemColor ?? MaterialDesignColors.OnSurface;
                     paint.IsAntialias = true;
-                    using (var font = new SKFont(SKTypeface.FromFamilyName(null, IsSelected ? SKFontStyle.Bold : SKFontStyle.Normal), 16f))
+                    using (var font = new SKFont(TypefaceCache.Get(null, IsSelected ? SKFontStyle.Bold : SKFontStyle.Normal), 16f))
                     {
                         float labelX = bounds.Left + 72;
                         float labelY = bounds.Top + (bounds.Height + 6) / 2;
@@ -713,7 +713,7 @@ namespace Beep.Skia.Components
                     paint.Style = SKPaintStyle.Fill;
                     canvas.DrawCircle(badgeX, badgeY, badgeRadius, paint);
                     paint.Color = MaterialDesignColors.OnError;
-                    using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Bold), 12f))
+                    using (var font = new SKFont(TypefaceCache.Get(null, SKFontStyle.Bold), 12f))
                     {
                         canvas.DrawText(Badge, badgeX, badgeY + 4, SKTextAlign.Center, font, paint);
                     }
@@ -850,7 +850,7 @@ namespace Beep.Skia.Components
                 {
                     paint.Color = TitleColor;
                     paint.IsAntialias = true;
-                    using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), 40f))
+                    using (var font = new SKFont(TypefaceCache.Get(null, SKFontStyle.Normal), 40f))
                     {
                         float avatarX = bounds.Left + 16;
                         float avatarY = bounds.Top + 80;
@@ -863,7 +863,7 @@ namespace Beep.Skia.Components
                 {
                     paint.Color = TitleColor;
                     paint.IsAntialias = true;
-                    using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), 20f))
+                    using (var font = new SKFont(TypefaceCache.Get(null, SKFontStyle.Normal), 20f))
                     {
                         float titleX = bounds.Left + 16 + (string.IsNullOrEmpty(AvatarIcon) ? 0 : 56);
                         float titleY = bounds.Top + 60;
@@ -876,7 +876,7 @@ namespace Beep.Skia.Components
                 {
                     paint.Color = SubtitleColor;
                     paint.IsAntialias = true;
-                    using (var font = new SKFont(SKTypeface.FromFamilyName(null, SKFontStyle.Normal), 14f))
+                    using (var font = new SKFont(TypefaceCache.Get(null, SKFontStyle.Normal), 14f))
                     {
                         float subtitleX = bounds.Left + 16 + (string.IsNullOrEmpty(AvatarIcon) ? 0 : 56);
                         float subtitleY = bounds.Top + 90;

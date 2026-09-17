@@ -11,7 +11,6 @@ namespace Beep.Skia.Components
     public class SplitButton : MaterialControl
     {
         private string _text = "Split Button";
-        private string _selectedText = "Split Button";
         private SKColor _backgroundColor = MaterialColors.Primary;
         private SKColor _textColor = MaterialColors.OnPrimary;
         private SKColor _dropdownButtonColor = MaterialColors.PrimaryContainer;
@@ -466,14 +465,15 @@ namespace Beep.Skia.Components
                 }
 
                 // Create path with rounded corners on the left side
-                var path = new SKPath();
-                path.MoveTo(bounds.Left + _cornerRadius, bounds.Top);
-                path.LineTo(bounds.Right, bounds.Top);
-                path.LineTo(bounds.Right, bounds.Bottom);
-                path.LineTo(bounds.Left + _cornerRadius, bounds.Bottom);
-                path.ArcTo(_cornerRadius, _cornerRadius, 0, SKPathArcSize.Small, SKPathDirection.CounterClockwise, bounds.Left + _cornerRadius, bounds.Top);
-                path.Close();
+                var pathBuilder = new SKPathBuilder();
+                pathBuilder.MoveTo(bounds.Left + _cornerRadius, bounds.Top);
+                pathBuilder.LineTo(bounds.Right, bounds.Top);
+                pathBuilder.LineTo(bounds.Right, bounds.Bottom);
+                pathBuilder.LineTo(bounds.Left + _cornerRadius, bounds.Bottom);
+                pathBuilder.ArcTo(_cornerRadius, _cornerRadius, 0, SKPathArcSize.Small, SKPathDirection.CounterClockwise, bounds.Left + _cornerRadius, bounds.Top);
+                pathBuilder.Close();
 
+                using var path = pathBuilder.Detach();
                 canvas.DrawPath(path, paint);
 
                 // Draw outline for outlined variant
@@ -505,14 +505,15 @@ namespace Beep.Skia.Components
                 paint.Color = _dropdownButtonColor;
 
                 // Create path with rounded corners on the right side
-                var path = new SKPath();
-                path.MoveTo(bounds.Left, bounds.Top);
-                path.LineTo(bounds.Right - _cornerRadius, bounds.Top);
-                path.ArcTo(_cornerRadius, _cornerRadius, 0, SKPathArcSize.Small, SKPathDirection.Clockwise, bounds.Right, bounds.Top + _cornerRadius);
-                path.LineTo(bounds.Right, bounds.Bottom);
-                path.LineTo(bounds.Left, bounds.Bottom);
-                path.Close();
+                var pathBuilder = new SKPathBuilder();
+                pathBuilder.MoveTo(bounds.Left, bounds.Top);
+                pathBuilder.LineTo(bounds.Right - _cornerRadius, bounds.Top);
+                pathBuilder.ArcTo(_cornerRadius, _cornerRadius, 0, SKPathArcSize.Small, SKPathDirection.Clockwise, bounds.Right, bounds.Top + _cornerRadius);
+                pathBuilder.LineTo(bounds.Right, bounds.Bottom);
+                pathBuilder.LineTo(bounds.Left, bounds.Bottom);
+                pathBuilder.Close();
 
+                using var path = pathBuilder.Detach();
                 canvas.DrawPath(path, paint);
             }
 
@@ -578,8 +579,9 @@ namespace Beep.Skia.Components
                 paint.Color = MaterialColors.Surface;
                 paint.IsAntialias = true;
 
-                var menuPath = new SKPath();
-                menuPath.AddRoundRect(menuBounds, 8, 8);
+                var menuPathBuilder = new SKPathBuilder();
+                menuPathBuilder.AddRoundRect(menuBounds, 8, 8);
+                using var menuPath = menuPathBuilder.Detach();
                 canvas.DrawPath(menuPath, paint);
 
                 // Draw menu outline

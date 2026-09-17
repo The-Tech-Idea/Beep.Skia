@@ -373,10 +373,7 @@ namespace Beep.Skia.Components
         /// </summary>
         public bool HasSubmenu => _submenu != null;
 
-        /// <summary>
-        /// Occurs when the menu item is clicked.
-        /// </summary>
-    public new event EventHandler Clicked;
+        // Clicked is inherited from MaterialControl, which raises it on activation.
 
         /// <summary>
         /// Initializes a new instance of the CascadingMenuItem class.

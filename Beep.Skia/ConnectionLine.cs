@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using System.Timers;
 using Beep.Skia.Model;
 using System.Collections.Generic;
@@ -16,6 +16,12 @@ namespace Beep.Skia
         private readonly Action invalidateVisualAction;
         private SKPaint _textPaint;
         private SKFont _textFont;
+
+        // Reused across frames: lines are redrawn every frame, so creating paints/path effects per
+        // draw would allocate a managed wrapper and a native Skia object for every line.
+        private SKPaint _strokePaint;
+        private SKPathEffect _dashEffect;
+        private float[] _dashEffectPattern;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConnectionLine"/> class with an invalidate visual action.
@@ -75,6 +81,11 @@ namespace Beep.Skia
         /// Gets or sets a value indicating whether this connection line is selected.
         /// </summary>
         public bool IsSelected { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether this line is visible. Hidden lines are skipped by the renderer.
+        /// </summary>
+        public bool IsVisible { get; set; } = true;
 
     /// <summary>
     /// Indicates the line is currently hovered by the mouse (set by interaction layer).
@@ -141,6 +152,21 @@ namespace Beep.Skia
         /// If not set, will automatically use the data type from the start connection point.
         /// </summary>
         public string DataTypeLabel { get; set; }
+
+        /// <summary>
+        /// Optional guard condition evaluated before a state-machine transition fires.
+        /// </summary>
+        public string GuardCondition { get; set; }
+
+        /// <summary>
+        /// Optional action executed when a state-machine transition fires.
+        /// </summary>
+        public string TransitionAction { get; set; }
+
+        /// <summary>
+        /// Optional trigger event name that causes the transition to fire.
+        /// </summary>
+        public string TriggerEvent { get; set; }
 
     // --- Schema/row-level semantics ---
     /// <summary>
@@ -316,23 +342,26 @@ namespace Beep.Skia
             catch { }
 
             // Configure dash pattern if provided OR if non-identifying ERD relationship
-            using var stroke = new SKPaint
-            {
-                Color = Paint.Color,
-                Style = Paint.Style,
-                StrokeWidth = Paint.StrokeWidth,
-                IsAntialias = Paint.IsAntialias,
-                StrokeCap = Paint.StrokeCap,
-                StrokeJoin = Paint.StrokeJoin
-            };
+            var stroke = EnsureStrokePaint();
+            stroke.Color = Paint.Color;
+            stroke.Style = Paint.Style;
+            stroke.StrokeWidth = Paint.StrokeWidth;
+            stroke.IsAntialias = Paint.IsAntialias;
+            stroke.StrokeCap = Paint.StrokeCap;
+            stroke.StrokeJoin = Paint.StrokeJoin;
+
             if (DashPattern != null && DashPattern.Length >= 2)
             {
-                stroke.PathEffect = SKPathEffect.CreateDash(DashPattern, 0);
+                stroke.PathEffect = GetDashEffect(DashPattern);
             }
             else if (!isIdentifying && (Start?.Component?.GetType()?.Namespace == "Beep.Skia.ERD" || End?.Component?.GetType()?.Namespace == "Beep.Skia.ERD"))
             {
                 // Non-identifying ERD relationships: use dashed line
-                stroke.PathEffect = SKPathEffect.CreateDash(new float[] { 8, 4 }, 0);
+                stroke.PathEffect = GetDashEffect(ErdDashPattern);
+            }
+            else
+            {
+                stroke.PathEffect = null;
             }
 
             switch (RoutingMode)
@@ -349,11 +378,12 @@ namespace Beep.Skia
                 }
                 case LineRoutingMode.Curved:
                 {
-                    using var path = new SKPath();
-                    path.MoveTo(lineStart);
+                    using var pathBuilder = new SKPathBuilder();
+                    pathBuilder.MoveTo(lineStart);
                     var c1 = new SKPoint((lineStart.X * 2 + lineEnd.X) / 3f, lineStart.Y);
                     var c2 = new SKPoint((lineEnd.X * 2 + lineStart.X) / 3f, lineEnd.Y);
-                    path.CubicTo(c1, c2, lineEnd);
+                    pathBuilder.CubicTo(c1, c2, lineEnd);
+                    using var path = pathBuilder.Detach();
                     canvas.DrawPath(path, stroke);
                     break;
                 }
@@ -452,15 +482,15 @@ namespace Beep.Skia
                             lines.Add("Schema differences:");
                             int maxShow = 5;
                             foreach (var m in diff.MissingColumns.Take(maxShow)) lines.Add($"- Missing: {m}");
-                            if (diff.MissingColumns.Count > maxShow) lines.Add($"  … +{diff.MissingColumns.Count - maxShow} more missing");
+                            if (diff.MissingColumns.Count > maxShow) lines.Add($"  � +{diff.MissingColumns.Count - maxShow} more missing");
                             foreach (var td in diff.TypeDifferences.Take(maxShow)) lines.Add($"- Type: {td.Name} expected {td.ExpectedType}, actual {td.ActualType}");
-                            if (diff.TypeDifferences.Count > maxShow) lines.Add($"  … +{diff.TypeDifferences.Count - maxShow} more type differences");
+                            if (diff.TypeDifferences.Count > maxShow) lines.Add($"  � +{diff.TypeDifferences.Count - maxShow} more type differences");
                             foreach (var nd in diff.NullabilityDifferences.Take(maxShow))
                                 lines.Add($"- Nullability: {nd.Name} expected {(nd.ExpectedNullable ? "nullable" : "not nullable")}, actual {(nd.ActualNullable ? "nullable" : "not nullable")}");
-                            if (diff.NullabilityDifferences.Count > maxShow) lines.Add($"  … +{diff.NullabilityDifferences.Count - maxShow} more nullability differences");
+                            if (diff.NullabilityDifferences.Count > maxShow) lines.Add($"  � +{diff.NullabilityDifferences.Count - maxShow} more nullability differences");
                             foreach (var dd in diff.DefaultDifferences.Take(maxShow))
                                 lines.Add($"- Default: {dd.Name} expected '{dd.ExpectedDefault}', actual '{dd.ActualDefault}'");
-                            if (diff.DefaultDifferences.Count > maxShow) lines.Add($"  … +{diff.DefaultDifferences.Count - maxShow} more default differences");
+                            if (diff.DefaultDifferences.Count > maxShow) lines.Add($"  � +{diff.DefaultDifferences.Count - maxShow} more default differences");
                             lines.Add(" "); // spacer before listing columns
                         }
                     }
@@ -477,7 +507,7 @@ namespace Beep.Skia
                     var flags = (c?.IsPrimaryKey == true ? " [PK]" : "") + (c?.IsForeignKey == true ? " [FK]" : "");
                     lines.Add(string.IsNullOrWhiteSpace(type) ? name + flags : $"{name}: {type}{flags}");
                 }
-                if (n > max) lines.Add($"… +{n - max} more");
+                if (n > max) lines.Add($"� +{n - max} more");
 
                 // Measure tooltip box
                 float padding = 6f;
@@ -574,7 +604,7 @@ namespace Beep.Skia
             SKPoint Along(SKPoint p, float s) => new SKPoint(p.X + vx * s, p.Y + vy * s);
             SKPoint Right(SKPoint p, float s) => new SKPoint(p.X + rx * s, p.Y + ry * s);
 
-            // Start a little off the endpoint so symbols don’t overlap the node outline
+            // Start a little off the endpoint so symbols don�t overlap the node outline
             var origin = Along(atPoint, gap + paint.StrokeWidth);
 
             // Rendering order: near endpoint to far (so circle is closest, then bars, then foot at farthest)
@@ -618,7 +648,7 @@ namespace Beep.Skia
 
             if (needsFoot)
             {
-                // Crow’s foot with three prongs from a base point
+                // Crow�s foot with three prongs from a base point
                 var baseP = Along(origin, cursor);
                 // central prong straight out
                 var mid = Along(baseP, footLen);
@@ -752,7 +782,7 @@ namespace Beep.Skia
                 {
                     if (currentOffset >= 0 && currentOffset + waveFrequency <= length)
                     {
-                        using var path = new SKPath();
+                        using var pathBuilder = new SKPathBuilder();
                         bool first = true;
                         for (float t = 0; t <= waveFrequency; t += 2f)
                         {
@@ -762,8 +792,9 @@ namespace Beep.Skia
                                 s.X + dir.X * offset + perpDir.X * wave,
                                 s.Y + dir.Y * offset + perpDir.Y * wave
                             );
-                            if (first) { path.MoveTo(pos); first = false; } else { path.LineTo(pos); }
+                            if (first) { pathBuilder.MoveTo(pos); first = false; } else { pathBuilder.LineTo(pos); }
                         }
+                        using var path = pathBuilder.Detach();
                         canvas.DrawPath(path, wavePaint);
                     }
                     currentOffset += dataFlowSpacing * 2;
@@ -891,12 +922,13 @@ namespace Beep.Skia
                     {
                         var arrowPos = new SKPoint(s.X + dir.X * currentOffset, s.Y + dir.Y * currentOffset);
                         
-                        using var path = new SKPath();
+                        using var pathBuilder = new SKPathBuilder();
                         // Arrow pointing in movement direction
-                        path.MoveTo(arrowPos.X + dir.X * arrowSize, arrowPos.Y + dir.Y * arrowSize);
-                        path.LineTo(arrowPos.X - dir.Y * arrowSize * 0.5f, arrowPos.Y + dir.X * arrowSize * 0.5f);
-                        path.LineTo(arrowPos.X + dir.Y * arrowSize * 0.5f, arrowPos.Y - dir.X * arrowSize * 0.5f);
-                        path.Close();
+                        pathBuilder.MoveTo(arrowPos.X + dir.X * arrowSize, arrowPos.Y + dir.Y * arrowSize);
+                        pathBuilder.LineTo(arrowPos.X - dir.Y * arrowSize * 0.5f, arrowPos.Y + dir.X * arrowSize * 0.5f);
+                        pathBuilder.LineTo(arrowPos.X + dir.Y * arrowSize * 0.5f, arrowPos.Y - dir.X * arrowSize * 0.5f);
+                        pathBuilder.Close();
+                        using var path = pathBuilder.Detach();
                         canvas.DrawPath(path, arrowPaint);
                     }
                     currentOffset += dataFlowSpacing;
@@ -1112,9 +1144,10 @@ namespace Beep.Skia
                 // Simple spinner arc that appears to rotate as Animate updates
                 float sweep = 270f;
                 float angle = (dataFlowOffset * 360f / Math.Max(1f, dataFlowSpacing)) % 360f;
-                using var path = new SKPath();
+                using var pathBuilder = new SKPathBuilder();
                 var rect = new SKRect(mid.X - r, mid.Y - r, mid.X + r, mid.Y + r);
-                path.AddArc(rect, angle, sweep);
+                pathBuilder.AddArc(rect, angle, sweep);
+                using var path = pathBuilder.Detach();
                 canvas.DrawPath(path, paint);
             }
             else if (Status == LineStatus.Warning)
@@ -1132,6 +1165,35 @@ namespace Beep.Skia
             }
         }
 
+        /// <summary>Dashed pattern used for non-identifying ERD relationships.</summary>
+        private static readonly float[] ErdDashPattern = { 8f, 4f };
+
+        /// <summary>Gets the reused stroke paint, creating it on first use.</summary>
+        private SKPaint EnsureStrokePaint() => _strokePaint ??= new SKPaint();
+
+        /// <summary>
+        /// Gets a dash path effect for the pattern, reusing the cached effect while the pattern is
+        /// unchanged (the pattern changes per frame for zoom-scaled and preview lines).
+        /// </summary>
+        private SKPathEffect GetDashEffect(float[] pattern)
+        {
+            if (_dashEffect != null && _dashEffectPattern != null &&
+                _dashEffectPattern.Length == pattern.Length)
+            {
+                var same = true;
+                for (var i = 0; i < pattern.Length; i++)
+                {
+                    if (_dashEffectPattern[i] != pattern[i]) { same = false; break; }
+                }
+                if (same) return _dashEffect;
+            }
+
+            _dashEffect?.Dispose();
+            _dashEffect = SKPathEffect.CreateDash(pattern, 0);
+            _dashEffectPattern = (float[])pattern.Clone();
+            return _dashEffect;
+        }
+
         /// <summary>
         /// Releases all resources used by the connection line.
         /// </summary>
@@ -1139,6 +1201,8 @@ namespace Beep.Skia
         {
             Paint?.Dispose();
             _textPaint?.Dispose();
+            _strokePaint?.Dispose();
+            _dashEffect?.Dispose();
             animationTimer?.Dispose();
         }
     }

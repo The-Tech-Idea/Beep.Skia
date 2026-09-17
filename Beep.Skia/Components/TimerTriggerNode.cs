@@ -780,7 +780,7 @@ namespace Beep.Skia.Components
             DrawTimerIcon(canvas, bounds);
 
             // Draw node title
-            using var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Bold), 12);
+            using var font = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Bold), 12);
             using var textPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -791,15 +791,15 @@ namespace Beep.Skia.Components
             var titleWidth = font.MeasureText(title);
             var titleX = bounds.MidX - titleWidth / 2;
             var titleY = bounds.Top + 20;
-            canvas.DrawText(title, titleX, titleY, font, textPaint);
+            canvas.DrawText(title, titleX, titleY, SKTextAlign.Left, font, textPaint);
 
             // Draw trigger type
-            using var typeFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI"), 10);
+            using var typeFont = new SKFont(TypefaceCache.Get("Segoe UI"), 10);
             var typeLabel = TriggerType.ToString();
             var typeWidth = typeFont.MeasureText(typeLabel);
             var typeX = bounds.MidX - typeWidth / 2;
             var typeY = bounds.Top + 35;
-            canvas.DrawText(typeLabel, typeX, typeY, typeFont, textPaint);
+            canvas.DrawText(typeLabel, typeX, typeY, SKTextAlign.Left, typeFont, textPaint);
 
             // Draw status info
             DrawStatusInfo(canvas, bounds);
@@ -860,7 +860,7 @@ namespace Beep.Skia.Components
         /// <param name="bounds">The node bounds.</param>
         private void DrawStatusInfo(SKCanvas canvas, SKRect bounds)
         {
-            using var statusFont = new SKFont(SKTypeface.FromFamilyName("Segoe UI"), 8);
+            using var statusFont = new SKFont(TypefaceCache.Get("Segoe UI"), 8);
             using var statusPaint = new SKPaint
             {
                 IsAntialias = true,
@@ -876,7 +876,7 @@ namespace Beep.Skia.Components
             
             var countWidth = statusFont.MeasureText(countText);
             var countX = bounds.MidX - countWidth / 2;
-            canvas.DrawText(countText, countX, y, statusFont, statusPaint);
+            canvas.DrawText(countText, countX, y, SKTextAlign.Left, statusFont, statusPaint);
 
             // Next execution (if applicable)
             if (IsRunning && _nextExecution > DateTime.UtcNow)
@@ -884,7 +884,7 @@ namespace Beep.Skia.Components
                 var nextText = $"Next: {_nextExecution:HH:mm}";
                 var nextWidth = statusFont.MeasureText(nextText);
                 var nextX = bounds.MidX - nextWidth / 2;
-                canvas.DrawText(nextText, nextX, bounds.Bottom - 12, statusFont, statusPaint);
+                canvas.DrawText(nextText, nextX, bounds.Bottom - 12, SKTextAlign.Left, statusFont, statusPaint);
             }
         }
 

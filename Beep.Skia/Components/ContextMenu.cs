@@ -118,6 +118,48 @@ namespace Beep.Skia.Components
             }
         }
 
+        /// <summary>
+        /// Adds standard context menu items wired to DrawingManager commands.
+        /// The menu hides itself after a command is invoked.
+        /// </summary>
+        /// <param name="manager">The drawing manager that provides the commands.</param>
+        /// <param name="includeCopy">Whether to include copy operation.</param>
+        /// <param name="includeCut">Whether to include cut operation.</param>
+        /// <param name="includePaste">Whether to include paste operation.</param>
+        /// <param name="includeDelete">Whether to include delete operation.</param>
+        /// <param name="includeSelectAll">Whether to include select all operation.</param>
+        public void AddStandardItems(
+            DrawingManager manager,
+            bool includeCopy = true,
+            bool includeCut = true,
+            bool includePaste = true,
+            bool includeDelete = true,
+            bool includeSelectAll = true)
+        {
+            if (manager == null)
+            {
+                AddStandardItems(includeCopy, includeCut, includePaste, includeDelete, includeSelectAll);
+                return;
+            }
+
+            void Run(Action action)
+            {
+                try { action(); } catch { }
+                Hide();
+            }
+
+            if (includeCut)
+                AddContextItem("Cut", (s, e) => Run(() => { manager.CopySelectedComponents(); manager.DeleteSelectedComponents(); }));
+            if (includeCopy)
+                AddContextItem("Copy", (s, e) => Run(() => manager.CopySelectedComponents()));
+            if (includePaste)
+                AddContextItem("Paste", (s, e) => Run(() => manager.PasteComponents(TriggerPoint)));
+            if (includeDelete)
+                AddContextItem("Delete", (s, e) => Run(() => manager.DeleteSelectedComponents()));
+            if (includeSelectAll)
+                AddContextItem("Select All", (s, e) => Run(() => manager.SelectAllComponents()));
+        }
+
         private string GetAutoIcon(string text)
         {
             string lowerText = text.ToLower();

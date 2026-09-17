@@ -129,6 +129,9 @@ namespace Beep.Skia
             // Non-ctrl keys
             switch (key)
             {
+                case 9: // Tab / Shift+Tab — cycle selection (keyboard accessibility)
+                    SelectNextComponent(forward: !shift);
+                    return true;
                 case 46: // Delete / Backspace
                 case 8:
                     if (_selectionManager.SelectionCount > 0)

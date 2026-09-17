@@ -260,14 +260,8 @@ namespace Beep.Skia
             }
             catch (Exception ex)
             {
-                try
-                {
-                    // Light telemetry: write to temp log and console without crashing the UI
-                    var msg = $"[InferenceError] Component={component?.GetType()?.FullName} Name={component?.Name} Error={ex.Message}";
-                    Console.WriteLine(msg);
-                    try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { }
-                }
-                catch { }
+                // Schema inference is best-effort; surface the failure in debug builds only.
+                System.Diagnostics.Debug.WriteLine($"[InferenceError] Component={component?.GetType()?.FullName} Name={component?.Name} Error={ex.Message}");
             }
         }
 
@@ -582,6 +576,44 @@ namespace Beep.Skia
                 "binary" => SKColors.Gray,
                 _ => SKColors.Cyan // Default color for unknown or "any" types
             };
+        }
+
+        /// <summary>
+        /// Connects two components using specific output/input port indices.
+        /// Useful for branching shapes (decisions, forks) where the first port is not the only target.
+        /// </summary>
+        /// <param name="component1">Source component.</param>
+        /// <param name="component2">Target component.</param>
+        /// <param name="outPortIndex">Index of the source output port.</param>
+        /// <param name="inPortIndex">Index of the target input port.</param>
+        /// <returns>True when the connection was created.</returns>
+        public bool ConnectComponents(SkiaComponent component1, SkiaComponent component2, int outPortIndex, int inPortIndex)
+        {
+            if (component1 == null || component2 == null) return false;
+
+            var outPoints = component1.OutConnectionPoints;
+            var inPoints = component2.InConnectionPoints;
+            if (outPoints == null || inPoints == null) return false;
+            if (outPortIndex < 0 || outPortIndex >= outPoints.Count) return false;
+            if (inPortIndex < 0 || inPortIndex >= inPoints.Count) return false;
+
+            var outPoint = outPoints[outPortIndex];
+            var inPoint = inPoints[inPortIndex];
+            if (outPoint == null || inPoint == null) return false;
+
+            component1.ConnectTo(component2);
+            component2.ConnectTo(component1);
+
+            var line = new ConnectionLine(outPoint, inPoint, () => RequestRedraw());
+            outPoint.Connection = inPoint;
+            inPoint.Connection = outPoint;
+            outPoint.IsAvailable = false;
+            inPoint.IsAvailable = false;
+            _lines.Add(line);
+
+            _historyManager.ExecuteAction(new ConnectComponentsAction(this, component1, component2, line));
+            DrawSurface?.Invoke(this, null);
+            return true;
         }
 
         /// <summary>

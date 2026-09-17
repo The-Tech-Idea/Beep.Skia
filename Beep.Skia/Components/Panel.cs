@@ -205,7 +205,7 @@ namespace Beep.Skia.Components
             // Draw title if present (BEFORE panel content, following Checkbox pattern)
             if (!string.IsNullOrEmpty(Title))
             {
-                using var titleFont = new SKFont(SKTypeface.FromFamilyName("Roboto", SKFontStyle.Normal), 12);
+                using var titleFont = new SKFont(TypefaceCache.Get("Roboto", SKFontStyle.Normal), 12);
                 using var titlePaint = new SKPaint { Color = MaterialControl.MaterialColors.OnSurface, IsAntialias = true };
                 float baseline = Y - 8; // maintain previous visual offset
                 canvas.DrawText(Title, X, baseline, SKTextAlign.Left, titleFont, titlePaint);

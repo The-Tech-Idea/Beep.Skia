@@ -19,7 +19,6 @@ namespace Beep.Skia.Components
         private AutomationNode _selectedNode;
         private AutomationNode _draggedNode;
         private SKPoint _dragOffset;
-        private WorkflowConnection _draggedConnection;
         private ConnectionPoint _connectionStart;
         private SKPoint _mousePosition;
         private bool _isDragging;
@@ -803,13 +802,14 @@ namespace Beep.Skia.Components
             };
 
             // Draw curved connection
-            using var path = new SKPath();
-            path.MoveTo(fromPos);
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(fromPos);
 
             var controlPoint1 = new SKPoint(fromPos.X + 50, fromPos.Y);
             var controlPoint2 = new SKPoint(toPos.X - 50, toPos.Y);
-            path.CubicTo(controlPoint1, controlPoint2, toPos);
+            pathBuilder.CubicTo(controlPoint1, controlPoint2, toPos);
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, connectionPaint);
 
             // Draw arrow at the end
@@ -868,12 +868,13 @@ namespace Beep.Skia.Components
                 to.Y - arrowLength * (float)Math.Sin(angle + arrowAngle)
             );
 
-            using var arrowPath = new SKPath();
-            arrowPath.MoveTo(to);
-            arrowPath.LineTo(arrowPoint1);
-            arrowPath.LineTo(arrowPoint2);
-            arrowPath.Close();
+            using var arrowPathBuilder = new SKPathBuilder();
+            arrowPathBuilder.MoveTo(to);
+            arrowPathBuilder.LineTo(arrowPoint1);
+            arrowPathBuilder.LineTo(arrowPoint2);
+            arrowPathBuilder.Close();
 
+            using var arrowPath = arrowPathBuilder.Detach();
             canvas.DrawPath(arrowPath, arrowPaint);
         }
 
@@ -928,11 +929,11 @@ namespace Beep.Skia.Components
                 IsAntialias = true
             };
 
-            using var font = new SKFont(SKTypeface.FromFamilyName("Segoe UI"), 12);
+            using var font = new SKFont(TypefaceCache.Get("Segoe UI"), 12);
 
             // Draw zoom level
             var zoomText = $"Zoom: {_zoomLevel:P0}";
-            canvas.DrawText(zoomText, 10, Height - 30, font, overlayPaint);
+            canvas.DrawText(zoomText, 10, Height - 30, SKTextAlign.Left, font, overlayPaint);
 
             // Draw execution state
             var stateText = $"State: {_executionState}";
@@ -945,15 +946,15 @@ namespace Beep.Skia.Components
             };
 
             using var statePaint = new SKPaint { Color = stateColor, IsAntialias = true };
-            canvas.DrawText(stateText, 10, Height - 10, font, statePaint);
+            canvas.DrawText(stateText, 10, Height - 10, SKTextAlign.Left, font, statePaint);
 
             // Draw node count
             var nodeCountText = $"Nodes: {_automationNodes.Count}";
-            canvas.DrawText(nodeCountText, 150, Height - 30, font, overlayPaint);
+            canvas.DrawText(nodeCountText, 150, Height - 30, SKTextAlign.Left, font, overlayPaint);
 
             // Draw connection count
             var connectionCountText = $"Connections: {_connections.Count}";
-            canvas.DrawText(connectionCountText, 150, Height - 10, font, overlayPaint);
+            canvas.DrawText(connectionCountText, 150, Height - 10, SKTextAlign.Left, font, overlayPaint);
         }
         #endregion
 
