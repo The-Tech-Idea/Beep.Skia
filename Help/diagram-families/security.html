@@ -72,7 +72,58 @@ drawingManager.AddComponent(vuln);
 drawingManager.ConnectComponents(asset.OutPoints[0], threat.InPoints[0]);
 drawingManager.ConnectComponents(threat.OutPoints[1], vuln.InPoints[0]);
 drawingManager.ConnectComponents(control.OutPoints[0], threat.InPoints[1]);</code></pre></div></section>
-</div></main>
+<section class="section" id="stride">
+  <h2>STRIDE Analysis</h2>
+  <p><code>StrideAnalyzer.Analyze(components)</code> inspects the diagram's asset nodes and produces a threat list. Each threat records its STRIDE category, the asset it affects, a suggested mitigation, a severity, matching MITRE ATT&amp;CK techniques and a DREAD score:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Analyze(components)</code></td><td><code>void</code></td><td>Runs the analysis and fills <code>Threats</code>.</td></tr>
+      <tr><td><code>Threats</code></td><td><code>List&lt;ThreatResult&gt;</code></td><td>One entry per discovered threat.</td></tr>
+      <tr><td><code>ThreatResult.Category</code></td><td><code>StrideCategory</code></td><td>Spoofing, Tampering, Repudiation, Information disclosure, Denial of service or Elevation of privilege.</td></tr>
+      <tr><td><code>ThreatResult.AssetName</code> / <code>Threat</code> / <code>Mitigation</code></td><td><code>string</code></td><td>What is at risk, what the threat is and how to mitigate it.</td></tr>
+      <tr><td><code>ThreatResult.Severity</code></td><td><code>string</code></td><td>Low, Medium or High.</td></tr>
+      <tr><td><code>ThreatResult.Techniques</code></td><td><code>List&lt;MitreTechnique&gt;</code></td><td>Mapped ATT&amp;CK techniques (id, name, tactic).</td></tr>
+      <tr><td><code>ThreatResult.Dread</code></td><td><code>DreadScore</code></td><td>Risk score for the threat.</td></tr>
+    </tbody>
+  </table>
+  <div class="code-example">
+    <pre><code class="language-csharp">var analyzer = new StrideAnalyzer();
+analyzer.Analyze(drawingManager.GetComponents());
+
+foreach (var threat in analyzer.Threats)
+    Console.WriteLine($"[{threat.Category}] {threat.AssetName}: {threat.Threat} " +
+                      $"(DREAD {threat.Dread.Average:0.0}, {threat.Dread.RiskLevel})");</code></pre>
+  </div>
+</section>
+
+<section class="section" id="dread">
+  <h2>DREAD Scoring</h2>
+  <p><code>DreadScore</code> rates five dimensions and derives an average and a risk level:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Damage</code>, <code>Reproducibility</code>, <code>Exploitability</code>, <code>AffectedUsers</code>, <code>Discoverability</code></td><td><code>DreadRating</code></td><td>Each rated Low, Medium or High (default Medium).</td></tr>
+      <tr><td><code>Average</code></td><td><code>double</code></td><td>Mean of the five ratings.</td></tr>
+      <tr><td><code>RiskLevel</code></td><td><code>string</code></td><td>Band derived from the average.</td></tr>
+    </tbody>
+  </table>
+  <p><code>DreadCalculator</code> builds scores from a <code>ThreatNode</code>, from severity/likelihood pairs, or from their string names, so threat tables can be scored in bulk.</p>
+</section>
+
+<section class="section" id="mitre">
+  <h2>MITRE ATT&amp;CK Mapping</h2>
+  <p><code>MitreAttackLibrary</code> ships a technique catalog and maps STRIDE categories onto it:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Techniques</code></td><td>All catalogued techniques (<code>MitreTechnique</code>: <code>Id</code>, <code>Name</code>, <code>Tactic</code>).</td></tr>
+      <tr><td><code>Tactics</code></td><td>Distinct tactic names, for grouping in reports.</td></tr>
+      <tr><td><code>ForStrideCategory(category)</code></td><td>Techniques relevant to a STRIDE category.</td></tr>
+      <tr><td><code>Find(id)</code></td><td>Lookup by technique id (for example <code>T1190</code>).</td></tr>
+    </tbody>
+  </table>
+</section></div></main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

@@ -110,7 +110,50 @@ drawingManager.AddComponent(stop);
 drawingManager.ConnectComponents(start.OutPoints[0], process.InPoints[0]);
 drawingManager.ConnectComponents(process.OutPoints[0], decision.InPoints[0]);
 drawingManager.ConnectComponents(decision.OutPoints[0], stop.InPoints[0]);</code></pre></div></section>
-</div></main>
+<section class="section" id="code-generation">
+  <h2>Code Generation</h2>
+  <p><code>FlowchartCodeGenerator</code> turns a flowchart into structured code. It walks the graph from the start node and emits nested constructs for loops, decisions and sub-processes:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Generate(manager, language)</code></td><td><code>string</code></td><td>Generates code for everything the manager holds.</td></tr>
+      <tr><td><code>Generate(components, lines, language)</code></td><td><code>string</code></td><td>Generates code for an explicit graph.</td></tr>
+      <tr><td><code>CodeLanguage</code></td><td><code>enum</code></td><td><code>Pseudocode</code> (default), <code>Python</code> or <code>CSharp</code>.</td></tr>
+    </tbody>
+  </table>
+  <div class="code-example">
+    <pre><code class="language-csharp">var generator = new FlowchartCodeGenerator();
+string code = generator.Generate(drawingManager, CodeLanguage.CSharp);
+File.WriteAllText("generated.cs", code);</code></pre>
+  </div>
+</section>
+
+<section class="section" id="simulation">
+  <h2>Simulation</h2>
+  <p><code>FlowchartSimulator</code> executes the flowchart step by step without running the workflow engine. It tracks the current node, a step count and a readable trace, and lets the host choose branches at decision nodes:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Reset(components, lines)</code></td><td><code>void</code></td><td>Prepares a run and locates the start node.</td></tr>
+      <tr><td><code>Step()</code></td><td><code>bool</code></td><td>Advances one node; false when the flow has finished.</td></tr>
+      <tr><td><code>Run(maxSteps)</code></td><td><code>bool</code></td><td>Runs to completion or until the step cap (default 1000).</td></tr>
+      <tr><td><code>CurrentNode</code></td><td><code>SkiaComponent</code></td><td>The node reached by the last step.</td></tr>
+      <tr><td><code>IsFinished</code> / <code>StepCount</code></td><td><code>bool</code> / <code>int</code></td><td>Run state.</td></tr>
+      <tr><td><code>Trace</code></td><td><code>List&lt;string&gt;</code></td><td>Visited nodes, in order, for display or assertions.</td></tr>
+      <tr><td><code>BranchSelector</code></td><td><code>Func&lt;SkiaComponent, IReadOnlyList&lt;SimulationEdge&gt;, SimulationEdge?&gt;</code></td><td>Called at decision nodes to pick the outgoing edge; return null to stop.</td></tr>
+      <tr><td><code>StepExecuted</code></td><td>event</td><td>Raised per step with the node, outgoing edges and finished flag.</td></tr>
+    </tbody>
+  </table>
+  <div class="code-example">
+    <pre><code class="language-csharp">var simulator = new FlowchartSimulator();
+simulator.Reset(drawingManager.GetComponents().ToList(), drawingManager.GetLines());
+
+simulator.BranchSelector = (node, edges) =&gt; edges.FirstOrDefault();
+
+simulator.Run(maxSteps: 500);
+Console.WriteLine(string.Join(" -&gt; ", simulator.Trace));</code></pre>
+  </div>
+</section></div></main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

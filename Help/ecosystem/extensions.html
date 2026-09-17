@@ -101,7 +101,62 @@ foreach (var component in host.Components)
     <li><a href="../guides/extensibility.html">Extensibility Guide</a> &mdash; other extension points</li>
   </ul>
 </section>
-</div></main></div>
+<section class="section" id="lifecycle">
+  <h2>Extension Lifecycle</h2>
+  <p>The host drives every extension through the same sequence:</p>
+  <ol>
+    <li><strong>Discover</strong> &mdash; assemblies are scanned for types implementing <code>ISkiaExtension</code>.</li>
+    <li><strong>Instantiate</strong> &mdash; each extension type is created with its parameterless constructor.</li>
+    <li><strong>Initialize</strong> &mdash; <code>Initialize(context)</code> runs once; register components, commands and diagnostics here.</li>
+    <li><strong>Register</strong> &mdash; <code>RegisterComponent</code> adds the type to the registry with an optional palette category and display name; <code>RegisterCommand</code> adds a named action.</li>
+    <li><strong>Create</strong> &mdash; components are created on demand through the registry or <code>SkiaExtensionHost.CreateComponent</code>.</li>
+    <li><strong>Clear</strong> &mdash; <code>Clear()</code> drops the loaded extensions and their registrations (host shutdown or tests).</li>
+  </ol>
+
+  <table class="property-table">
+    <thead><tr><th>Host member</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>LoadFromAssemblies(assemblies)</code></td><td>Loads every extension found in the given assemblies; returns how many were loaded.</td></tr>
+      <tr><td><code>LoadFromDirectory(directory, pattern)</code></td><td>Scans a folder for plugin assemblies (default <code>*.dll</code>).</td></tr>
+      <tr><td><code>CreateComponent(assemblyQualifiedName)</code></td><td>Creates an instance of a contributed component type.</td></tr>
+      <tr><td><code>InvokeCommand(name, target)</code></td><td>Runs a command registered by an extension against the current selection.</td></tr>
+      <tr><td><code>Clear()</code></td><td>Unloads extensions and clears registrations.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="packaging">
+  <h2>Packaging and Distribution</h2>
+  <p>Extensions ship as <code>.beepkg</code> packages and are installed through the marketplace, which tracks versions and provenance:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">var packages = new ExtensionPackageManager(extensionsRoot);
+
+var result = packages.Install(@"C:\downloads\acme.pnid-1.0.0.beepkg");
+if (!result.Success)
+    Console.WriteLine(result.Error);
+
+var host = new SkiaExtensionHost();
+foreach (var dir in packages.GetLoadDirectories())
+    host.LoadFromDirectory(dir);
+
+// Later: upgrade or remove
+packages.Update("com.acme.beep.pnid");
+packages.Uninstall("com.acme.beep.pnid");</code></pre>
+  </div>
+  <p>Installation validates the archive (path traversal and decompression-bomb protection), package version compatibility and declared dependencies before anything is copied. See the <a href="marketplace.html">Extension Marketplace</a> page for the package format.</p>
+</section>
+
+<section class="section" id="checklist">
+  <h2>Extension Checklist</h2>
+  <ul>
+    <li>Stable reverse-DNS <code>Id</code>, semantic <code>Version</code>, meaningful <code>Name</code> and <code>Description</code>.</li>
+    <li>Every component type derives from <code>SkiaComponent</code> and has a public parameterless constructor.</li>
+    <li><code>GetComponentTypes()</code> and <code>RegisterComponent</code> agree &mdash; the first is what hosts scan, the second is what the palette shows.</li>
+    <li>Component class names never change after release; saved diagrams resolve types by name.</li>
+    <li>Commands are idempotent and safe to call with an empty selection.</li>
+    <li>Use <code>context.Log</code> for diagnostics instead of writing to the console.</li>
+  </ul>
+</section></div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 </body></html>

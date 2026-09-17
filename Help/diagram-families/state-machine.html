@@ -41,7 +41,32 @@ drawingManager.AddComponent(final);
 drawingManager.ConnectComponents(init.OutPoints[0], idle.InPoints[0]);
 drawingManager.ConnectComponents(idle.OutPoints[0], active.InPoints[0]);
 drawingManager.ConnectComponents(active.OutPoints[0], final.InPoints[0]);</code></pre></div></section>
-</div></main>
+<section class="section" id="transitions">
+  <h2>States and Transitions</h2>
+  <p>A state machine is a <code>StateNode</code> graph where the transition semantics live on the connection lines. States carry their behaviour; lines carry the trigger, guard and action:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>On</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Title</code></td><td><code>StateNode</code></td><td>State name shown in the shape.</td></tr>
+      <tr><td><code>EntryAction</code></td><td><code>StateNode</code></td><td>Behaviour executed when the state is entered.</td></tr>
+      <tr><td><code>ExitAction</code></td><td><code>StateNode</code></td><td>Behaviour executed when the state is left.</td></tr>
+      <tr><td><code>DoActivity</code></td><td><code>StateNode</code></td><td>Activity performed while in the state.</td></tr>
+      <tr><td><code>TriggerEvent</code></td><td><code>ConnectionLine</code></td><td>Event that fires the transition.</td></tr>
+      <tr><td><code>GuardCondition</code></td><td><code>ConnectionLine</code></td><td>Predicate that must hold (for example <code>[balance &gt;= amount]</code>).</td></tr>
+      <tr><td><code>TransitionAction</code></td><td><code>ConnectionLine</code></td><td>Behaviour executed during the transition.</td></tr>
+    </tbody>
+  </table>
+  <p>The three line properties also appear on the line's labels, so a transition can be read directly on the canvas: <code>trigger [guard] / action</code>. They are persisted with the diagram and validated by the diagram validator when transitions are unreachable.</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">drawingManager.ConnectComponents(idle, processing);
+
+var transition = drawingManager.GetLines().Last();
+transition.TriggerEvent = "order.received";
+transition.GuardCondition = "order.items > 0";
+transition.TransitionAction = "reserveInventory()";
+transition.Label1 = "order.received [items > 0] / reserveInventory()";</code></pre>
+  </div>
+</section></div></main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

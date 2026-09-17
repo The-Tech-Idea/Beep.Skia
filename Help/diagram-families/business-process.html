@@ -83,7 +83,33 @@ drawingManager.AddComponent(end);
 drawingManager.ConnectComponents(start.OutPoints[0], task.InPoints[0]);
 drawingManager.ConnectComponents(task.OutPoints[0], decision.InPoints[0]);
 drawingManager.ConnectComponents(decision.OutPoints[1], sys.InPoints[0]);</code></pre></div></section>
-</div></main>
+<section class="section" id="bpmn">
+  <h2>BPMN Import and Export</h2>
+  <p>The family round-trips BPMN 2.0 XML so diagrams can be exchanged with process-modeling tools:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>BpmnExporter.Export(components, lines, processName)</code></td><td><code>string</code></td><td>Serializes the diagram to BPMN XML.</td></tr>
+      <tr><td><code>BpmnImporter.Parse(xml)</code></td><td><code>BpmnImportResult</code></td><td>Parses XML without touching the canvas.</td></tr>
+      <tr><td><code>BpmnImporter.LoadInto(manager, xml)</code></td><td><code>BpmnImportResult</code></td><td>Parses and materializes the process on a canvas.</td></tr>
+      <tr><td><code>BpmnImportResult.ProcessName</code></td><td><code>string</code></td><td>Name of the imported process.</td></tr>
+      <tr><td><code>BpmnImportResult.Components</code> / <code>Flows</code></td><td>lists</td><td>Created nodes and sequence flows.</td></tr>
+      <tr><td><code>BpmnImportResult.Warnings</code></td><td><code>List&lt;string&gt;</code></td><td>Non-fatal issues encountered while parsing.</td></tr>
+    </tbody>
+  </table>
+  <div class="code-example">
+    <pre><code class="language-csharp">// Export the current diagram
+var exporter = new BpmnExporter();
+string xml = exporter.Export(drawingManager.GetComponents(), drawingManager.GetLines(), "Order Process");
+File.WriteAllText("process.bpmn", xml);
+
+// Import into a fresh canvas
+var importer = new BpmnImporter();
+var result = importer.LoadInto(drawingManager, File.ReadAllText("process.bpmn"));
+foreach (var warning in result.Warnings)
+    Console.WriteLine($"warning: {warning}");</code></pre>
+  </div>
+</section></div></main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

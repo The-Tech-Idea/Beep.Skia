@@ -1,6 +1,6 @@
 # Beep.Skia Documentation Status
 
-**Last updated:** 2026-09-17 (round 6)
+**Last updated:** 2026-09-17 (round 7)
 **Total pages:** 105 | **Sections:** 14
 
 ---
@@ -46,11 +46,11 @@
 ### Diagram Families (16)
 
 **Business & Process**
-- [x] `diagram-families/flowchart.html` — 36 node types, ISO 5807 shapes
-- [x] `diagram-families/business-process.html` — 23 node types, BPMN-inspired
+- [x] `diagram-families/flowchart.html` — 36 node types, ISO 5807 shapes, code generation and simulation
+- [x] `diagram-families/business-process.html` — 23 node types, BPMN import/export
 - [x] `diagram-families/project-management.html` — 12 node types, Gantt/CriticalPath
-- [x] `diagram-families/mindmap.html` — 4 node types, radial layout
-- [x] `diagram-families/state-machine.html` — 3 node types, UML state diagrams
+- [x] `diagram-families/mindmap.html` — 4 node types, radial layout, collapse/expand
+- [x] `diagram-families/state-machine.html` — 3 node types, transitions with triggers, guards and actions
 
 **Data & Systems**
 - [x] `diagram-families/erd.html` — 4 node types, DDL export
@@ -62,9 +62,9 @@
 - [x] `diagram-families/network.html` — 12 components, graph algorithms
 
 **Engineering**
-- [x] `diagram-families/ecad.html` — 17 node types, IEEE/ANSI symbols
+- [x] `diagram-families/ecad.html` — 17 node types, IEEE/ANSI symbols, electrical rules check
 - [x] `diagram-families/cloud.html` — 4 node types, AWS/Azure/GCP
-- [x] `diagram-families/security.html` — 9 node types, threat modeling
+- [x] `diagram-families/security.html` — 9 node types, STRIDE analysis, DREAD scoring, MITRE ATT&amp;CK mapping
 
 **Analytics**
 - [x] `diagram-families/ml.html` — 18 node types, ML pipeline
@@ -87,7 +87,7 @@
 - [x] `ui-components/slider.html`
 - [x] `ui-components/display.html` — Label, SvgImage, MinimapControl
 - [x] `ui-components/notifications.html`
-- [x] `ui-components/editors.html` — NodePropertyEditor, ComponentPropertyEditor, SkiaComponentGrid
+- [x] `ui-components/editors.html` — editor usage, save/cancel events, SkiaComponentGrid
 - [x] `ui-components/palette.html`
 
 ### Guides (8)
@@ -110,7 +110,7 @@
 - [x] `architecture/layout-engines.html`
 - [x] `architecture/history-undo-system.html` (+ action catalog)
 - [x] `architecture/event-catalog.html` — 16 DrawingManager events and interaction args
-- [x] `architecture/events.html` — ComponentClickEventArgs, LineClickEventArgs, HoverChangedEventArgs, ComponentDropEventArgs
+- [x] `architecture/events.html` — event raising semantics, argument selection guide, legacy event args
 
 ### Automation (6)
 - [x] `automation/workflow-engine.html` — Execution engine, retries, variables, pause/resume/cancel
@@ -122,7 +122,7 @@
 - [x] `automation/jobs.html` — ExecutionJob, JobState, results and engine execution records
 
 ### Ecosystem (4)
-- [x] `ecosystem/extensions.html` — ISkiaExtension, SkiaExtensionHost, registration context
+- [x] `ecosystem/extensions.html` — contract, lifecycle, packaging, checklist
 - [x] `ecosystem/marketplace.html` — .beepkg packages, install/update/uninstall, safety gates
 - [x] `ecosystem/collaboration.html` — Roles, comments and pins, presence, audit
 - [x] `ecosystem/assisted-generation.html` — IDiagramAssistant, flowchart DSL, mind-map outlines

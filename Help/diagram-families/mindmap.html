@@ -52,7 +52,21 @@ drawingManager.AddComponent(subtopic);
 
 drawingManager.ConnectComponents(central, topic);
 drawingManager.ConnectComponents(topic, subtopic);</code></pre></div></section>
-</div></main>
+<section class="section" id="collapse">
+  <h2>Collapse and Expand</h2>
+  <p><code>MindMapVisibility.Apply(components, lines)</code> recomputes visibility from each node's <code>IsCollapsed</code> flag: descendants of a collapsed node and their connecting lines are hidden, everything else is restored. It returns how many components and lines changed, which hosts use to request a redraw only when needed:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">var root = drawingManager.GetComponents().OfType&lt;CentralNode&gt;().First();
+root.IsCollapsed = true;
+
+int changed = MindMapVisibility.Apply(
+    drawingManager.GetComponents().ToList(),
+    drawingManager.GetLines());
+
+if (changed &gt; 0)
+    drawingManager.RequestRedraw();</code></pre>
+  </div>
+</section></div></main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

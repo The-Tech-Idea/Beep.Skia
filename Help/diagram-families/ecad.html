@@ -69,7 +69,30 @@ drawingManager.AddComponent(gnd);
 drawingManager.ConnectComponents(bat.OutPoints[0], res.InPoints[0]);
 drawingManager.ConnectComponents(res.OutPoints[0], led.InPoints[0]);
 drawingManager.ConnectComponents(led.OutPoints[0], gnd.InPoints[0]);</code></pre></div></section>
-</div></main>
+<section class="section" id="erc">
+  <h2>Electrical Rules Check</h2>
+  <p><code>ElectricalRulesChecker</code> validates the electrical consistency of the diagram: floating inputs, conflicting drivers, missing power or ground, and pin-type mismatches. Violations are data, not exceptions:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>RunChecks(components, lines)</code></td><td><code>void</code></td><td>Runs every rule and fills <code>Violations</code>.</td></tr>
+      <tr><td><code>Violations</code></td><td><code>List&lt;ElectricalRuleViolation&gt;</code></td><td>One entry per problem found.</td></tr>
+      <tr><td><code>ElectricalRuleViolation.Message</code></td><td><code>string</code></td><td>Human-readable description.</td></tr>
+      <tr><td><code>ElectricalRuleViolation.Severity</code></td><td><code>ElectricalViolationSeverity</code></td><td>Warning or error.</td></tr>
+      <tr><td><code>ElectricalRuleViolation.Category</code></td><td><code>string</code></td><td>Rule family that produced the violation.</td></tr>
+      <tr><td><code>ElectricalRuleViolation.FixSuggestion</code></td><td><code>string</code></td><td>Suggested remedy, when known.</td></tr>
+      <tr><td><code>ElectricalRuleViolation.Component</code> / <code>Port</code> / <code>Line</code></td><td>model refs</td><td>What the violation is attached to, for selection and highlighting.</td></tr>
+    </tbody>
+  </table>
+  <div class="code-example">
+    <pre><code class="language-csharp">var checker = new ElectricalRulesChecker();
+checker.RunChecks(drawingManager.GetComponents().ToList(), drawingManager.GetLines());
+
+int errors = checker.Violations.Count(v =&gt; v.Severity == ElectricalViolationSeverity.Error);
+foreach (var violation in checker.Violations)
+    Console.WriteLine($"[{violation.Severity}] {violation.Category}: {violation.Message}");</code></pre>
+  </div>
+</section></div></main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
