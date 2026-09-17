@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Beep.Skia build/runtime artifacts
+LocalNugetFiles/
+outputDLL/
+artifacts/
+skia_layout.json
+skia_collaboration.json
+TestResults/

@@ -1,0 +1,88 @@
+name: CI
+
+# Builds and tests the full solution except the MAUI host, which needs mobile
+# workloads (and a Mac for iOS/MacCatalyst) that GitHub-hosted Windows runners
+# do not provide. Build MAUI locally with: dotnet build Beep.Skia.Maui.Controls.
+#
+# Versions come from MinVer: a `v1.2.3` tag produces 1.2.3; otherwise
+# 1.0.0-alpha.0.<commit height>. fetch-depth: 0 is required for that.
+
+on:
+  push:
+    branches: [master, main, develop]
+    tags: ['v*']
+  pull_request:
+    branches: [master, main, develop]
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  CI: true
+
+jobs:
+  build-test:
+    name: Build & test
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - name: Restore
+        run: dotnet restore Beep.Skia.CI.slnf
+
+      - name: Build
+        run: dotnet build Beep.Skia.CI.slnf -c Release --no-restore -p:GeneratePackageOnBuild=false
+
+      - name: Test
+        run: >
+          dotnet test Beep.Skia.Tests/Beep.Skia.Tests.csproj -c Release --no-build
+          --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/TestResults/*.trx'
+          if-no-files-found: ignore
+
+  pack:
+    name: Pack packages
+    runs-on: windows-latest
+    needs: build-test
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - name: Pack
+        run: dotnet pack Beep.Skia.CI.slnf -c Release -o artifacts
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/*.nupkg
+          if-no-files-found: error

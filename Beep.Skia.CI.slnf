@@ -1,0 +1,33 @@
+{
+  "solution": {
+    "path": "Beep.Skia.Solution.sln",
+    "projects": [
+      "Beep.Skia\\Beep.Skia.csproj",
+      "Beep.Skia.Loader\\Beep.Skia.Loader.csproj",
+      "Beep.Skia.Model\\Beep.Skia.Model.csproj",
+      "Beep.Skia.Winform.Controls\\Beep.Skia.Winform.Controls.csproj",
+      "Beep.Skia.Sample.WinForms\\Beep.Skia.Sample.WinForms.csproj",
+      "Beep.Skia.ETL\\Beep.Skia.ETL.csproj",
+      "Beep.Skia.UML\\Beep.Skia.UML.csproj",
+      "Beep.Ski.Quantitative\\Beep.Ski.Quantitative.csproj",
+      "Beep.Skia.Business\\Beep.Skia.Business.csproj",
+      "Beep.Skia.Network\\Beep.Skia.Network.csproj",
+      "Beep.Skia.ERD\\Beep.Skia.ERD.csproj",
+      "Beep.Skia.Flowchart\\Beep.Skia.FlowChart.csproj",
+      "Beep.Skia.MindMap\\Beep.Skia.MindMap.csproj",
+      "Beep.Skia.StateMachine\\Beep.Skia.StateMachine.csproj",
+      "Beep.Skia.WellLogs\\Beep.Skia.WellLogs.csproj",
+      "Beep.Skia.PM\\Beep.Skia.PM.csproj",
+      "Beep.Skia.DFD\\Beep.Skia.DFD.csproj",
+      "Beep.Skia.Cloud\\Beep.Skia.Cloud.csproj",
+      "Beep.Skia.ECAD\\Beep.Skia.ECAD.csproj",
+      "Beep.Skia.ML\\Beep.Skia.ML.csproj",
+      "Beep.Skia.Security\\Beep.Skia.Security.csproj",
+      "Beep.Skia.Tests\\Beep.Skia.Tests.csproj",
+      "Beep.Skia.Wpf.Controls\\Beep.Skia.Wpf.Controls.csproj",
+      "Beep.Skia.Blazor.Controls\\Beep.Skia.Blazor.Controls.csproj",
+      "Beep.Skia.Avalonia.Controls\\Beep.Skia.Avalonia.Controls.csproj",
+      "Beep.Skia.Sample.Server\\Beep.Skia.Sample.Server.csproj"
+    ]
+  }
+}

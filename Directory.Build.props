@@ -1,0 +1,44 @@
+<Project>
+
+	<!--
+	  Shared build properties for every project in the repository.
+	  Keep this file conservative: properties that could change compilation semantics
+	  (Nullable, TreatWarningsAsErrors, analyzers) belong to individual projects.
+	-->
+
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<Deterministic>true</Deterministic>
+		<EnableSourceLink Condition="'$(EnableSourceLink)' == ''">false</EnableSourceLink>
+		<ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+		<ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+		<!-- The solution is warning-free; CI turns warnings into errors to keep it that way. -->
+		<TreatWarningsAsErrors Condition="'$(TreatWarningsAsErrors)' == '' and '$(CI)' == 'true'">true</TreatWarningsAsErrors>
+	</PropertyGroup>
+
+	<!-- Shared package metadata (projects may override any of these). -->
+	<PropertyGroup>
+		<Authors Condition="'$(Authors)' == ''">The Tech Idea</Authors>
+		<Company Condition="'$(Company)' == ''">The Tech Idea</Company>
+		<Copyright Condition="'$(Copyright)' == ''">2025</Copyright>
+		<PackageLicenseExpression Condition="'$(PackageLicenseExpression)' == ''">MIT</PackageLicenseExpression>
+		<PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://github.com/The-Tech-Idea/Beep.Skia</PackageProjectUrl>
+		<RepositoryUrl Condition="'$(RepositoryUrl)' == ''">https://github.com/The-Tech-Idea/Beep.Skia</RepositoryUrl>
+		<RepositoryType Condition="'$(RepositoryType)' == ''">git</RepositoryType>
+	</PropertyGroup>
+
+	<!--
+	  MinVer derives the package version from git tags (prefix "v", e.g. v1.2.0).
+	  With no tags yet it produces 0.0.0-alpha.0.N where N is the commit height.
+	-->
+	<PropertyGroup>
+		<MinVerTagPrefix>v</MinVerTagPrefix>
+		<MinVerDefaultPreReleaseIdentifiers>alpha.0</MinVerDefaultPreReleaseIdentifiers>
+		<MinVerMinimumMajorMinor Condition="'$(MinVerMinimumMajorMinor)' == ''">1.0</MinVerMinimumMajorMinor>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MinVer" Version="7.0.0" PrivateAssets="all" Condition="'$(SkipMinVer)' != 'true'" />
+	</ItemGroup>
+
+</Project>
