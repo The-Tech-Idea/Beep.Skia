@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Catalog | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="component-registry.html">Architecture &amp; Internals</a><span>&rsaquo;</span> <span>Event Catalog</span></nav>
+<div class="page-header"><h1>Event Catalog</h1><p class="page-subtitle">Every event the DrawingManager raises, with the interaction argument types</p></div>
+<p><code>DrawingManager</code> exposes sixteen public events so hosts can react to user interaction without polling. They fall into four groups: component, diagram, line and lifecycle events. All of them are raised on the UI thread during input processing.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#component">Component Events</a></li>
+    <li><a href="#diagram">Diagram Events</a></li>
+    <li><a href="#line">Line Events</a></li>
+    <li><a href="#lifecycle">Lifecycle Events</a></li>
+    <li><a href="#args">Event Arguments</a></li>
+    <li><a href="#pattern">Handling Pattern</a></li>
+  </ul>
+</div>
+
+<section class="section" id="component">
+  <h2>Component Events</h2>
+  <p>Raised when the pointer interacts with a component. All four use <code>ComponentInteractionEventArgs</code>.</p>
+  <table>
+    <thead><tr><th>Event</th><th>Raised when</th></tr></thead>
+    <tbody>
+      <tr><td><code>ComponentClicked</code></td><td>A component is single-clicked.</td></tr>
+      <tr><td><code>ComponentDoubleClicked</code></td><td>A component is double-clicked (typical drill-down hook).</td></tr>
+      <tr><td><code>ComponentRightClicked</code></td><td>A component is right-clicked (context-menu hook).</td></tr>
+      <tr><td><code>ComponentHoverChanged</code></td><td>The pointer enters or leaves a component.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="diagram">
+  <h2>Diagram Events</h2>
+  <p>Raised when the pointer interacts with empty canvas space. They use <code>DiagramInteractionEventArgs</code>.</p>
+  <table>
+    <thead><tr><th>Event</th><th>Raised when</th></tr></thead>
+    <tbody>
+      <tr><td><code>DiagramClicked</code></td><td>Empty canvas is clicked (selection-clear hook).</td></tr>
+      <tr><td><code>DiagramDoubleClicked</code></td><td>Empty canvas is double-clicked.</td></tr>
+      <tr><td><code>DiagramRightClicked</code></td><td>Empty canvas is right-clicked (canvas context menu).</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="line">
+  <h2>Line Events</h2>
+  <p>Raised for connection lines. They use <code>LineInteractionEventArgs</code>, which carries the <code>Line</code> and an <code>IsArrowClick</code> flag so hosts can distinguish a click on the arrowhead from a click on the stroke.</p>
+  <table>
+    <thead><tr><th>Event</th><th>Raised when</th></tr></thead>
+    <tbody>
+      <tr><td><code>LineClicked</code></td><td>A connection line is clicked.</td></tr>
+      <tr><td><code>LineDoubleClicked</code></td><td>A connection line is double-clicked (label editing hook).</td></tr>
+      <tr><td><code>LineRightClicked</code></td><td>A connection line is right-clicked.</td></tr>
+      <tr><td><code>LineHoverChanged</code></td><td>The pointer enters or leaves a line.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="lifecycle">
+  <h2>Lifecycle Events</h2>
+  <table>
+    <thead><tr><th>Event</th><th>Arguments</th><th>Raised when</th></tr></thead>
+    <tbody>
+      <tr><td><code>ComponentDropped</code></td><td><code>ComponentDropEventArgs</code></td><td>A component drag ends; carries canvas and screen positions plus final bounds.</td></tr>
+      <tr><td><code>SelectionChanged</code></td><td><code>EventArgs</code></td><td>The selection set changes (select, add, clear, delete).</td></tr>
+      <tr><td><code>HistoryChanged</code></td><td><code>EventArgs</code></td><td>An undoable action is pushed, undone or redone.</td></tr>
+      <tr><td><code>SaveRequested</code></td><td><code>EventArgs</code></td><td>A save is requested through the manager (for example from a keyboard shortcut).</td></tr>
+      <tr><td><code>DrawSurface</code></td><td><code>ConnectionEventArgs</code></td><td>A frame has been drawn; the host can paint overlays.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="args">
+  <h2>Event Arguments</h2>
+  <p>Interaction arguments share a common shape: positions in both canvas and screen space, the mouse button and key modifiers, an <code>InteractionType</code>, a settable <code>Handled</code> flag and a free <code>Tag</code> slot.</p>
+
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Available on</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Component</code></td><td>Component args</td><td>The component involved in the interaction.</td></tr>
+      <tr><td><code>Line</code></td><td>Line args</td><td>The connection line involved.</td></tr>
+      <tr><td><code>CanvasPosition</code></td><td>All</td><td>Pointer position in world coordinates.</td></tr>
+      <tr><td><code>ScreenPosition</code></td><td>All</td><td>Pointer position in screen coordinates.</td></tr>
+      <tr><td><code>MouseButton</code></td><td>All</td><td>Button index that triggered the event.</td></tr>
+      <tr><td><code>Modifiers</code></td><td>All</td><td><code>SKKeyModifiers</code> active at the time.</td></tr>
+      <tr><td><code>InteractionType</code></td><td>All</td><td>Which interaction produced the event (see below).</td></tr>
+      <tr><td><code>IsArrowClick</code></td><td>Line args</td><td>True when the arrowhead was hit rather than the stroke.</td></tr>
+      <tr><td><code>Handled</code></td><td>All</td><td>Set to true to mark the interaction consumed.</td></tr>
+      <tr><td><code>Tag</code></td><td>All</td><td>Caller-defined payload.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>InteractionType</h3>
+  <p><code>Click</code>, <code>DoubleClick</code>, <code>RightClick</code>, <code>MiddleClick</code>, <code>HoverEnter</code>, <code>HoverLeave</code>, <code>Hover</code>, <code>DragStart</code>, <code>Dragging</code>, <code>DragEnd</code>.</p>
+</section>
+
+<section class="section" id="pattern">
+  <h2>Handling Pattern</h2>
+  <div class="code-example">
+    <pre><code class="language-csharp">// Drill down on double-click
+drawingManager.ComponentDoubleClicked += (s, e) =&gt;
+{
+    if (e.Component is ProcessNode process)
+    {
+        e.Handled = true;
+        OpenDetail(process);
+    }
+};
+
+// Canvas context menu
+drawingManager.DiagramRightClicked += (s, e) =&gt;
+{
+    ShowCanvasMenu(e.ScreenPosition);
+};
+
+// Edit a line label on double-click
+drawingManager.LineDoubleClicked += (s, e) =&gt;
+{
+    if (e.IsArrowClick) return;
+    BeginLabelEdit(e.Line, e.ScreenPosition);
+};
+
+// Track undo availability in the UI
+drawingManager.HistoryChanged += (s, e) =&gt;
+{
+    undoButton.Enabled = drawingManager.CanUndo;
+    redoButton.Enabled = drawingManager.CanRedo;
+};
+
+// React to drops (for example, snap-into-container logic)
+drawingManager.ComponentDropped += (s, e) =&gt;
+{
+    if (e.Component is CardNode &amp;&amp; !containerBounds.Contains(e.CanvasPosition))
+        e.Component.X = containerBounds.Left + 12;
+};</code></pre>
+  </div>
+  <p>The types under <code>Beep.Skia.Events</code> (<code>ComponentClickEventArgs</code>, <code>DiagramClickEventArgs</code>, <code>LineClickEventArgs</code>, <code>HoverChangedEventArgs</code>) are public but not raised by the manager; they exist as a simpler payload shape for host code. Use the interaction argument types above for manager events.</p>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

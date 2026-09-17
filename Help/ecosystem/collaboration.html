@@ -99,6 +99,85 @@ var restored = CollaborationSerializer.Load("diagram.collaboration.json");</code
     updates and queries cannot corrupt it. This is covered by 8-thread stress tests.
   </div>
 </section>
+<section class="section" id="collaboration-types">
+  <h2>Collaboration Types</h2>
+  <p>Review data is stored as plain records so it can be persisted and audited: users and shares, presence, comment pins and the audit trail.</p>
+  <h3>UserRecord</h3>
+  <p>JSON-friendly user record (color stored as 0xAARRGGBB).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Id</code></td><td>Property</td><td>Gets or sets the id.</td></tr>
+      <tr><td><code>string DisplayName</code></td><td>Property</td><td>Gets or sets the display name.</td></tr>
+      <tr><td><code>string Email</code></td><td>Property</td><td>Gets or sets the email.</td></tr>
+      <tr><td><code>uint Color</code></td><td>Property</td><td>Gets or sets the color.</td></tr>
+    </tbody>
+  </table>
+  <h3>CollaborationSnapshot</h3>
+  <p>Serializable collaboration state (users, shares, comments, audit). Presence is intentionally excluded — it is ephemeral.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Version</code></td><td>Property</td><td>Gets or sets the version.</td></tr>
+      <tr><td><code>List&lt;UserRecord&gt; Users</code></td><td>Property</td><td>Gets or sets the users.</td></tr>
+      <tr><td><code>List&lt;DocumentShare&gt; Shares</code></td><td>Property</td><td>Gets or sets the shares.</td></tr>
+      <tr><td><code>List&lt;DiagramComment&gt; Comments</code></td><td>Property</td><td>Gets or sets the comments.</td></tr>
+      <tr><td><code>List&lt;AuditEntry&gt; Audit</code></td><td>Property</td><td>Gets or sets the audit.</td></tr>
+    </tbody>
+  </table>
+  <h3>PresenceEntry</h3>
+  <p>Live presence for a user on a document.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string DocumentId</code></td><td>Property</td><td>Gets or sets the document id.</td></tr>
+      <tr><td><code>string UserId</code></td><td>Property</td><td>Gets or sets the user id.</td></tr>
+      <tr><td><code>DateTime LastSeen</code></td><td>Property</td><td>Gets or sets the last seen.</td></tr>
+      <tr><td><code>string Activity</code></td><td>Property</td><td>Gets or sets the activity.</td></tr>
+    </tbody>
+  </table>
+  <h3>DocumentShare</h3>
+  <p>Sharing state of a diagram document.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string DocumentId</code></td><td>Property</td><td>Gets or sets the document id.</td></tr>
+      <tr><td><code>string OwnerId</code></td><td>Property</td><td>Gets or sets the owner id.</td></tr>
+      <tr><td><code>Dictionary&lt;string, CollaborationRole&gt; Members</code></td><td>Property</td><td>Member roles (userId → role). The owner is always Admin.</td></tr>
+      <tr><td><code>bool IsPublic</code></td><td>Property</td><td>When true, any registered user can view the document.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>AuditEntry</h3>
+  <p>An audit-trail entry for a collaboration action.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Id</code></td><td>Property</td><td>Gets or sets the id.</td></tr>
+      <tr><td><code>string DocumentId</code></td><td>Property</td><td>Gets or sets the document id.</td></tr>
+      <tr><td><code>string UserId</code></td><td>Property</td><td>Gets or sets the user id.</td></tr>
+      <tr><td><code>string Action</code></td><td>Property</td><td>Gets or sets the action.</td></tr>
+      <tr><td><code>string Details</code></td><td>Property</td><td>Gets or sets the details.</td></tr>
+      <tr><td><code>DateTime Timestamp</code></td><td>Property</td><td>Gets or sets the timestamp.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>CommentPin</h3>
+  <p>A comment pin anchored to a component in the diagram.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ComponentId</code></td><td>Property</td><td>Component this pin is anchored to.</td></tr>
+      <tr><td><code>int Index</code></td><td>Property</td><td>1-based display number.</td></tr>
+      <tr><td><code>SKPoint Position</code></td><td>Property</td><td>Center of the pin in world coordinates.</td></tr>
+      <tr><td><code>SKRect ComponentBounds</code></td><td>Property</td><td>Bounds of the anchored component.</td></tr>
+      <tr><td><code>List&lt;string&gt; CommentIds</code></td><td>Property</td><td>Unresolved comment ids anchored to this component.</td></tr>
+      <tr><td><code>int CommentCount</code></td><td>Property</td><td>Gets or sets the comment count.</td></tr>
+      <tr><td><code>bool Contains(SKPoint point, float radius = CommentPinLayer.PinRadius)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
 </div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

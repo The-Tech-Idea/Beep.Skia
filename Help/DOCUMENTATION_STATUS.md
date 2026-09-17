@@ -1,7 +1,7 @@
 # Beep.Skia Documentation Status
 
-**Last updated:** 2026-09-17 (round 3)
-**Total pages:** 99 | **Sections:** 14
+**Last updated:** 2026-09-17 (round 4)
+**Total pages:** 105 | **Sections:** 14
 
 ---
 
@@ -10,12 +10,12 @@
 | Section | Pages | Status |
 |---------|-------|--------|
 | Getting Started | 4 | Complete |
-| Core Concepts | 6 | Complete |
+| Core Concepts | 8 | Complete |
 | Diagram Families | 16 | Complete |
 | UI Components | 17 | Complete |
 | Guides | 9 | Complete |
 | Architecture & Internals | 8 | Complete |
-| Automation | 6 | Complete |
+| Automation | 7 | Complete |
 | Ecosystem | 4 | Complete |
 | Editor | 1 | Complete |
 | Windows Hosts | 1 | Complete |
@@ -40,6 +40,8 @@
 - [x] `core-concepts/connection-system.html` — ConnectionLine, routing, animation
 - [x] `core-concepts/serialization.html` — JSON persistence, DTOs, load/save
 - [x] `core-concepts/interaction.html` — Selection, drag-drop, undo/redo
+- [x] `core-concepts/connection-animation.html` — 7 flow animation styles, status indicators, multiplicity markers
+- [x] `core-concepts/validation.html` — DiagramValidator, six built-in rules, custom rules
 
 ### Diagram Families (16)
 
@@ -52,8 +54,10 @@
 
 **Data & Systems**
 - [x] `diagram-families/erd.html` — 4 node types, DDL export
+- [x] `diagram-families/erd-advanced.html` — DDL import/export, schema comparison, migration scripts
 - [x] `diagram-families/dfd.html` — 18 node types, Gane-Sarson & Yourdon
 - [x] `diagram-families/etl.html` — 18 node types, data pipeline
+- [x] `diagram-families/etl-advanced.html` — Lookups, SCD/CDC, expression engine, profiling, metrics
 - [x] `diagram-families/uml.html` — 13 node types, Class/Sequence/Activity
 - [x] `diagram-families/network.html` — 12 components, graph algorithms
 
@@ -104,7 +108,8 @@
 - [x] `architecture/serialization-system.html`
 - [x] `architecture/material-design-system.html`
 - [x] `architecture/layout-engines.html`
-- [x] `architecture/history-undo-system.html`
+- [x] `architecture/history-undo-system.html` (+ action catalog)
+- [x] `architecture/event-catalog.html` — 16 DrawingManager events and interaction args
 - [x] `architecture/events.html` — ComponentClickEventArgs, LineClickEventArgs, HoverChangedEventArgs, ComponentDropEventArgs
 
 ### Automation (6)
@@ -114,6 +119,7 @@
 - [x] `automation/credentials.html` — Credential vault and connection manager
 - [x] `automation/server-sku.html` — WorkflowExecutionService, API, HTTP router, server sample
 - [x] `automation/data-sources.html` — Datasource-backed workflow nodes
+- [x] `automation/jobs.html` — ExecutionJob, JobState, results and engine execution records
 
 ### Ecosystem (4)
 - [x] `ecosystem/extensions.html` — ISkiaExtension, SkiaExtensionHost, registration context

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERD Enterprise Features | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="erd.html">Diagram Families</a><span>&rsaquo;</span> <span>ERD Enterprise Features</span></nav>
+<div class="page-header"><h1>ERD Enterprise Features</h1><p class="page-subtitle">DDL round-trips, schema comparison and migration scripts on top of the ERD family</p></div>
+<p>Beyond drawing entities and relationships, the ERD family can move schemas in and out of databases: export entities to DDL, parse existing DDL back into entities, compare two schemas and generate forward or rollback migration scripts. This is the <a href="erd.html">ERD family</a> page's companion for schema work.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#entity">Entity Columns, Indexes and Keys</a></li>
+    <li><a href="#export">DDL Export</a></li>
+    <li><a href="#import">DDL Import</a></li>
+    <li><a href="#compare">Schema Comparison</a></li>
+    <li><a href="#migration">Migration Scripts</a></li>
+  </ul>
+</div>
+
+<section class="section" id="entity">
+  <h2>Entity Columns, Indexes and Keys</h2>
+  <p><code>ERDEntity</code> keeps the table definition in text form, so the canvas and the schema tools share one source of truth:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>EntityName</code></td><td><code>string</code></td><td>Table name.</td></tr>
+      <tr><td><code>Columns</code></td><td><code>string</code></td><td>Column definitions, one per line.</td></tr>
+      <tr><td><code>Indexes</code></td><td><code>string</code></td><td>Index definitions (including unique constraints).</td></tr>
+      <tr><td><code>ForeignKeys</code></td><td><code>string</code></td><td>Foreign key definitions.</td></tr>
+      <tr><td><code>Rows</code> / <code>RowsText</code> / <code>RowIdsCsv</code></td><td><code>IReadOnlyList&lt;string&gt;</code> / <code>string</code></td><td>Row-level entries for field-level (row) connections, plus their CSV of row ids.</td></tr>
+      <tr><td><code>FromTableInfo(TableInfo)</code></td><td><code>static ERDEntity</code></td><td>Builds an entity from parsed DDL metadata.</td></tr>
+    </tbody>
+  </table>
+  <p>Each row entry carries <code>Text</code>, <code>DataType</code>, <code>IsPrimaryKey</code>, <code>IsForeignKey</code> and <code>IsNullable</code>, which drives the row-level connection points used for field-level relationships (see the <a href="../core-concepts/connection-system.html">Connection System</a>).</p>
+</section>
+
+<section class="section" id="export">
+  <h2>DDL Export</h2>
+  <p><code>DDLExporter</code> turns entities into <code>CREATE TABLE</code> statements, including columns, primary keys, indexes and foreign keys:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">var exporter = new DDLExporter(DDLImporter.SQLDialect.PostgreSQL);
+
+// One entity
+string createTable = exporter.ExportEntity(orderEntity);
+
+// A whole diagram (topologically ordered so referenced tables come first)
+var allEntities = drawingManager.GetComponents().OfType&lt;ERDEntity&gt;();
+string script = exporter.ExportEntities(allEntities);
+
+File.WriteAllText("schema.sql", script);</code></pre>
+  </div>
+</section>
+
+<section class="section" id="import">
+  <h2>DDL Import</h2>
+  <p><code>DDLImporter</code> parses DDL text into <code>TableInfo</code> records (<code>TableName</code>, <code>SchemaName</code>, <code>Columns</code>, <code>Constraints</code>) or directly into entities you can add to the canvas. Dialects: <code>ANSI</code>, <code>SQLServer</code>, <code>PostgreSQL</code>, <code>MySQL</code>, <code>Oracle</code>, <code>SQLite</code>.</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">var importer = new DDLImporter(DDLImporter.SQLDialect.SQLServer);
+
+// Parse only: metadata for inspection or comparison
+List&lt;DDLImporter.TableInfo&gt; tables = importer.Parse(File.ReadAllText("schema.sql"));
+
+// Or go straight to canvas entities
+List&lt;ERDEntity&gt; entities = importer.ImportToEntities(ddlText, DDLImporter.SQLDialect.SQLServer);
+
+float x = 60, y = 60;
+foreach (var entity in entities)
+{
+    entity.X = x;
+    entity.Y = y;
+    drawingManager.AddComponent(entity);
+    x += 260;
+    if (x &gt; 1200) { x = 60; y += 320; }
+}
+drawingManager.RequestRedraw();</code></pre>
+  </div>
+</section>
+
+<section class="section" id="compare">
+  <h2>Schema Comparison</h2>
+  <p><code>SchemaComparer.Compare(source, target)</code> reports the changes needed to migrate <em>source</em> to <em>target</em>. Tables and columns match case-insensitively, duplicate table definitions do not throw, and the result groups changes by kind:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">var comparer = new SchemaComparer();
+SchemaComparisonResult diff = comparer.Compare(sourceTables, targetTables);
+
+Console.WriteLine(diff.Summary());          // human-readable overview
+Console.WriteLine(diff.HasChanges);         // false when the schemas match
+
+foreach (var change in diff.OfKind(SchemaChangeKind.AddedColumn))
+    Console.WriteLine($"{change.TableName}.{change.Column?.Name}");
+
+foreach (var change in diff.OfKind(SchemaChangeKind.AlteredColumn))
+    Console.WriteLine($"{change.TableName}.{change.Column?.Name}: " +
+                      $"{change.PreviousColumn?.DataType} -> {change.Column?.DataType}");</code></pre>
+  </div>
+  <p>The comparison covers added and removed tables (<code>AddedTable</code>, <code>RemovedTable</code>), added and removed columns, altered columns (type, nullability, defaults), and constraint differences reported as foreign keys or table constraints. Each <code>SchemaChange</code> carries the table, the current and previous <code>ColumnInfo</code>/<code>TableInfo</code>, and the <code>ConstraintInfo</code> involved.</p>
+</section>
+
+<section class="section" id="migration">
+  <h2>Migration Scripts</h2>
+  <p><code>MigrationScriptGenerator</code> turns a comparison result into executable SQL for both directions, in any supported dialect:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">var generator = new MigrationScriptGenerator();
+
+string forward = generator.GenerateForward(diff, DDLImporter.SQLDialect.PostgreSQL);
+File.WriteAllText("migrate_up.sql", forward);
+
+string rollback = generator.GenerateRollback(diff, DDLImporter.SQLDialect.PostgreSQL);
+File.WriteAllText("migrate_down.sql", rollback);</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Full Round-Trip: Database to Database</h3>
+    <pre><code class="language-csharp">// 1. Capture both schemas as DDL (from your own tooling) and parse them
+var importer = new DDLImporter(DDLImporter.SQLDialect.PostgreSQL);
+var source = importer.Parse(sourceDdl);
+var target = importer.Parse(targetDdl);
+
+// 2. Compare and generate the migration
+var diff = new SchemaComparer().Compare(source, target);
+var sql = new MigrationScriptGenerator().GenerateForward(diff, DDLImporter.SQLDialect.PostgreSQL);
+
+// 3. Review, then run
+Console.WriteLine(diff.Summary());
+Console.WriteLine(sql);</code></pre>
+  </div>
+
+  <div class="admonition warning">
+    <p class="admonition-title">Review Before Running</p>
+    <p>Generated scripts are only as good as the parsed DDL. Treat the forward and rollback output as a reviewed artifact: back up first, and verify destructive changes (dropped columns, narrowed types) before executing.</p>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

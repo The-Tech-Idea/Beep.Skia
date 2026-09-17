@@ -101,6 +101,100 @@ foreach (var directory in manager.GetLoadDirectories())             // feed thes
     <li><strong>Integrity</strong> &mdash; every package exposes its SHA-256 hash for verification.</li>
   </ul>
 </section>
+<section class="section" id="package-types">
+  <h2>Package and Registry Types</h2>
+  <p>The marketplace API works with these records. They describe a package before install, an installed extension afterwards, and the log of install operations.</p>
+  <h3>ExtensionPackage</h3>
+  <p>An extension package: manifest plus its source archive.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ExtensionManifest Manifest</code></td><td>Property</td><td>Gets or sets the manifest.</td></tr>
+      <tr><td><code>string PackagePath</code></td><td>Property</td><td>Gets or sets the package path.</td></tr>
+      <tr><td><code>long SizeBytes</code></td><td>Property</td><td>Gets or sets the size bytes.</td></tr>
+      <tr><td><code>string Sha256</code></td><td>Property</td><td>Gets or sets the sha256.</td></tr>
+      <tr><td><code>string Id</code></td><td>Property</td><td>Gets or sets the id.</td></tr>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>string Version</code></td><td>Property</td><td>Gets or sets the version.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>InstalledExtension</h3>
+  <p>An extension installed into the local install root.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Id</code></td><td>Property</td><td>Gets or sets the id.</td></tr>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>string Version</code></td><td>Property</td><td>Gets or sets the version.</td></tr>
+      <tr><td><code>string InstallPath</code></td><td>Property</td><td>Gets or sets the install path.</td></tr>
+      <tr><td><code>DateTime InstalledAt</code></td><td>Property</td><td>Gets or sets the installed at.</td></tr>
+      <tr><td><code>bool Enabled</code></td><td>Property</td><td>Gets or sets the enabled.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>InstallLogEntry</h3>
+  <p>A single line in the package-manager operation log.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DateTime Timestamp</code></td><td>Property</td><td>Gets or sets the timestamp.</td></tr>
+      <tr><td><code>string Action</code></td><td>Property</td><td>Gets or sets the action.</td></tr>
+      <tr><td><code>string Detail</code></td><td>Property</td><td>Gets or sets the detail.</td></tr>
+      <tr><td><code>bool Success</code></td><td>Property</td><td>Gets or sets the success.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>SemanticVersion</h3>
+  <p>Minimal semantic version (major.minor.patch with optional prerelease/build), used for extension and host version checks.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SemanticVersion(int major, int minor = 0, int patch = 0, string prerelease = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>int Major</code></td><td>Property</td><td>Gets or sets the major.</td></tr>
+      <tr><td><code>int Minor</code></td><td>Property</td><td>Gets or sets the minor.</td></tr>
+      <tr><td><code>int Patch</code></td><td>Property</td><td>Gets or sets the patch.</td></tr>
+      <tr><td><code>string Prerelease</code></td><td>Property</td><td>Gets or sets the prerelease.</td></tr>
+      <tr><td><code>bool IsPrerelease</code></td><td>Property</td><td>Gets or sets the is prerelease.</td></tr>
+      <tr><td><code>static bool TryParse(string text, out SemanticVersion version)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static SemanticVersion Parse(string text)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>int CompareTo(SemanticVersion other)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>bool Equals(SemanticVersion other)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool Equals(object obj)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override int GetHashCode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static bool operator &gt;(SemanticVersion left, SemanticVersion right)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static bool operator &lt;(SemanticVersion left, SemanticVersion right)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static bool operator &gt;=(SemanticVersion left, SemanticVersion right)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static bool operator &lt;=(SemanticVersion left, SemanticVersion right)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>LoadedExtension</h3>
+  <p>Result of loading one extension.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ISkiaExtension Extension</code></td><td>Property</td><td>Gets or sets the extension.</td></tr>
+      <tr><td><code>string Id</code></td><td>Property</td><td>Gets or sets the id.</td></tr>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>string Version</code></td><td>Property</td><td>Gets or sets the version.</td></tr>
+      <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description.</td></tr>
+      <tr><td><code>List&lt;Type&gt; ComponentTypes</code></td><td>Property</td><td>Gets or sets the component types.</td></tr>
+      <tr><td><code>List&lt;string&gt; Errors</code></td><td>Property</td><td>Gets or sets the errors.</td></tr>
+      <tr><td><code>bool Success</code></td><td>Property</td><td>Gets or sets the success.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>ExtensionLoadedEventArgs</h3>
+  <p>Raised after an extension has been loaded (successfully or with errors).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ExtensionLoadedEventArgs(LoadedExtension extension)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>LoadedExtension Extension</code></td><td>Property</td><td>Gets or sets the extension.</td></tr>
+    </tbody>
+  </table>
+</section>
 </div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

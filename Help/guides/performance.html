@@ -604,6 +604,36 @@ Console.WriteLine($"GC pressure: {diag.Gen2CollectionsTotal}");</code></pre>
   </div>
 </section>
 
+<section class="section" id="utility-types">
+  <h2>Performance Utilities</h2>
+  <p>Two helpers keep the hot path fast: a typeface cache for text and a paint/text helper used across families.</p>
+  <h3>TypefaceCache</h3>
+  <p>Process-wide cache of SKTypeface instances. Font matching is comparatively expensive and components resolve typefaces while drawing, so instances are created once per (family, weight, width, slant) and reused for the lifetime of the process. Cached instances are intentionally never disposed.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>const string DefaultFamily = "Segoe UI"</code></td><td>Constant</td><td>Default font family used when no family is supplied.</td></tr>
+      <tr><td><code>static SKTypeface Get(string family, SKFontStyle style)</code></td><td>Method</td><td>Gets a cached typeface for the family and style, falling back to the platform default when the family cannot be resolved.</td></tr>
+      <tr><td><code>static SKTypeface Get(string family)</code></td><td>Method</td><td>Gets a cached typeface for the family in the normal style.</td></tr>
+      <tr><td><code>static SKTypeface Get(string family, SKFontStyleWeight weight, SKFontStyleWidth width, SKFontStyleSlant slant)</code></td><td>Method</td><td>Gets a cached typeface using explicit style parts (mirrors the four-argument SKTypeface.FromFamilyName overload).</td></tr>
+      <tr><td><code>static SKTypeface Default</code></td><td>Property</td><td>The cached default typeface.</td></tr>
+      <tr><td><code>static int CachedCount</code></td><td>Property</td><td>Number of distinct typefaces currently cached (diagnostics/tests).</td></tr>
+    </tbody>
+  </table>
+  <h3>SkiaUtil</h3>
+  <p>Provides utility methods for SkiaSharp operations including geometric transformations, color space conversions, and mathematical calculations.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static SKPoint Rotate(SKPoint point, float degrees)</code></td><td>Method</td><td>Rotates a point around the origin by the specified number of degrees. The point to rotate. The rotation angle in degrees. The rotated point.</td></tr>
+      <tr><td><code>static SKPoint Add(SKPoint point1, SKPoint point2)</code></td><td>Method</td><td>Adds two points together component-wise. The first point. The second point. The sum of the two points.</td></tr>
+      <tr><td><code>static SKPoint Subtract(SKPoint point1, SKPoint point2)</code></td><td>Method</td><td>Subtracts the second point from the first point component-wise. The first point. The second point to subtract. The difference between the two points.</td></tr>
+      <tr><td><code>static float CrossProduct(SKPoint v1, SKPoint v2)</code></td><td>Method</td><td>Calculates the cross product (also known as the z-component of the 3D cross product) of two 2D vectors. The first vector. The second vector. The cross product value.</td></tr>
+      <tr><td><code>static (float Hue, float Saturation, float Luminosity) ToHsl(this SKColor color)</code></td><td>Method</td><td>Converts an SKColor to HSL (Hue, Saturation, Luminosity) color space. The SKColor to convert. A tuple containing Hue (0-360), Saturation (0-1), and Luminosity (0-1).</td></tr>
+      <tr><td><code>static SKColor FromHsl(float hue, float saturation, float luminosity)</code></td><td>Method</td><td>Creates an SKColor from HSL (Hue, Saturation, Luminosity) values. The hue component (0-360 degrees). The saturation component (0-1). The luminosity component (0-1). The corresponding SKColor.</td></tr>
+    </tbody>
+  </table>
+</section>
 </div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

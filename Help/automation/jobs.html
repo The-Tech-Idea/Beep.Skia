@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jobs and Results | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="workflow-engine.html">Automation</a><span>&rsaquo;</span> <span>Jobs and Results</span></nav>
+<div class="page-header"><h1>Jobs and Results</h1><p class="page-subtitle">ExecutionJob, JobState, run results and engine-level execution records</p></div>
+<p>The <a href="workflow-engine.html">Workflow Engine</a> page covers the execution model. This page documents the types you interact with when running workflows programmatically: the job lifecycle, state transitions, results and the engine-level execution records behind them.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#service">Execution Service</a></li>
+    <li><a href="#job">ExecutionJob</a></li>
+    <li><a href="#states">Job States</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#engine">Engine Execution Records</a></li>
+  </ul>
+</div>
+
+<section class="section" id="service">
+  <h2>Execution Service</h2>
+  <p><code>WorkflowExecutionService</code> owns published workflows and the job queue. It is thread-safe and disposable; hosts usually keep one instance for the process lifetime.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Publish(WorkflowDefinition)</code></td><td>Registers a workflow definition for execution.</td></tr>
+      <tr><td><code>RemoveWorkflow(id)</code> / <code>GetWorkflow(id)</code></td><td>Manage and look up published workflows.</td></tr>
+      <tr><td><code>Submit(workflowId, submittedBy, inputs)</code></td><td>Queues a job and returns the <code>ExecutionJob</code> immediately.</td></tr>
+      <tr><td><code>GetJob(id)</code> / <code>GetJobs(state, limit)</code></td><td>Read job state, optionally filtered by <code>JobState</code>.</td></tr>
+      <tr><td><code>Cancel(id)</code> / <code>Pause(id)</code> / <code>Resume(id)</code></td><td>Control a running or paused job; each returns whether the transition was accepted.</td></tr>
+      <tr><td><code>WaitForCompletion(id, timeout)</code></td><td>Blocks until the job reaches a terminal state or the timeout expires.</td></tr>
+      <tr><td><code>JobStateChanged</code></td><td>Event raised on every state transition, with old and new state.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-example">
+    <pre><code class="language-csharp">using var service = new WorkflowExecutionService(maxConcurrency: 2);
+
+service.JobStateChanged += (s, e) =&gt;
+    Console.WriteLine($"{e.Job.Id}: {e.OldState} -&gt; {e.NewState}");
+
+service.Publish(drawingManager.ToWorkflowDefinition("Nightly Sync"));
+
+var job = service.Submit("Nightly Sync", submittedBy: "me",
+    inputs: new Dictionary&lt;string, object&gt; { ["threshold"] = 10 });
+
+if (service.WaitForCompletion(job.Id, TimeSpan.FromSeconds(30)))
+    Console.WriteLine($"Result: {job.Result?.Status} in {job.Duration}");
+else
+    service.Cancel(job.Id);</code></pre>
+  </div>
+</section>
+
+<section class="section" id="job">
+  <h2>ExecutionJob</h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Id</code></td><td><code>string</code></td><td>Short unique job id (8 characters).</td></tr>
+      <tr><td><code>WorkflowId</code> / <code>WorkflowName</code></td><td><code>string</code></td><td>What was submitted.</td></tr>
+      <tr><td><code>SubmittedBy</code></td><td><code>string</code></td><td>Caller identity recorded with the job.</td></tr>
+      <tr><td><code>SubmittedAt</code> / <code>StartedAt</code> / <code>CompletedAt</code></td><td><code>DateTime</code> / <code>DateTime?</code></td><td>Lifecycle timestamps (UTC).</td></tr>
+      <tr><td><code>State</code></td><td><code>JobState</code></td><td>Current queue/execution state.</td></tr>
+      <tr><td><code>Inputs</code></td><td><code>Dictionary&lt;string, object&gt;</code></td><td>Input values passed at submit time (case-insensitive keys).</td></tr>
+      <tr><td><code>ExecutionId</code></td><td><code>string</code></td><td>Id of the underlying engine execution.</td></tr>
+      <tr><td><code>Result</code></td><td><code>WorkflowResult</code></td><td>Populated when the job completes.</td></tr>
+      <tr><td><code>Error</code></td><td><code>string</code></td><td>Failure message when the job fails.</td></tr>
+      <tr><td><code>Duration</code></td><td><code>TimeSpan?</code></td><td>Derived from start and completion timestamps.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="states">
+  <h2>Job States</h2>
+  <table>
+    <thead><tr><th>State</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>Queued</code></td><td>Submitted and waiting for a concurrency slot.</td></tr>
+      <tr><td><code>Running</code></td><td>Executing nodes.</td></tr>
+      <tr><td><code>Paused</code></td><td>Suspended at a safe point; <code>Resume</code> continues it.</td></tr>
+      <tr><td><code>Completed</code></td><td>Finished successfully; <code>Result</code> is available.</td></tr>
+      <tr><td><code>Failed</code></td><td>Stopped by an error; <code>Error</code> carries the message.</td></tr>
+      <tr><td><code>Cancelled</code></td><td>Cancelled by request.</td></tr>
+    </tbody>
+  </table>
+  <p><code>JobStateChangedEventArgs</code> carries the <code>Job</code>, <code>OldState</code> and <code>NewState</code>, which is everything a UI needs to update a queue view without polling.</p>
+</section>
+
+<section class="section" id="results">
+  <h2>Results</h2>
+  <p><code>WorkflowResult</code> summarizes an engine execution: <code>WorkflowId</code>, <code>ExecutionId</code>, <code>Status</code> (<code>WorkflowStatus</code>), <code>StartTime</code> and the per-node outcomes. Combine it with <code>ExecutionJob.Duration</code> for timing and with the <a href="../diagram-families/etl-advanced.html#metrics">pipeline metrics</a> for throughput.</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">var job = service.Submit(workflowId);
+
+if (service.WaitForCompletion(job.Id, TimeSpan.FromSeconds(30)))
+{
+    var result = job.Result;
+    Console.WriteLine($"{result?.Status} in {job.Duration}");
+
+    foreach (var node in result?.NodeResults ?? Array.Empty&lt;NodeResult&gt;())
+    {
+        Console.WriteLine($"{node.Success} in {node.ExecutionTime}" +
+                          (node.Success ? "" : $" - {node.ErrorMessage}"));
+    }
+}</code></pre>
+  </div>
+  <p><code>NodeResult</code> carries <code>Success</code>/<code>IsSuccess</code>, <code>OutputData</code>, <code>ErrorMessage</code>, <code>ExecutionTime</code>, <code>Timestamp</code> and a <code>Metadata</code> bag. <code>WorkflowResult</code> also exposes the merged <code>OutputData</code>, an <code>Errors</code> list and its own <code>Metadata</code>.</p>
+</section>
+
+<section class="section" id="engine">
+  <h2>Engine Execution Records</h2>
+  <p>Beneath the service, the engine tracks one <code>WorkflowExecution</code> per run and one <code>NodeExecution</code> per node:</p>
+  <table class="property-table">
+    <thead><tr><th>Type</th><th>Key members</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>WorkflowExecution</code></td><td><code>ExecutionId</code>, <code>WorkflowId</code>, <code>Context</code>, <code>Status</code>, <code>CreatedTime</code>, <code>StartTime</code>, <code>EndTime</code>, <code>ExecutionTime</code></td><td>One record per workflow run, with the shared <code>ExecutionContext</code> (variables and inputs).</td></tr>
+      <tr><td><code>NodeExecution</code></td><td><code>NodeId</code>, <code>ExecutionId</code>, <code>Status</code>, <code>CreatedTime</code>, <code>StartTime</code></td><td>One record per node, with a <code>NodeStatus</code> of <code>Idle</code>, <code>Initializing</code>, <code>Executing</code>, <code>Completed</code>, <code>Failed</code>, <code>Cancelled</code> or <code>Disabled</code>.</td></tr>
+      <tr><td><code>WorkflowExecutionEventArgs</code></td><td>Execution record</td><td>Raised by the engine for workflow-level lifecycle changes.</td></tr>
+      <tr><td><code>NodeExecutionEventArgs</code></td><td>Node execution record</td><td>Raised per node as it starts and finishes.</td></tr>
+    </tbody>
+  </table>
+  <p>The HTTP layer maps these records to JSON responses through <code>WorkflowHttpRequest</code> and <code>WorkflowHttpResponse</code>; see the <a href="server-sku.html">Server Execution SKU</a> page for the route table.</p>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

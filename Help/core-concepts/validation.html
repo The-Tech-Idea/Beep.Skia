@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagram Validation | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="skia-component.html">Core Concepts</a><span>&rsaquo;</span> <span>Diagram Validation</span></nav>
+<div class="page-header"><h1>Diagram Validation</h1><p class="page-subtitle">Rule-based checks with severities, fix suggestions and a custom-rule API</p></div>
+<p><code>DiagramValidator</code> runs a set of rules over the current components and connection lines and returns a list of <code>DiagramIssue</code> records. The editor sample runs it from the Validate command and reports the summary in the status bar; hosts can run it before saving, exporting or executing a workflow.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#usage">Running Validation</a></li>
+    <li><a href="#rules">Built-in Rules</a></li>
+    <li><a href="#issues">Issues and Severities</a></li>
+    <li><a href="#custom">Custom Rules</a></li>
+  </ul>
+</div>
+
+<section class="section" id="usage">
+  <h2>Running Validation</h2>
+  <p>The validator owns its rule list. Add the defaults, optionally add your own rules, then validate the diagram's current contents:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">var validator = new DiagramValidator();
+validator.AddDefaultRules();
+
+List&lt;DiagramIssue&gt; issues = validator.Validate(
+    drawingManager.GetComponents().ToList(),
+    drawingManager.GetLines());
+
+int errors   = issues.Count(i =&gt; i.Severity == DiagramIssueSeverity.Error);
+int warnings = issues.Count(i =&gt; i.Severity == DiagramIssueSeverity.Warning);
+
+foreach (var issue in issues)
+{
+    Console.WriteLine($"[{issue.Severity}] {issue.RuleName}: {issue.Message}");
+    if (!string.IsNullOrEmpty(issue.FixSuggestion))
+        Console.WriteLine($"    fix: {issue.FixSuggestion}");
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="rules">
+  <h2>Built-in Rules</h2>
+  <p><code>AddDefaultRules()</code> registers six rules:</p>
+  <table>
+    <thead><tr><th>Rule</th><th>Detects</th></tr></thead>
+    <tbody>
+      <tr><td><code>OrphanNodeRule</code></td><td>Components with zero incoming and zero outgoing connections.</td></tr>
+      <tr><td><code>CycleDetectionRule</code></td><td>Cycles in the diagram that may cause infinite loops when executed.</td></tr>
+      <tr><td><code>DeadEndNodeRule</code></td><td>Nodes that have inputs but no outputs (or vice versa) where the family expects flow-through.</td></tr>
+      <tr><td><code>OverlappingComponentsRule</code></td><td>Components whose bounds overlap, hiding content on the canvas.</td></tr>
+      <tr><td><code>EmptyDiagramRule</code></td><td>A diagram with no components at all (for example before an export or execution).</td></tr>
+      <tr><td><code>UnconnectedPortRule</code></td><td>Ports that should be wired but have no connection.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="issues">
+  <h2>Issues and Severities</h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Message</code></td><td><code>string</code></td><td>Human-readable description of the problem.</td></tr>
+      <tr><td><code>Severity</code></td><td><code>DiagramIssueSeverity</code></td><td><code>Info</code>, <code>Warning</code> (default) or <code>Error</code>.</td></tr>
+      <tr><td><code>Component</code></td><td><code>SkiaComponent</code></td><td>The component involved, when the issue is component-specific.</td></tr>
+      <tr><td><code>Line</code></td><td><code>IConnectionLine</code></td><td>The connection involved, when the issue is line-specific.</td></tr>
+      <tr><td><code>RuleName</code></td><td><code>string</code></td><td>Name of the rule that produced the issue (for filtering or suppression).</td></tr>
+      <tr><td><code>FixSuggestion</code></td><td><code>string</code></td><td>Optional hint on how to resolve the problem.</td></tr>
+    </tbody>
+  </table>
+  <p>Issues are data, not exceptions: validation never throws for a malformed diagram, it reports. That makes it safe to run on every save.</p>
+</section>
+
+<section class="section" id="custom">
+  <h2>Custom Rules</h2>
+  <p>Implement <code>IDiagramRule</code> and register the rule with <code>AddRule</code>. Rules receive the full component and line lists and yield issues:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">public sealed class NamingConventionRule : IDiagramRule
+{
+    public string Name =&gt; "NamingConvention";
+    public string Description =&gt; "Process nodes must use verb phrases (e.g. 'Validate Order').";
+
+    public IEnumerable&lt;DiagramIssue&gt; Validate(
+        IReadOnlyList&lt;SkiaComponent&gt; components,
+        IReadOnlyList&lt;IConnectionLine&gt; lines)
+    {
+        foreach (var node in components.OfType&lt;ProcessNode&gt;())
+        {
+            if (!string.IsNullOrWhiteSpace(node.Label) &amp;&amp;
+                char.IsLower(node.Label.TrimStart()[0]))
+            {
+                yield return new DiagramIssue
+                {
+                    RuleName = Name,
+                    Severity = DiagramIssueSeverity.Info,
+                    Component = node,
+                    Message = $"'{node.Label}' should start with a capital letter.",
+                    FixSuggestion = "Rename the node using a verb phrase."
+                };
+            }
+        }
+    }
+}
+
+// Register and run
+var validator = new DiagramValidator();
+validator.AddDefaultRules();
+validator.AddRule(new NamingConventionRule());
+var issues = validator.Validate(components, lines);</code></pre>
+  </div>
+  <p>Rules are independent and order-insensitive; <code>Rules</code> exposes the registered list if you want to display or toggle them in a UI.</p>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

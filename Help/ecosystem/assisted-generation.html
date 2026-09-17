@@ -99,6 +99,92 @@ manager.LoadFromDto(suggestion.Diagram);</code></pre>
     the process.
   </div>
 </section>
+<section class="section" id="dsl-types">
+  <h2>DSL and Assistant Types</h2>
+  <p>The offline assistant parses a small DSL into a graph and then materializes components. These types are the parser surface, useful for validation and tooling.</p>
+  <h3>RuleBasedDiagramAssistant</h3>
+  <p>Offline, deterministic diagram assistant. Understands the flowchart DSL (see FlowchartDslParser) and indentation-based mind-map outlines (see MindMapDslParser), lays the result out, and produces a DiagramDto ready for DrawingManager.LoadFromDto.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>DiagramSuggestion Generate(DiagramRequest request)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>FlowchartDslParser</h3>
+  <p>Parses a compact flowchart DSL into a graph and lays it out top-down. Grammar (one statement per line): node ["(type)"] ["title"] ["-&gt;" node ...] [": edge label"] Examples: Start(start) "Start" -&gt; Receive "Receive order" -&gt; Valid(decision) "Valid?" Valid -&gt; Process "Process payment" : yes Valid -&gt; Notify "Notify customer" : no Process -&gt; End(end) "End" Lines starting with # or // are comments. Node names are case-insensitive; a node is created on first mention and reused afterwards.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static DslGraph Parse(string text, int maxNodes = 60)</code></td><td>Method</td><td>Parses DSL text into a graph and applies the top-down layout.</td></tr>
+      <tr><td><code>static void Layout(DslGraph graph)</code></td><td>Method</td><td>Assigns ranks (top-down depth) and row/column positions.</td></tr>
+    </tbody>
+  </table>
+  <h3>DslGraph</h3>
+  <p>Parsed graph of nodes and edges with warnings.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;DslNode&gt; Nodes</code></td><td>Property</td><td>Gets or sets the nodes.</td></tr>
+      <tr><td><code>List&lt;DslEdge&gt; Edges</code></td><td>Property</td><td>Gets or sets the edges.</td></tr>
+      <tr><td><code>List&lt;string&gt; Warnings</code></td><td>Property</td><td>Gets or sets the warnings.</td></tr>
+      <tr><td><code>DslNode Find(string name)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>DslNode</h3>
+  <p>A parsed DSL node with layout geometry.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>string TypeKeyword</code></td><td>Property</td><td>Gets or sets the type keyword.</td></tr>
+      <tr><td><code>string ClassName</code></td><td>Property</td><td>Resolved component class name (e.g. ProcessNode, DecisionNode).</td></tr>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>int Rank</code></td><td>Property</td><td>Gets or sets the rank.</td></tr>
+      <tr><td><code>float X</code></td><td>Property</td><td>Gets or sets the x.</td></tr>
+      <tr><td><code>float Y</code></td><td>Property</td><td>Gets or sets the y.</td></tr>
+      <tr><td><code>float Width</code></td><td>Property</td><td>Gets or sets the width.</td></tr>
+      <tr><td><code>float Height</code></td><td>Property</td><td>Gets or sets the height.</td></tr>
+    </tbody>
+  </table>
+  <h3>DslEdge</h3>
+  <p>A parsed DSL edge.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string From</code></td><td>Property</td><td>Gets or sets the from.</td></tr>
+      <tr><td><code>string To</code></td><td>Property</td><td>Gets or sets the to.</td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+    </tbody>
+  </table>
+  <h3>MindMapDslParser</h3>
+  <p>Parses an indentation-based outline into a mind-map tree and lays it out radially. Tabs count as four spaces. Blank lines are ignored; lines starting with # or // are comments.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static MindMapDslNode Parse(string text, out List&lt;string&gt; warnings, int maxNodes = 60)</code></td><td>Method</td><td>Parses an outline and applies the radial layout.</td></tr>
+      <tr><td><code>const int MaxOutlineDepth = 100</code></td><td>Constant</td><td>Maximum outline nesting depth. The radial layout walks the tree recursively, so deeper outlines are flattened onto the deepest allowed level instead of overflowing the stack.</td></tr>
+      <tr><td><code>static MindMapDslNode ParseTree(string text, List&lt;string&gt; warnings = null, int maxNodes = 60)</code></td><td>Method</td><td>Parses the outline without laying it out.</td></tr>
+      <tr><td><code>static void Layout(MindMapDslNode root, List&lt;string&gt; warnings = null)</code></td><td>Method</td><td>Assigns radial positions (root at the center, children on expanding arcs).</td></tr>
+    </tbody>
+  </table>
+  <h3>MindMapDslNode</h3>
+  <p>A parsed mind-map node with radial layout geometry.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>int Depth</code></td><td>Property</td><td>Gets or sets the depth.</td></tr>
+      <tr><td><code>List&lt;MindMapDslNode&gt; Children</code></td><td>Property</td><td>Gets or sets the children.</td></tr>
+      <tr><td><code>float X</code></td><td>Property</td><td>Gets or sets the x.</td></tr>
+      <tr><td><code>float Y</code></td><td>Property</td><td>Gets or sets the y.</td></tr>
+      <tr><td><code>float Width</code></td><td>Property</td><td>Gets or sets the width.</td></tr>
+      <tr><td><code>float Height</code></td><td>Property</td><td>Gets or sets the height.</td></tr>
+      <tr><td><code>string TypeKeyword</code></td><td>Property</td><td>Type keyword: central (depth 0), topic (depth 1), subtopic (depth 2+).</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
 </div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

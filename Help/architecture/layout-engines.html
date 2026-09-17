@@ -24,6 +24,98 @@
 <li><strong>StackLayout:</strong> Vertical or horizontal stacking with spacing and alignment</li>
 </ul>
 <p>All layout engines implement <code>ILayoutManager</code> which exposes <code>Layout(List<SkiaComponent>)</code>. Layouts recalculate positions on component add/remove/resize events.</p>
+<section class="section" id="auto-layout-types">
+  <h2>Automatic Layout Engines</h2>
+  <p>The layout engines compute positions for every component from the graph structure. Each implements the auto-layout contract and can be run over the current selection or the whole diagram.</p>
+  <h3>ForceDirectedLayout</h3>
+  <p>Force-directed layout for network graphs. Uses simple spring-electric repulsion/attraction to position nodes.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Iterations</code></td><td>Property</td><td>Gets or sets the iterations.</td></tr>
+      <tr><td><code>float RepulsionStrength</code></td><td>Property</td><td>Gets or sets the repulsion strength.</td></tr>
+      <tr><td><code>float AttractionStrength</code></td><td>Property</td><td>Gets or sets the attraction strength.</td></tr>
+      <tr><td><code>float IdealEdgeLength</code></td><td>Property</td><td>Gets or sets the ideal edge length.</td></tr>
+      <tr><td><code>float Damping</code></td><td>Property</td><td>Gets or sets the damping.</td></tr>
+      <tr><td><code>float CenterX</code></td><td>Property</td><td>Gets or sets the center x.</td></tr>
+      <tr><td><code>float CenterY</code></td><td>Property</td><td>Gets or sets the center y.</td></tr>
+      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>HierarchicalLayout</h3>
+  <p>Hierarchical (layered Sugiyama-style) auto-layout for flowcharts and DAG diagrams. Places nodes in layers based on longest path from sources, then minimizes crossings.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>bool TopToBottom</code></td><td>Property</td><td>Gets or sets the top to bottom.</td></tr>
+      <tr><td><code>float LayerSpacing</code></td><td>Property</td><td>Gets or sets the layer spacing.</td></tr>
+      <tr><td><code>float NodeSpacing</code></td><td>Property</td><td>Gets or sets the node spacing.</td></tr>
+      <tr><td><code>float StartX</code></td><td>Property</td><td>Gets or sets the start x.</td></tr>
+      <tr><td><code>float StartY</code></td><td>Property</td><td>Gets or sets the start y.</td></tr>
+      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>RadialLayout</h3>
+  <p>Radial auto-layout for MindMap diagrams. Children radiate outward from a central node at configurable angles and radius.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>float MinRadius</code></td><td>Property</td><td>Gets or sets the min radius.</td></tr>
+      <tr><td><code>float RadiusIncrement</code></td><td>Property</td><td>Gets or sets the radius increment.</td></tr>
+      <tr><td><code>float StartAngle</code></td><td>Property</td><td>Gets or sets the start angle.</td></tr>
+      <tr><td><code>float SweepAngle</code></td><td>Property</td><td>Gets or sets the sweep angle.</td></tr>
+      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>GridAutoLayout</h3>
+  <p>Grid layout for UML class diagrams and similar structured layouts.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Columns</code></td><td>Property</td><td>Gets or sets the columns.</td></tr>
+      <tr><td><code>float HorizontalSpacing</code></td><td>Property</td><td>Gets or sets the horizontal spacing.</td></tr>
+      <tr><td><code>float VerticalSpacing</code></td><td>Property</td><td>Gets or sets the vertical spacing.</td></tr>
+      <tr><td><code>float StartX</code></td><td>Property</td><td>Gets or sets the start x.</td></tr>
+      <tr><td><code>float StartY</code></td><td>Property</td><td>Gets or sets the start y.</td></tr>
+      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>FlowLayout</h3>
+  <p>A layout manager that arranges components in a flow, similar to text flow. Components are placed horizontally until there's no more space, then wrap to the next line.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>float HorizontalSpacing</code></td><td>Property</td><td>Gets or sets the horizontal spacing between components.</td></tr>
+      <tr><td><code>float VerticalSpacing</code></td><td>Property</td><td>Gets or sets the vertical spacing between rows of components.</td></tr>
+      <tr><td><code>void Layout(IEnumerable&lt;SkiaComponent&gt; components, SKRect bounds, float padding = 0)</code></td><td>Method</td><td>Lays out the specified components within the given bounds. The components to layout. The bounds in which to layout the components. The padding around the layout area.</td></tr>
+    </tbody>
+  </table>
+  <h3>GridLayout</h3>
+  <p>A layout manager that arranges components in a grid with a fixed number of columns.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Columns</code></td><td>Property</td><td>Gets or sets the number of columns in the grid.</td></tr>
+      <tr><td><code>float HorizontalSpacing</code></td><td>Property</td><td>Gets or sets the horizontal spacing between components.</td></tr>
+      <tr><td><code>float VerticalSpacing</code></td><td>Property</td><td>Gets or sets the vertical spacing between components.</td></tr>
+      <tr><td><code>GridLayout() { }</code></td><td>Method</td><td>Initializes a new instance of the GridLayout class.</td></tr>
+      <tr><td><code>GridLayout(int columns)</code></td><td>Method</td><td>Initializes a new instance of the GridLayout class with specified columns. The number of columns in the grid.</td></tr>
+      <tr><td><code>void Layout(IEnumerable&lt;SkiaComponent&gt; components, SKRect bounds, float padding = 0)</code></td><td>Method</td><td>Lays out the specified components within the given bounds. The components to layout. The bounds in which to layout the components. The padding around the layout area.</td></tr>
+    </tbody>
+  </table>
+  <h3>StackLayout</h3>
+  <p>A layout manager that arranges components in a stack, either vertically or horizontally.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Orientation Orientation</code></td><td>Property</td><td>Gets or sets the orientation of the stack.</td></tr>
+      <tr><td><code>float Spacing</code></td><td>Property</td><td>Gets or sets the spacing between components.</td></tr>
+      <tr><td><code>StackLayout() { }</code></td><td>Method</td><td>Initializes a new instance of the StackLayout class.</td></tr>
+      <tr><td><code>StackLayout(Orientation orientation)</code></td><td>Method</td><td>Initializes a new instance of the StackLayout class with specified orientation. The orientation of the stack.</td></tr>
+      <tr><td><code>void Layout(IEnumerable&lt;SkiaComponent&gt; components, SKRect bounds, float padding = 0)</code></td><td>Method</td><td>Lays out the specified components within the given bounds. The components to layout. The bounds in which to layout the components. The padding around the layout area.</td></tr>
+    </tbody>
+  </table>
+</section>
 </div></main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>

@@ -21,12 +21,120 @@
 <ul>
 <li><strong>AddComponentAction:</strong> Tracks component creation; undo removes, redo re-adds</li>
 <li><strong>RemoveComponentAction:</strong> Tracks component deletion with full state snapshot</li>
-<li><strong>MoveComponentAction:</strong> Stores old/new positions for a set of components</li>
-<li><strong>ConnectAction:</strong> Tracks line creation between connection points</li>
-<li><strong>DisconnectAction:</strong> Tracks line removal</li>
-<li><strong>PropertyChangeAction:</strong> Stores old/new NodeProperties values</li>
+<li><strong>DeleteComponentsAction:</strong> Removes a multi-selection and its attached lines as one unit</li>
+<li><strong>MoveComponentsAction:</strong> Stores old/new positions for a set of components</li>
+<li><strong>ConnectComponentsAction:</strong> Tracks line creation between connection points</li>
+<li><strong>DisconnectComponentsAction:</strong> Tracks line removal</li>
+<li><strong>PasteComponentsAction:</strong> Re-creates copied components and their internal lines</li>
+<li><strong>AlignComponentsAction:</strong> Records alignment moves across the selection</li>
+<li><strong>MoveLineAction:</strong> Tracks a line being re-routed or re-attached</li>
+<li><strong>ConnectAutomationNodesAction:</strong> Connects automation nodes with port management</li>
 </ul>
 <p>Each action implements <code>Execute()</code> and <code>Undo()</code>. The <code>HistoryManager</code> maintains a bounded stack (configurable depth, default 100).</p>
+<section class="section" id="action-catalog">
+  <h2>Action Catalog</h2>
+  <p>Every mutating operation is recorded as a DrawingAction subclass. The manager pushes these automatically; hosts only construct them when applying their own commands.</p>
+  <h3>AddComponentAction</h3>
+  <p>Action for adding a component.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>AddComponentAction(DrawingManager manager, SkiaComponent component)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>RemoveComponentAction</h3>
+  <p>Action for removing a component.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>RemoveComponentAction(DrawingManager manager, SkiaComponent component, List&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>DeleteComponentsAction</h3>
+  <p>Action for deleting multiple components.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DeleteComponentsAction(DrawingManager manager, List&lt;SkiaComponent&gt; components, List&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>MoveComponentsAction</h3>
+  <p>Action for moving components.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>MoveComponentsAction(DrawingManager manager, List&lt;SkiaComponent&gt; components, SKPoint offset)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>ConnectComponentsAction</h3>
+  <p>Action for connecting components.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ConnectComponentsAction(DrawingManager manager, SkiaComponent component1, SkiaComponent component2, IConnectionLine line)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>DisconnectComponentsAction</h3>
+  <p>Action for disconnecting components.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DisconnectComponentsAction(DrawingManager manager, SkiaComponent component1, SkiaComponent component2, IConnectionLine line)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>PasteComponentsAction</h3>
+  <p>Action for pasting components from the clipboard.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>PasteComponentsAction(DrawingManager manager, List&lt;SkiaComponent&gt; components, List&lt;IConnectionLine&gt; lines = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>AlignComponentsAction</h3>
+  <p>Action for alignment/distribution operations.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>AlignComponentsAction(DrawingManager manager, List&lt;SkiaComponent&gt; components, List&lt;SKPoint&gt; beforePositions)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>MoveLineAction</h3>
+  <p>Action for moving a connection line.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>MoveLineAction(DrawingManager manager, IConnectionLine line, IConnectionPoint oldStartPoint, IConnectionPoint oldEndPoint, IConnectionPoint newStartPoint, IConnectionPoint newEndPoint)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3>ConnectAutomationNodesAction</h3>
+  <p>Action for connecting automation nodes.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ConnectAutomationNodesAction(DrawingManager manager, Components.AutomationNode node1, Components.AutomationNode node2, IConnectionLine line, IConnectionPoint outputPoint, IConnectionPoint inputPoint)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
 </div></main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>

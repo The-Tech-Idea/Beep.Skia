@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connection Animation | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="connection-system.html">Core Concepts</a><span>&rsaquo;</span> <span>Connection Animation</span></nav>
+<div class="page-header"><h1>Connection Animation</h1><p class="page-subtitle">Data-flow visuals, status indicators and ERD multiplicity markers on connection lines</p></div>
+<p>Connection lines are not just static strokes: they can visualize flow direction, throughput, status and cardinality. All of it is configured per line through <code>ConnectionLine</code> (or any <code>IConnectionLine</code> implementation).</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#styles">Animation Styles</a></li>
+    <li><a href="#dataflow">Data-Flow Configuration</a></li>
+    <li><a href="#status">Status Indicators</a></li>
+    <li><a href="#markers">Arrows, Dashes and Multiplicity</a></li>
+    <li><a href="#example">Putting It Together</a></li>
+  </ul>
+</div>
+
+<section class="section" id="styles">
+  <h2>Animation Styles</h2>
+  <p>Seven <code>FlowAnimationStyle</code> values ship with the framework. Each is a self-contained effect drawn along the line path, from the classic moving dots to directional arrows:</p>
+
+  <table>
+    <thead>
+      <tr><th>Style</th><th>Visual</th><th>Best for</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Dots</code></td><td>Glowing circles moving along the path (default)</td><td>General data flow, presentations</td></tr>
+      <tr><td><code>Dashes</code></td><td>Dashes travelling along the line</td><td>Simple, low-noise flow indication</td></tr>
+      <tr><td><code>Wave</code></td><td>Pulsing wave distortion along the stroke</td><td>Signals and continuous streams</td></tr>
+      <tr><td><code>Gradient</code></td><td>Moving color gradient</td><td>Emphasizing direction on thick lines</td></tr>
+      <tr><td><code>Particles</code></td><td>Particles with trailing tails</td><td>High-throughput or turbulent flow</td></tr>
+      <tr><td><code>Pulse</code></td><td>Glowing pulse travelling end to end</td><td>Event or trigger propagation</td></tr>
+      <tr><td><code>Arrows</code></td><td>Arrow shapes flowing along the line</td><td>Pipelines and staged processing</td></tr>
+    </tbody>
+  </table>
+
+  <p>Animation is opt-in per line: set <code>IsDataFlowAnimated = true</code> and choose a style with <code>AnimationStyle</code>. The lighter <code>IsAnimated</code> flag is for generic line animation without data-flow semantics.</p>
+</section>
+
+<section class="section" id="dataflow">
+  <h2>Data-Flow Configuration</h2>
+  <table class="property-table">
+    <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IsDataFlowAnimated</code></td><td><code>bool</code></td><td>Enables the animated data-flow rendering.</td></tr>
+      <tr><td><code>AnimationStyle</code></td><td><code>FlowAnimationStyle</code></td><td>Which of the seven effects to draw.</td></tr>
+      <tr><td><code>FlowDirection</code></td><td><code>DataFlowDirection</code></td><td><code>None</code>, <code>Forward</code>, <code>Backward</code> or <code>Bidirectional</code>. Controls the travel direction.</td></tr>
+      <tr><td><code>DataFlowSpeed</code></td><td><code>float</code></td><td>Pixels per second; default <code>100</code>.</td></tr>
+      <tr><td><code>DataFlowParticleSize</code></td><td><code>float</code></td><td>Size of the moving element in pixels; default <code>4</code>.</td></tr>
+      <tr><td><code>DataFlowColor</code></td><td><code>SKColor</code></td><td>Color of the animated element; defaults to <code>SKColors.Blue</code>.</td></tr>
+    </tbody>
+  </table>
+  <p>Because the effect depends on time, a line with animation requests frames while visible. Static diagrams should leave animation off &mdash; see the <a href="../guides/performance.html">Performance Guide</a>.</p>
+</section>
+
+<section class="section" id="status">
+  <h2>Status Indicators</h2>
+  <p>Lines can report execution state, which the renderer draws as a colored indicator on the line:</p>
+  <table class="property-table">
+    <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ShowStatusIndicator</code></td><td><code>bool</code></td><td>Draws the status marker when true.</td></tr>
+      <tr><td><code>Status</code></td><td><code>LineStatus</code></td><td><code>None</code>, <code>Working</code>, <code>Running</code>, <code>Warning</code> or <code>Error</code>.</td></tr>
+      <tr><td><code>StatusColor</code></td><td><code>SKColor</code></td><td>Color of the marker; defaults to <code>SKColors.DimGray</code>.</td></tr>
+    </tbody>
+  </table>
+  <p>Schema validation reuses the same mechanism: when a connection's expected schema does not match the produced schema, the line is flagged <code>LineStatus.Warning</code> with an amber indicator (see the ETL family).</p>
+</section>
+
+<section class="section" id="markers">
+  <h2>Arrows, Dashes and Multiplicity</h2>
+  <table class="property-table">
+    <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ShowStartArrow</code> / <code>ShowEndArrow</code></td><td><code>bool</code></td><td>Arrowheads at each end; both default to true.</td></tr>
+      <tr><td><code>ArrowSize</code></td><td><code>float</code></td><td>Arrowhead size; default <code>10</code>.</td></tr>
+      <tr><td><code>DashPattern</code></td><td><code>float[]</code></td><td>Optional dash pattern applied to the stroke.</td></tr>
+      <tr><td><code>StartMultiplicity</code> / <code>EndMultiplicity</code></td><td><code>ERDMultiplicity</code></td><td>ERD crow's-foot markers at each end.</td></tr>
+    </tbody>
+  </table>
+  <p><code>ERDMultiplicity</code> values: <code>Unspecified</code>, <code>ZeroOrOne</code> (circle + bar), <code>OneOnly</code> (double bar), <code>OneOrMany</code> (bar + crow's foot), <code>ZeroOrMany</code> (circle + crow's foot), <code>Many</code> (crow's foot) and <code>One</code> (single bar).</p>
+</section>
+
+<section class="section" id="example">
+  <h2>Putting It Together</h2>
+  <div class="code-example">
+    <pre><code class="language-csharp">drawingManager.ConnectComponents(sourceNode, targetNode);
+
+var line = drawingManager.GetLines().Last();
+
+// Animated data flow
+line.IsDataFlowAnimated = true;
+line.AnimationStyle = FlowAnimationStyle.Particles;
+line.FlowDirection = DataFlowDirection.Forward;
+line.DataFlowColor = SKColors.DeepSkyBlue;
+line.DataFlowSpeed = 140f;
+line.DataFlowParticleSize = 5f;
+
+// Status + styling
+line.ShowStatusIndicator = true;
+line.Status = LineStatus.Running;
+line.LineColor = SKColors.SlateGray;
+line.Paint.StrokeWidth = 2.5f;
+line.ArrowSize = 12f;
+line.ShowEndArrow = true;
+
+// ERD cardinality
+line.StartMultiplicity = ERDMultiplicity.ZeroOrMany;
+line.EndMultiplicity = ERDMultiplicity.OneOnly;
+
+drawingManager.RequestRedraw();</code></pre>
+  </div>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>
