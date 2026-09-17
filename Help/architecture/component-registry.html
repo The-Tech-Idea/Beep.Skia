@@ -20,11 +20,11 @@
 <p>The <code>SkiaComponentRegistry</code> is the central plugin discovery and instantiation system. It scans assemblies, resolves types, and provides factory methods for all <code>SkiaComponent</code> subclasses at runtime.</p>
 <h3>Key Responsibilities</h3>
 <ul>
-<li>Assembly scanning for <code>[AddinAttribute]</code>-marked components</li>
+<li>Registration of component definitions discovered by the extension SDK and hosts</li>
 <li>Type caching by display name and full type name</li>
 <li>Instantiation with parameterless constructors</li>
 <li>Category-based grouping for palette display</li>
-<li>Integration with <code>AssemblyHandler</code> for NuGet-loaded plugins</li>
+<li>Instantiation support for palette drops, templates and deserialization</li>
 </ul>
 </div></main>
 </div>

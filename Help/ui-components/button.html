@@ -218,7 +218,7 @@ submitButton.Initialize();
 submitButton.Click += (s, e) => Console.WriteLine("Button clicked!");
 
 drawingManager.AddComponent(submitButton);
-canvas.Invalidate();</code></pre>
+drawingManager.RequestRedraw();</code></pre>
   </div>
 
   <div class="code-example">
@@ -268,7 +268,7 @@ foreach (var (style, y, label) in styles)
     drawingManager.AddComponent(btn);
 }
 
-canvas.Invalidate();</code></pre>
+drawingManager.RequestRedraw();</code></pre>
   </div>
 
   <div class="code-example">

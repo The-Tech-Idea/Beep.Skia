@@ -266,7 +266,7 @@ opacitySlider.ValueChanged += (s, val) =>
     Console.WriteLine($"Opacity: {val}%");
 
 drawingManager.AddComponent(opacitySlider);
-canvas.Invalidate();</code></pre>
+drawingManager.RequestRedraw();</code></pre>
   </div>
 
   <div class="code-example">
@@ -393,7 +393,7 @@ priceRange.ValueChanged += (s, val) =>
     Console.WriteLine($"Range: ${priceRange.RangeStart} - ${val}");
 
 drawingManager.AddComponent(priceRange);
-canvas.Invalidate();</code></pre>
+drawingManager.RequestRedraw();</code></pre>
   </div>
 
   <div class="admonition tip">

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Server Execution SKU | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="workflow-engine.html">Automation</a><span>&rsaquo;</span> <span>Server Execution SKU</span></nav>
+<div class="page-header"><h1>Server Execution SKU</h1><p class="page-subtitle">Running workflows as queued jobs, over HTTP or in-process</p></div>
+<p>The server SKU turns the workflow engine into a service: publish workflows, submit jobs with inputs, watch them run,
+and control them &mdash; from a desktop host, a test, or an HTTP client.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#service">Execution Service</a></li>
+    <li><a href="#api">JSON API Facade</a></li>
+    <li><a href="#router">HTTP Routes</a></li>
+    <li><a href="#host">Sample HTTP Host</a></li>
+    <li><a href="#notes">Deployment Notes</a></li>
+  </ul>
+</div>
+
+<section class="section" id="service">
+  <h2>Execution Service</h2>
+  <p><code>WorkflowExecutionService</code> queues jobs with bounded concurrency and tracks each one through a small state
+  machine: <code>Queued</code> &rarr; <code>Running</code> / <code>Paused</code> &rarr; <code>Completed</code> /
+  <code>Failed</code> / <code>Cancelled</code>.</p>
+  <div class="code-example">
+    <h3>Publish, submit, wait</h3>
+    <pre><code class="language-csharp">using var service = new WorkflowExecutionService(maxConcurrency: 2);
+
+service.Publish(savedWorkflow);                       // publish once
+var job = service.Submit(savedWorkflow.Id, submittedBy: "nightly",
+    inputs: new Dictionary&lt;string, object&gt; { ["environment"] = "staging" });
+
+service.WaitForCompletion(job.Id, TimeSpan.FromMinutes(5));
+Console.WriteLine($"{job.State} in {job.Duration?.TotalMilliseconds:F0} ms");
+
+service.Pause(job.Id);      // holds at the next node boundary
+service.Resume(job.Id);
+service.Cancel(job.Id);</code></pre>
+  </div>
+  <p>The service also exposes <code>GetJob</code>, <code>GetJobs(state, limit)</code>, a <code>JobStateChanged</code>
+  event for progress UIs, and <code>Dispose</code> which cancels outstanding work.</p>
+</section>
+
+<section class="section" id="api">
+  <h2>JSON API Facade</h2>
+  <p><code>WorkflowExecutionApi</code> wraps the service in a JSON-friendly surface so any transport can expose it. It can
+  publish a <em>diagram</em> directly, which means a saved layout becomes an executable workflow without writing code:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">var api = new WorkflowExecutionApi(service);
+
+var published = api.PublishDiagram(File.ReadAllText("diagram.json"), "Nightly Sync");
+var submitted = api.Submit(workflowId, "me", "{\"environment\":\"ci\"}");
+var detail    = api.GetJob(jobId);
+var json      = api.ToJson(detail);       // the same envelope every call returns</code></pre>
+  </div>
+  <p>Every method returns an <code>ApiResponse</code> with <code>Success</code>, <code>Error</code> and a JSON-serializable
+  <code>Payload</code>, so errors are data rather than exceptions.</p>
+</section>
+
+<section class="section" id="router">
+  <h2>HTTP Routes</h2>
+  <p><code>WorkflowRequestRouter</code> maps HTTP requests onto the facade and owns the status codes, so the transport
+  layer stays trivial and the routing logic stays testable.</p>
+  <table>
+    <thead><tr><th>Method</th><th>Route</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>GET</td><td><code>/health</code></td><td>Service status</td></tr>
+      <tr><td>GET</td><td><code>/api/workflows</code></td><td>Published workflows</td></tr>
+      <tr><td>POST</td><td><code>/api/workflows?name=</code></td><td>Publish a diagram DTO (body) as a workflow</td></tr>
+      <tr><td>GET</td><td><code>/api/jobs?state=&amp;limit=</code></td><td>List jobs, optionally filtered</td></tr>
+      <tr><td>POST</td><td><code>/api/jobs?workflowId=&amp;submittedBy=</code></td><td>Submit a job (body = inputs JSON)</td></tr>
+      <tr><td>GET</td><td><code>/api/jobs/{id}</code></td><td>Job detail, including the result</td></tr>
+      <tr><td>POST</td><td><code>/api/jobs/{id}/cancel</code> | <code>pause</code> | <code>resume</code></td><td>Control a running job</td></tr>
+    </tbody>
+  </table>
+  <p>Successful calls return <code>200</code>, bad input returns <code>400</code>, and unknown routes or workflows return
+  <code>404</code>.</p>
+</section>
+
+<section class="section" id="host">
+  <h2>Sample HTTP Host</h2>
+  <p><code>Beep.Skia.Sample.Server</code> is a runnable ASP.NET minimal-API host around the router:</p>
+  <div class="code-example">
+    <h3>Run the server</h3>
+    <pre><code class="language-bash">dotnet run --project Beep.Skia.Sample.Server -- --demo --url http://localhost:5199
+
+curl -X POST "http://localhost:5199/api/jobs?workflowId=demo" -d "{\"environment\":\"ci\"}"
+curl "http://localhost:5199/api/jobs?state=completed"</code></pre>
+  </div>
+  <p>Options: <code>--url</code>, <code>--concurrency</code>, <code>--demo</code> (publish a built-in workflow),
+  <code>--publish &lt;file&gt;</code> (publish a saved diagram) and <code>--help</code>.</p>
+</section>
+
+<section class="section" id="notes">
+  <h2>Deployment Notes</h2>
+  <ul>
+    <li><strong>Transport-agnostic</strong> &mdash; the service and facade have no HTTP dependency; the ASP.NET host is one adapter among many.</li>
+    <li><strong>Concurrency-safe</strong> &mdash; several jobs run through one engine, and history/job queries are safe while runs are in flight (covered by stress tests).</li>
+    <li><strong>Bounded work</strong> &mdash; concurrency is capped and queued jobs wait rather than piling up.</li>
+    <li><strong>Observable</strong> &mdash; job state changes are events, and every job records start/end times, duration, error text, and the engine result.</li>
+  </ul>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

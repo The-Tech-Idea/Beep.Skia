@@ -55,18 +55,18 @@
 
   <div class="code-example">
     <h3>Creating a DrawingManager Instance</h3>
-    <pre><code class="language-csharp">using Beep.Skia.Canvas;
+    <pre><code class="language-csharp">using SkiaSharp;
 
 var drawingManager = new DrawingManager();
 
-var canvas = new SkiaCanvas(1200, 800);
-drawingManager.AttachCanvas(canvas);
+using var surface = SKSurface.Create(new SKImageInfo(1200, 800));
+var canvas = surface.Canvas;
 
-drawingManager.GridSize = 20;
+drawingManager.GridSpacing = 20;
 drawingManager.ShowGrid = true;
 drawingManager.SnapToGrid = true;
 
-canvas.Invalidate();</code></pre>
+drawingManager.RequestRedraw();</code></pre>
   </div>
 </section>
 
@@ -82,7 +82,7 @@ canvas.Invalidate();</code></pre>
       <tr>
         <td><code>DrawingManager.Core.cs</code></td>
         <td>Properties, events, initialization, canvas attachment, dispose pattern.</td>
-        <td><code>Canvas</code>, <code>Components</code>, <code>Connections</code>, <code>GridSize</code>, <code>ShowGrid</code>, <code>SnapToGrid</code>, <code>IsDirty</code></td>
+        <td><code>Canvas</code>, <code>ShowGrid</code>, <code>GridSpacing</code>, <code>SnapToGrid</code>, <code>WorldOverlay</code>, <code>SelectionManager</code>, <code>InteractionHelper</code>, <code>HistoryManager</code></td>
       </tr>
       <tr>
         <td><code>DrawingManager.Components.cs</code></td>
@@ -149,20 +149,14 @@ node.Dispose();</code></pre>
 
   <div class="code-example">
     <h3>Connecting and Disconnecting Components</h3>
-    <pre><code class="language-csharp">var sourcePort = startNode.OutPoints.First();
-var targetPort = endNode.InPoints.First();
+    <pre><code class="language-csharp">drawingManager.ConnectComponents(startNode, endNode);
 
-var connection = drawingManager.Connect(sourcePort, targetPort);
+// Style the newest line
+var connection = drawingManager.GetLines().Last();
+connection.Paint.PathEffect = SKPathEffect.CreateDash(new[] { 6f, 4f }, 0);
+connection.RoutingMode = LineRoutingMode.Orthogonal;
 
-if (connection != null)
-{
-    connection.LineStyle = LineStyle.Dashed;
-    connection.RoutingMode = RoutingMode.Orthogonal;
-}
-
-var connectionsForNode = drawingManager.GetConnectionsFor(startNode);
-
-drawingManager.Disconnect(connection);</code></pre>
+drawingManager.DisconnectComponents(startNode, endNode);</code></pre>
   </div>
 
   <table>
@@ -261,7 +255,7 @@ drawingManager.ZoomToFit();</code></pre>
 
 drawingManager.ConnectionEstablished += (sender, args) =>
 {
-    Console.WriteLine($"Connected: {args.Connection.StartPoint.Owner} -> " +
+    Console.WriteLine($"Connected: {args.Connection.Start.Component} -> " +
                       $"{args.Connection.EndPoint.Owner}");
     ValidateDiagramIntegrity();
 };

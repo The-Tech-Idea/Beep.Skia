@@ -216,7 +216,7 @@
       </tr>
       <tr>
         <td><strong>Strategy</strong></td>
-        <td>Connection routing algorithms (<code>Direct</code>, <code>Orthogonal</code>, <code>Curved</code>, <code>Bezier</code>) are swappable strategies selected at runtime per connection.</td>
+        <td>Connection routing algorithms (<code>Straight</code>, <code>Orthogonal</code>, <code>Curved</code>) are swappable per connection through <code>LineRoutingMode</code>.</td>
       </tr>
       <tr>
         <td><strong>Observer</strong></td>
@@ -224,15 +224,15 @@
       </tr>
       <tr>
         <td><strong>Command</strong></td>
-        <td>All diagram mutations (add, remove, move, resize, connect, disconnect) are encapsulated as command objects, enabling undo/redo through the <code>CommandHistory</code> stack.</td>
+        <td>Diagram mutations (add, remove, move, resize, connect, disconnect) are encapsulated as <code>DrawingAction</code> objects, enabling undo/redo through <code>HistoryManager</code>.</td>
       </tr>
       <tr>
-        <td><strong>Visitor</strong></td>
-        <td>Serialization walks the component tree using the visitor pattern. The <code>DiagramSerializer</code> visits each node and connection to produce JSON or binary output.</td>
+        <td><strong>Data Transfer Object</strong></td>
+        <td>Serialization converts the live graph into plain DTOs. <code>DrawingManager.ToDto()</code> produces a <code>DiagramDto</code> of <code>ComponentDto</code> and <code>LineDto</code> records, and <code>LoadFromDto()</code> restores it.</td>
       </tr>
       <tr>
         <td><strong>Factory</strong></td>
-        <td>Node factories create domain-specific node types with pre-configured styles. The <code>NodeFactory</code> class provides fluent creation methods for each diagram family.</td>
+        <td><code>SkiaComponentRegistry</code> creates component instances from discovered type definitions (<code>AssemblyClassDefinition</code>), powering the palette and template loading.</td>
       </tr>
       <tr>
         <td><strong>Decorator</strong></td>

@@ -152,47 +152,35 @@ public void RenderBackground(SKCanvas canvas, SKRect viewport)
   <h2>Port Layout</h2>
 
   <h3>Lazy Computation with Dirty Flags</h3>
-  <p>Port positions are only recomputed when a component signals that its port layout is stale. The <code>PortsDirty</code> flag acts as a gate, and <code>EnsurePortLayout()</code> only runs when the flag is set:</p>
+  <p>Port positions are only recomputed when a component signals that its port layout is stale. <code>MarkPortsDirty()</code> raises the flag; the component's <code>LayoutPorts()</code> override recomputes positions only when needed:</p>
 
   <div class="code-example">
     <h3>Lazy Port Layout Sequence</h3>
-    <pre><code class="language-csharp">// During drag: positions change, flag is set, but no computation
-component.X = newX;   // Property setter calls MarkPortsDirty()
-component.Y = newY;   // Property setter calls MarkPortsDirty()
+    <pre><code class="language-csharp">// During drag: positions change and the layout is marked stale,
+// but no port geometry is recomputed
+component.X = newX;   // bounds change calls MarkPortsDirty() internally
+component.Y = newY;
 
-// After drag completes: connections need updated port positions
-if (component.PortsDirty)
-    component.EnsurePortLayout();  // Recompute all port positions once</code></pre>
+// Ports are recomputed lazily on the next layout pass, once per change
+// (LayoutPorts() is a protected override inside the component)</code></pre>
   </div>
 
   <h3>Batch Recompute on Move Operations</h3>
-  <p>When moving multiple components simultaneously (e.g., marquee selection drag), batch the port recomputation to occur once after all positions are updated:</p>
+  <p>When moving multiple components simultaneously (e.g., marquee selection drag), update all positions first and let the layout pass recompute ports once, instead of recomputing per component:</p>
 
   <div class="code-example">
     <h3>Batched Port Recompute</h3>
     <pre><code class="language-csharp">public void MoveComponents(IEnumerable&lt;SkiaComponent&gt; components, float dx, float dy)
 {
-    // Phase 1: Update all positions without recomputing ports
+    // Phase 1: Update all positions; port layout is only marked dirty
     foreach (var component in components)
     {
         component.X += dx;
         component.Y += dy;
-        // MarkPortsDirty() is called by property setter, but no recompute yet
     }
 
-    // Phase 2: Recompute all ports once, after all positions are final
-    foreach (var component in components)
-    {
-        component.EnsurePortLayout();
-    }
-
-    // Phase 3: Update all connection lines
-    foreach (var connection in GetAffectedConnections(components))
-    {
-        connection.UpdateGeometry();
-    }
-
-    Invalidate();
+    // Phase 2: One redraw recomputes all stale port layouts exactly once
+    drawingManager.RequestRedraw();
 }</code></pre>
   </div>
 
@@ -563,7 +551,7 @@ public override void DrawContent(SKCanvas canvas)
       <tr><td><strong>Frame Time</strong></td><td>&lt; 16.6 ms (60 FPS)</td><td>&gt; 33 ms (&lt; 30 FPS)</td><td><code>Stopwatch</code> around <code>Render()</code> call</td></tr>
       <tr><td><strong>Hit Test Time</strong></td><td>&lt; 1 ms</td><td>&gt; 10 ms</td><td><code>Stopwatch</code> around <code>HitTest()</code></td></tr>
       <tr><td><strong>Component Count</strong></td><td>1&ndash;5,000 supported</td><td>&gt; 10,000 (consider diagram partitioning)</td><td><code>DrawingManager.ComponentCount</code></td></tr>
-      <tr><td><strong>Port Layout Time</strong></td><td>&lt; 0.5 ms per 100 components</td><td>&gt; 5 ms per 100 components</td><td>Profile <code>EnsurePortLayout()</code> aggregate</td></tr>
+      <tr><td><strong>Port Layout Time</strong></td><td>&lt; 0.5 ms per 100 components</td><td>&gt; 5 ms per 100 components</td><td>Profile <code>LayoutPorts()</code> aggregate</td></tr>
       <tr><td><strong>Serialization Time</strong></td><td>&lt; 500 ms for 1,000 components</td><td>&gt; 2 seconds</td><td><code>Stopwatch</code> around <code>Serialize()</code>/<code>Deserialize()</code></td></tr>
       <tr><td><strong>Memory (per component)</strong></td><td>~2&ndash;5 KB typical</td><td>&gt; 20 KB (check for leaks)</td><td>Memory profiler (dotMemory, PerfView)</td></tr>
       <tr><td><strong>GC Collections (Gen 2)</strong></td><td>0 during steady-state rendering</td><td>&gt; 0 per frame</td><td><code>GC.CollectionCount(2)</code> delta per frame</td></tr>

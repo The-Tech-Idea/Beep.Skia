@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collaboration | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="extensions.html">Ecosystem</a><span>&rsaquo;</span> <span>Collaboration</span></nav>
+<div class="page-header"><h1>Collaboration</h1><p class="page-subtitle">Sharing, review comments, presence and audit for diagram documents</p></div>
+<p>Collaboration adds the multi-user story to a diagram: who may do what, what reviewers said, and who is working on the
+document right now.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#roles">Roles and Sharing</a></li>
+    <li><a href="#comments">Comments and Pins</a></li>
+    <li><a href="#presence">Presence</a></li>
+    <li><a href="#audit">Audit Trail</a></li>
+    <li><a href="#persistence">Persistence</a></li>
+  </ul>
+</div>
+
+<section class="section" id="roles">
+  <h2>Roles and Sharing</h2>
+  <table>
+    <thead><tr><th>Role</th><th>Can do</th></tr></thead>
+    <tbody>
+      <tr><td>Viewer</td><td>Open the document</td></tr>
+      <tr><td>Commenter</td><td>View, add comments</td></tr>
+      <tr><td>Editor</td><td>View, comment, edit</td></tr>
+      <tr><td>Admin</td><td>Everything, including granting and revoking access</td></tr>
+    </tbody>
+  </table>
+  <div class="code-example">
+    <pre><code class="language-csharp">var collaboration = new CollaborationService();
+collaboration.RegisterUser(new CollaborationUser { Id = "alice", DisplayName = "Alice" });
+collaboration.RegisterUser(new CollaborationUser { Id = "bob", DisplayName = "Bob" });
+
+collaboration.Share("diagram", ownerId: "alice", ("bob", CollaborationRole.Commenter));
+collaboration.Grant("diagram", requesterId: "alice", userId: "bob", role: CollaborationRole.Editor);
+collaboration.SetPublic("diagram", requesterId: "alice", isPublic: true);   // read-only link</code></pre>
+  </div>
+</section>
+
+<section class="section" id="comments">
+  <h2>Comments and Pins</h2>
+  <p>Comments can be anchored to a component, which makes them review notes rather than chat. Anchored comments are drawn
+  as numbered pins on the component's corner through <code>CommentPinLayer</code>, and resolved comments disappear from the
+  canvas.</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">var comment = collaboration.AddComment("diagram", "bob", "This step needs a guard", "DecisionNode");
+collaboration.ResolveComment("diagram", comment.Id, "alice");
+
+// pins follow component geometry automatically
+pinLayer.Rebuild(manager.GetComponents(), collaboration.GetComments("diagram"));
+pinLayer.Draw(canvas);</code></pre>
+  </div>
+</section>
+
+<section class="section" id="presence">
+  <h2>Presence</h2>
+  <p>Presence records who is active on a document and what they are doing. Entries expire automatically, so a crashed
+  client does not appear online forever:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">collaboration.SetPresence("diagram", "bob", "editing");
+foreach (var entry in collaboration.GetPresence("diagram", TimeSpan.FromMinutes(2)))
+    Console.WriteLine($"{entry.UserId} {entry.Activity} ({entry.LastSeen:HH:mm:ss})");</code></pre>
+  </div>
+</section>
+
+<section class="section" id="audit">
+  <h2>Audit Trail</h2>
+  <p>Every share, grant, revoke, comment and resolve is recorded with the user and timestamp, which gives reviewers a
+  history of the document's access and review decisions.</p>
+</section>
+
+<section class="section" id="persistence">
+  <h2>Persistence</h2>
+  <p>Collaboration state is saved next to the diagram with <code>CollaborationSerializer</code>. Presence is intentionally
+  excluded (it is ephemeral); everything else &mdash; users, shares, comments, audit &mdash; round-trips.</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">CollaborationSerializer.Save(collaboration, "diagram.collaboration.json");
+var restored = CollaborationSerializer.Load("diagram.collaboration.json");</code></pre>
+  </div>
+  <div class="note">
+    <strong>Safe under concurrent use.</strong> The service guards its state with a lock and hands out snapshots, so
+    callers cannot mutate internal state (for example to grant themselves a role) and concurrent comments, presence
+    updates and queries cannot corrupt it. This is covered by 8-thread stress tests.
+  </div>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

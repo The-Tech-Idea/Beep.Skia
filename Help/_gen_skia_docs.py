@@ -1131,7 +1131,7 @@ def generate_family_page(family):
     
     b += section("ports", "Connection Points",
         '<p>Every node in this family exposes connection points (ports) for linking to other nodes. '
-        'Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty '
+        'Port positions are computed lazily by <code>LayoutPorts()</code>, which runs when <code>MarkPortsDirty()</code> flags the layout as stale '
         'when the node moves or resizes.</p>' +
         ports_table(family["nodes"]))
     

@@ -250,7 +250,7 @@ notificationsToggle.Initialize();
 
 drawingManager.AddComponent(darkModeCheck);
 drawingManager.AddComponent(notificationsToggle);
-canvas.Invalidate();</code></pre>
+drawingManager.RequestRedraw();</code></pre>
   </div>
 
   <div class="code-example">
@@ -346,7 +346,7 @@ radioGroup.SelectedIndexChanged += (s, idx) =>
 };
 
 drawingManager.AddComponent(radioGroup);
-canvas.Invalidate();</code></pre>
+drawingManager.RequestRedraw();</code></pre>
   </div>
 
   <div class="admonition tip">

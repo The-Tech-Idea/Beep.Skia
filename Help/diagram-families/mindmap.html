@@ -19,7 +19,7 @@
 <div class="toc"><h3>Table of Contents</h3><ul><li><a href="#overview">Overview</a></li><li><a href="#node-types">Node Types</a></li><li><a href="#ports">Connection Points</a></li><li><a href="#conventions">Connection Conventions</a></li><li><a href="#example">Usage Example</a></li></ul></div><section class="section" id="overview"><h2>Overview</h2><p><strong>Base Control:</strong> <code>MindMapControl : MaterialControl</code><br><strong>Namespace:</strong> <code>Beep.Skia.MindMap</code></p><p>The <strong>MindMapControl</strong> is the root control for this diagram family. It inherits <code>MaterialControl</code> and provides shared port management, styling, and template methods for all nodes in the family.</p><p>This family contains <strong>4 node types</strong>.</p></section><section class="section" id="node-types"><h2>Node Types</h2><table><thead><tr><th>Node Class</th><th>Shape</th><th>Description</th></tr></thead><tbody><tr><td><code>CentralNode</code></td><td>Circle/oval (large)</td><td>Central idea/node. Root of the mind map.</td></tr>
 <tr><td><code>TopicNode</code></td><td>Rounded rectangle</td><td>First-level topic branching from central node.</td></tr>
 <tr><td><code>SubTopicNode</code></td><td>Rounded rectangle (smaller)</td><td>Second-level subtopic. Supports unlimited nesting.</td></tr>
-<tr><td><code>NoteNode</code></td><td>Callout/sticky note</td><td>Annotation or detail note attached to any node.</td></tr></tbody></table></section><div id="centralnode"><h3>CentralNode</h3><p>Central idea/node. Root of the mind map.</p><table><tr><th style="width:30%">Shape</th><td>Circle/oval (large)</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>8 (radial)</td></tr></table></div><div id="topicnode"><h3>TopicNode</h3><p>First-level topic branching from central node.</p><table><tr><th style="width:30%">Shape</th><td>Rounded rectangle</td></tr><tr><th>Input Ports</th><td>1 (center-facing)</td></tr><tr><th>Output Ports</th><td>4 (radial)</td></tr></table></div><div id="subtopicnode"><h3>SubTopicNode</h3><p>Second-level subtopic. Supports unlimited nesting.</p><table><tr><th style="width:30%">Shape</th><td>Rounded rectangle (smaller)</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>4</td></tr></table></div><div id="notenode"><h3>NoteNode</h3><p>Annotation or detail note attached to any node.</p><table><tr><th style="width:30%">Shape</th><td>Callout/sticky note</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily via <code>EnsurePortLayout()</code> and marked dirty when the node moves or resizes.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>CentralNode</code></td><td>0</td><td>8 (radial)</td><td>—</td></tr>
+<tr><td><code>NoteNode</code></td><td>Callout/sticky note</td><td>Annotation or detail note attached to any node.</td></tr></tbody></table></section><div id="centralnode"><h3>CentralNode</h3><p>Central idea/node. Root of the mind map.</p><table><tr><th style="width:30%">Shape</th><td>Circle/oval (large)</td></tr><tr><th>Input Ports</th><td>0</td></tr><tr><th>Output Ports</th><td>8 (radial)</td></tr></table></div><div id="topicnode"><h3>TopicNode</h3><p>First-level topic branching from central node.</p><table><tr><th style="width:30%">Shape</th><td>Rounded rectangle</td></tr><tr><th>Input Ports</th><td>1 (center-facing)</td></tr><tr><th>Output Ports</th><td>4 (radial)</td></tr></table></div><div id="subtopicnode"><h3>SubTopicNode</h3><p>Second-level subtopic. Supports unlimited nesting.</p><table><tr><th style="width:30%">Shape</th><td>Rounded rectangle (smaller)</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>4</td></tr></table></div><div id="notenode"><h3>NoteNode</h3><p>Annotation or detail note attached to any node.</p><table><tr><th style="width:30%">Shape</th><td>Callout/sticky note</td></tr><tr><th>Input Ports</th><td>1</td></tr><tr><th>Output Ports</th><td>0</td></tr></table></div><section class="section" id="ports"><h2>Connection Points</h2><p>Every node in this family exposes connection points (ports) for linking to other nodes. Port positions are computed lazily by <code>LayoutPorts()</code>, which runs when <code>MarkPortsDirty()</code> flags the layout as stale after a move or resize.</p><table><thead><tr><th>Node Class</th><th>Input Ports</th><th>Output Ports</th><th>Extra</th></tr></thead><tbody><tr><td><code>CentralNode</code></td><td>0</td><td>8 (radial)</td><td>—</td></tr>
 <tr><td><code>TopicNode</code></td><td>1 (center-facing)</td><td>4 (radial)</td><td>—</td></tr>
 <tr><td><code>SubTopicNode</code></td><td>1</td><td>4</td><td>—</td></tr>
 <tr><td><code>NoteNode</code></td><td>1</td><td>0</td><td>—</td></tr></tbody></table></section><section class="section" id="conventions"><h2>Connection Conventions</h2><p>When building diagrams with this family, follow these conventions:</p><ul><li>Central node always at origin (0,0 relative to control)</li><li>Topics radiate outward from center</li><li>Lines use curved routing for organic feel</li><li>Colors typically change per depth level</li></ul></section><section class="section" id="example"><h2>Usage Example</h2><p>Complete example showing creation, node placement, and connection:</p><div class="code-example"><h3>C# Example</h3>
@@ -33,25 +33,25 @@ drawingManager.AddComponent(mm);
 var central = new CentralNode
 {
     X = 300, Y = 200,
-    Text = "Product Strategy"
+    Title = "Product Strategy"
 };
 var topic = new TopicNode
 {
     X = 200, Y = 100,
-    Text = "Marketing"
+    Title = "Marketing"
 };
 var subtopic = new SubTopicNode
 {
     X = 100, Y = 50,
-    Text = "Social Media"
+    Title = "Social Media"
 };
 
 drawingManager.AddComponent(central);
 drawingManager.AddComponent(topic);
 drawingManager.AddComponent(subtopic);
 
-drawingManager.Connect(central.OutPoints[0], topic.InPoints[0]);
-drawingManager.Connect(topic.OutPoints[0], subtopic.InPoints[0]);</code></pre></div></section>
+drawingManager.ConnectComponents(central, topic);
+drawingManager.ConnectComponents(topic, subtopic);</code></pre></div></section>
 </div></main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>

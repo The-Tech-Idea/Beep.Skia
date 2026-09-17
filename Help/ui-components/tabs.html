@@ -238,7 +238,7 @@ tabs.SelectedIndexChanged += (s, index) =>
     Console.WriteLine($"Tab switched to index {index}");
 
 drawingManager.AddComponent(tabs);
-canvas.Invalidate();</code></pre>
+drawingManager.RequestRedraw();</code></pre>
   </div>
 
   <div class="code-example">

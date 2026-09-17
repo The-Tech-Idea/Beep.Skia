@@ -1,7 +1,7 @@
 # Beep.Skia Documentation Status
 
-**Last updated:** 2026-07-15
-**Total pages:** 52 | **Sections:** 8
+**Last updated:** 2026-09-17
+**Total pages:** 63 | **Sections:** 11
 
 ---
 
@@ -13,10 +13,13 @@
 | Core Concepts | 6 | Complete |
 | Diagram Families | 16 | Complete |
 | UI Components | 11 | Complete |
-| Guides | 5 | Complete |
+| Guides | 8 | Complete |
 | Architecture & Internals | 7 | Complete |
-| Infrastructure | 4 | Complete |
-| **Total** | **52** | |
+| Automation | 5 | Complete |
+| Ecosystem | 4 | Complete |
+| Editor | 1 | Complete |
+| Infrastructure | 2 | Complete |
+| **Total** | **63** | |
 
 ---
 
@@ -24,11 +27,11 @@
 
 ### Getting Started (3)
 - [x] `getting-started/installation.html` — NuGet install, project setup, dependencies
-- [x] `getting-started/quick-start.html` — Complete tutorial with DrawingManager
+- [x] `getting-started/quick-start.html` — Complete tutorial with DrawingManager and SkiaHostControl
 - [x] `getting-started/architecture-overview.html` — Solution structure, layers, patterns
 
 ### Core Concepts (6)
-- [x] `core-concepts/skia-component.html` — SkiaComponent base class (1386 lines)
+- [x] `core-concepts/skia-component.html` — SkiaComponent base class, NodeProperties, ports
 - [x] `core-concepts/drawing-manager.html` — DrawingManager coordinator (5 partials)
 - [x] `core-concepts/coordinate-system.html` — Absolute coords, pan/zoom, grid
 - [x] `core-concepts/connection-system.html` — ConnectionLine, routing, animation
@@ -74,12 +77,15 @@
 - [x] `ui-components/notifications.html`
 - [x] `ui-components/palette.html`
 
-### Guides (5)
+### Guides (8)
 - [x] `guides/creating-custom-family.html`
 - [x] `guides/best-practices.html`
 - [x] `guides/performance.html`
 - [x] `guides/theming.html`
 - [x] `guides/extensibility.html`
+- [x] `guides/platforms.html` — Supported TFMs, Windows hosts, sample, server host
+- [x] `guides/testing-and-quality.html` — Test strategy, sweeps, hardening record
+- [x] `guides/release-notes.html` — Versioning, packaging, release history
 
 ### Architecture & Internals (7)
 - [x] `architecture/component-registry.html`
@@ -90,15 +96,59 @@
 - [x] `architecture/layout-engines.html`
 - [x] `architecture/history-undo-system.html`
 
-### Infrastructure (4)
+### Automation (5)
+- [x] `automation/workflow-engine.html` — Execution engine, retries, variables, pause/resume/cancel
+- [x] `automation/triggers.html` — Trigger types and dispatch
+- [x] `automation/credentials.html` — Credential vault and connection manager
+- [x] `automation/server-sku.html` — WorkflowExecutionService, API, HTTP router, server sample
+- [x] `automation/data-sources.html` — Datasource-backed workflow nodes
+
+### Ecosystem (4)
+- [x] `ecosystem/extensions.html` — ISkiaExtension, SkiaExtensionHost, registration context
+- [x] `ecosystem/marketplace.html` — .beepkg packages, install/update/uninstall, safety gates
+- [x] `ecosystem/collaboration.html` — Roles, comments and pins, presence, audit
+- [x] `ecosystem/assisted-generation.html` — IDiagramAssistant, flowchart DSL, mind-map outlines
+
+### Editor (1)
+- [x] `editor/editor-ux.html` — Palette search, minimap, property grid write-back, templates, accessibility
+
+### Infrastructure (2)
 - [x] `index.html` — Full sidebar navigation with iframe content
 - [x] `home.html` — Landing page with stats, features, quick start
+
+### Generators (not counted as pages)
 - [x] `_gen_skia_docs.py` — Python generator for diagram family + architecture pages
-- [x] `DOCUMENTATION_STATUS.md` — This file
+- [x] `_gen_automation_docs.ps1`, `_gen_ecosystem_docs.ps1`, `_gen_editor_guides_docs.ps1`, `_gen_release_notes.ps1` — PowerShell generators for the new sections
 
 ### Assets
 - [x] `sphinx-style.css` — Sphinx/Furo-inspired theme with dark mode
 - [x] `assets/beep-logo.svg` — Beep logo for sidebar
+
+---
+
+## API Accuracy Pass (2026-09-17)
+
+All code samples across the site were verified against the framework source and corrected where they
+described APIs that do not exist. Highlights of the corrections:
+
+- **DrawingManager** — `AddComponent`/`GetComponents`/`GetLines`/`ConnectComponents` (void) and
+  `ToDto`/`LoadFromDto`; grid properties are `ShowGrid`, `GridSpacing`, `SnapToGrid`.
+- **ConnectionLine** — `LineColor`, `Paint.StrokeWidth`, `ShowStartArrow`/`ShowEndArrow`,
+  `Label1`–`Label3`, `RoutingMode` (`LineRoutingMode`), `ERDMultiplicity` markers.
+- **Components** — `X`/`Y`/`Width`/`Height`, `Name`, `NodeProperties`, `InConnectionPoints`/
+  `OutConnectionPoints`; flowchart nodes expose `Label`, `CustomFillColor`, `CustomStrokeColor`
+  and override `DrawContent`/`DrawFlowchartContent`.
+- **ParameterInfo** — `ParameterName`, `ParameterCurrentValue`, `DefaultParameterValue`,
+  `ParameterType`, `Description`, `Choices`; `GetProperties()` returns plain values.
+- **Theming** — `SkiaTheme` + `ThemeManager.Current`/`ApplyTheme`/`ThemeChanged`; built-in themes
+  Light, Dark, HighContrast, Nord, Dracula; theme persisted as `DiagramDto.ThemeName`.
+- **Selection/clipboard** — `SelectionManager` (`SelectComponent`, `AddToSelection`,
+  `SelectedComponents`, `SelectComponentsInRect`), `CopySelectedComponents`, `PasteComponents`,
+  `DeleteSelectedComponents`.
+- **Extensions** — `ISkiaExtension`/`ISkiaExtensionContext`, `SkiaExtensionHost`,
+  `ExtensionPackageManager`; the `[AddinAttribute]` story was removed.
+- **History** — `HistoryManager` + `DrawingAction` (the `CommandHistory` name was removed).
+- **Ports** — lazy layout via `MarkPortsDirty()` + `LayoutPorts()`.
 
 ---
 
@@ -110,6 +160,5 @@
 - [ ] VS Code extension with IntelliSense for diagram families
 - [ ] Search index (lunr.js or similar)
 - [ ] Screenshots for each diagram family
-- [ ] Changelog / release notes
 - [ ] Troubleshooting FAQ
 - [ ] Migration guide from other diagramming libraries

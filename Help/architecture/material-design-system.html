@@ -16,18 +16,28 @@
 <div class="container">
 <main class="content"><div class="content-wrapper">
 <nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="../architecture/component-registry.html">Architecture & Internals</a><span>&rsaquo;</span> <span>Material Design 3.0 Theming Architecture</span></nav><div class="page-header"><h1>Material Design 3.0 Theming Architecture</h1><p class="page-subtitle">Material Design 3.0 color token system, border rendering, and text theming in MaterialControl.</p></div>
-<p><code>MaterialControl</code> and <code>MaterialDesignColors</code> implement a complete Material Design 3.0 token system.</p>
+<p><code>MaterialControl</code> and the static <code>ThemeManager</code> implement a Material Design 3.0 token system. All colors come from the active <code>SkiaTheme</code>, which components read while drawing.</p>
 <h3>Color Tokens</h3>
 <ul>
-<li><strong>Primary:</strong> Main brand color for buttons, active states, emphasis</li>
-<li><strong>OnPrimary:</strong> Contrast color for content on primary surfaces</li>
-<li><strong>Surface:</strong> Background color for cards, dialogs, sheets</li>
-<li><strong>OnSurface:</strong> Text/icon color on surface backgrounds</li>
-<li><strong>Outline:</strong> Border and separator colors</li>
-<li><strong>Error:</strong> Error state color for validation</li>
+<li><strong>Primary / OnPrimary / PrimaryContainer / OnPrimaryContainer:</strong> Brand color and its content pairs.</li>
+<li><strong>Secondary / Tertiary:</strong> Supporting accents with their container and content pairs.</li>
+<li><strong>Surface / OnSurface:</strong> Background and text colors for cards, dialogs and sheets.</li>
+<li><strong>SurfaceVariant / SurfaceContainer / SurfaceContainerHigh:</strong> Layered container backgrounds.</li>
+<li><strong>Outline / OutlineVariant:</strong> Borders and separators.</li>
+<li><strong>Error / OnError / ErrorContainer:</strong> Error states and validation.</li>
+<li><strong>CanvasBackground / GridColor:</strong> Diagram canvas and grid rendering.</li>
 </ul>
+<h3>Theme Management</h3>
+<ul>
+<li><code>ThemeManager.Current</code> holds the active <code>SkiaTheme</code> (default: <code>SkiaTheme.Light</code>).</li>
+<li><code>ThemeManager.ApplyTheme(name)</code> switches to a built-in theme: <code>Light</code>, <code>Dark</code>, <code>HighContrast</code>, <code>Nord</code>, <code>Dracula</code>.</li>
+<li><code>ThemeManager.ThemeChanged</code> notifies hosts to redraw after a theme switch.</li>
+<li><code>DiagramDto.ThemeName</code> persists the active theme with the diagram, and <code>LoadFromDto()</code> re-applies it on load.</li>
+</ul>
+<h3>State Layers and Elevation</h3>
+<p>Interactive controls composite Material state layers over their base color: hover at 8% opacity, focus and pressed at 12%, and dragged at 16%. Elevation (0&ndash;5) drives drop-shadow rendering in <code>MaterialControl.DrawContent</code>.</p>
 <h3>Border Rendering</h3>
-<p>MaterialControl provides 14 border rendering styles: None, Solid, Dashed, Dotted, Double, Groove, Ridge, Inset, Outset, Rounded, Shadow, Underline, Glow, and Gradient. Each uses pre-computed <code>SKPaint</code> objects for performance.</p>
+<p>Themed controls use the <code>BorderStyle</code> enumeration with four values: <code>None</code>, <code>Single</code>, <code>Fixed3D</code> and <code>FixedSingle</code>. Styles resolve to pre-computed <code>SKPaint</code> configurations for performance.</p>
 </div></main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>

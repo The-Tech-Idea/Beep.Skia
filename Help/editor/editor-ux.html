@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor Experience | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="editor-ux.html">Editor</a><span>&rsaquo;</span> <span>Editor Experience</span></nav>
+<div class="page-header"><h1>Editor Experience</h1><p class="page-subtitle">Palette search, minimap, property editing, templates and accessibility</p></div>
+<p>These features are what make the canvas usable on real projects: finding the component you want, keeping your bearings,
+editing properties without code, starting from a template, and operating the editor from the keyboard.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#search">Palette Search</a></li>
+    <li><a href="#minimap">Minimap</a></li>
+    <li><a href="#property-grid">Property Editing</a></li>
+    <li><a href="#templates">Templates</a></li>
+    <li><a href="#accessibility">Accessibility</a></li>
+  </ul>
+</div>
+
+<section class="section" id="search">
+  <h2>Palette Search</h2>
+  <p>The palette filters as you type, matching both component names and categories, and reports how many entries remain
+  visible. Items added after the first render (for example by installing an extension) are picked up immediately.</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">palette.SearchText = "decision";
+Console.WriteLine($"{palette.VisibleItemCount} component(s) match");
+
+palette.AddItem(new PaletteItem { Name = "Acme Gauge", Category = "Acme" });   // appears at once</code></pre>
+  </div>
+</section>
+
+<section class="section" id="minimap">
+  <h2>Minimap</h2>
+  <p>The minimap draws a scaled overview of the diagram with a viewport rectangle derived from the current pan and zoom,
+  which keeps orientation when working on diagrams larger than the screen. It exposes its maths for hosts and tests:
+  <code>CalculateWorldBounds</code>, <code>CalculateScale</code>, <code>MapWorldToMinimap</code> and
+  <code>CalculateViewportWorldRect</code>.</p>
+</section>
+
+<section class="section" id="property-grid">
+  <h2>Property Editing</h2>
+  <p>The in-canvas property editor writes changes straight back to the component through its public setters and repaints
+  the canvas, so there is no separate "apply" step. It understands the property kinds the framework uses:</p>
+  <ul>
+    <li><strong>Colours</strong> are edited as <code>#AARRGGBB</code> hex through a dedicated converter.</li>
+    <li><strong>Multi-selection</strong> exposes shared geometry and common node properties, with apply-to-all semantics.</li>
+    <li><strong>Node properties</strong> declared by a component appear automatically, which is how families surface their
+      own settings (transform mappings, chart series, LAS curves, and so on).</li>
+  </ul>
+</section>
+
+<section class="section" id="templates">
+  <h2>Templates</h2>
+  <p>Twelve ready-made diagrams cover the main families &mdash; order validation and purchase approval flowcharts, an order
+  lifecycle state machine, ERD, DFD, ETL, BPMN, mind map, network, UML, project plan and more. Each template is a
+  <code>DiagramDto</code> with explicit wiring, so loading one produces a fully connected diagram you can edit and run:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">var template = DiagramTemplates.FlowChartOrderValidation();
+manager.LoadTemplate(template);        // or manager.LoadFromDto(template)</code></pre>
+  </div>
+</section>
+
+<section class="section" id="accessibility">
+  <h2>Accessibility</h2>
+  <ul>
+    <li><strong>Keyboard navigation</strong> &mdash; <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> cycle the selection in
+      reading order, skipping screen-space overlays such as the palette.</li>
+    <li><strong>Screen readers</strong> &mdash; the host control exposes an accessible name, role and description that
+      reflect the current selection.</li>
+    <li><strong>High contrast</strong> &mdash; the editor detects the Windows high-contrast setting and applies the
+      matching theme automatically, and follows changes at run time.</li>
+  </ul>
+  <div class="code-example">
+    <pre><code class="language-csharp">manager.SelectNextComponent();          // Tab / Shift+Tab support in the engine itself
+manager.SelectNextComponent(reverse: true);</code></pre>
+  </div>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

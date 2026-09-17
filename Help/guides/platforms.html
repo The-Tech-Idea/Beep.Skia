@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platforms and Hosts | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="creating-custom-family.html">Guides</a><span>&rsaquo;</span> <span>Platforms and Hosts</span></nav>
+<div class="page-header"><h1>Platforms and Hosts</h1><p class="page-subtitle">Target frameworks, the five host controls, and packaging notes</p></div>
+<p>The framework core is platform-neutral; the hosts are thin adapters that give you a canvas control for your UI stack.
+This page is the practical reference for what targets what, and what to expect when you consume the packages.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#frameworks">Target Frameworks</a></li>
+    <li><a href="#hosts">Host Controls</a></li>
+    <li><a href="#packages">Consuming the Packages</a></li>
+    <li><a href="#feed">Private Dependency Note</a></li>
+  </ul>
+</div>
+
+<section class="section" id="frameworks">
+  <h2>Target Frameworks</h2>
+  <table>
+    <thead><tr><th>Component</th><th>Targets</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Core, model, family libraries</td><td><code>net8.0</code>, <code>net9.0</code>, <code>net10.0</code></td><td>Multi-targeted; every shipped target is runtime-verified by a consumer</td></tr>
+      <tr><td>WinForms host</td><td><code>net10.0-windows10.0.19041.0</code></td><td>SkiaSharp's 4.x view packages ship no <code>net8.0</code> assets, so the Windows hosts require .NET 10 on Windows 10 2004 or later</td></tr>
+      <tr><td>WPF host</td><td><code>net10.0-windows10.0.19041.0</code></td><td>Same constraint as WinForms</td></tr>
+      <tr><td>Blazor host</td><td><code>net8.0</code></td><td>WebAssembly rendering through <code>SKCanvasView</code></td></tr>
+      <tr><td>Avalonia host</td><td><code>net8.0</code></td><td>Renders into an Avalonia <code>WriteableBitmap</code>-backed surface, so it needs only Avalonia plus the same SkiaSharp version as the core</td></tr>
+      <tr><td>MAUI host</td><td><code>net10.0-android/ios/maccatalyst/windows</code></td><td>Excluded from CI (Windows runners cannot build the iOS/MacCatalyst targets); build locally</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="hosts">
+  <h2>Host Controls</h2>
+  <p>Each host wraps the same <code>DrawingManager</code>, so diagram code is portable between them. Hosts add what is
+  platform-specific: rendering surface, pointer and keyboard translation, and the in-canvas palette/editor where it makes
+  sense.</p>
+  <table>
+    <thead><tr><th>Host</th><th>Control</th><th>Rendering surface</th></tr></thead>
+    <tbody>
+      <tr><td>WinForms</td><td><code>SkiaHostControl</code></td><td><code>SKControl</code> (flagship host: palette, property editor, minimap, dialogs)</td></tr>
+      <tr><td>WPF</td><td><code>SkiaHostElement</code></td><td><code>SKElement</code></td></tr>
+      <tr><td>Blazor</td><td><code>SkiaHostComponent</code></td><td><code>SKCanvasView</code> (WebGL/Canvas2D)</td></tr>
+      <tr><td>Avalonia</td><td><code>SkiaHostControl</code></td><td><code>SkiaSurface</code> &mdash; offscreen <code>SKSurface</code> over a <code>WriteableBitmap</code></td></tr>
+      <tr><td>MAUI</td><td><code>SkiaHostView</code></td><td><code>SKCanvasView</code></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="packages">
+  <h2>Consuming the Packages</h2>
+  <p>Packages are versioned from git tags with MinVer, and 23 of them are produced by a release build (core, model, the 16
+  families, the hosts, and the loader). A consumer needs only what it uses:</p>
+  <div class="code-example">
+    <pre><code class="language-xml">&lt;ItemGroup&gt;
+  &lt;!-- library only --&gt;
+  &lt;PackageReference Include="Beep.Skia" Version="1.0.0" /&gt;
+  &lt;PackageReference Include="Beep.Skia.ERD" Version="1.0.0" /&gt;
+
+  &lt;!-- with the WinForms editor --&gt;
+  &lt;PackageReference Include="Beep.Skia.Winform.Controls" Version="1.0.0" /&gt;
+&lt;/ItemGroup&gt;</code></pre>
+  </div>
+  <p>Restore, compile, render, save/load and workflow execution from a packaged build are verified by a standalone
+  consumer project on <code>net8.0</code>, <code>net9.0</code> and <code>net10.0</code>.</p>
+</section>
+
+<section class="section" id="feed">
+  <h2>Private Dependency Note</h2>
+  <div class="note">
+    The core depends on <code>TheTechIdea.Beep.*</code> packages that are not published to nuget.org at the required
+    versions. Configure a feed that provides them before restoring: locally a folder source (for example
+    <code>LocalNugetFiles</code>), in CI a feed secret. Without it, restore fails for the projects that reference those
+    packages.
+  </div>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

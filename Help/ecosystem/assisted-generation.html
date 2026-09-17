@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assisted Generation | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="extensions.html">Ecosystem</a><span>&rsaquo;</span> <span>Assisted Generation</span></nav>
+<div class="page-header"><h1>Assisted Generation</h1><p class="page-subtitle">Turning a description into a diagram, offline or through an LLM</p></div>
+<p>Assisted generation turns text into a diagram. The framework ships a deterministic, offline assistant and a
+provider-agnostic contract so a cloud or local model can be plugged in without changing the editor.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#contract">Provider Contract</a></li>
+    <li><a href="#dsl">Flowchart DSL</a></li>
+    <li><a href="#mindmap">Mind-Map Outlines</a></li>
+    <li><a href="#registry">Provider Registry</a></li>
+  </ul>
+</div>
+
+<section class="section" id="contract">
+  <h2>Provider Contract</h2>
+  <div class="code-example">
+    <pre><code class="language-csharp">public interface IDiagramAssistant
+{
+    string Name { get; }
+    DiagramSuggestion Generate(DiagramRequest request);
+}</code></pre>
+  </div>
+  <p>A <code>DiagramSuggestion</code> carries a <code>DiagramDto</code> that loads straight into the canvas, plus an
+  explanation and any warnings. Because it produces the same DTO the serializer uses, generated diagrams can be edited,
+  saved and executed like any other.</p>
+</section>
+
+<section class="section" id="dsl">
+  <h2>Flowchart DSL</h2>
+  <p>The built-in assistant understands a compact description. Nodes are created on first mention, types are inferred or
+  declared, and edges carry optional labels:</p>
+  <div class="code-example">
+    <pre><code class="language-text">Start(start) "Start" -> Receive "Receive order" -> Valid(decision) "Valid?"
+Valid -> Pay "Process payment" : yes
+Valid -> Notify "Notify customer" : no
+Pay -> Ship "Ship order" -> End(end) "End"
+Notify -> End</code></pre>
+  </div>
+  <ul>
+    <li>Types: <code>start</code>, <code>end</code>, <code>process</code>, <code>decision</code>, <code>io</code>, <code>document</code>, <code>data</code>, <code>delay</code>, <code>manual</code>, <code>subprocess</code> and more.</li>
+    <li><code>Start</code>/<code>End</code> are inferred from the node name when no type is given.</li>
+    <li>Lines starting with <code>#</code> or <code>//</code> are comments.</li>
+    <li>The result is laid out top-down by rank, with branches spread across rows.</li>
+  </ul>
+</section>
+
+<section class="section" id="mindmap">
+  <h2>Mind-Map Outlines</h2>
+  <p>Indentation is all a mind map needs &mdash; the first line is the central topic and each level of indentation becomes
+  a ring of the radial layout:</p>
+  <div class="code-example">
+    <pre><code class="language-text">Product strategy
+  Customers
+    Personas
+    Feedback
+  Pricing
+  Roadmap</code></pre>
+  </div>
+</section>
+
+<section class="section" id="registry">
+  <h2>Provider Registry</h2>
+  <p><code>DiagramAssistantRegistry</code> tries providers in order and falls back, so an LLM assistant can be tried first
+  and the offline rule-based assistant guarantees a result:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">var registry = new DiagramAssistantRegistry();          // rule-based assistant by default
+registry.Register(new MyLlmAssistant(), priority: 0);   // tried first
+
+var suggestion = registry.Generate(new DiagramRequest
+{
+    Prompt = "Start -> Validate \"Check input\" -> End",
+    MaxNodes = 40
+});
+
+manager.LoadFromDto(suggestion.Diagram);</code></pre>
+  </div>
+  <div class="note">
+    <strong>Bounded input.</strong> The parsers cap nesting depth and node counts, and the expression engine rejects
+    over-large expressions, so a hostile or accidentally huge description produces a clear error rather than exhausting
+    the process.
+  </div>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

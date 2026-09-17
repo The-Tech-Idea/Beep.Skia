@@ -206,7 +206,7 @@ a:hover {
 
 /* Submenu */
 .has-submenu > a::after {
-    content: "�";
+    content: "❯";
     margin-left: auto;
     transform: rotate(0deg);
     transition: transform 0.2s ease;

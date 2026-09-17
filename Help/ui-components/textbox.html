@@ -212,7 +212,7 @@ nameField.TextChanged += (s, text) =>
     Console.WriteLine($"Name updated: {text}");
 
 drawingManager.AddComponent(nameField);
-canvas.Invalidate();</code></pre>
+drawingManager.RequestRedraw();</code></pre>
   </div>
 
   <div class="code-example">
@@ -287,7 +287,7 @@ var readonlyField = new TextBox
 
 readonlyField.Initialize();
 drawingManager.AddComponent(readonlyField);
-canvas.Invalidate();</code></pre>
+drawingManager.RequestRedraw();</code></pre>
   </div>
 
   <div class="admonition tip">

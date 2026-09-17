@@ -228,7 +228,7 @@ Example (pattern used by Flowchart and PM):
 ## Tips & Conventions
 - Keep `LayoutPorts()` fast; avoid per-frame allocations.
 - Set `IConnectionPoint.Center`, `Position`, and `Bounds` consistently; lines consume `Position`.
-- Use `MaterialDesignColors` (where applicable) for consistent theming.
+- Use `ThemeManager.Current` tokens (or `CustomFillColor`/`CustomStrokeColor` on flowchart nodes) for consistent theming.
 - For property-driven visuals, trigger a redraw when values change.
 - Use `Id` (GUID) on connection points and components for stable persistence.
 

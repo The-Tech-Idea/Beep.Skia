@@ -41,18 +41,17 @@
       <tr><th>Property</th><th>Type</th><th>Description</th></tr>
     </thead>
     <tbody>
-      <tr><td><code>StartPoint</code></td><td><code>IConnectionPoint</code></td><td>The source port. Usually an <code>OutPoint</code> on the origin component.</td></tr>
-      <tr><td><code>EndPoint</code></td><td><code>IConnectionPoint</code></td><td>The target port. Usually an <code>InPoint</code> on the destination component.</td></tr>
-      <tr><td><code>LineStyle</code></td><td><code>LineStyle</code></td><td><code>Solid</code>, <code>Dashed</code>, <code>Dotted</code>, or <code>DashDot</code> pattern.</td></tr>
-      <tr><td><code>RoutingMode</code></td><td><code>RoutingMode</code></td><td><code>Straight</code>, <code>Orthogonal</code>, or <code>Curved</code>. See <a href="#routing-modes">Routing Modes</a>.</td></tr>
-      <tr><td><code>StartArrowhead</code></td><td><code>ArrowheadStyle</code></td><td>Arrow/stroke decoration at the start of the line. <code>None</code>, <code>FilledTriangle</code>, <code>OpenTriangle</code>, <code>Diamond</code>, <code>Circle</code>.</td></tr>
-      <tr><td><code>EndArrowhead</code></td><td><code>ArrowheadStyle</code></td><td>Arrow/stroke decoration at the end of the line.</td></tr>
-      <tr><td><code>StrokeWidth</code></td><td><code>float</code></td><td>Line thickness in logical units. Default: <code>2.0f</code>.</td></tr>
-      <tr><td><code>StrokeColor</code></td><td><code>SKColor</code></td><td>Line color. Defaults to <code>SKColors.Gray</code> or theme-dependent.</td></tr>
-      <tr><td><code>AnimationStyle</code></td><td><code>AnimationStyle</code></td><td>Visual animation applied to the line. See <a href="#animation-styles">Animation Styles</a>.</td></tr>
-      <tr><td><code>Labels</code></td><td><code>List&lt;ConnectionLabel&gt;</code></td><td>Text labels positioned along the line. See <a href="#labels">Labels</a>.</td></tr>
-      <tr><td><code>IsSelected</code></td><td><code>bool</code></td><td>Selection state. Selected lines render with a highlight color and visible control points.</td></tr>
-      <tr><td><code>ControlPoints</code></td><td><code>List&lt;SKPoint&gt;</code></td><td>Intermediate waypoints for the line path. Used by orthogonal routing for bend points.</td></tr>
+      <tr><td><code>Start</code></td><td><code>IConnectionPoint</code></td><td>The source port on the origin component.</td></tr>
+      <tr><td><code>End</code></td><td><code>IConnectionPoint</code></td><td>The target port on the destination component. Null while a line is being dragged; <code>EndPoint</code> holds the preview coordinates.</td></tr>
+      <tr><td><code>LineColor</code></td><td><code>SKColor</code></td><td>Line color. Defaults to <code>SKColors.Black</code>.</td></tr>
+      <tr><td><code>Paint</code></td><td><code>SKPaint</code></td><td>Stroke styling; set <code>Paint.StrokeWidth</code> for line thickness and <code>Paint.PathEffect</code> for dashes.</td></tr>
+      <tr><td><code>RoutingMode</code></td><td><code>LineRoutingMode</code></td><td><code>Straight</code>, <code>Orthogonal</code>, or <code>Curved</code>. See <a href="#routing-modes">Routing Modes</a>.</td></tr>
+      <tr><td><code>ShowStartArrow</code> / <code>ShowEndArrow</code></td><td><code>bool</code></td><td>Arrowheads at each end. <code>ArrowSize</code> controls their size.</td></tr>
+      <tr><td><code>DashPattern</code></td><td><code>float[]</code></td><td>Optional dash pattern applied to the stroke.</td></tr>
+      <tr><td><code>FlowDirection</code></td><td><code>DataFlowDirection</code></td><td><code>None</code>, <code>Forward</code>, <code>Backward</code>, or <code>Bidirectional</code>. Drives data-flow animation with <code>IsDataFlowAnimated</code> and <code>DataFlowColor</code>.</td></tr>
+      <tr><td><code>Label1</code>, <code>Label2</code>, <code>Label3</code></td><td><code>string</code></td><td>Up to three labels positioned along the line; each has its own <code>LabelPlacement</code>.</td></tr>
+      <tr><td><code>StartMultiplicity</code> / <code>EndMultiplicity</code></td><td><code>ERDMultiplicity</code></td><td>ERD crow's-foot markers at each end.</td></tr>
+      <tr><td><code>IsSelected</code></td><td><code>bool</code></td><td>Selection state. Selected lines render with a highlight color.</td></tr>
     </tbody>
   </table>
 </section>
@@ -88,7 +87,7 @@
 
   <div class="code-example">
     <h3>Enabling Connection Animation</h3>
-    <pre><code class="language-csharp">var connection = drawingManager.Connect(sourcePort, targetPort);
+    <pre><code class="language-csharp">var connection = drawingManager.ConnectComponents(sourcePort, targetPort);
 connection.AnimationStyle = AnimationStyle.Arrows;
 connection.AnimationSpeed = 2.0f;
 connection.AnimatedFlowLines = true;
@@ -181,14 +180,12 @@ connection.RoutingMode = RoutingMode.Straight;</code></pre>
 
   <div class="code-example">
     <h3>Row-Level Connection Setup</h3>
-    <pre><code class="language-csharp">var fkPort = ordersEntity.OutPoints.First(p => p.RowId == "CustomerId");
-fkPort.DataType = typeof(Guid);
+    <pre><code class="language-csharp">// Create the relationship, then apply ERD multiplicity markers
+drawingManager.ConnectComponents(ordersEntity, customersEntity);
 
-var pkPort = customersEntity.OutPoints.First(p => p.RowId == "Id");
-
-var fkConnection = drawingManager.Connect(fkPort, pkPort);
-fkConnection.StartMultiplicity = Multiplicity.ZeroOrMany;
-fkConnection.EndMultiplicity = Multiplicity.ExactlyOne;</code></pre>
+var fkConnection = drawingManager.GetLines().Last();
+fkConnection.StartMultiplicity = ERDMultiplicity.ZeroOrMany;
+fkConnection.EndMultiplicity = ERDMultiplicity.OneOnly;</code></pre>
   </div>
 </section>
 
@@ -211,25 +208,27 @@ fkConnection.EndMultiplicity = Multiplicity.ExactlyOne;</code></pre>
 
   <div class="code-example">
     <h3>Custom Connection Validation</h3>
-    <pre><code class="language-csharp">public class CustomConnectionValidator : IConnectionValidator
+    <pre><code class="language-csharp">public static bool CanConnect(IConnectionPoint source, IConnectionPoint target)
 {
-    public bool Validate(IConnectionPoint start, IConnectionPoint end,
-                         out string rejectionReason)
-    {
-        if (start.Owner is FlowChartNode source &&
-            end.Owner is FlowChartNode target &&
-            source.Department != target.Department)
-        {
-            rejectionReason = "Cannot connect nodes in different departments.";
-            return false;
-        }
+    if (source == null || target == null)
+        return false;
 
-        rejectionReason = null;
-        return true;
-    }
-}
+    if (source.Type == target.Type)
+        return false;   // cannot connect out-to-out or in-to-in
 
-drawingManager.ConnectionValidator = new CustomConnectionValidator();</code></pre>
+    if (ReferenceEquals(source.Component, target.Component))
+        return false;   // cannot self-connect
+
+    if (target.Connection != null)
+        return false;   // target input already has a connection
+
+    // Optional: compare the declared data types
+    if (!string.IsNullOrEmpty(target.DataType) &&
+        !string.Equals(target.DataType, source.DataType, StringComparison.Ordinal))
+        return false;
+
+    return true;
+}</code></pre>
   </div>
 </section>
 

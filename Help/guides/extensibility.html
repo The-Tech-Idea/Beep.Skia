@@ -18,430 +18,197 @@
 <nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="creating-custom-family.html">Guides</a><span>&rsaquo;</span> <span>Extensibility &amp; Plugins</span></nav>
 <div class="page-header"><h1>Extensibility &amp; Plugins</h1><p class="page-subtitle">Plugin system, AssemblyHandler integration, and dynamic component loading</p></div>
 
-<p>Beep.Skia extensibility architecture enables third-party developers to package diagram families, custom components, and UI controls as standalone plugins. Plugins can be distributed as NuGet packages, loaded dynamically at runtime, and discovered automatically by the palette and serialization systems.</p>
+<p>Beep.Skia extensibility lets third-party developers package diagram families, custom components and commands as standalone extensions. Extensions are loaded at runtime, registered with the component registry, and can be distributed as <code>.beepkg</code> packages through the marketplace.</p>
 
 <div class="toc">
   <h3>Table of Contents</h3>
   <ul>
+    <li><a href="#extension-model">Extension Model</a></li>
     <li><a href="#skia-component-registry">SkiaComponentRegistry</a></li>
-    <li><a href="#assemblyhandler">AssemblyHandler Integration</a></li>
-    <li><a href="#addin-attribute">[AddinAttribute]</a></li>
-    <li><a href="#plugin-lifecycle">Plugin Lifecycle</a></li>
+    <li><a href="#extension-host">Extension Host</a></li>
     <li><a href="#component-palette">ComponentPalette</a></li>
-    <li><a href="#dynamic-loading">Dynamic Loading from NuGet</a></li>
+    <li><a href="#marketplace">Marketplace &amp; Packages</a></li>
   </ul>
 </div>
+
+<section class="section" id="extension-model">
+  <h2>Extension Model</h2>
+
+  <p>An extension is a class implementing <code>ISkiaExtension</code>. It declares an identity and the component types it contributes, then optionally registers them with palette categories and commands:</p>
+
+  <div class="code-example">
+    <h3>Minimal Extension</h3>
+    <pre><code class="language-csharp">using Beep.Skia.Extensions;
+
+public sealed class PnIDExtension : ISkiaExtension
+{
+    public string Id =&gt; "com.acme.beep.pnid";
+    public string Name =&gt; "Piping &amp; Instrumentation";
+    public string Version =&gt; "1.0.0";
+    public string Description =&gt; "ISA S5.1 P&amp;ID node family";
+
+    public IEnumerable&lt;Type&gt; GetComponentTypes() =&gt; new[]
+    {
+        typeof(ValveNode),
+        typeof(PumpNode),
+        typeof(TankNode),
+        typeof(PipeNode)
+    };
+
+    public void Initialize(ISkiaExtensionContext context)
+    {
+        context.RegisterComponent(typeof(ValveNode), "P&amp;ID", "Valve");
+        context.RegisterComponent(typeof(PumpNode), "P&amp;ID", "Pump");
+        context.RegisterCommand("Reverse Flow", component =&gt; { /* ... */ });
+        context.Log("P&amp;ID extension initialized");
+    }
+}</code></pre>
+  </div>
+
+  <p>Component types must derive from <code>SkiaComponent</code> and expose a public parameterless constructor. The <code>ISkiaExtensionContext</code> surface is deliberately small: <code>RegisterComponent</code>, <code>RegisterCommand</code> and <code>Log</code>. See <a href="../ecosystem/extensions.html">Extension SDK</a> for the full walkthrough.</p>
+</section>
 
 <section class="section" id="skia-component-registry">
   <h2>SkiaComponentRegistry</h2>
 
-  <p><code>SkiaComponentRegistry</code> (661 lines) is the central registry for discovering, cataloging, and loading all <code>SkiaComponent</code> subclasses across assemblies. It serves as the single source of truth for component type resolution, used by the palette, serialization, and plugin loading systems.</p>
+  <p><code>SkiaComponentRegistry</code> is the central catalog of component types. It stores discovered <code>AssemblyClassDefinition</code> entries and serves the palette, serialization and instantiation paths:</p>
 
   <table>
     <thead>
-      <tr><th>Responsibility</th><th>Description</th><th>Lines</th></tr>
+      <tr><th>Member</th><th>Purpose</th></tr>
     </thead>
     <tbody>
-      <tr><td><strong>Assembly Scanning</strong></td><td>Scans loaded assemblies for types deriving from <code>SkiaComponent</code></td><td>~120</td></tr>
-      <tr><td><strong>Type Registration</strong></td><td>Maps component type to display name, category, and metadata</td><td>~150</td></tr>
-      <tr><td><strong>Type Resolution</strong></td><td>Resolves full type names from serialized diagrams back to CLR types</td><td>~100</td></tr>
-      <tr><td><strong>Instance Factory</strong></td><td>Creates component instances with <code>Activator.CreateInstance()</code> and type safety checks</td><td>~80</td></tr>
-      <tr><td><strong>NuGet Integration</strong></td><td>Resolves component types from NuGet packages, triggers package download if missing</td><td>~90</td></tr>
-      <tr><td><strong>Validation</strong></td><td>Ensures type compatibility, duplicate-name detection, and version checks</td><td>~70</td></tr>
-      <tr><td><strong>Diagnostics</strong></td><td>Logging, load statistics, and component audit reports</td><td>~51</td></tr>
-    </tbody>
-  </table>
-
-  <h3>Registry Architecture</h3>
-  <p>The registry maintains three internal dictionaries optimized for different lookup patterns:</p>
-
-  <table>
-    <thead>
-      <tr><th>Index</th><th>Key</th><th>Value</th><th>Used By</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><code>_typeMap</code></td><td>Fully-qualified type name</td><td><code>Type</code></td><td>Serialization, deserialization</td></tr>
-      <tr><td><code>_componentMap</code></td><td>Category + DisplayName</td><td><code>Type</code></td><td>Palette, toolbox, drag-and-drop</td></tr>
-      <tr><td><code>_metadataMap</code></td><td><code>Type</code></td><td><code>ComponentMetadata</code></td><td>Property inspection, tooltips, icons</td></tr>
+      <tr><td><code>AddComponent</code> / <code>AddComponents</code> / <code>SetComponents</code></td><td>Register discovered component definitions</td></tr>
+      <tr><td><code>GetComponents()</code> / <code>GetComponentsOrdered()</code></td><td>Enumerate all registered components (ordered for palette display)</td></tr>
+      <tr><td><code>GetComponentByName</code> / <code>GetComponentByGuid</code></td><td>Lookups by class name or identifier</td></tr>
+      <tr><td><code>GetComponentsByAssembly</code> / <code>GetComponentsByType</code></td><td>Filter registrations</td></tr>
+      <tr><td><code>CreateComponentInstance</code></td><td>Instantiate a component from a definition or class name</td></tr>
+      <tr><td><code>IsComponentRegistered</code> / <code>GetAvailableNamespaces</code></td><td>Diagnostics and validation</td></tr>
+      <tr><td><code>Clear()</code></td><td>Reset the registry (used by tests)</td></tr>
     </tbody>
   </table>
 
   <div class="code-example">
     <h3>Registry Usage</h3>
-    <pre><code class="language-csharp">var registry = SkiaComponentRegistry.Instance;
+    <pre><code class="language-csharp">// Enumerate everything the palette will show
+foreach (var def in SkiaComponentRegistry.GetComponentsOrdered())
+    Console.WriteLine(def.className);
 
-// Register a component type manually
-registry.Register(typeof(ValveNode), "Piping & Instrumentation", "Valve");
+// Create an instance on demand
+var component = SkiaComponentRegistry.CreateComponentInstance("ProcessNode");
 
-// Register with metadata
-registry.Register(new ComponentMetadata
-{
-    ComponentType = typeof(PumpNode),
-    Category = "Piping & Instrumentation",
-    DisplayName = "Pump",
-    IconGlyph = "&#x25EF;",
-    Tooltip = "Centrifugal or positive-displacement pump",
-    DefaultWidth = 70f,
-    DefaultHeight = 70f,
-    Author = "Your Company",
-    Version = "1.0.0"
-});
-
-// Resolve a type from serialized form
-Type valveType = registry.ResolveType(
-    "Beep.Skia.Chart.PnID.Nodes.ValveNode");
-var component = registry.CreateInstance(valveType);
-
-// Query all registered components in a category
-var pnidComponents = registry.GetComponentsInCategory(
-    "Piping & Instrumentation");
-foreach (var meta in pnidComponents)
-    Console.WriteLine($"- {meta.DisplayName} ({meta.ComponentType.Name})");</code></pre>
+if (SkiaComponentRegistry.IsComponentRegistered("ProcessNode"))
+    Console.WriteLine("ProcessNode is available");</code></pre>
   </div>
 </section>
 
-<section class="section" id="assemblyhandler">
-  <h2>AssemblyHandler Integration</h2>
+<section class="section" id="extension-host">
+  <h2>Extension Host</h2>
 
-  <p>The <code>AssemblyHandler</code> bridges Beep.Skia with the broader BeepDM plugin infrastructure. It loads external assemblies, discovers <code>[AddinAttribute]</code>-marked components, and feeds them into the <code>SkiaComponentRegistry</code>.</p>
-
-  <h3>Plugin Loading Phases</h3>
-  <ol>
-    <li><strong>Load Phase:</strong> <code>AssemblyHandler.LoadAllAssembly()</code> scans plugin directories and NuGet package folders for assemblies referencing <code>Beep.Skia</code>.</li>
-    <li><strong>Scan Phase:</strong> Each loaded assembly is scanned for types decorated with <code>[AddinAttribute]</code> and types that inherit from <code>SkiaComponent</code>.</li>
-    <li><strong>Register Phase:</strong> Discovered types are registered with <code>SkiaComponentRegistry</code>, making them available for palette integration and serialization.</li>
-    <li><strong>Instantiate Phase:</strong> When a user drags a component from the palette or opens a serialized diagram, the registry resolves the type and creates an instance.</li>
-    <li><strong>Unload Phase:</strong> (Optional) Assemblies can be unloaded via <code>AssemblyLoadContext</code> when plugins are removed or updated.</li>
-  </ol>
+  <p><code>SkiaExtensionHost</code> discovers and activates extensions. It scans assemblies or a plugin directory, instantiates each <code>ISkiaExtension</code>, calls <code>Initialize</code> with a registration context, and exposes the aggregate surface to the host application:</p>
 
   <div class="code-example">
-    <h3>AssemblyHandler Configuration</h3>
-    <pre><code class="language-csharp">var handler = new AssemblyHandler(new AssemblyHandlerOptions
-{
-    PluginDirectories = new[]
-    {
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"),
-        Path.Combine(Environment.GetFolderPath(
-            Environment.SpecialFolder.LocalApplicationData),
-            "BeepDM", "SkiaPlugins")
-    },
-    NuGetSources = new[]
-    {
-        "https://api.nuget.org/v3/index.json",
-        "https://nuget.your-company.com/v3/index.json"
-    },
-    AutoLoad = true,
-    WatchForChanges = true,
-    RecursiveScan = true
-});
+    <h3>Loading Extensions</h3>
+    <pre><code class="language-csharp">var host = new SkiaExtensionHost();
 
-handler.LoadAllAssembly();
+// From already-referenced assemblies
+int loaded = host.LoadFromAssemblies(new[] { typeof(PnIDExtension).Assembly });
 
-var registry = SkiaComponentRegistry.Instance;
-Console.WriteLine($"Loaded {registry.ComponentCount} component types");</code></pre>
+// Or scan a plugin folder
+loaded += host.LoadFromDirectory(@"C:\plugins\beep-skia", "*.dll");
+
+// Create a component contributed by an extension
+var gauge = host.CreateComponent("Acme.Widgets.CustomGaugeNode, Acme.Widgets");
+
+// Invoke a command registered by an extension
+host.InvokeCommand("Reverse Flow", gauge);</code></pre>
   </div>
 
   <div class="admonition note">
-    <p class="admonition-title">Automatic Assembly Resolution</p>
-    <p>When a diagram references a component type from an assembly that is not loaded, the <code>AssemblyHandler</code> can attempt automatic resolution by searching NuGet sources for a package matching the assembly name. This enables sharing diagrams containing custom components without manually installing the plugin.</p>
-  </div>
-</section>
-
-<section class="section" id="addin-attribute">
-  <h2>[AddinAttribute]</h2>
-
-  <p>The <code>[AddinAttribute]</code> is the primary mechanism for marking your plugin assembly for automatic discovery. Applied at the assembly level, it provides metadata that the <code>AssemblyHandler</code> and <code>SkiaComponentRegistry</code> use to catalog and display your components.</p>
-
-  <div class="code-example">
-    <h3>Assembly-Level Addin Declaration</h3>
-    <pre><code class="language-csharp">using Beep.Skia;
-
-[assembly: Addin(
-    Name = "Beep.Skia.Chart.PnID",
-    DisplayName = "Piping & Instrumentation Diagrams",
-    Description = "Process engineering diagram family with ISA S5.1 symbols",
-    Version = "2.1.0",
-    Category = "Engineering",
-    Author = "Process Engineering Team",
-    Company = "Acme Corp",
-    TargetFramework = "net8.0;net9.0",
-    Dependencies = new[] { "Beep.Skia >= 3.119.0" },
-    Tags = new[] { "piping", "instrumentation", "P&ID", "ISA" }
-)]</code></pre>
-  </div>
-
-  <h3>AddinAttribute Properties</h3>
-  <table>
-    <thead>
-      <tr><th>Property</th><th>Required</th><th>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><code>Name</code></td><td>Yes</td><td>Unique identifier. Convention: <code>Beep.Skia.Chart.&lt;Family&gt;</code></td></tr>
-      <tr><td><code>DisplayName</code></td><td>No</td><td>Human-readable name shown in the plugin manager</td></tr>
-      <tr><td><code>Description</code></td><td>No</td><td>Short paragraph describing the plugin purpose</td></tr>
-      <tr><td><code>Version</code></td><td>No</td><td>SemVer version string for compatibility checks</td></tr>
-      <tr><td><code>Category</code></td><td>Yes</td><td>Palette category where components appear</td></tr>
-      <tr><td><code>Author</code></td><td>No</td><td>Individual or team name</td></tr>
-      <tr><td><code>Company</code></td><td>No</td><td>Organization name</td></tr>
-      <tr><td><code>TargetFramework</code></td><td>No</td><td>Supported TFMs (e.g., <code>net8.0;net9.0</code>)</td></tr>
-      <tr><td><code>Dependencies</code></td><td>No</td><td>Array of required packages with version constraints</td></tr>
-      <tr><td><code>Tags</code></td><td>No</td><td>Keywords for search and filtering</td></tr>
-    </tbody>
-  </table>
-
-  <div class="admonition tip">
-    <p class="admonition-title">Type-Level Addin</p>
-    <p>You can also apply <code>[Addin]</code> at the individual component class level to register specific types with custom metadata without requiring an assembly-level attribute. This is useful for libraries that contain multiple component families in a single assembly.</p>
-  </div>
-</section>
-
-<section class="section" id="plugin-lifecycle">
-  <h2>Plugin Lifecycle</h2>
-
-  <p>Each plugin assembly goes through a defined lifecycle from discovery to potential unload:</p>
-
-  <h3>Lifecycle Stages</h3>
-  <table>
-    <thead>
-      <tr><th>Stage</th><th>Method / Trigger</th><th>What Happens</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><strong>1. Discovery</strong></td><td>File system scan or NuGet query</td><td><code>AssemblyHandler</code> finds DLLs in plugin directories or searches NuGet feeds for packages with matching tags</td></tr>
-      <tr><td><strong>2. Load</strong></td><td><code>AssemblyLoadContext.LoadFromAssemblyPath()</code></td><td>Assembly is loaded into an isolated <code>AssemblyLoadContext</code>. Dependencies are resolved. The <code>[Addin]</code> attribute is read.</td></tr>
-      <tr><td><strong>3. Scan</strong></td><td>Reflection over exported types</td><td>All public types inheriting from <code>SkiaComponent</code> are discovered. Each type's metadata (name, category, default size) is extracted.</td></tr>
-      <tr><td><strong>4. Register</strong></td><td><code>SkiaComponentRegistry.Register()</code></td><td>Each discovered type is added to the registry's type map, component map, and metadata map.</td></tr>
-      <tr><td><strong>5. Instantiate</strong></td><td><code>Activator.CreateInstance()</code></td><td>Component instances are created on demand (palette drag or deserialization). Constructor and <code>Initialize()</code> run.</td></tr>
-      <tr><td><strong>6. Unload</strong></td><td><code>AssemblyLoadContext.Unload()</code></td><td>All types from the assembly are removed from the registry. Existing instances are disposed. Assembly is released from memory.</td></tr>
-    </tbody>
-  </table>
-
-  <div class="code-example">
-    <h3>Plugin Lifecycle Events</h3>
-    <pre><code class="language-csharp">public class PluginLifecycleLogger
-{
-    public void Subscribe(SkiaComponentRegistry registry)
-    {
-        registry.PluginLoaded += (sender, args) =>
-        {
-            Console.WriteLine($"Plugin loaded: {args.AddinName} v{args.Version}");
-            Console.WriteLine($"  Types registered: {args.ComponentCount}");
-        };
-
-        registry.PluginUnloaded += (sender, args) =>
-        {
-            Console.WriteLine($"Plugin unloaded: {args.AddinName}");
-            Console.WriteLine($"  Active instances: {args.ActiveInstanceCount}");
-        };
-
-        registry.TypeRegistrationFailed += (sender, args) =>
-        {
-            Console.WriteLine($"Failed to register {args.TypeName}: {args.Error}");
-        };
-    }
-}</code></pre>
-  </div>
-
-  <div class="admonition warning">
-    <p class="admonition-title">Unload Safety</p>
-    <p>Unloading a plugin assembly while components are actively rendered on the canvas will cause <code>ObjectDisposedException</code> on the next frame. Always remove all components of the unloaded type from the <code>DrawingManager</code> before unloading the assembly. The registry provides <code>GetActiveInstances(Type)</code> to find all live component instances before unloading.</p>
+    <p class="admonition-title">AssemblyHandler Integration</p>
+    <p>Desktop hosts can combine the extension SDK with the shared BeepDM <code>AssemblyHandler</code> to resolve and load plugin assemblies (including NuGet-backed packages) before calling <code>SkiaExtensionHost.LoadFromAssemblies</code>. The extension SDK itself has no dependency on that infrastructure, so headless and server hosts can load extensions directly from files.</p>
   </div>
 </section>
 
 <section class="section" id="component-palette">
   <h2>ComponentPalette</h2>
 
-  <p>The <code>ComponentPalette</code> is the visual toolbox that displays available component types grouped by category. It discovers available components through the <code>SkiaComponentRegistry</code> and presents them as draggable items.</p>
+  <p><code>ComponentPalette</code> is the visual toolbox. It reads the registry, groups components into categories and exposes drag-and-drop events for the host canvas:</p>
 
-  <h3>Palette Discovery Process</h3>
   <ol>
-    <li>On initialization, the palette queries <code>SkiaComponentRegistry.GetAllCategories()</code> to build the category list.</li>
-    <li>For each category, it queries <code>SkiaComponentRegistry.GetComponentsInCategory()</code> to populate draggable items.</li>
-    <li>Each item displays its <code>IconGlyph</code>, <code>DisplayName</code>, and <code>Tooltip</code> from the registry metadata.</li>
-    <li>On drag, the palette creates a preview bitmap using the component's <code>DrawContent()</code> at <code>DefaultWidth</code> x <code>DefaultHeight</code>.</li>
-    <li>On drop, the palette calls <code>SkiaComponentRegistry.CreateInstance()</code> and adds the component to the <code>DrawingManager</code>.</li>
+    <li><code>LoadComponentsFromRegistry()</code> builds the <code>Categories</code> collection from <code>SkiaComponentRegistry.GetComponentsOrdered()</code>.</li>
+    <li>Each <code>ComponentCategory</code> exposes its <code>Name</code>, <code>Icon</code> and a collection of <code>ComponentItem</code> entries.</li>
+    <li>Dragging raises <code>ComponentDragStarted</code>, <code>ComponentDragging</code> and <code>ComponentDragEnded</code> with the item and pointer position.</li>
+    <li>The host creates the instance with <code>SkiaComponentRegistry.CreateComponentInstance()</code>, positions it and adds it to the <code>DrawingManager</code>.</li>
   </ol>
 
-  <h3>Palette Integration Options</h3>
-  <table>
-    <thead>
-      <tr><th>Approach</th><th>Effort</th><th>Flexibility</th><th>Use Case</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Auto-discovery via <code>[Addin]</code></td><td>Minimal</td><td>Low</td><td>Simple plugins with standard metadata</td></tr>
-      <tr><td><code>IPaletteProvider</code> implementation</td><td>Medium</td><td>Medium</td><td>Custom icons, ordering, conditional visibility</td></tr>
-      <tr><td>Custom <code>ComponentPalette</code> subclass</td><td>High</td><td>High</td><td>Fully custom toolbox UI with search, favorites, recent items</td></tr>
-    </tbody>
-  </table>
-
   <div class="code-example">
-    <h3>Palette Provider with Conditional Visibility</h3>
-    <pre><code class="language-csharp">public class SecurityPaletteProvider : IPaletteProvider
+    <h3>Wiring the Palette to the Canvas</h3>
+    <pre><code class="language-csharp">var palette = new ComponentPalette { X = 10, Y = 50, Width = 320, Height = 600 };
+palette.LoadComponentsFromRegistry();
+
+palette.ComponentDragEnded += (s, args) =&gt;
 {
-    public string CategoryName => "Security";
-    public string CategoryIcon => "bi bi-shield-lock";
-    public int DisplayOrder => 30;
+    if (args.State != ComponentDragState.Ended) return;
 
-    public IEnumerable&lt;PaletteItem&gt; GetPaletteItems()
-    {
-        // Only show security components if user has security license
-        if (!LicenseManager.HasFeature("beep.skia.security"))
-            yield break;
+    var component = SkiaComponentRegistry.CreateComponentInstance(args.Component.ClassDefinition);
+    if (component == null) return;
 
-        yield return new PaletteItem
-        {
-            DisplayName = "Firewall",
-            ComponentType = typeof(FirewallNode),
-            IconGlyph = "&#x1F6E1;",
-            Tooltip = "Network firewall (stateful or stateless)"
-        };
+    component.X = args.MousePosition.X;
+    component.Y = args.MousePosition.Y;
 
-        yield return new PaletteItem
-        {
-            DisplayName = "IDS/IPS",
-            ComponentType = typeof(IntrusionDetectionNode),
-            IconGlyph = "&#x1F50D;",
-            Tooltip = "Intrusion Detection / Prevention System"
-        };
-    }
-}</code></pre>
+    drawingManager.AddComponent(component);
+    drawingManager.RequestRedraw();
+};
+
+drawingManager.AddComponent(palette);</code></pre>
   </div>
-
-  <h3>Palette Drag-and-Drop Protocol</h3>
-  <table>
-    <thead>
-      <tr><th>Event</th><th>Sender</th><th>Receiver</th><th>Action</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><code>DragStart</code></td><td>Palette item</td><td>Palette</td><td>Create preview bitmap, store <code>ComponentType</code> in drag data</td></tr>
-      <tr><td><code>DragOver</code></td><td>Palette</td><td>Canvas</td><td>Show insertion preview at mouse position (ghost component)</td></tr>
-      <tr><td><code>DragDrop</code></td><td>Palette</td><td>Canvas</td><td>Create instance via registry, set position, add to DrawingManager, invalidate</td></tr>
-      <tr><td><code>DragCancel</code></td><td>Palette</td><td>Canvas</td><td>Dispose preview bitmap, remove ghost component</td></tr>
-    </tbody>
-  </table>
 </section>
 
-<section class="section" id="dynamic-loading">
-  <h2>Dynamic Loading from NuGet</h2>
+<section class="section" id="marketplace">
+  <h2>Marketplace &amp; Packages</h2>
 
-  <p>Beep.Skia supports loading component families from NuGet packages at runtime without application restart. This enables a plugin marketplace where users can install new diagram families on demand.</p>
-
-  <h3>NuGet Package Structure</h3>
-  <p>A NuGet package for a Beep.Skia diagram family must include:</p>
+  <p>Extensions are distributed as <code>.beepkg</code> packages and installed through <code>ExtensionPackageManager</code>. The manager validates the package (including archive safety checks), tracks installed versions and exposes the directories that the extension host should scan:</p>
 
   <table>
     <thead>
-      <tr><th>Included File</th><th>Purpose</th></tr>
+      <tr><th>Member</th><th>Purpose</th></tr>
     </thead>
     <tbody>
-      <tr><td><code>lib/net8.0/Beep.Skia.Chart.FamilyName.dll</code></td><td>The compiled assembly with component types</td></tr>
-      <tr><td><code>Beep.Skia.Chart.FamilyName.nuspec</code></td><td>Package metadata with <code>Beep.Skia</code> as a dependency</td></tr>
-      <tr><td><code>content/BeepAddin.json</code></td><td>Optional addin manifest for fast scanning without assembly load</td></tr>
+      <tr><td><code>Install(packagePath, force)</code></td><td>Install a <code>.beepkg</code> from disk</td></tr>
+      <tr><td><code>InstallFromRegistry(id, version, force)</code></td><td>Install from the local registry</td></tr>
+      <tr><td><code>Update(id, force)</code></td><td>Upgrade an installed extension</td></tr>
+      <tr><td><code>Uninstall(id)</code></td><td>Remove an installed extension</td></tr>
+      <tr><td><code>IsInstalled(id, version)</code> / <code>GetInstalled(id)</code></td><td>Query installation state</td></tr>
+      <tr><td><code>GetLoadDirectories()</code></td><td>Directories to pass to the extension host</td></tr>
     </tbody>
   </table>
 
-  <h3>Runtime Package Loading</h3>
   <div class="code-example">
-    <h3>Loading a Component Family from NuGet</h3>
-    <pre><code class="language-csharp">public async Task LoadPnIDFamilyAsync()
-{
-    var nugetManager = new NuggetManager(new NuggetOptions
-    {
-        Sources = new[] { "https://api.nuget.org/v3/index.json" },
-        PackagesDirectory = Path.Combine(
-            Environment.GetFolderPath(
-                Environment.SpecialFolder.LocalApplicationData),
-            "BeepDM", "NuGetPackages")
-    });
+    <h3>Installing an Extension Package</h3>
+    <pre><code class="language-csharp">var packages = new ExtensionPackageManager(extensionsRoot);
 
-    // Search for the package
-    var searchResults = await nugetManager.SearchPackagesAsync(
-        "Beep.Skia.Chart.PnID", take: 10);
+var result = packages.Install(@"C:\downloads\acme.pnid-1.0.0.beepkg");
+if (!result.Success)
+    Console.WriteLine(result.Error);
 
-    var latestVersion = searchResults
-        .OrderByDescending(p => p.Version)
-        .First();
-
-    Console.WriteLine($"Found: {latestVersion.Id} v{latestVersion.Version}");
-
-    // Download and extract the package
-    var packagePath = await nugetManager.DownloadPackageAsync(
-        latestVersion.Id, latestVersion.Version);
-
-    // Load the assembly via AssemblyHandler
-    var handler = new AssemblyHandler();
-    handler.LoadAssemblyFromPackage(packagePath);
-
-    // Components are now in the registry and palette
-    var registry = SkiaComponentRegistry.Instance;
-    Console.WriteLine($"PnID components loaded: {registry
-        .GetComponentsInCategory("Piping & Instrumentation")
-        .Count()}");
-}</code></pre>
+// Load everything that is installed
+var host = new SkiaExtensionHost();
+foreach (var dir in packages.GetLoadDirectories())
+    host.LoadFromDirectory(dir);</code></pre>
   </div>
-
-  <h3>Addin Manifest (BeepAddin.json)</h3>
-  <p>To avoid loading every assembly for scanning, include a <code>BeepAddin.json</code> manifest in your NuGet package that describes the contained components without requiring assembly load:</p>
-
-  <div class="code-example">
-    <h3>BeepAddin.json Manifest</h3>
-    <pre><code class="language-json">{
-  "addin": {
-    "name": "Beep.Skia.Chart.PnID",
-    "version": "2.1.0",
-    "displayName": "Piping & Instrumentation Diagrams",
-    "category": "Engineering",
-    "author": "Process Engineering Team",
-    "description": "Process engineering diagram family with ISA S5.1 symbols"
-  },
-  "components": [
-    {
-      "type": "Beep.Skia.Chart.PnID.Nodes.ValveNode",
-      "displayName": "Valve",
-      "defaultWidth": 60,
-      "defaultHeight": 80,
-      "iconGlyph": "\u2B24",
-      "tooltip": "Control valve (gate, globe, ball, butterfly)"
-    },
-    {
-      "type": "Beep.Skia.Chart.PnID.Nodes.PumpNode",
-      "displayName": "Pump",
-      "defaultWidth": 70,
-      "defaultHeight": 70,
-      "iconGlyph": "\u25EF",
-      "tooltip": "Centrifugal or positive-displacement pump"
-    },
-    {
-      "type": "Beep.Skia.Chart.PnID.Nodes.TankNode",
-      "displayName": "Tank",
-      "defaultWidth": 100,
-      "defaultHeight": 120,
-      "iconGlyph": "\u25B3",
-      "tooltip": "Storage tank or pressure vessel"
-    },
-    {
-      "type": "Beep.Skia.Chart.PnID.Nodes.PipeNode",
-      "displayName": "Pipe",
-      "defaultWidth": 120,
-      "defaultHeight": 12,
-      "iconGlyph": "\u2501",
-      "tooltip": "Process pipe with flow direction"
-    }
-  ]
-}</code></pre>
-  </div>
-
-  <p>This manifest allows the palette to display components, their icons, and metadata immediately, deferring the actual assembly load until the user drags a component onto the canvas. This drastically improves startup time when many plugins are installed.</p>
 
   <div class="admonition tip">
-    <p class="admonition-title">NuGet Package Best Practices</p>
+    <p class="admonition-title">Packaging Best Practices</p>
     <ul>
-      <li>Always include both <code>net8.0</code> and <code>net9.0</code> TFM targets in your NuGet package.</li>
-      <li>Include a <code>BeepAddin.json</code> manifest for fast scanning without assembly load.</li>
-      <li>Version your packages semantically; the registry validates version compatibility.</li>
-      <li>Use <code>Tags</code> in your <code>.nuspec</code> to categorize packages in NuGet searches.</li>
-      <li>Avoid native dependencies; pure managed assemblies ensure cross-platform compatibility.</li>
+      <li>Give the package a stable reverse-DNS id (for example <code>com.acme.beep.pnid</code>) and use semantic versions.</li>
+      <li>Keep extension assemblies pure managed code so they load on every supported TFM.</li>
+      <li>Declare component types in <code>GetComponentTypes()</code> and register them in <code>Initialize()</code> so the palette has categories on first load.</li>
+      <li>Never rename component classes after release &mdash; serialized diagrams resolve types by name.</li>
     </ul>
   </div>
+
+  <p>For the full packaging format, dependency rules and safety gates, see the <a href="../ecosystem/marketplace.html">Extension Marketplace</a> guide.</p>
 </section>
 
 </div></main></div>

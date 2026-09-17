@@ -175,91 +175,61 @@ private void EnsurePath()
   <h2>Port Management</h2>
 
   <h3>Always Call MarkPortsDirty() After Position/Size Changes</h3>
-  <p>Connection points are computed lazily. If your component changes position, size, or layout, it must signal that port positions need recomputation:</p>
+  <p>Connection points are computed lazily. If your component changes position, size, or layout, it must signal that port positions need recomputation. <code>SkiaComponent</code> already calls <code>MarkPortsDirty()</code> from its bounds setters, so call it yourself only when your own properties change port geometry:</p>
 
   <div class="code-example">
-    <h3>Property Setters That Mark Ports Dirty</h3>
-    <pre><code class="language-csharp">private float _x;
-public new float X
+    <h3>Signalling a Port Layout Change</h3>
+    <pre><code class="language-csharp">public int PortCount
 {
-    get => _x;
+    get => _portCount;
     set
     {
-        if (Math.Abs(_x - value) < 0.001f) return;
-        _x = value;
-        MarkPortsDirty();
-    }
-}
-
-private float _width;
-public new float Width
-{
-    get => _width;
-    set
-    {
-        if (Math.Abs(_width - value) < 0.001f) return;
-        _width = value;
-        MarkPortsDirty();
-        InvalidateVisual();  // also invalidate painted content
+        if (_portCount == value) return;
+        _portCount = value;
+        MarkPortsDirty();      // inherited from SkiaComponent
+        InvalidateVisual();    // also repaint the node
     }
 }</code></pre>
   </div>
 
   <h3>Use Lazy Port Layout</h3>
-  <p>The <code>EnsurePortLayout()</code> pattern minimizes wasted computation during rapid drag operations:</p>
+  <p>Port geometry is recomputed by <code>LayoutPorts()</code> only when the layout is stale &mdash; typically during the next draw after a move or resize, never on every frame during a drag:</p>
 
   <div class="code-example">
     <h3>Lazy Port Layout Pattern</h3>
-    <pre><code class="language-csharp">private bool _portsDirty = true;
-
-protected void MarkPortsDirty()
+    <pre><code class="language-csharp">protected override void LayoutPorts()
 {
-    _portsDirty = true;
-    base.MarkPortsDirty();
-}
+    var b = Bounds;
+    float midY = b.MidY;
 
-protected void MarkPortsClean()
-{
-    _portsDirty = false;
-}
+    InConnectionPoints.Clear();
+    OutConnectionPoints.Clear();
 
-protected bool PortsDirty => _portsDirty;
-
-// Called by connection hit-testing, connection rendering, and serialization
-public override void EnsurePortLayout()
-{
-    if (!PortsDirty) return;
-
-    InPoints.Clear();
-    OutPoints.Clear();
-
-    // Compute new port positions based on current X, Y, Width, Height
-    float halfH = Y + Height / 2;
-    float halfW = X + Width / 2;
-
-    InPoints.Add(new ConnectionPoint
+    InConnectionPoints.Add(new ConnectionPoint
     {
-        Type = PortType.In,
-        Position = new SKPoint(X, halfH),
-        DataType = typeof(object),
-        Owner = this
+        Type = ConnectionPointType.In,
+        Center = new SKPoint(b.Left, midY),
+        Position = new SKPoint(b.Left, midY),
+        DataType = "object",
+        Component = this,
+        IsAvailable = true
     });
 
-    OutPoints.Add(new ConnectionPoint
+    OutConnectionPoints.Add(new ConnectionPoint
     {
-        Type = PortType.Out,
-        Position = new SKPoint(X + Width, halfH),
-        DataType = typeof(object),
-        Owner = this
+        Type = ConnectionPointType.Out,
+        Center = new SKPoint(b.Right, midY),
+        Position = new SKPoint(b.Right, midY),
+        DataType = "object",
+        Component = this,
+        IsAvailable = true
     });
-
-    MarkPortsClean();
 }</code></pre>
   </div>
 
   <div class="admonition warning">
     <p class="admonition-title">Critical</p>
-    <p>Failing to call <code>MarkPortsDirty()</code> after position changes results in connection lines detaching from ports or rendering at stale positions. This is the most common bug in custom component implementations.</p>
+    <p>Failing to call <code>MarkPortsDirty()</code> after a geometry change results in connection lines detaching from ports or rendering at stale positions. This is the most common bug in custom component implementations.</p>
   </div>
 
   <h3>Port Count Guidelines</h3>
@@ -351,82 +321,74 @@ public override void Invalidate()
 
   <div class="code-example">
     <h3>Property Definition Best Practices</h3>
-    <pre><code class="language-csharp">protected override void Initialize()
+    <pre><code class="language-csharp">protected override void InitializeComponent()
 {
-    base.Initialize();
+    base.InitializeComponent();
 
     NodeProperties["Text"] = new ParameterInfo
     {
-        Name = "Text",
-        DisplayName = "Label Text",
-        Value = "New Node",
-        DataType = typeof(string),
-        Category = "Content",
-        EditorHint = "TextBox"
+        ParameterName = "Text",
+        ParameterCurrentValue = "New Node",
+        DefaultParameterValue = "New Node",
+        ParameterType = typeof(string),
+        Description = "Label text"
     };
 
     NodeProperties["FillColor"] = new ParameterInfo
     {
-        Name = "FillColor",
-        DisplayName = "Fill Color",
-        Value = SKColors.CornflowerBlue,
-        DataType = typeof(SKColor),
-        Category = "Appearance",
-        EditorHint = "ColorPicker"
+        ParameterName = "FillColor",
+        ParameterCurrentValue = SKColors.CornflowerBlue,
+        DefaultParameterValue = SKColors.CornflowerBlue,
+        ParameterType = typeof(SKColor),
+        Description = "Fill color"
     };
 
     NodeProperties["IsRequired"] = new ParameterInfo
     {
-        Name = "IsRequired",
-        DisplayName = "Required Field",
-        Value = false,
-        DataType = typeof(bool),
-        Category = "Validation",
-        EditorHint = "CheckBox"
+        ParameterName = "IsRequired",
+        ParameterCurrentValue = false,
+        DefaultParameterValue = false,
+        ParameterType = typeof(bool),
+        Description = "Required field"
     };
 
     NodeProperties["Priority"] = new ParameterInfo
     {
-        Name = "Priority",
-        DisplayName = "Priority",
-        Value = Priority.Medium,
-        DataType = typeof(Priority),  // enum
-        Category = "Behavior",
-        EditorHint = "ComboBox"
+        ParameterName = "Priority",
+        ParameterCurrentValue = Priority.Medium,
+        DefaultParameterValue = Priority.Medium,
+        ParameterType = typeof(Priority),   // enum
+        Choices = new[] { "Low", "Medium", "High" },
+        Description = "Priority"
     };
 
     NodeProperties["BorderRadius"] = new ParameterInfo
     {
-        Name = "BorderRadius",
-        DisplayName = "Corner Radius",
-        Value = 8f,
-        DataType = typeof(float),
-        Category = "Appearance",
-        EditorHint = "Slider:0-32"
+        ParameterName = "BorderRadius",
+        ParameterCurrentValue = 8f,
+        DefaultParameterValue = 8f,
+        ParameterType = typeof(float),
+        Description = "Corner radius"
     };
 }</code></pre>
   </div>
 
   <table>
     <thead>
-      <tr><th>EditorHint</th><th>Data Type</th><th>Rendered Widget</th></tr>
+      <tr><th>ParameterType</th><th>Rendered Widget</th></tr>
     </thead>
     <tbody>
-      <tr><td><code>TextBox</code></td><td><code>string</code></td><td>Single-line text input</td></tr>
-      <tr><td><code>TextArea</code></td><td><code>string</code></td><td>Multi-line text input</td></tr>
-      <tr><td><code>ColorPicker</code></td><td><code>SKColor</code></td><td>Color swatch with picker dialog</td></tr>
-      <tr><td><code>CheckBox</code></td><td><code>bool</code></td><td>Toggle checkbox</td></tr>
-      <tr><td><code>ComboBox</code></td><td><code>enum</code></td><td>Dropdown selector</td></tr>
-      <tr><td><code>Slider:min-max</code></td><td><code>float</code></td><td>Range slider with value label</td></tr>
-      <tr><td><code>NumericUpDown</code></td><td><code>int</code></td><td>Spinner with increment/decrement</td></tr>
-      <tr><td><code>FontPicker</code></td><td><code>SKFont</code></td><td>Font family, size, and style selector</td></tr>
-      <tr><td><code>FilePath</code></td><td><code>string</code></td><td>Text input with browse button</td></tr>
+      <tr><td><code>string</code></td><td>Single-line text input</td></tr>
+      <tr><td><code>SKColor</code></td><td>Color swatch with picker dialog</td></tr>
+      <tr><td><code>bool</code></td><td>Toggle checkbox</td></tr>
+      <tr><td><code>enum</code></td><td>Dropdown selector (optionally constrained by <code>Choices</code>)</td></tr>
+      <tr><td><code>float</code> / <code>int</code></td><td>Numeric input</td></tr>
     </tbody>
   </table>
 
   <div class="admonition note">
-    <p class="admonition-title">NodeProperties Categories</p>
-    <p>Use consistent category names across your family: <strong>Content</strong> (text, labels, data), <strong>Appearance</strong> (colors, borders, fonts), <strong>Layout</strong> (position, size, padding), <strong>Behavior</strong> (flags, modes, triggers), and <strong>Data</strong> (business keys, tags, identifiers). This creates a predictable property grid experience for users.</p>
+    <p class="admonition-title">NodeProperties Conventions</p>
+    <p>Keep <code>ParameterName</code>, the dictionary key and <code>Description</code> consistent across your family, and always set <code>DefaultParameterValue</code> so the property grid can reset values. Use <code>Choices</code> for enumerations that should render as a fixed dropdown.</p>
   </div>
 </section>
 
@@ -446,14 +408,15 @@ public override void Invalidate()
     if (source.Type == target.Type)
         return false;  // Can't connect two inputs or two outputs
 
-    if (source.Owner == target.Owner)
+    if (ReferenceEquals(source.Component, target.Component))
         return false;  // Can't self-connect
 
-    if (target.IsConnected)
+    if (target.Connection != null)
         return false;  // Target input already has a connection
 
-    // Type compatibility: target type must be assignable from source type
-    if (!target.DataType.IsAssignableFrom(source.DataType))
+    // Data type compatibility: DataType is a descriptive string (e.g. "string", "number")
+    if (!string.IsNullOrEmpty(target.DataType) &&
+        !string.Equals(target.DataType, source.DataType, StringComparison.Ordinal))
         return false;
 
     return true;
@@ -472,22 +435,21 @@ public override void Invalidate()
 
     if (!CanConnect(source, target))
     {
-        LogWarning($"Cannot connect {source.Owner?.Id} to {target.Owner?.Id}");
+        LogWarning($"Cannot connect {source.Component?.GetType().Name} to {target.Component?.GetType().Name}");
         return;
     }
 
-    var connection = new ConnectionLine(source, target);
-    _connections.Add(connection);
-    source.IsConnected = true;
-    target.IsConnected = true;
+    var connection = new ConnectionLine(source, target, () => RequestRedraw());
+    source.ConnectTo(target);
+    target.ConnectTo(source);
 
-    Invalidate();
+    RequestRedraw();
 }</code></pre>
   </div>
 
   <div class="admonition tip">
     <p class="admonition-title">Connection DataType Convention</p>
-    <p>Use <code>typeof(object)</code> for generic/any-type connections (most common for diagramming). Use specific types (<code>typeof(string)</code>, <code>typeof(FlowData)</code>) when your diagram family models typed data flow between components. The DataFlow Diagram (DFD) and ETL families use typed connections extensively.</p>
+    <p>Ports carry a descriptive <code>DataType</code> string (for example <code>"string"</code>, <code>"number"</code>, <code>"object"</code>) used for data-flow visualization and connection validation. Leave it empty for generic connections (most common for diagramming) and set it explicitly when your family models typed data flow; the DataFlow Diagram (DFD) and ETL families use typed connections extensively.</p>
   </div>
 </section>
 
@@ -509,7 +471,7 @@ public override void Invalidate()
       <tr>
         <td><strong>Modifying <code>ConnectionPoints</code> during rendering</strong></td>
         <td>The rendering loop iterates over connection points; mutating the collection causes <code>InvalidOperationException</code></td>
-        <td>Modify ports only in <code>EnsurePortLayout()</code>, which is called outside the render loop</td>
+        <td>Modify ports only in <code>LayoutPorts()</code>, which is called outside the render loop</td>
       </tr>
       <tr>
         <td><strong>Forgetting to <code>Dispose()</code> SKPaint objects</strong></td>
@@ -610,25 +572,25 @@ public void ValveNode_SerializeDeserialize_RoundTrip()
 
   <div class="code-example">
     <h3>Port Layout Test</h3>
-    <pre><code class="language-csharp">[Test]
+    <pre><code class="language-csharp">[Fact]
 public void ValveNode_PortsUpdateAfterMove()
 {
-    var node = new ValveNode();
-    node.Initialize();
-    node.X = 100;
-    node.Y = 100;
+    var node = new ValveNode { X = 100, Y = 100 };
+    var manager = new DrawingManager();
+    manager.AddComponent(node);
 
-    node.EnsurePortLayout();
-    var originalOutPort = node.OutPoints[0].Position;
+    using var bitmap = new SKBitmap(400, 200, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+    using var canvas = new SKCanvas(bitmap);
 
-    node.X = 300;
-    node.EnsurePortLayout();
-    var movedOutPort = node.OutPoints[0].Position;
+    manager.Draw(canvas);   // first draw computes the port layout
+    var before = node.OutConnectionPoints[0].Center;
 
-    Assert.That(movedOutPort.X, Is.GreaterThan(originalOutPort.X));
-    Assert.That(movedOutPort.Y, Is.EqualTo(originalOutPort.Y)); // Horizontal move, Y unchanged
+    node.X = 300;           // bounds change marks the layout dirty
+    manager.Draw(canvas);   // next draw recomputes ports once
 
-    node.Dispose();
+    var after = node.OutConnectionPoints[0].Center;
+    Assert.True(after.X &gt; before.X);
+    Assert.Equal(before.Y, after.Y, 2);   // horizontal move, Y unchanged
 }</code></pre>
   </div>
 
@@ -640,7 +602,7 @@ public void ValveNode_PortsUpdateAfterMove()
     <tbody>
       <tr><td><strong>Rendering</strong></td><td>No exceptions, non-empty output, correct color at known coordinates</td><td>High</td></tr>
       <tr><td><strong>Serialization</strong></td><td>Round-trip preserves Id, position, size, all NodeProperties</td><td>High</td></tr>
-      <tr><td><strong>Port Layout</strong></td><td>Ports reposition on move, ports added/removed on size change, PortsDirty flag behavior</td><td>Medium</td></tr>
+      <tr><td><strong>Port Layout</strong></td><td>Ports reposition after a move, ports added/removed on size change, lazy layout recomputed once per change</td><td>Medium</td></tr>
       <tr><td><strong>NodeProperties</strong></td><td>All properties in dictionary, correct DataType, correct default values</td><td>Medium</td></tr>
       <tr><td><strong>Dispose</strong></td><td>No memory leak after 1000 create/dispose cycles, no ObjectDisposedException</td><td>Medium</td></tr>
       <tr><td><strong>Hit Testing</strong></td><td>Hits at center, misses at far-outside point, edge behavior at bounds</td><td>Low</td></tr>

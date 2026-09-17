@@ -61,13 +61,12 @@
       <tr><td><code>Height</code></td><td><code>float</code></td><td>Height of the component in logical units. Default sizes vary by component family.</td></tr>
       <tr><td><code>Bounds</code></td><td><code>SKRect</code></td><td>Computed bounding rectangle from (X, Y, X+Width, Y+Height). Used for hit testing and invalidation.</td></tr>
       <tr><td><code>NodeProperties</code></td><td><code>Dictionary&lt;string, ParameterInfo&gt;</code></td><td>Configurable parameter map powering dynamic property editors. See <a href="#nodeproperties-system">NodeProperties System</a>.</td></tr>
-      <tr><td><code>InPoints</code></td><td><code>List&lt;ConnectionPoint&gt;</code></td><td>Input connection ports. Positions recomputed lazily when dirty.</td></tr>
-      <tr><td><code>OutPoints</code></td><td><code>List&lt;ConnectionPoint&gt;</code></td><td>Output connection ports. Positions recomputed lazily when dirty.</td></tr>
+      <tr><td><code>InConnectionPoints</code></td><td><code>List&lt;IConnectionPoint&gt;</code></td><td>Input connection ports. Positions recomputed lazily when dirty.</td></tr>
+      <tr><td><code>OutConnectionPoints</code></td><td><code>List&lt;IConnectionPoint&gt;</code></td><td>Output connection ports. Positions recomputed lazily when dirty.</td></tr>
       <tr><td><code>IsSelected</code></td><td><code>bool</code></td><td>Selection state. Affects rendering (selection highlight, resize handles) and keyboard operations.</td></tr>
       <tr><td><code>IsVisible</code></td><td><code>bool</code></td><td>Visibility flag. Invisible components are skipped during rendering and hit testing.</td></tr>
-      <tr><td><code>ZOrder</code></td><td><code>int</code></td><td>Z-order index controlling draw order and hit-test priority. Higher values render on top.</td></tr>
       <tr><td><code>Id</code></td><td><code>Guid</code></td><td>Unique identifier for serialization, connection tracking, and lookup operations.</td></tr>
-      <tr><td><code>Tag</code></td><td><code>object</code></td><td>Arbitrary user-defined data attached to the component. Not serialized by default.</td></tr>
+      <tr><td><code>Tag</code></td><td><code>object</code></td><td>Arbitrary user-defined data attached to the component.</td></tr>
     </tbody>
   </table>
 </section>
@@ -78,68 +77,64 @@
 
   <p>The <code>ParameterInfo</code> class captures:</p>
   <ul>
-    <li><strong>Name &amp; DisplayName:</strong> Internal key and human-readable label.</li>
-    <li><strong>Value:</strong> The current value (as <code>object</code>).</li>
-    <li><strong>DataType:</strong> Underlying CLR type (<code>string</code>, <code>int</code>, <code>float</code>, <code>bool</code>, <code>Color</code>, <code>enum</code>, etc.).</li>
-    <li><strong>Category:</strong> Grouping key for property grid sections (e.g., &quot;Appearance&quot;, &quot;Layout&quot;, &quot;Data&quot;).</li>
-    <li><strong>EditorHint:</strong> Hints for the UI to choose the right editor widget (combobox, color picker, slider, checkbox).</li>
-    <li><strong>IsReadOnly / IsRequired:</strong> Constraint flags.</li>
+    <li><strong>ParameterName:</strong> Internal key and property grid label.</li>
+    <li><strong>ParameterCurrentValue:</strong> The current value (as <code>object</code>).</li>
+    <li><strong>DefaultParameterValue:</strong> The value restored when resetting the property.</li>
+    <li><strong>ParameterType:</strong> Underlying CLR type (<code>string</code>, <code>int</code>, <code>float</code>, <code>bool</code>, <code>SKColor</code>, <code>enum</code>, etc.).</li>
+    <li><strong>Description:</strong> Tooltip/help text shown by the property grid.</li>
+    <li><strong>Choices:</strong> Optional fixed list of allowed string values, rendered as a dropdown.</li>
   </ul>
 
-  <p>Subclasses populate the dictionary in their constructor or <code>Initialize()</code> method:</p>
+  <p>Subclasses populate the dictionary in their constructor or <code>InitializeComponent()</code> override:</p>
 
   <div class="code-example">
     <h3>Defining NodeProperties</h3>
-    <pre><code class="language-csharp">protected override void Initialize()
+    <pre><code class="language-csharp">protected override void InitializeComponent()
 {
-    base.Initialize();
+    base.InitializeComponent();
 
     NodeProperties["Text"] = new ParameterInfo
     {
-        Name = "Text",
-        DisplayName = "Label Text",
-        Value = "New Node",
-        DataType = typeof(string),
-        Category = "Content",
-        EditorHint = "TextBox"
+        ParameterName = "Text",
+        ParameterCurrentValue = "New Node",
+        DefaultParameterValue = "New Node",
+        ParameterType = typeof(string),
+        Description = "Label text"
     };
 
     NodeProperties["FillColor"] = new ParameterInfo
     {
-        Name = "FillColor",
-        DisplayName = "Fill Color",
-        Value = SKColors.CornflowerBlue,
-        DataType = typeof(SKColor),
-        Category = "Appearance",
-        EditorHint = "ColorPicker"
+        ParameterName = "FillColor",
+        ParameterCurrentValue = SKColors.CornflowerBlue,
+        DefaultParameterValue = SKColors.CornflowerBlue,
+        ParameterType = typeof(SKColor),
+        Description = "Fill color"
     };
 
     NodeProperties["FontSize"] = new ParameterInfo
     {
-        Name = "FontSize",
-        DisplayName = "Font Size",
-        Value = 14f,
-        DataType = typeof(float),
-        Category = "Typography",
-        EditorHint = "Slider:8-48"
+        ParameterName = "FontSize",
+        ParameterCurrentValue = 14f,
+        DefaultParameterValue = 14f,
+        ParameterType = typeof(float),
+        Description = "Font size in points"
     };
 }</code></pre>
   </div>
 
-  <p>At runtime, the property grid calls <code>GetProperties()</code> to retrieve the dictionary and <code>SetProperties(dict)</code> to apply changes. The component is then invalidated to reflect the new values on the next draw:</p>
+  <p>At runtime, the property grid reads <code>GetProperties()</code> to enumerate editable values and calls <code>SetProperties(dict)</code> to apply changes. <code>GetProperties()</code> returns a <code>Dictionary&lt;string, object&gt;</code> of plain values (not <code>ParameterInfo</code> instances), so write back through <code>SetProperties</code> and invalidate the component to reflect the new values on the next draw:</p>
 
   <div class="code-example">
     <h3>Getting and Setting Properties</h3>
     <pre><code class="language-csharp">var properties = myComponent.GetProperties();
 
-var fontSizeParam = properties["FontSize"];
-float currentSize = (float)fontSizeParam.Value;
+float currentSize = (float)properties["FontSize"];
 
-fontSizeParam.Value = 18f;
+properties["FontSize"] = 18f;
 myComponent.SetProperties(properties);
 
-myComponent.Invalidate();
-canvas.Invalidate();</code></pre>
+myComponent.InvalidateVisual();
+drawingManager.RequestRedraw();</code></pre>
   </div>
 
   <div class="admonition note">
@@ -153,7 +148,7 @@ canvas.Invalidate();</code></pre>
   <p>Connection points (ports) are the anchor locations where <code>ConnectionLine</code> segments attach to a component. Each point is an instance of <code>IConnectionPoint</code> stored in either <code>InPoints</code> (input) or <code>OutPoints</code> (output) collections.</p>
 
   <h3>Lazy Port Layout</h3>
-  <p>Port positions are recomputed only when the component moves, resizes, or explicitly marks ports as dirty via <code>MarkPortsDirty()</code>. The <code>EnsurePortLayout()</code> method recalculates the screen positions of all ports when needed. This lazy-evaluation approach avoids unnecessary computation during rapid drag operations.</p>
+  <p>Port positions are recomputed only when the component moves, resizes, or explicitly marks ports as dirty via <code>MarkPortsDirty()</code>. The <code>LayoutPorts()</code> method recalculates the screen positions of all ports when needed. This lazy-evaluation approach avoids unnecessary computation during rapid drag operations.</p>
 
   <h3>ConnectionPoint Properties</h3>
   <table>
@@ -161,41 +156,44 @@ canvas.Invalidate();</code></pre>
       <tr><th>Property</th><th>Type</th><th>Description</th></tr>
     </thead>
     <tbody>
-      <tr><td><code>Type</code></td><td><code>PortType</code></td><td><code>In</code> or <code>Out</code>. Determines which side of a component the port appears on.</td></tr>
-      <tr><td><code>DataType</code></td><td><code>Type</code></td><td>The CLR type of data expected to flow through this port. Used for connection validation.</td></tr>
-      <tr><td><code>Position</code></td><td><code>SKPoint</code></td><td>Absolute world-space position of the port anchor. Updated by <code>EnsurePortLayout()</code>.</td></tr>
-      <tr><td><code>RowId</code></td><td><code>string</code></td><td>Optional identifier for ERD row-level connections. Enables per-field linking in entity diagrams.</td></tr>
+      <tr><td><code>Type</code></td><td><code>ConnectionPointType</code></td><td><code>In</code> or <code>Out</code>. Determines which side of a component the port appears on.</td></tr>
+      <tr><td><code>DataType</code></td><td><code>string</code></td><td>Descriptive data type of the values flowing through this port (for example <code>"string"</code>, <code>"number"</code>). Used for data-flow visualization and connection validation.</td></tr>
+      <tr><td><code>Position</code> / <code>Center</code></td><td><code>SKPoint</code></td><td>Absolute world-space position of the port anchor. Updated by <code>LayoutPorts()</code>.</td></tr>
+      <tr><td><code>RowId</code></td><td><code>Guid?</code></td><td>Optional identifier for ERD row-level connections. Enables per-field linking in entity diagrams.</td></tr>
       <tr><td><code>Id</code></td><td><code>Guid</code></td><td>Unique identifier used for serialization and connection restoration.</td></tr>
-      <tr><td><code>IsConnected</code></td><td><code>bool</code></td><td>Whether a connection line is currently attached to this port.</td></tr>
+      <tr><td><code>Connection</code></td><td><code>IConnectionPoint</code></td><td>The port this one is connected to, or <code>null</code> when free.</td></tr>
     </tbody>
   </table>
 
   <div class="code-example">
     <h3>Creating and Layouting Ports</h3>
-    <pre><code class="language-csharp">protected override void EnsurePortLayout()
+    <pre><code class="language-csharp">protected override void LayoutPorts()
 {
-    if (!_portsDirty) return;
+    var b = Bounds;
+    float midY = b.MidY;
 
-    InPoints.Clear();
-    OutPoints.Clear();
+    InConnectionPoints.Clear();
+    OutConnectionPoints.Clear();
 
-    InPoints.Add(new ConnectionPoint
+    InConnectionPoints.Add(new ConnectionPoint
     {
-        Type = PortType.In,
-        Position = new SKPoint(X, Y + Height / 2),
-        DataType = typeof(string),
-        Owner = this
+        Type = ConnectionPointType.In,
+        Center = new SKPoint(b.Left, midY),
+        Position = new SKPoint(b.Left, midY),
+        DataType = "string",
+        Component = this,
+        IsAvailable = true
     });
 
-    OutPoints.Add(new ConnectionPoint
+    OutConnectionPoints.Add(new ConnectionPoint
     {
-        Type = PortType.Out,
-        Position = new SKPoint(X + Width, Y + Height / 2),
-        DataType = typeof(string),
-        Owner = this
+        Type = ConnectionPointType.Out,
+        Center = new SKPoint(b.Right, midY),
+        Position = new SKPoint(b.Right, midY),
+        DataType = "string",
+        Component = this,
+        IsAvailable = true
     });
-
-    _portsDirty = false;
 }</code></pre>
   </div>
 </section>
@@ -220,14 +218,14 @@ canvas.Invalidate();</code></pre>
 
   <div class="code-example">
     <h3>Typical Component Lifecycle Usage</h3>
-    <pre><code class="language-csharp">var node = new FlowChartNode("Process Step");
+    <pre><code class="language-csharp">var node = new ProcessNode { Name = "Process Step" };
 node.Initialize();
 node.X = 100;
 node.Y = 200;
 
 drawingManager.AddComponent(node);
 
-canvas.Invalidate();
+drawingManager.RequestRedraw();
 
 drawingManager.RemoveComponent(node);
 node.Dispose();</code></pre>
@@ -260,7 +258,7 @@ node.Dispose();</code></pre>
     </div>
     <div class="inheritance-level">
       <div class="inheritance-card">Concrete Nodes</div>
-      <div class="inheritance-subtitle">FlowChartNode, ERDEntity, UMLClass, NetworkDevice, etc. (200+)</div>
+      <div class="inheritance-subtitle">ProcessNode, DecisionNode, ERDEntity, UMLClass, NetworkDevice, etc. (293 types)</div>
     </div>
   </div>
 
@@ -272,8 +270,8 @@ node.Dispose();</code></pre>
       <tr><td>0</td><td><code>IDrawableComponent</code> (interface)</td><td>Contract: Draw, hit test, bounds, dispose, connection points.</td></tr>
       <tr><td>1</td><td><code>SkiaComponent</code> (abstract)</td><td>Position, size, NodeProperties, ConnectionPoints, base rendering. All diagram nodes derive from here.</td></tr>
       <tr><td>2</td><td><code>MaterialControl</code> (abstract)</td><td>Material Design 3.0 theming: elevation shadows, state layers (hover, focus, pressed), ripple animation, theme-aware color resolution.</td></tr>
-      <tr><td>3</td><td>Family-level base classes</td><td>Shared behavior per diagram family: flowchart routing rules, ERD entity rendering, UML notation, network device icons. Override <code>DrawContent</code> for family-specific appearance.</td></tr>
-      <tr><td>4</td><td>Concrete leaf nodes</td><td>Fully rendered diagram nodes: <code>FlowChartNode</code>, <code>ProcessNode</code>, <code>DecisionNode</code>, <code>ERDEntity</code>, <code>UMLClass</code>, <code>NetworkRouter</code>, etc.</td></tr>
+      <tr><td>3</td><td>Family-level base classes</td><td>Shared behavior per diagram family: flowchart routing rules, ERD entity rendering, UML notation, network device icons. Override <code>DrawContent</code> or <code>DrawFlowchartContent</code> for family-specific appearance.</td></tr>
+      <tr><td>4</td><td>Concrete leaf nodes</td><td>Fully rendered diagram nodes: <code>ProcessNode</code>, <code>DecisionNode</code>, <code>ERDEntity</code>, <code>UMLClass</code>, <code>NetworkRouter</code>, etc.</td></tr>
     </tbody>
   </table>
 

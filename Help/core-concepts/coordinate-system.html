@@ -134,24 +134,21 @@ public SKPoint WorldToScreen(SKPoint worldPoint)
       <tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr>
     </thead>
     <tbody>
-      <tr><td><code>GridSize</code></td><td><code>float</code></td><td><code>20</code></td><td>Spacing between grid lines in world-space units. The grid adapts to zoom level — at 200% zoom, each cell appears as 40 screen pixels.</td></tr>
+      <tr><td><code>GridSpacing</code></td><td><code>float</code></td><td><code>20</code></td><td>Spacing between grid lines in world-space units. The grid adapts to zoom level &mdash; at 200% zoom, each cell appears as 40 screen pixels.</td></tr>
       <tr><td><code>ShowGrid</code></td><td><code>bool</code></td><td><code>true</code></td><td>Toggles grid visibility. When false, the background renders as a solid color with no grid lines.</td></tr>
-      <tr><td><code>MinorGridLines</code></td><td><code>bool</code></td><td><code>true</code></td><td>Renders thin, subtle grid lines at the <code>GridSize</code> interval. Drawn in a very light color to avoid visual clutter.</td></tr>
-      <tr><td><code>MajorGridLines</code></td><td><code>bool</code></td><td><code>true</code></td><td>Renders heavier grid lines at <code>GridSize * MajorGridInterval</code>. Default interval is 5, so major lines appear every 100 units.</td></tr>
-      <tr><td><code>SnapToGrid</code></td><td><code>bool</code></td><td><code>false</code></td><td>When enabled, component positions snap to the nearest grid intersection during drag and resize operations.</td></tr>
-      <tr><td><code>GridColor</code></td><td><code>SKColor</code></td><td><code>#E0E0E0</code></td><td>Color of minor grid lines. Major lines use a slightly darker shade.</td></tr>
+      <tr><td><code>SnapToGrid</code></td><td><code>bool</code></td><td><code>true</code></td><td>When enabled, component positions snap to the nearest grid intersection during drag and resize operations.</td></tr>
     </tbody>
   </table>
 
   <div class="code-example">
     <h3>Configuring the Grid</h3>
-    <pre><code class="language-csharp">drawingManager.GridSize = 16;
+    <pre><code class="language-csharp">drawingManager.GridSpacing = 16;
 drawingManager.ShowGrid = true;
-drawingManager.MinorGridLines = true;
-drawingManager.MajorGridLines = true;
-drawingManager.MajorGridInterval = 4;
 drawingManager.SnapToGrid = true;
-drawingManager.GridColor = new SKColor(0xE8, 0xE8, 0xE8);</code></pre>
+
+// Grid line color comes from the active theme
+var theme = SkiaTheme.LightTheme;
+theme.GridColor = new SKColor(0xE8, 0xE8, 0xE8);</code></pre>
   </div>
 
   <h3>Grid Snapping</h3>
@@ -162,12 +159,12 @@ drawingManager.GridColor = new SKColor(0xE8, 0xE8, 0xE8);</code></pre>
     <pre><code class="language-csharp">public float SnapToGridValue(float value)
 {
     if (!SnapToGrid) return value;
-    return (float)Math.Round(value / GridSize) * GridSize;
+    return (float)Math.Round(value / GridSpacing) * GridSpacing;
 }
 
 var snappedX = SnapToGridValue(component.X);
 var snappedY = SnapToGridValue(component.Y);
-component.Position = new SKPoint(snappedX, snappedY);</code></pre>
+component.X = snappedX; component.Y = snappedY;</code></pre>
   </div>
 </section>
 
@@ -223,7 +220,7 @@ component.Position = new SKPoint(snappedX, snappedY);</code></pre>
       <tr><th>Feature</th><th>Description</th></tr>
     </thead>
     <tbody>
-      <tr><td><strong>Automatic Detection</strong></td><td>The <code>SkiaCanvas</code> queries the display&#39;s DPI scale factor (e.g., 1.0 for 96 DPI, 2.0 for 192 DPI) and adjusts the backing surface accordingly.</td></tr>
+      <tr><td><strong>Automatic Detection</strong></td><td>The the rendering surface queries the display&#39;s DPI scale factor (e.g., 1.0 for 96 DPI, 2.0 for 192 DPI) and adjusts the backing surface accordingly.</td></tr>
       <tr><td><strong>Logical vs. Physical Pixels</strong></td><td>All component coordinates and sizes are expressed in <strong>logical pixels</strong> (device-independent). The DPI scale is applied at the canvas level, so component code is DPI-agnostic.</td></tr>
       <tr><td><strong>Sharp Rendering</strong></td><td>The backing <code>SKSurface</code> is created at the physical pixel resolution, ensuring crisp text and vector graphics on high-DPI displays without blurring.</td></tr>
     </tbody>
@@ -231,29 +228,14 @@ component.Position = new SKPoint(snappedX, snappedY);</code></pre>
 
   <div class="code-example">
     <h3>High-DPI Canvas Configuration</h3>
-    <pre><code class="language-csharp">public class SkiaCanvas
-{
-    private float _dpiScale;
+    <pre><code class="language-csharp">var dpiScale = 1.5f;   // 144 DPI; the host control reads this automatically
 
-    public SkiaCanvas(int logicalWidth, int logicalHeight)
-    {
-        _dpiScale = GetDisplayScale();
+using var surface = SKSurface.Create(new SKImageInfo(
+    (int)(logicalWidth * dpiScale),
+    (int)(logicalHeight * dpiScale)));
 
-        int physicalWidth = (int)(logicalWidth * _dpiScale);
-        int physicalHeight = (int)(logicalHeight * _dpiScale);
-
-        _surface = SKSurface.Create(new SKImageInfo(
-            physicalWidth, physicalHeight));
-
-        Canvas.Scale(_dpiScale, _dpiScale);
-    }
-
-    private float GetDisplayScale()
-    {
-        return (float)VisualTreeHelper.GetDpi(
-            Application.Current.MainWindow) / 96.0f;
-    }
-}</code></pre>
+var canvas = surface.Canvas;
+canvas.Scale(dpiScale, dpiScale);   // component coordinates stay logical</code></pre>
   </div>
 
   <div class="admonition tip">

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automation Data Sources | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="workflow-engine.html">Automation</a><span>&rsaquo;</span> <span>Automation Data Sources</span></nav>
+<div class="page-header"><h1>Automation Data Sources</h1><p class="page-subtitle">Bridging automation nodes to real data providers</p></div>
+<p>Automation nodes that read or write data resolve their target through a provider registry, which keeps diagrams
+independent of the concrete data access stack.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#provider">Provider Contract</a></li>
+    <li><a href="#registry">Registry</a></li>
+    <li><a href="#example">Example</a></li>
+  </ul>
+</div>
+
+<section class="section" id="provider">
+  <h2>Provider Contract</h2>
+  <p><code>IAutomationDataSourceProvider</code> exposes the operations nodes need &mdash; list data sources, read rows,
+  write rows, and test connectivity &mdash; without exposing a specific ORM, driver, or connection type.</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">public interface IAutomationDataSourceProvider
+{
+    string Name { get; }
+    IReadOnlyList&lt;string&gt; GetDataSourceNames();
+    IReadOnlyList&lt;IDictionary&lt;string, object&gt;&gt; Read(string dataSource, string query);
+    int Write(string dataSource, string target, IEnumerable&lt;IDictionary&lt;string, object&gt;&gt; rows);
+    bool TestConnection(string dataSource, out string error);
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="registry">
+  <h2>Registry</h2>
+  <p><code>AutomationDataSourceRegistry</code> holds providers by name and resolves the one a node asks for. When a node
+  requests a provider that is not registered, the node reports a clear failure instead of falling over.</p>
+</section>
+
+<section class="section" id="example">
+  <h2>Example</h2>
+  <div class="code-example">
+    <h3>Registering a provider</h3>
+    <pre><code class="language-csharp">AutomationDataSourceRegistry.Register(new MyBeepDmProvider(editor));
+
+var node = new DataSourceAutomationNode { Name = "Load Orders" };
+node.Configuration["Provider"] = "BeepDM";
+node.Configuration["DataSource"] = "Sales";
+node.Configuration["Query"] = "SELECT * FROM Orders WHERE Status = 'Open'";</code></pre>
+  </div>
+  <p>Because the provider is resolved by name, the same diagram can run against a test database in staging and the
+  production system in release by registering a different provider.</p>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testing and Quality | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="creating-custom-family.html">Guides</a><span>&rsaquo;</span> <span>Testing and Quality</span></nav>
+<div class="page-header"><h1>Testing and Quality</h1><p class="page-subtitle">The test suite, the sweeps, the hardening record and CI</p></div>
+<p>The framework is developed test-first in the literal sense: every subsystem has tests, and whole-surface sweeps check
+universal invariants across every component type. This page explains what is covered, how to run it, and what the tests
+have caught.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#running">Running the Tests</a></li>
+    <li><a href="#coverage">What Is Covered</a></li>
+    <li><a href="#sweeps">Whole-Surface Sweeps</a></li>
+    <li><a href="#hardening">Hardening Record</a></li>
+    <li><a href="#ci">Continuous Integration</a></li>
+  </ul>
+</div>
+
+<section class="section" id="running">
+  <h2>Running the Tests</h2>
+  <div class="code-example">
+    <pre><code class="language-bash">dotnet test Beep.Skia.Tests/Beep.Skia.Tests.csproj          # 501 tests
+dotnet test --filter "FullyQualifiedName~HardeningTests"   # just the hardening suites</code></pre>
+  </div>
+  <p>Tests target <code>net10.0-windows10.0.19041.0</code> and run serialized: several suites exercise process-wide state
+  (themes, static caches), so parallel class execution would make them flaky.</p>
+</section>
+
+<section class="section" id="coverage">
+  <h2>What Is Covered</h2>
+  <ul>
+    <li><strong>Every library</strong> &mdash; all 26 projects, including the loader integration.</li>
+    <li><strong>Feature coverage</strong> &mdash; each family's algorithms (codegen, schema diffing, CPM, XMI/BPMN export, PageRank, DREAD, ERC, LAS grouping) and each subsystem (automation, extensions, marketplace, collaboration, assistance).</li>
+    <li><strong>Rendering</strong> &mdash; smoke tests that assert ink is produced, image-diff checks for edits, and pixel checks for migrated drawing code.</li>
+    <li><strong>End-to-end</strong> &mdash; one scenario drives the whole story: author &rarr; save &rarr; reload &rarr; execute &rarr; export &rarr; collaborate &rarr; extend &rarr; generate.</li>
+  </ul>
+</section>
+
+<section class="section" id="sweeps">
+  <h2>Whole-Surface Sweeps</h2>
+  <p>Rather than trusting per-type tests, sweeps instantiate <strong>every public component type</strong> (293 of them) and
+  assert universal invariants:</p>
+  <table>
+    <thead><tr><th>Invariant</th><th>Why it matters</th></tr></thead>
+    <tbody>
+      <tr><td>Renders without throwing</td><td>A component that throws breaks the whole canvas</td></tr>
+      <tr><td>Updates without throwing</td><td><code>Update</code> runs every frame, outside drawing</td></tr>
+      <tr><td>Survives a save/load round-trip</td><td>Silent data loss is worse than a crash</td></tr>
+      <tr><td>Accepts its own property values</td><td>This is exactly what loading a diagram does</td></tr>
+      <tr><td>Renders at 0.1&times; to 8&times; zoom</td><td>Zoom-scaled drawing is easy to get wrong</td></tr>
+      <tr><td>Survives the input pipeline</td><td>Click, drag, pan, wheel and keys run on every component</td></tr>
+      <tr><td>Supports clipboard and undo/redo</td><td>Editing must work for every type</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="hardening">
+  <h2>Hardening Record</h2>
+  <p>Adversarial tests feed malformed, hostile and extreme input to every entry point: diagram DTOs, DDL, expressions,
+  the flowchart and mind-map DSLs, JSON/XML flattening, BPMN XML, LAS files, packages and vaults, plus concurrency and
+  resource-lifecycle checks. They found and fixed <strong>24 defects</strong>, including:</p>
+  <ul>
+    <li><strong>Six crash paths</strong> &mdash; unbounded recursion in the expression parser (nested parentheses, unary chains,
+      nested calls), the expression <em>evaluator</em> (very long flat chains), the mind-map layout, and a component that
+      drew a path it had already disposed.</li>
+    <li><strong>Three silent save/load data losses</strong> &mdash; automation connections, automation configuration, and ML
+      connections were dropped on reload.</li>
+    <li><strong>Three data races</strong> &mdash; collaboration state, the credential vault, and the package catalog were not
+      thread-safe.</li>
+    <li><strong>A decompression bomb</strong> and an <strong>authorization bypass</strong> (role state handed out by
+      reference) in the marketplace and collaboration services.</li>
+  </ul>
+</section>
+
+<section class="section" id="ci">
+  <h2>Continuous Integration</h2>
+  <p><code>.github/workflows/ci.yml</code> builds <code>Beep.Skia.CI.slnf</code>, runs the suite, and packs packages on
+  tags. It treats <strong>warnings as errors</strong> and the solution is warning-free with no suppressions, so the
+  quality bar is enforced rather than aspirational. Versions come from git tags through MinVer.</p>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

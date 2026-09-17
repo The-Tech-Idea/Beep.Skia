@@ -482,15 +482,15 @@ namespace Beep.Skia
                             lines.Add("Schema differences:");
                             int maxShow = 5;
                             foreach (var m in diff.MissingColumns.Take(maxShow)) lines.Add($"- Missing: {m}");
-                            if (diff.MissingColumns.Count > maxShow) lines.Add($"  � +{diff.MissingColumns.Count - maxShow} more missing");
+                            if (diff.MissingColumns.Count > maxShow) lines.Add($"  … +{diff.MissingColumns.Count - maxShow} more missing");
                             foreach (var td in diff.TypeDifferences.Take(maxShow)) lines.Add($"- Type: {td.Name} expected {td.ExpectedType}, actual {td.ActualType}");
-                            if (diff.TypeDifferences.Count > maxShow) lines.Add($"  � +{diff.TypeDifferences.Count - maxShow} more type differences");
+                            if (diff.TypeDifferences.Count > maxShow) lines.Add($"  … +{diff.TypeDifferences.Count - maxShow} more type differences");
                             foreach (var nd in diff.NullabilityDifferences.Take(maxShow))
                                 lines.Add($"- Nullability: {nd.Name} expected {(nd.ExpectedNullable ? "nullable" : "not nullable")}, actual {(nd.ActualNullable ? "nullable" : "not nullable")}");
-                            if (diff.NullabilityDifferences.Count > maxShow) lines.Add($"  � +{diff.NullabilityDifferences.Count - maxShow} more nullability differences");
+                            if (diff.NullabilityDifferences.Count > maxShow) lines.Add($"  … +{diff.NullabilityDifferences.Count - maxShow} more nullability differences");
                             foreach (var dd in diff.DefaultDifferences.Take(maxShow))
                                 lines.Add($"- Default: {dd.Name} expected '{dd.ExpectedDefault}', actual '{dd.ActualDefault}'");
-                            if (diff.DefaultDifferences.Count > maxShow) lines.Add($"  � +{diff.DefaultDifferences.Count - maxShow} more default differences");
+                            if (diff.DefaultDifferences.Count > maxShow) lines.Add($"  … +{diff.DefaultDifferences.Count - maxShow} more default differences");
                             lines.Add(" "); // spacer before listing columns
                         }
                     }
@@ -507,7 +507,7 @@ namespace Beep.Skia
                     var flags = (c?.IsPrimaryKey == true ? " [PK]" : "") + (c?.IsForeignKey == true ? " [FK]" : "");
                     lines.Add(string.IsNullOrWhiteSpace(type) ? name + flags : $"{name}: {type}{flags}");
                 }
-                if (n > max) lines.Add($"� +{n - max} more");
+                if (n > max) lines.Add($"… +{n - max} more");
 
                 // Measure tooltip box
                 float padding = 6f;
@@ -604,7 +604,7 @@ namespace Beep.Skia
             SKPoint Along(SKPoint p, float s) => new SKPoint(p.X + vx * s, p.Y + vy * s);
             SKPoint Right(SKPoint p, float s) => new SKPoint(p.X + rx * s, p.Y + ry * s);
 
-            // Start a little off the endpoint so symbols don�t overlap the node outline
+            // Start a little off the endpoint so symbols don’t overlap the node outline
             var origin = Along(atPoint, gap + paint.StrokeWidth);
 
             // Rendering order: near endpoint to far (so circle is closest, then bars, then foot at farthest)
@@ -648,7 +648,7 @@ namespace Beep.Skia
 
             if (needsFoot)
             {
-                // Crow�s foot with three prongs from a base point
+                // Crow’s foot with three prongs from a base point
                 var baseP = Along(origin, cursor);
                 // central prong straight out
                 var mid = Along(baseP, footLen);

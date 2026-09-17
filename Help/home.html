@@ -36,9 +36,9 @@
 
 <section class="section" id="overview">
   <h2>Overview</h2>
-  <p>Beep.Skia is a comprehensive visual modeling toolkit built on SkiaSharp that provides a rich set of diagramming primitives, workflow automation components, and interactive canvas controls. Designed for .NET 8 and .NET 9, it enables developers to create complex 2D diagrams, flowcharts, network topologies, and custom visual editors with minimal effort.</p>
-  <p>The framework encompasses 18 distinct diagram families, over 200 specialized node types, and more than 60 reusable UI components across 17 modular projects. With built-in support for Material Design 3.0 theming, an extensible connection routing system, undo/redo history, and serialization, Beep.Skia serves as a foundation for building professional-grade visual tools in desktop, web, and mobile applications.</p>
-  <p>Core capabilities include a hardware-accelerated rendering pipeline via SkiaSharp, a flexible component model based on the <code>SkiaComponent</code> base class, drag-and-drop diagram construction, connection management with automatic pathfinding, and a workflow automation engine that integrates directly with the visual editor.</p>
+  <p>Beep.Skia is a visual modeling and automation toolkit built on SkiaSharp: diagramming primitives, an executable workflow runtime, and interactive canvas controls. The libraries multi-target .NET 8, 9 and 10, and the Windows hosts run on .NET 10 (Windows 10 2004+), so the same diagram code serves desktop, web and mobile applications.</p>
+  <p>The framework spans 16 diagram families and 293 component types across 27 projects, with Material Design 3.0 theming, extensible connection routing, undo/redo, and versioned serialization. On top of the canvas sit four subsystems: an automation runtime that executes diagrams as workflows, a server execution SKU that runs them as queued jobs over HTTP, an extension SDK with a package marketplace, and collaboration with roles, review comments and presence.</p>
+  <p>Core capabilities include a hardware-accelerated rendering pipeline, a flexible component model based on the <code>SkiaComponent</code> base class, drag-and-drop construction, connection management with automatic pathfinding, and a workflow engine that runs the diagram you drew. Quality is enforced: 501 tests, whole-surface sweeps over every component type, and a warning-free build with warnings-as-errors in CI.</p>
 </section>
 
 <section class="section" id="stats-at-a-glance">
@@ -53,11 +53,11 @@
     <tbody>
       <tr>
         <td>Diagram Families</td>
-        <td>18</td>
+        <td>16</td>
       </tr>
       <tr>
-        <td>Node Types</td>
-        <td>200+</td>
+        <td>Component Types</td>
+        <td>293</td>
       </tr>
       <tr>
         <td>UI Components</td>
@@ -65,7 +65,19 @@
       </tr>
       <tr>
         <td>Projects in Solution</td>
-        <td>17</td>
+        <td>27</td>
+      </tr>
+      <tr>
+        <td>Tests</td>
+        <td>501</td>
+      </tr>
+      <tr>
+        <td>NuGet Packages</td>
+        <td>23</td>
+      </tr>
+      <tr>
+        <td>Diagram Templates</td>
+        <td>12</td>
       </tr>
     </tbody>
   </table>
@@ -83,24 +95,33 @@
   <div class="code-example">
     <h3>Basic Diagram with DrawingManager</h3>
     <pre><code class="language-csharp">using Beep.Skia;
-using Beep.Skia.Canvas;
-using Beep.Skia.Nodes;
+using Beep.Skia.Components;
+using SkiaSharp;
 
-var drawingManager = new DrawingManager();
+var manager = new DrawingManager();
 
-var canvas = new SkiaCanvas(800, 600);
-drawingManager.AttachCanvas(canvas);
+var start = new ManualTriggerNode { X = 40, Y = 40, Width = 160, Height = 60, Name = "Start" };
+var work  = new DataTransformNode  { X = 40, Y = 180, Width = 160, Height = 60, Name = "Transform" };
 
-var startNode = new FlowChartNode("Start");
-startNode.Position = new SKPoint(100, 100);
-drawingManager.AddNode(startNode);
+manager.AddComponent(start);
+manager.AddComponent(work);
+manager.ConnectComponents(start, work);
 
-var processNode = new FlowChartNode("Process");
-processNode.Position = new SKPoint(400, 100);
-drawingManager.AddNode(processNode);
+using var surface = SKSurface.Create(new SKImageInfo(800, 600));
+manager.Draw(surface.Canvas);
+manager.ExportToPng("diagram.png");</code></pre>
+  </div>
 
-drawingManager.Connect(startNode, processNode);
-canvas.Invalidate();</code></pre>
+  <div class="code-example">
+    <h3>Run it as a workflow</h3>
+    <pre><code class="language-csharp">using Beep.Skia.Automation;
+
+using var service = new WorkflowExecutionService(maxConcurrency: 2);
+service.Publish(manager.ToWorkflowDefinition("Nightly Sync"));
+
+var job = service.Submit(service.Workflows[0].Id, submittedBy: "me");
+service.WaitForCompletion(job.Id, TimeSpan.FromSeconds(30));
+Console.WriteLine(job.State);   // Completed</code></pre>
   </div>
 </section>
 
@@ -136,7 +157,31 @@ canvas.Invalidate();</code></pre>
       </tr>
       <tr>
         <td><strong>Serialization</strong></td>
-        <td>JSON and binary serialization for persisting and restoring complete diagram state</td>
+        <td>Versioned JSON persistence for complete diagram state, including connections and per-node configuration</td>
+      </tr>
+      <tr>
+        <td><strong>Automation Runtime</strong></td>
+        <td>Execute diagrams as workflows: retries, variables, pause/resume/cancel, triggers and a credential vault</td>
+      </tr>
+      <tr>
+        <td><strong>Server Execution SKU</strong></td>
+        <td>Queued job execution over a JSON API and HTTP routes, with a runnable ASP.NET host sample</td>
+      </tr>
+      <tr>
+        <td><strong>Extension SDK &amp; Marketplace</strong></td>
+        <td>Ship components and commands as <code>.beepkg</code> packages; install, update and uninstall with dependency and safety gates</td>
+      </tr>
+      <tr>
+        <td><strong>Collaboration</strong></td>
+        <td>Roles and sharing, component-anchored review comments with canvas pins, presence and an audit trail</td>
+      </tr>
+      <tr>
+        <td><strong>Assisted Generation</strong></td>
+        <td>Turn a description into a diagram with an offline rule-based assistant, or plug in an LLM provider</td>
+      </tr>
+      <tr>
+        <td><strong>Family Analysis</strong></td>
+        <td>Code generation and simulation (Flowchart), schema diffing and migrations (ERD), CPM and Gantt (PM), XMI and BPMN export, DREAD and MITRE (Security) and more</td>
       </tr>
     </tbody>
   </table>

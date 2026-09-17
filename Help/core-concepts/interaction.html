@@ -58,33 +58,34 @@
       <tr><th>Operation</th><th>Method</th><th>Behavior</th></tr>
     </thead>
     <tbody>
-      <tr><td><strong>Copy</strong></td><td><code>CopySelected()</code></td><td>Serializes selected components (and their internal connections) to a <code>DiagramDto</code> JSON string, stored in the system clipboard.</td></tr>
-      <tr><td><strong>Cut</strong></td><td><code>CutSelected()</code></td><td>Copies selected components to clipboard, then removes them from the canvas. Pushes remove actions onto the undo stack.</td></tr>
-      <tr><td><strong>Paste</strong></td><td><code>PasteClipboard()</code></td><td>Deserializes clipboard JSON, instantiates new components with a positional offset (+20, +20 per paste), adds to canvas, pushes onto undo stack.</td></tr>
-      <tr><td><strong>Duplicate</strong></td><td><code>DuplicateSelected()</code></td><td>Copy + paste in one operation. Offset is cumulative per duplicate within the same session.</td></tr>
+      <tr><td><strong>Copy</strong></td><td><code>CopySelectedComponents()</code></td><td>Serializes selected components (and their internal connections) to a <code>DiagramDto</code> JSON string held by the manager.</td></tr>
+      <tr><td><strong>Cut</strong></td><td><code>CopySelectedComponents()</code> + <code>DeleteSelectedComponents()</code></td><td>Copies the selection, then removes it from the canvas. Both steps push onto the undo stack.</td></tr>
+      <tr><td><strong>Paste</strong></td><td><code>PasteComponents(SKPoint position)</code></td><td>Deserializes the clipboard payload, instantiates new components with an offset, adds them to the canvas, and pushes a <code>PasteComponentsAction</code> onto the undo stack.</td></tr>
+      <tr><td><strong>Delete</strong></td><td><code>DeleteSelectedComponents()</code></td><td>Removes the selection and its attached lines as a single undoable action.</td></tr>
     </tbody>
   </table>
 
   <div class="code-example">
     <h3>Selection Usage</h3>
-    <pre><code class="language-csharp">drawingManager.Select(node1);
+    <pre><code class="language-csharp">drawingManager.SelectionManager.SelectComponent(node1);
+drawingManager.SelectionManager.AddToSelection(node2);
 
-drawingManager.AddToSelection(node2);
-
-var selected = drawingManager.SelectedComponents;
-foreach (var comp in selected)
+foreach (var comp in drawingManager.SelectionManager.SelectedComponents)
 {
-    comp.NodeProperties["StrokeColor"].Value = SKColors.DodgerBlue;
+    comp.NodeProperties["StrokeColor"].ParameterCurrentValue = SKColors.DodgerBlue;
+    comp.InvalidateVisual();
 }
 
-drawingManager.SelectInRect(
-    new SKRect(100, 100, 500, 400));
+drawingManager.SelectionManager.SelectComponentsInRect(
+    new SKRect(100, 100, 500, 400),
+    drawingManager.GetComponents());
 
-drawingManager.CutSelected();
+drawingManager.CopySelectedComponents();
+drawingManager.DeleteSelectedComponents();
+drawingManager.PasteComponents(new SKPoint(20, 20));
 
-drawingManager.PasteClipboard();
-
-drawingManager.ClearSelection();</code></pre>
+drawingManager.SelectionManager.ClearSelection();
+drawingManager.RequestRedraw();</code></pre>
   </div>
 </section>
 

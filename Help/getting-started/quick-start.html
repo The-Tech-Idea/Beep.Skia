@@ -36,297 +36,218 @@
 
 <section class="section" id="creating-a-diagram">
   <h2>Creating a Diagram</h2>
-  <p>Start by creating a <code>SkiaCanvas</code> and a <code>DrawingManager</code>. The canvas provides the rendering surface, while the drawing manager orchestrates node placement, selection, and interaction:</p>
+  <p>Start with a <code>DrawingManager</code>. It owns the components, connections, selection and viewport. You draw it onto any <code>SKCanvas</code> &mdash; an <code>SKSurface</code> here, or the surface supplied by a host control:</p>
 
   <div class="code-example">
     <h3>Initialize the Diagram</h3>
     <pre><code class="language-csharp">using Beep.Skia;
-using Beep.Skia.Canvas;
-using Beep.Skia.Nodes;
-using Beep.Skia.Connections;
+using Beep.Skia.Flowchart;
 using SkiaSharp;
 
-var canvas = new SkiaCanvas(1200, 800);
-canvas.BackgroundColor = SKColors.White;
+using var surface = SKSurface.Create(new SKImageInfo(1200, 800));
+var canvas = surface.Canvas;
+canvas.Clear(SKColors.White);
 
-var drawingManager = new DrawingManager();
-drawingManager.AttachCanvas(canvas);
-drawingManager.GridSize = 20;
-drawingManager.SnapToGrid = true;</code></pre>
+var drawingManager = new DrawingManager
+{
+    ShowGrid = true,
+    GridSpacing = 20,
+    SnapToGrid = true
+};</code></pre>
   </div>
 
-  <p>The <code>GridSize</code> and <code>SnapToGrid</code> properties enable precise node alignment. The canvas dimensions define the scrollable diagram area, and the drawing manager automatically handles viewport transformations, zooming, and panning.</p>
+  <p><code>ShowGrid</code>, <code>GridSpacing</code> and <code>SnapToGrid</code> control the alignment grid. The drawing manager owns the viewport transformation, so zooming and panning are handled for you.</p>
 </section>
 
 <section class="section" id="adding-components">
   <h2>Adding Components</h2>
-  <p>Beep.Skia provides over 200 node types organized into 18 diagram families. For a flowchart, use <code>FlowChartNode</code> instances. Each node supports customizable shapes, labels, colors, and ports:</p>
+  <p>Beep.Skia ships 293 component types across 16 diagram families. Flowchart nodes derive from <code>FlowchartControl</code>: use <code>ProcessNode</code> for steps and <code>DecisionNode</code> for branches. Every component exposes <code>X</code>, <code>Y</code>, <code>Width</code> and <code>Height</code>; flowchart nodes add <code>Label</code>, <code>CustomFillColor</code> and <code>CustomStrokeColor</code>:</p>
 
   <div class="code-example">
-    <h3>Add FlowChart Nodes</h3>
-    <pre><code class="language-csharp">var startNode = new FlowChartNode("Start")
+    <h3>Add Flowchart Nodes</h3>
+    <pre><code class="language-csharp">var startNode = new ProcessNode
 {
-    Position = new SKPoint(200, 100),
-    Width = 140,
-    Height = 60,
-    FillColor = SKColors.LightGreen,
-    StrokeColor = SKColors.DarkGreen,
-    Shape = FlowChartShape.RoundedRectangle
+    Label = "Start",
+    X = 200, Y = 100, Width = 140, Height = 60,
+    CustomFillColor = SKColors.LightGreen,
+    CustomStrokeColor = SKColors.DarkGreen
 };
-drawingManager.AddNode(startNode);
+drawingManager.AddComponent(startNode);
 
-var inputNode = new FlowChartNode("Receive Order")
+var inputNode = new ProcessNode
 {
-    Position = new SKPoint(200, 220),
-    Width = 160,
-    Height = 70,
-    FillColor = SKColors.LightBlue,
-    StrokeColor = SKColors.DarkBlue,
-    Shape = FlowChartShape.Rectangle
+    Label = "Receive Order",
+    X = 200, Y = 220, Width = 160, Height = 70,
+    CustomFillColor = SKColors.LightBlue,
+    CustomStrokeColor = SKColors.DarkBlue
 };
-drawingManager.AddNode(inputNode);
+drawingManager.AddComponent(inputNode);
 
-var processNode = new FlowChartNode("Validate Order")
+var processNode = new ProcessNode
 {
-    Position = new SKPoint(200, 350),
-    Width = 170,
-    Height = 70,
-    FillColor = SKColors.LightYellow,
-    StrokeColor = SKColors.DarkGoldenrod,
-    Shape = FlowChartShape.Rectangle
+    Label = "Validate Order",
+    X = 200, Y = 350, Width = 170, Height = 70,
+    CustomFillColor = SKColors.LightYellow,
+    CustomStrokeColor = SKColors.DarkGoldenrod
 };
-drawingManager.AddNode(processNode);
+drawingManager.AddComponent(processNode);
 
-var decisionNode = new FlowChartNode("Valid?")
+var decisionNode = new DecisionNode
 {
-    Position = new SKPoint(200, 480),
-    Width = 130,
-    Height = 80,
-    FillColor = SKColors.LightSalmon,
-    StrokeColor = SKColors.DarkRed,
-    Shape = FlowChartShape.Diamond
+    Label = "Valid?",
+    X = 200, Y = 480, Width = 130, Height = 80
 };
-drawingManager.AddNode(decisionNode);
+drawingManager.AddComponent(decisionNode);
 
-var endNode = new FlowChartNode("End")
+var endNode = new ProcessNode
 {
-    Position = new SKPoint(200, 620),
-    Width = 140,
-    Height = 60,
-    FillColor = SKColors.LightCoral,
-    StrokeColor = SKColors.DarkRed,
-    Shape = FlowChartShape.RoundedRectangle
+    Label = "End",
+    X = 200, Y = 620, Width = 140, Height = 60,
+    CustomFillColor = SKColors.LightCoral,
+    CustomStrokeColor = SKColors.DarkRed
 };
-drawingManager.AddNode(endNode);</code></pre>
+drawingManager.AddComponent(endNode);</code></pre>
   </div>
 </section>
 
 <section class="section" id="connecting-nodes">
   <h2>Connecting Nodes</h2>
-  <p>Use the <code>Connect</code> method to create connections between nodes. Beep.Skia automatically manages port assignment and connection routing. You can customize line styles, arrowheads, and labels:</p>
+  <p><code>ConnectComponents</code> links two components and creates the <code>ConnectionLine</code> with automatically assigned ports. Enumerate the lines with <code>GetLines()</code> to style them; color, stroke width, arrowheads, labels and routing mode are all configurable:</p>
 
   <div class="code-example">
     <h3>Connect Nodes</h3>
-    <pre><code class="language-csharp">var conn1 = drawingManager.Connect(startNode, inputNode);
-conn1.LineColor = SKColors.Gray;
-conn1.LineWidth = 2;
-conn1.ArrowEnd = true;
-conn1.Label = "Begin";
-
-var conn2 = drawingManager.Connect(inputNode, processNode);
-conn2.LineColor = SKColors.Gray;
-conn2.LineWidth = 2;
-conn2.ArrowEnd = true;
-
-var conn3 = drawingManager.Connect(processNode, decisionNode);
-conn3.LineColor = SKColors.Gray;
-conn3.LineWidth = 2;
-conn3.ArrowEnd = true;
-
-var conn4Yes = drawingManager.Connect(decisionNode, endNode);
-conn4Yes.LineColor = SKColors.Green;
-conn4Yes.LineWidth = 2;
-conn4Yes.ArrowEnd = true;
-conn4Yes.Label = "Yes";
-conn4Yes.RoutingStyle = ConnectionRouting.Orthogonal;
-
-var errorNode = new FlowChartNode("Report Error")
+    <pre><code class="language-csharp">var errorNode = new ProcessNode
 {
-    Position = new SKPoint(500, 500),
-    Width = 150,
-    Height = 60,
-    FillColor = SKColors.LightPink,
-    StrokeColor = SKColors.DarkRed,
-    Shape = FlowChartShape.Rectangle
+    Label = "Report Error",
+    X = 500, Y = 500, Width = 150, Height = 60,
+    CustomFillColor = SKColors.LightPink,
+    CustomStrokeColor = SKColors.DarkRed
 };
-drawingManager.AddNode(errorNode);
+drawingManager.AddComponent(errorNode);
 
-var conn4No = drawingManager.Connect(decisionNode, errorNode);
-conn4No.LineColor = SKColors.Red;
-conn4No.LineWidth = 2;
-conn4No.ArrowEnd = true;
-conn4No.Label = "No";
-conn4No.RoutingStyle = ConnectionRouting.Orthogonal;
+drawingManager.ConnectComponents(startNode, inputNode);
+drawingManager.ConnectComponents(inputNode, processNode);
+drawingManager.ConnectComponents(processNode, decisionNode);
+drawingManager.ConnectComponents(decisionNode, endNode);
+drawingManager.ConnectComponents(decisionNode, errorNode);
 
-canvas.Invalidate();</code></pre>
+foreach (var line in drawingManager.GetLines())
+{
+    line.LineColor = SKColors.Gray;
+    line.Paint.StrokeWidth = 2;
+    line.ShowEndArrow = true;
+    line.RoutingMode = LineRoutingMode.Orthogonal;
+}
+
+var yes = drawingManager.GetLines()
+    .First(l => l.Start.Component == decisionNode && l.End.Component == endNode);
+yes.LineColor = SKColors.Green;
+yes.Label1 = "Yes";
+
+var no = drawingManager.GetLines()
+    .First(l => l.Start.Component == decisionNode && l.End.Component == errorNode);
+no.LineColor = SKColors.Red;
+no.Label1 = "No";
+
+drawingManager.RequestRedraw();</code></pre>
   </div>
 
-  <p>Connection routing styles include <code>Direct</code>, <code>Orthogonal</code>, <code>Curved</code>, and <code>Bezier</code>. The <code>Orthogonal</code> style produces clean right-angle paths suitable for flowchart diagrams.</p>
+  <p>Routing modes are <code>Straight</code>, <code>Orthogonal</code> and <code>Curved</code>. <code>Orthogonal</code> produces clean right-angle paths suitable for flowchart diagrams.</p>
 </section>
 
 <section class="section" id="running-the-application">
   <h2>Running the Application</h2>
-  <p>To render the diagram in a desktop application, host the canvas inside a SkiaSharp view control. The complete example integrates all steps into a single runnable program:</p>
+  <p>On Windows, the flagship <code>SkiaHostControl</code> already wires the canvas, input handling, palette, property grid, zoom and export together. Drop it on a form and talk to its <code>DrawingManager</code>:</p>
 
   <div class="code-example">
     <h3>Complete FlowChart Application</h3>
-    <pre><code class="language-csharp">using Beep.Skia;
-using Beep.Skia.Canvas;
-using Beep.Skia.Nodes;
-using Beep.Skia.Connections;
+    <pre><code class="language-csharp">using Beep.Skia.Flowchart;
+using Beep.Skia.Winform.Controls;
 using SkiaSharp;
-using SkiaSharp.Views.Desktop;
 
-public class DiagramHost : Form
+public class DiagramForm : Form
 {
-    private readonly SKControl _skControl;
-    private readonly DrawingManager _drawingManager;
-    private readonly SkiaCanvas _canvas;
+    private readonly SkiaHostControl _host = new() { Dock = DockStyle.Fill };
 
-    public DiagramHost()
+    public DiagramForm()
     {
         Text = "Beep.Skia FlowChart Demo";
         Size = new Size(1200, 800);
-
-        _canvas = new SkiaCanvas(3000, 2000);
-        _canvas.BackgroundColor = SKColors.White;
-
-        _drawingManager = new DrawingManager();
-        _drawingManager.AttachCanvas(_canvas);
-        _drawingManager.GridSize = 20;
-        _drawingManager.SnapToGrid = true;
-
-        _skControl = new SKControl
-        {
-            Dock = DockStyle.Fill
-        };
-        _skControl.PaintSurface += OnPaintSurface;
-        _skControl.MouseDown += OnMouseDown;
-        _skControl.MouseMove += OnMouseMove;
-        _skControl.MouseUp += OnMouseUp;
-        Controls.Add(_skControl);
-
+        Controls.Add(_host);
         BuildDiagram();
     }
 
     private void BuildDiagram()
     {
-        var start = CreateNode("Start", 200, 100, 140, 60,
-            SKColors.LightGreen, SKColors.DarkGreen,
-            FlowChartShape.RoundedRectangle);
-        _drawingManager.AddNode(start);
+        var manager = _host.DrawingManager;
 
-        var receive = CreateNode("Receive Order", 200, 220, 160, 70,
-            SKColors.LightBlue, SKColors.DarkBlue,
-            FlowChartShape.Rectangle);
-        _drawingManager.AddNode(receive);
-
-        var validate = CreateNode("Validate Order", 200, 350, 170, 70,
-            SKColors.LightYellow, SKColors.DarkGoldenrod,
-            FlowChartShape.Rectangle);
-        _drawingManager.AddNode(validate);
-
-        var decision = CreateNode("Valid?", 200, 480, 130, 80,
-            SKColors.LightSalmon, SKColors.DarkRed,
-            FlowChartShape.Diamond);
-        _drawingManager.AddNode(decision);
-
-        var end = CreateNode("End", 200, 620, 140, 60,
-            SKColors.LightCoral, SKColors.DarkRed,
-            FlowChartShape.RoundedRectangle);
-        _drawingManager.AddNode(end);
-
-        var error = CreateNode("Report Error", 500, 500, 150, 60,
-            SKColors.LightPink, SKColors.DarkRed,
-            FlowChartShape.Rectangle);
-        _drawingManager.AddNode(error);
-
-        var c1 = _drawingManager.Connect(start, receive);
-        c1.LineColor = SKColors.Gray; c1.LineWidth = 2; c1.ArrowEnd = true;
-
-        var c2 = _drawingManager.Connect(receive, validate);
-        c2.LineColor = SKColors.Gray; c2.LineWidth = 2; c2.ArrowEnd = true;
-
-        var c3 = _drawingManager.Connect(validate, decision);
-        c3.LineColor = SKColors.Gray; c3.LineWidth = 2; c3.ArrowEnd = true;
-
-        var c4 = _drawingManager.Connect(decision, end);
-        c4.LineColor = SKColors.Green; c4.LineWidth = 2; c4.ArrowEnd = true;
-        c4.Label = "Yes"; c4.RoutingStyle = ConnectionRouting.Orthogonal;
-
-        var c5 = _drawingManager.Connect(decision, error);
-        c5.LineColor = SKColors.Red; c5.LineWidth = 2; c5.ArrowEnd = true;
-        c5.Label = "No"; c5.RoutingStyle = ConnectionRouting.Orthogonal;
-
-        _canvas.Invalidate();
-    }
-
-    private static FlowChartNode CreateNode(string label,
-        float x, float y, float w, float h,
-        SKColor fill, SKColor stroke, FlowChartShape shape)
-    {
-        return new FlowChartNode(label)
+        var start = new ProcessNode
         {
-            Position = new SKPoint(x, y),
-            Width = w,
-            Height = h,
-            FillColor = fill,
-            StrokeColor = stroke,
-            Shape = shape
+            Label = "Start",
+            X = 200, Y = 100, Width = 140, Height = 60,
+            CustomFillColor = SKColors.LightGreen,
+            CustomStrokeColor = SKColors.DarkGreen
         };
-    }
+        manager.AddComponent(start);
 
-    private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
-    {
-        _canvas.Render(e.Surface.Canvas);
-    }
+        var receive = new ProcessNode
+        {
+            Label = "Receive Order",
+            X = 200, Y = 220, Width = 160, Height = 70,
+            CustomFillColor = SKColors.LightBlue,
+            CustomStrokeColor = SKColors.DarkBlue
+        };
+        manager.AddComponent(receive);
 
-    private void OnMouseDown(object sender, MouseEventArgs e)
-    {
-        _drawingManager.HandleMouseDown(e.X, e.Y, e.Button);
-    }
+        var decision = new DecisionNode
+        {
+            Label = "Valid?",
+            X = 200, Y = 350, Width = 130, Height = 80
+        };
+        manager.AddComponent(decision);
 
-    private void OnMouseMove(object sender, MouseEventArgs e)
-    {
-        _drawingManager.HandleMouseMove(e.X, e.Y);
-    }
+        var error = new ProcessNode
+        {
+            Label = "Report Error",
+            X = 500, Y = 350, Width = 150, Height = 60,
+            CustomFillColor = SKColors.LightPink,
+            CustomStrokeColor = SKColors.DarkRed
+        };
+        manager.AddComponent(error);
 
-    private void OnMouseUp(object sender, MouseEventArgs e)
-    {
-        _drawingManager.HandleMouseUp(e.X, e.Y, e.Button);
+        manager.ConnectComponents(receive, decision);
+        manager.ConnectComponents(decision, error);
+
+        var decisionLine = manager.GetLines()
+            .First(l => l.Start.Component == decision);
+        decisionLine.LineColor = SKColors.Red;
+        decisionLine.Label1 = "No";
+        decisionLine.RoutingMode = LineRoutingMode.Orthogonal;
+
+        manager.RequestRedraw();
     }
 
     [STAThread]
     public static void Main()
     {
         ApplicationConfiguration.Initialize();
-        Application.Run(new DiagramHost());
+        Application.Run(new DiagramForm());
     }
 }</code></pre>
   </div>
 
-  <p>Build and run the project. You should see an interactive flowchart with drag-and-drop node repositioning, zoom, and pan capabilities. Click on nodes to select them, and use the mouse wheel to zoom in and out.</p>
+  <p>Run the project and the host gives you drag-and-drop placement, selection, a component palette, a property grid, zoom/pan and export (<code>ExportToPng</code>, <code>ExportToSvg</code>, <code>ExportToPdf</code>). To persist a diagram, serialize <code>manager.ToDto()</code> with <code>System.Text.Json</code> and restore it with <code>manager.LoadFromDto(dto)</code>.</p>
 </section>
 
 <section class="section" id="next-steps">
   <h2>Next Steps</h2>
   <p>Now that you have built your first diagram, explore the broader capabilities of Beep.Skia:</p>
   <ul>
-    <li><strong>Explore Node Families</strong> &mdash; Discover all 18 diagram families including UML, network topology, ERD, BPMN, and organization charts</li>
-    <li><strong>Custom Styling</strong> &mdash; Apply Material Design 3.0 themes or create custom visual styles with <code>SKPaint</code>-based rendering</li>
-    <li><strong>Serialization</strong> &mdash; Persist diagrams to JSON or binary format using the <code>DiagramSerializer</code> class</li>
-    <li><strong>Workflow Automation</strong> &mdash; Attach executable actions to nodes and connections with the workflow engine</li>
-    <li><strong>Undo/Redo</strong> &mdash; Enable full edit history with the built-in <code>CommandHistory</code> system</li>
+    <li><strong>Explore Diagram Families</strong> &mdash; 16 families including UML, network topology, ERD, BPMN and org charts</li>
+    <li><strong>Custom Styling</strong> &mdash; Apply Material Design 3.0 themes or set <code>CustomFillColor</code> / <code>CustomStrokeColor</code> per node</li>
+    <li><strong>Serialization</strong> &mdash; Persist diagrams with <code>DrawingManager.ToDto()</code> / <code>LoadFromDto()</code> and <code>System.Text.Json</code></li>
+    <li><strong>Workflow Automation</strong> &mdash; Run the diagram as a workflow with the <a href="../automation/workflow-engine.html">workflow engine</a></li>
+    <li><strong>Undo/Redo</strong> &mdash; Full edit history through <code>HistoryManager</code></li>
     <li><strong>Custom Nodes</strong> &mdash; Extend <code>SkiaComponent</code> to create domain-specific node types and editors</li>
   </ul>
   <p>For architectural details, read the <a href="architecture-overview.html">Architecture Overview</a>.</p>

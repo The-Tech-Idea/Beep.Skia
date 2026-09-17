@@ -1,0 +1,192 @@
+# Generates the release-notes page describing everything added or changed in this release.
+
+$template = @'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{TITLE} | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="platforms.html">Guides</a><span>&rsaquo;</span> <span>{TITLE}</span></nav>
+<div class="page-header"><h1>{TITLE}</h1><p class="page-subtitle">{SUBTITLE}</p></div>
+{CONTENT}
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>
+'@
+
+$content = @'
+<p>This release is a large step for Beep.Skia: the canvas engine was stabilized and extended, every diagram family was
+deepened with the analysis features professionals expect, and four new subsystems were added &mdash; an automation
+runtime, a server execution SKU, an extension ecosystem, and collaboration.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#highlights">Highlights</a></li>
+    <li><a href="#core">Core Engine</a></li>
+    <li><a href="#families">Diagram Families</a></li>
+    <li><a href="#automation">Automation Runtime</a></li>
+    <li><a href="#server">Server Execution SKU</a></li>
+    <li><a href="#ecosystem">Extension Ecosystem</a></li>
+    <li><a href="#collaboration">Collaboration</a></li>
+    <li><a href="#assist">Assisted Generation</a></li>
+    <li><a href="#editor">Editor Experience</a></li>
+    <li><a href="#platforms">Platforms</a></li>
+    <li><a href="#quality">Quality and Release Engineering</a></li>
+    <li><a href="#fixed">Notable Fixes</a></li>
+  </ul>
+</div>
+
+<section class="section" id="highlights">
+  <h2>Highlights</h2>
+  <ul>
+    <li><strong>16 diagram families</strong>, each with real analysis behind it &mdash; not just shapes.</li>
+    <li><strong>Diagrams are executable.</strong> Any diagram built from automation nodes runs as a workflow, locally or as a queued job on a server.</li>
+    <li><strong>Extensible by design.</strong> Components and commands ship as <code>.beepkg</code> packages and appear in the palette.</li>
+    <li><strong>Multi-user ready.</strong> Sharing, review comments, presence and audit, all thread-safe and persisted.</li>
+    <li><strong>501 tests</strong>, seven whole-surface sweeps, and a hardening record of 24 fixed defects.</li>
+  </ul>
+</section>
+
+<section class="section" id="core">
+  <h2>Core Engine</h2>
+  <ul>
+    <li><strong>Undo/redo repaired and completed</strong> &mdash; every action is undoable and redoable, history depth is capped, and replay no longer records nested history.</li>
+    <li><strong>Interaction</strong> &mdash; middle-button panning, Tab/Shift+Tab selection cycling, working context menu, corrected hit-testing and drag behaviour.</li>
+    <li><strong>Rendering</strong> &mdash; single-pass component partitioning, reused drawing contexts, cached connection-line paints and typefaces; 199 lines went from +17&nbsp;KB/frame of allocation to effectively zero with pixel-identical output.</li>
+    <li><strong>Serialization v2</strong> &mdash; schema version, typed property bag for complex values, theme, and connection-point identity so lines survive a save/load round-trip.</li>
+    <li><strong>Export and print</strong> &mdash; export render path excludes overlays, PDF tiling, print preview.</li>
+    <li><strong>Component fixes</strong> &mdash; setting <code>Width</code>/<code>Height</code> now refreshes <code>Bounds</code>; the text box highlights its selection; palette categories rebuild when items are added after first render.</li>
+  </ul>
+</section>
+
+<section class="section" id="families">
+  <h2>Diagram Families</h2>
+  <table>
+    <thead><tr><th>Family</th><th>What is new</th></tr></thead>
+    <tbody>
+      <tr><td>Flowchart</td><td>Structured code generation (pseudocode, Python, C#) and a step-through simulator with branch selection</td></tr>
+      <tr><td>ERD</td><td>DDL import, schema comparison, and forward/rollback migration script generation with UNIQUE/CHECK and dialect handling</td></tr>
+      <tr><td>UML</td><td>Component, deployment and artifact nodes, sequence activation bars and combined fragments, XMI export</td></tr>
+      <tr><td>DFD</td><td>Levelled drill-down navigation and balancing validation</td></tr>
+      <tr><td>State Machine</td><td>Guard conditions, transition actions and triggers, composite regions, validation</td></tr>
+      <tr><td>Mind Map</td><td>Radial auto-layout, collapse/expand with connection visibility, rich text</td></tr>
+      <tr><td>BPMN / Business</td><td>Diagram-interchange export, task types, an importer, pools, lanes and message flows</td></tr>
+      <tr><td>Project Management</td><td>Dependency lag, critical-path computation (early/late, float), Gantt timeline node</td></tr>
+      <tr><td>ETL</td><td>Expression engine, data profiler and preview table, pipeline metrics, JSON/XML flattening with schema inference</td></tr>
+      <tr><td>Network</td><td>PageRank, shortest and simple paths, connected components</td></tr>
+      <tr><td>Quantitative</td><td>Real chart rendering across chart types with a series model</td></tr>
+      <tr><td>Security</td><td>STRIDE analysis, DREAD scoring and MITRE ATT&amp;CK mapping</td></tr>
+      <tr><td>Machine Learning</td><td>Pipeline topology export to JSON</td></tr>
+      <tr><td>ECAD</td><td>Electrical pin model and electrical rules checking (short circuits, unconnected pins)</td></tr>
+      <tr><td>Well Logs</td><td>LAS parsing with multi-track grouping</td></tr>
+      <tr><td>Cloud</td><td>Branded AWS, Azure and GCP nodes</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="automation">
+  <h2>Automation Runtime</h2>
+  <ul>
+    <li><code>WorkflowEngine</code> completed: retry policies, workflow variables, real pause/resume/cancel, per-node results and events.</li>
+    <li>Trigger pack: manual, schedule, event and file-watch triggers with validation, activation counters and disposal.</li>
+    <li>Credential vault (AES with PBKDF2-SHA256) and a connection manager, both thread-safe, with tamper detection and masked listing.</li>
+    <li>Diagram bridge: <code>ToWorkflowDefinition()</code> turns the canvas into an executable workflow, and saved diagrams keep their wiring and configuration.</li>
+  </ul>
+</section>
+
+<section class="section" id="server">
+  <h2>Server Execution SKU</h2>
+  <ul>
+    <li><code>WorkflowExecutionService</code> &mdash; publish workflows, submit jobs with inputs, bounded-concurrency queue, job states, pause/resume/cancel, listing and events.</li>
+    <li><code>WorkflowExecutionApi</code> &mdash; JSON facade that can publish a saved diagram as an executable workflow.</li>
+    <li><code>WorkflowRequestRouter</code> &mdash; HTTP routing with proper status codes, kept transport-agnostic and unit-tested.</li>
+    <li><code>Beep.Skia.Sample.Server</code> &mdash; a runnable ASP.NET minimal-API host with demo and publish options.</li>
+  </ul>
+</section>
+
+<section class="section" id="ecosystem">
+  <h2>Extension Ecosystem</h2>
+  <ul>
+    <li><code>ISkiaExtension</code> contract plus <code>SkiaExtensionHost</code> (discovery, validation, custom categories, commands, diagnostics).</li>
+    <li><code>.beepkg</code> packages with manifests (host version, dependencies, tags) and a builder that computes the SHA-256.</li>
+    <li><code>ExtensionPackageManager</code> &mdash; install, update, uninstall, catalog persistence and load directories.</li>
+    <li>Security: zip-slip rejection, decompression-bomb limits, dependency and host-version gates, no partial state on failure.</li>
+  </ul>
+</section>
+
+<section class="section" id="collaboration">
+  <h2>Collaboration</h2>
+  <ul>
+    <li>Sharing with Viewer / Commenter / Editor / Admin roles and public read-only links.</li>
+    <li>Comments anchored to components, rendered as numbered review pins on the canvas.</li>
+    <li>Presence with activity and expiry, plus a full audit trail of sharing and review actions.</li>
+    <li>JSON persistence next to the diagram, thread-safe operation and snapshot reads.</li>
+  </ul>
+</section>
+
+<section class="section" id="assist">
+  <h2>Assisted Generation</h2>
+  <ul>
+    <li><code>IDiagramAssistant</code> provider contract with a priority registry and automatic fallback.</li>
+    <li>Offline rule-based assistant: a compact flowchart DSL and indented mind-map outlines, with ranked and radial layout.</li>
+    <li>Generated diagrams are ordinary <code>DiagramDto</code>s &mdash; editable, savable and executable.</li>
+  </ul>
+</section>
+
+<section class="section" id="editor">
+  <h2>Editor Experience</h2>
+  <ul>
+    <li>Palette search with live filtering and correct handling of late-added items.</li>
+    <li>Minimap with viewport rectangle and exposed mapping maths.</li>
+    <li>Property editing that writes back through public setters, edits colours as hex, and supports multi-selection.</li>
+    <li>Twelve templates with explicit wiring, and keyboard/high-contrast accessibility.</li>
+  </ul>
+</section>
+
+<section class="section" id="platforms">
+  <h2>Platforms</h2>
+  <ul>
+    <li>Five hosts in the solution: WinForms (flagship), WPF, Blazor, MAUI and Avalonia.</li>
+    <li>Avalonia renders through an offscreen Skia surface, so it needs no SkiaSharp view package and stays on the same SkiaSharp version as the core.</li>
+    <li>Shared design-time descriptor types moved into the core, which is what let all hosts come back into the build.</li>
+  </ul>
+</section>
+
+<section class="section" id="quality">
+  <h2>Quality and Release Engineering</h2>
+  <ul>
+    <li><strong>501 tests</strong> covering every library, with seven whole-surface sweeps over all 293 component types.</li>
+    <li><strong>Zero warnings</strong> across the solution, enforced by warnings-as-errors in CI.</li>
+    <li><strong>MinVer versioning</strong> from git tags, a CI solution filter, and a GitHub Actions pipeline that builds, tests and packs on tags.</li>
+    <li><strong>23 packages</strong> with audited metadata (descriptions, project and repository URLs, copyright), verified by consuming them from standalone projects on <code>net8.0</code>, <code>net9.0</code> and <code>net10.0</code>.</li>
+  </ul>
+</section>
+
+<section class="section" id="fixed">
+  <h2>Notable Fixes</h2>
+  <ul>
+    <li><strong>Save/load lost data silently</strong> &mdash; automation connections, automation configuration and ML connections are now preserved.</li>
+    <li><strong>Six crash paths</strong> &mdash; hostile input to the expression parser and evaluator, the mind-map layout, and a component drawing a disposed path could terminate the process; all are now bounded with clear errors.</li>
+    <li><strong>Thread safety</strong> &mdash; the collaboration service, credential vault and package catalog are safe under concurrent use, and role state is no longer handed out by reference.</li>
+    <li><strong>Packaging</strong> &mdash; placeholder descriptions, wrong repository URLs, unused dependencies and a hidden .NET Framework asset fallback were corrected.</li>
+  </ul>
+</section>
+'@
+
+$html = $template.Replace('{TITLE}', 'Release Notes').Replace('{SUBTITLE}', 'What is new: engine, families, automation, server, ecosystem, collaboration, editor and quality').Replace('{CONTENT}', $content)
+[System.IO.File]::WriteAllText('Help/guides/release-notes.html', $html, [System.Text.UTF8Encoding]::new($false))
+Write-Output "wrote Help/guides/release-notes.html"
