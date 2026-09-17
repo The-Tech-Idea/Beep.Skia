@@ -36,6 +36,26 @@
 </ul>
 <h3>State Layers and Elevation</h3>
 <p>Interactive controls composite Material state layers over their base color: hover at 8% opacity, focus and pressed at 12%, and dragged at 16%. Elevation (0&ndash;5) drives drop-shadow rendering in <code>MaterialControl.DrawContent</code>.</p>
+<h3>MaterialControl Surface</h3>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>Elevation</code></td><td><code>float</code></td><td>Depth level used for shadow rendering.</td></tr>
+    <tr><td><code>SvgIcon</code></td><td><code>string</code></td><td>Optional SVG markup drawn as the control's icon.</td></tr>
+    <tr><td><code>MaintainAspectRatio</code></td><td><code>bool</code></td><td>Preserves the icon's aspect ratio when scaling.</td></tr>
+    <tr><td><code>InvalidateVisual()</code></td><td><code>virtual void</code></td><td>Marks the control as needing a repaint; call after changing visual properties.</td></tr>
+    <tr><td><code>RefreshVisual()</code></td><td><code>void</code></td><td>Public wrapper that invalidates the visual, for hosts and demos.</td></tr>
+    <tr><td><code>Clicked</code></td><td><code>event EventHandler</code></td><td>Raised when the control is activated.</td></tr>
+  </tbody>
+</table>
+<p>Colors resolve through the active theme at draw time, so a control never stores theme colors itself. Per-component overrides use the component's own properties (for example <code>CustomFillColor</code>/<code>CustomStrokeColor</code> on flowchart nodes); application-wide changes go through <code>ThemeManager.Current</code>.</p>
+<h3>MaterialDesignColors</h3>
+<p>For cases where a color is needed outside a themed control, the static <code>MaterialDesignColors</code> class exposes the default MD3 palette as readonly tokens: the primary, secondary, tertiary and error families with their containers and content pairs, the surface tokens, and <code>Outline</code>/<code>OutlineVariant</code>.</p>
+<div class="code-example">
+  <pre><code class="language-csharp">var primary = MaterialDesignColors.Primary;
+var surface = MaterialDesignColors.Surface;
+var outline = MaterialDesignColors.Outline;</code></pre>
+</div>
 <h3>Border Rendering</h3>
 <p>Themed controls use the <code>BorderStyle</code> enumeration with four values: <code>None</code>, <code>Single</code>, <code>Fixed3D</code> and <code>FixedSingle</code>. Styles resolve to pre-computed <code>SKPaint</code> configurations for performance.</p>
 </div></main>

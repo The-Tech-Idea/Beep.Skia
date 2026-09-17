@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interaction System Architecture | Beep.Skia Documentation</title>
+<title>Interaction System | Beep.Skia Documentation</title>
 <link rel="stylesheet" href="../sphinx-style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,26 +15,107 @@
 <body>
 <div class="container">
 <main class="content"><div class="content-wrapper">
-<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="../architecture/component-registry.html">Architecture & Internals</a><span>&rsaquo;</span> <span>Interaction System Architecture</span></nav><div class="page-header"><h1>Interaction System Architecture</h1><p class="page-subtitle">Mouse and keyboard interaction routing through InteractionHelper and SelectionManager.</p></div>
-<p>The interaction system routes all user input events through <code>InteractionHelper</code> with a hit-test priority chain.</p>
-<h3>Hit-Test Priority</h3>
-<ol>
-<li><strong>Connection Points:</strong> If cursor is over a port (small radius), port interaction mode</li>
-<li><strong>Selection Handles:</strong> If cursor is over a resize/move handle, handle mode</li>
-<li><strong>Component Body:</strong> Full component hit test via bounding rectangle</li>
-<li><strong>Connection Lines:</strong> Line proximity test for click-to-select</li>
-<li><strong>Canvas:</strong> Background click = marquee select or deselect all</li>
-</ol>
-<h3>Drag Modes</h3>
-<ul>
-<li><strong>None:</strong> No active drag</li>
-<li><strong>ComponentMove:</strong> Dragging selected component(s)</li>
-<li><strong>PortConnect:</strong> Drawing a new connection line from a port</li>
-<li><strong>MarqueeSelect:</strong> Rubber-band selection rectangle</li>
-<li><strong>CanvasPan:</strong> Middle-mouse or space+drag panning</li>
-</ul>
-</div></main>
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="component-registry.html">Architecture &amp; Internals</a><span>&rsaquo;</span> <span>Interaction System</span></nav>
+<div class="page-header"><h1>Interaction System</h1><p class="page-subtitle">How pointer input becomes selection, drags, connections and undoable actions</p></div>
+<p>Input handling is split between <code>InteractionHelper</code> (the state machine that interprets pointer events) and <code>SelectionManager</code> (the selection model). The manager wires them together and turns their results into undoable <code>DrawingAction</code>s.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#flow">Input Flow</a></li>
+    <li><a href="#drag">Drag States</a></li>
+    <li><a href="#selection">Selection Model</a></li>
+    <li><a href="#keyboard">Keyboard and Clipboard</a></li>
+    <li><a href="#undo">Undo Integration</a></li>
+  </ul>
 </div>
+
+<section class="section" id="flow">
+  <h2>Input Flow</h2>
+  <ol>
+    <li>The host receives a native pointer event and converts the coordinates into <strong>world space</strong> (subtract <code>PanOffset</code>, divide by <code>Zoom</code>).</li>
+    <li>It forwards the event to the manager: <code>HandleMouseDown(point, modifiers, button)</code>, <code>HandleMouseMove(point, modifiers)</code>, <code>HandleMouseUp(...)</code> and <code>HandleMouseWheel(point, delta)</code>.</li>
+    <li><code>InteractionHelper</code> hit-tests ports, resize handles, components and lines in that priority order and enters a drag state.</li>
+    <li>On completion it either mutates the model directly (with a matching <code>DrawingAction</code> pushed onto <code>HistoryManager</code>) or raises an event for the host (for example <code>ComponentDropped</code>).</li>
+  </ol>
+  <div class="code-example">
+    <pre><code class="language-csharp">// What the host does on a mouse-down (world coordinates)
+float zoom = drawingManager.Zoom == 0 ? 1f : drawingManager.Zoom;
+var world = new SKPoint(
+    (screen.X - drawingManager.PanOffset.X) / zoom,
+    (screen.Y - drawingManager.PanOffset.Y) / zoom);
+
+drawingManager.HandleMouseDown(world, SKKeyModifiers.None, mouseButton: 0);</code></pre>
+  </div>
+</section>
+
+<section class="section" id="drag">
+  <h2>Drag States</h2>
+  <p><code>InteractionHelper</code> exposes its live state so hosts can render cursors, ghosts and previews:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Type</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>IsDragging</code></td><td><code>bool</code></td><td>A component drag is in progress.</td></tr>
+      <tr><td><code>DraggingComponent</code></td><td><code>SkiaComponent</code></td><td>The component being dragged.</td></tr>
+      <tr><td><code>IsDraggingLine</code></td><td><code>bool</code></td><td>A line is being re-routed or re-attached.</td></tr>
+      <tr><td><code>DraggingLine</code></td><td><code>IConnectionLine</code></td><td>The line being dragged.</td></tr>
+      <tr><td><code>IsDrawingLine</code></td><td><code>bool</code></td><td>A new connection is being drawn from a port.</td></tr>
+      <tr><td><code>IsSelecting</code> / <code>SelectionRect</code></td><td><code>bool</code> / <code>SKRect</code></td><td>Marquee selection in progress and its world-space rectangle.</td></tr>
+    </tbody>
+  </table>
+  <p>When a component drag ends, the helper builds a <code>ComponentDropEventArgs</code> (component, canvas and screen position, final bounds) and the manager raises <code>ComponentDropped</code>.</p>
+</section>
+
+<section class="section" id="selection">
+  <h2>Selection Model</h2>
+  <p><code>SelectionManager</code> owns three independent selections &mdash; components, lines and connection points &mdash; and is reachable as <code>drawingManager.SelectionManager</code>:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SelectComponent(component, addToSelection)</code></td><td>Replaces or extends the component selection.</td></tr>
+      <tr><td><code>AddToSelection(component)</code> / <code>RemoveFromSelection(...)</code></td><td>Incremental changes for all three selection kinds.</td></tr>
+      <tr><td><code>SelectComponentsInRect(rect, components, addToSelection)</code></td><td>Marquee selection; the helper calls this on mouse-up.</td></tr>
+      <tr><td><code>SelectLine(line, ...)</code> / <code>SelectConnectionPoint(point, ...)</code></td><td>Line and port selection.</td></tr>
+      <tr><td><code>SelectedComponents</code> / <code>SelectedLines</code> / <code>SelectedConnectionPoints</code></td><td>Read-only views of the current selection.</td></tr>
+      <tr><td><code>IsSelected(...)</code>, <code>SelectionCount</code>, <code>SelectAll()</code>, <code>SelectNext(forward)</code>, <code>ClearSelection()</code></td><td>Query and navigation helpers.</td></tr>
+      <tr><td><code>SelectionChanged</code></td><td>Event raised on any change; the manager re-raises it for hosts.</td></tr>
+    </tbody>
+  </table>
+  <p>Selection is a model concern, not a rendering concern: components expose <code>IsSelected</code> for drawing, but the truth lives in the manager.</p>
+</section>
+
+<section class="section" id="keyboard">
+  <h2>Keyboard and Clipboard</h2>
+  <p>The host forwards key events; the manager implements the standard editor set and exposes clipboard operations that use the same DTO serializer as files:</p>
+  <table>
+    <thead><tr><th>Action</th><th>Manager API</th></tr></thead>
+    <tbody>
+      <tr><td>Select all</td><td><code>SelectAllComponents()</code></td></tr>
+      <tr><td>Copy</td><td><code>CopySelectedComponents()</code> (serializes to a clipboard DTO string)</td></tr>
+      <tr><td>Paste</td><td><code>PasteComponents(position)</code> (deserializes, offsets, pushes <code>PasteComponentsAction</code>)</td></tr>
+      <tr><td>Delete</td><td><code>DeleteSelectedComponents()</code> (components plus attached lines as one action)</td></tr>
+      <tr><td>Undo / Redo</td><td><code>Undo()</code> / <code>Redo()</code>, with <code>CanUndo</code>/<code>CanRedo</code> for menu state</td></tr>
+      <tr><td>Move selection</td><td><code>MoveSelectedComponents(offset)</code></td></tr>
+      <tr><td>Arrange</td><td><code>BringToFront()</code> / <code>SendToBack()</code> and the align helpers</td></tr>
+    </tbody>
+  </table>
+  <p>Escape cancels an in-progress drag or connection draw; the preview line is discarded and no action is recorded.</p>
+</section>
+
+<section class="section" id="undo">
+  <h2>Undo Integration</h2>
+  <p>Every mutation that goes through the manager pushes a <code>DrawingAction</code> onto <code>HistoryManager</code>. Drags are recorded once, on mouse-up, with the original positions captured at mouse-down &mdash; so a 200-pixel drag is a single undo step, not 200.</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">// The manager records actions itself; hosts only push custom ones
+drawingManager.MoveSelectedComponents(new SKPoint(20, 0));   // recorded
+
+// Custom operations use the same history
+drawingManager.HistoryManager.ExecuteAction(new AlignComponentsAction(...));</code></pre>
+  </div>
+  <p><code>HistoryChanged</code> fires on every push, undo and redo, which is what menu commands bind to. The full action catalog is listed on the <a href="history-undo-system.html">Undo/Redo System</a> page; the events raised by input are cataloged on the <a href="event-catalog.html">Event Catalog</a> page.</p>
+</section>
+
+</div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 </body></html>

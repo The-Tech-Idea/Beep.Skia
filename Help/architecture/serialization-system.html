@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Serialization System Architecture | Beep.Skia Documentation</title>
+<title>Serialization System | Beep.Skia Documentation</title>
 <link rel="stylesheet" href="../sphinx-style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,24 +15,88 @@
 <body>
 <div class="container">
 <main class="content"><div class="content-wrapper">
-<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="../architecture/component-registry.html">Architecture & Internals</a><span>&rsaquo;</span> <span>Serialization System Architecture</span></nav><div class="page-header"><h1>Serialization System Architecture</h1><p class="page-subtitle">JSON-based diagram serialization and deserialization with component registry integration.</p></div>
-<p>The serialization system in <code>DiagramSerialization</code> converts the visual diagram state to/from JSON DTOs.</p>
-<h3>Serialization Flow</h3>
-<ol>
-<li><code>DrawingManager.ToDto()</code> creates a <code>DiagramDto</code> with component and connection collections</li>
-<li>Each component serializes its <code>X</code>, <code>Y</code>, <code>Width</code>, <code>Height</code>, <code>TypeName</code>, and <code>NodeProperties</code></li>
-<li>Connections store start/end point GUIDs for stable reconnection</li>
-<li>JSON output is compact for file storage</li>
-</ol>
-<h3>Deserialization Flow</h3>
-<ol>
-<li>Parse JSON into <code>DiagramDto</code></li>
-<li>Look up component types via <code>SkiaComponentRegistry</code></li>
-<li>Instantiate components, restore properties</li>
-<li>Rebuild connections by GUID lookup in <code>DrawingManager.ConnectionPointIndex</code></li>
-</ol>
-</div></main>
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="component-registry.html">Architecture &amp; Internals</a><span>&rsaquo;</span> <span>Serialization System</span></nav>
+<div class="page-header"><h1>Serialization System</h1><p class="page-subtitle">DTO shape, property routing, identity persistence and the load algorithm</p></div>
+<p>The persistence layer converts the live component graph into plain DTOs and back. This page is the internals view &mdash; the DTO fields, how property values are routed, how connection identity survives a round-trip, and what happens when a payload references a type that is not loaded. For the task-oriented walkthrough see <a href="../core-concepts/serialization.html">Serialization</a>.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#dtos">DTO Shape</a></li>
+    <li><a href="#properties">Property Routing</a></li>
+    <li><a href="#identity">Identity and Connections</a></li>
+    <li><a href="#load">Load Algorithm</a></li>
+    <li><a href="#invariants">Invariants</a></li>
+  </ul>
 </div>
+
+<section class="section" id="dtos">
+  <h2>DTO Shape</h2>
+  <table class="property-table">
+    <thead><tr><th>Type</th><th>Key fields</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>DiagramDto</code></td><td><code>SchemaVersion</code>, <code>ThemeName</code>, <code>Components</code>, <code>Lines</code></td><td><code>CurrentSchemaVersion</code> is <code>2</code> and is written on every save.</td></tr>
+      <tr><td><code>ComponentDto</code></td><td><code>Type</code>, <code>X</code>, <code>Y</code>, <code>Width</code>, <code>Height</code>, <code>Name</code>, <code>PropertyBag</code>, <code>TypedPropertyBag</code>, <code>InPointIds</code>, <code>OutPointIds</code></td><td><code>Type</code> is the assembly-qualified name; coordinates are sanitized (NaN/Infinity become 0).</td></tr>
+      <tr><td><code>LineDto</code></td><td><code>StartPointId</code>, <code>EndPointId</code>, <code>StartComponentIndex</code>, <code>EndComponentIndex</code>, arrow/label/routing/status fields</td><td>GUID references for saved diagrams; component indices for templates that exist before GUIDs do.</td></tr>
+    </tbody>
+  </table>
+  <p>Enums are persisted as integers and colors as RGBA <code>uint</code> values, keeping the JSON compact and round-trip safe.</p>
+</section>
+
+<section class="section" id="properties">
+  <h2>Property Routing</h2>
+  <p><code>ToDto()</code> walks <code>GetProperties(includeCommon: false, includeNodeProperties: true)</code> and routes each value by convertibility:</p>
+  <table>
+    <thead><tr><th>Value</th><th>Destination</th></tr></thead>
+    <tbody>
+      <tr><td><code>string</code>, <code>bool</code>, enum, <code>SKColor</code>, any <code>IConvertible</code></td><td><code>PropertyBag</code> via <code>Convert.ToString</code> (readable JSON)</td></tr>
+      <tr><td>Lists, dictionaries, nested objects</td><td><code>TypedPropertyBag</code> via <code>JsonSerializer.SerializeToElement</code></td></tr>
+      <tr><td>Null</td><td>Skipped</td></tr>
+    </tbody>
+  </table>
+  <p>On load, both bags are merged and applied through <code>SetPropperties(values, updateNodeProperties: true, applyToPublicSetters: true)</code>, so public property setters run exactly as if the values had been typed in the property grid.</p>
+</section>
+
+<section class="section" id="identity">
+  <h2>Identity and Connections</h2>
+  <p>Connection points carry stable GUIDs. On save, each component records its port ids in <code>InPointIds</code>/<code>OutPointIds</code>; on load those ids are written back onto the freshly created ports before lines are resolved. That is what keeps ERD row-level and field-level connections attached across sessions.</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">// Save
+var dto = drawingManager.ToDto();               // ports keep their ids
+var json = JsonSerializer.Serialize(dto);
+
+// Load
+var restored = JsonSerializer.Deserialize&lt;DiagramDto&gt;(json);
+drawingManager.LoadFromDto(restored);           // ids re-applied, lines resolved</code></pre>
+  </div>
+  <p>Templates skip GUIDs entirely and use <code>StartComponentIndex</code>/<code>EndComponentIndex</code> instead, because the components they connect are created in the same operation.</p>
+</section>
+
+<section class="section" id="load">
+  <h2>Load Algorithm</h2>
+  <ol>
+    <li><strong>Clear</strong> &mdash; existing components are removed.</li>
+    <li><strong>Theme</strong> &mdash; <code>ThemeName</code> is applied through <code>ThemeManager.ApplyTheme</code> before anything renders.</li>
+    <li><strong>Create</strong> &mdash; for each <code>ComponentDto</code>, <code>Type.GetType(comp.Type)</code> resolves the CLR type; unknown types are skipped (a null placeholder keeps the index alignment for templates).</li>
+    <li><strong>Position</strong> &mdash; <code>X</code>, <code>Y</code>, <code>Width</code>, <code>Height</code> and <code>Name</code> are assigned.</li>
+    <li><strong>Properties</strong> &mdash; the two bags are merged and applied through <code>SetPropperties</code>. This runs <em>before</em> port ids so that port-count properties (for example ERD row counts) take effect first.</li>
+    <li><strong>Port identity</strong> &mdash; persisted ids are written to the matching <code>ConnectionPoint</code> instances.</li>
+    <li><strong>Lines</strong> &mdash; each <code>LineDto</code> resolves its endpoints by GUID (or by component index for templates) and reconnects them.</li>
+  </ol>
+</section>
+
+<section class="section" id="invariants">
+  <h2>Invariants</h2>
+  <ul>
+    <li><strong>Loading never throws for bad data.</strong> Missing bags, unknown types and unresolvable ports are skipped so a partially damaged file still opens.</li>
+    <li><strong>Save is total.</strong> Every registered component type is persisted through the same generic path; families do not implement their own serialization.</li>
+    <li><strong>The property grid and the loader share one path.</strong> Both call <code>SetPropperties</code>, so a value that round-trips through a file behaves identically to one typed in the grid.</li>
+    <li><strong>Class names are API.</strong> Renaming a component class breaks older files; keep names stable or provide a migration step before <code>LoadFromDto</code>.</li>
+  </ul>
+  <p>The whole-surface sweeps in the test suite assert these invariants across all 293 component types: each renders, updates, survives a serialization round-trip and accepts its own property values.</p>
+</section>
+
+</div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 </body></html>

@@ -16,55 +16,113 @@
 <div class="container">
 <main class="content"><div class="content-wrapper">
 <nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="workflow-engine.html">Automation</a><span>&rsaquo;</span> <span>Automation Data Sources</span></nav>
-<div class="page-header"><h1>Automation Data Sources</h1><p class="page-subtitle">Bridging automation nodes to real data providers</p></div>
-<p>Automation nodes that read or write data resolve their target through a provider registry, which keeps diagrams
-independent of the concrete data access stack.</p>
+<div class="page-header"><h1>Automation Data Sources</h1><p class="page-subtitle">Bridging workflow nodes to real data through a single provider seam</p></div>
+<p><code>DataSourceAutomationNode</code> reads from configured BeepDataSources (databases, files, APIs and other providers) during workflow execution. The framework does not depend on a concrete data stack: the node resolves an ambient provider, so the same diagram can run against a test source in staging and production in release.</p>
 
 <div class="toc">
   <h3>Table of Contents</h3>
   <ul>
-    <li><a href="#provider">Provider Contract</a></li>
+    <li><a href="#contract">Provider Contract</a></li>
     <li><a href="#registry">Registry</a></li>
-    <li><a href="#example">Example</a></li>
+    <li><a href="#node">DataSourceAutomationNode</a></li>
+    <li><a href="#beepdm">Wiring the BeepDM Provider</a></li>
   </ul>
 </div>
 
-<section class="section" id="provider">
+<section class="section" id="contract">
   <h2>Provider Contract</h2>
-  <p><code>IAutomationDataSourceProvider</code> exposes the operations nodes need &mdash; list data sources, read rows,
-  write rows, and test connectivity &mdash; without exposing a specific ORM, driver, or connection type.</p>
+  <p><code>IAutomationDataSourceProvider</code> is deliberately small &mdash; query and connectivity, both async, both cancellation-aware:</p>
   <div class="code-example">
     <pre><code class="language-csharp">public interface IAutomationDataSourceProvider
 {
-    string Name { get; }
-    IReadOnlyList&lt;string&gt; GetDataSourceNames();
-    IReadOnlyList&lt;IDictionary&lt;string, object&gt;&gt; Read(string dataSource, string query);
-    int Write(string dataSource, string target, IEnumerable&lt;IDictionary&lt;string, object&gt;&gt; rows);
-    bool TestConnection(string dataSource, out string error);
+    Task&lt;IReadOnlyList&lt;Dictionary&lt;string, object&gt;&gt;&gt; QueryAsync(
+        string dataSourceName,
+        string entityName,
+        string query,
+        int maxRows,
+        CancellationToken cancellationToken = default);
+
+    Task&lt;bool&gt; TestConnectionAsync(
+        string dataSourceName,
+        CancellationToken cancellationToken = default);
 }</code></pre>
   </div>
+  <p>Either <code>entityName</code> or <code>query</code> may be supplied: the node passes both through and the provider decides how to interpret them (a raw SQL source typically uses <code>query</code>; an entity-oriented source uses <code>entityName</code>).</p>
 </section>
 
 <section class="section" id="registry">
   <h2>Registry</h2>
-  <p><code>AutomationDataSourceRegistry</code> holds providers by name and resolves the one a node asks for. When a node
-  requests a provider that is not registered, the node reports a clear failure instead of falling over.</p>
+  <p><code>AutomationDataSourceRegistry</code> is an ambient single-provider slot:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Provider</code></td><td>Gets or sets the active provider. Setting <code>null</code> disables real data access.</td></tr>
+      <tr><td><code>HasProvider</code></td><td>True when a provider is registered.</td></tr>
+      <tr><td><code>Clear()</code></td><td>Removes the registered provider (tests use this between cases).</td></tr>
+    </tbody>
+  </table>
+  <p>When a node executes and no provider is registered, it fails with a clear error rather than silently returning no rows.</p>
 </section>
 
-<section class="section" id="example">
-  <h2>Example</h2>
+<section class="section" id="node">
+  <h2>DataSourceAutomationNode</h2>
+  <table class="property-table">
+    <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DataSourceName</code></td><td><code>string</code></td><td>Registered data source to read from.</td></tr>
+      <tr><td><code>EntityName</code></td><td><code>string</code></td><td>Entity/table to read when not using a raw query.</td></tr>
+      <tr><td><code>QueryString</code></td><td><code>string</code></td><td>Raw query text passed to the provider.</td></tr>
+      <tr><td><code>QueryParameters</code></td><td><code>Dictionary&lt;string, object&gt;</code></td><td>Parameter values for the query.</td></tr>
+      <tr><td><code>OutputFormat</code></td><td><code>string</code></td><td>Shape of the emitted data (for example rows as dictionaries).</td></tr>
+      <tr><td><code>MaxRows</code></td><td><code>int</code></td><td>Row cap applied at the provider.</td></tr>
+      <tr><td><code>UseCache</code> / <code>CacheTimeout</code></td><td><code>bool</code> / <code>TimeSpan</code></td><td>Optional result caching for repeated reads.</td></tr>
+    </tbody>
+  </table>
+  <p>The node also exposes <code>SetDataSourceManager(IDMEEditor, IDMLogger, IErrorsInfo)</code> for hosts that already run a BeepDM editor, so logging and error reporting flow into the same pipeline as the rest of the application.</p>
+</section>
+
+<section class="section" id="beepdm">
+  <h2>Wiring the BeepDM Provider</h2>
+  <p>Implement the interface over your BeepDM editor (or any other stack) once at startup; every datasource-backed node in every workflow then works:</p>
   <div class="code-example">
-    <h3>Registering a provider</h3>
-    <pre><code class="language-csharp">AutomationDataSourceRegistry.Register(new MyBeepDmProvider(editor));
+    <pre><code class="language-csharp">public sealed class BeepDmProvider : IAutomationDataSourceProvider
+{
+    private readonly IDMEEditor _editor;
+    public BeepDmProvider(IDMEEditor editor) =&gt; _editor = editor;
 
-var node = new DataSourceAutomationNode { Name = "Load Orders" };
-node.Configuration["Provider"] = "BeepDM";
-node.Configuration["DataSource"] = "Sales";
-node.Configuration["Query"] = "SELECT * FROM Orders WHERE Status = 'Open'";</code></pre>
+    public async Task&lt;IReadOnlyList&lt;Dictionary&lt;string, object&gt;&gt;&gt; QueryAsync(
+        string dataSourceName, string entityName, string query, int maxRows,
+        CancellationToken cancellationToken = default)
+    {
+        var ds = _editor.GetDataSource(dataSourceName);
+        var result = ds.RunQuery(entityName, query, maxRows);
+        return result.Rows.Select(r =&gt; new Dictionary&lt;string, object&gt;(r)).ToList();
+    }
+
+    public async Task&lt;bool&gt; TestConnectionAsync(string dataSourceName,
+        CancellationToken cancellationToken = default)
+        =&gt; _editor.GetDataSource(dataSourceName)?.ConnectionStatus == ConnectionState.Open;
+}
+
+// Register once at startup
+AutomationDataSourceRegistry.Provider = new BeepDmProvider(editor);
+
+// Configure a node (in code or through the property grid)
+var node = new DataSourceAutomationNode
+{
+    Name = "Load Orders",
+    DataSourceName = "Sales",
+    QueryString = "SELECT * FROM Orders WHERE Status = @status",
+    MaxRows = 1000
+};
+node.QueryParameters["status"] = "Open";</code></pre>
   </div>
-  <p>Because the provider is resolved by name, the same diagram can run against a test database in staging and the
-  production system in release by registering a different provider.</p>
+  <div class="admonition note">
+    <p class="admonition-title">Secrets Stay Out of Diagrams</p>
+    <p>Nodes reference a data source <em>name</em>; credentials live in the <a href="credentials.html">credential vault</a> or in the BeepDM connection configuration, never in the diagram file.</p>
+  </div>
 </section>
+
 </div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

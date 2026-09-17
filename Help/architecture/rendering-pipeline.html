@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rendering Pipeline Architecture | Beep.Skia Documentation</title>
+<title>Rendering Pipeline | Beep.Skia Documentation</title>
 <link rel="stylesheet" href="../sphinx-style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,19 +15,106 @@
 <body>
 <div class="container">
 <main class="content"><div class="content-wrapper">
-<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="../architecture/component-registry.html">Architecture & Internals</a><span>&rsaquo;</span> <span>Rendering Pipeline Architecture</span></nav><div class="page-header"><h1>Rendering Pipeline Architecture</h1><p class="page-subtitle">The complete rendering pipeline from DrawingManager through SkiaComponent to the SkiaSharp canvas.</p></div>
-<p>The rendering pipeline transforms component state into pixels on screen through a multi-stage process managed by <code>RenderingHelper</code>.</p>
-<h3>Pipeline Stages</h3>
-<ol>
-<li><strong>Canvas Preparation:</strong> Clear canvas, apply pan/zoom transform</li>
-<li><strong>Grid Rendering:</strong> Draw background grid if enabled (minor + major lines)</li>
-<li><strong>Connection Lines:</strong> Render all connection lines (behind components)</li>
-<li><strong>Component Rendering:</strong> For each component: render background, text, icon, overlay</li>
-<li><strong>Port Rendering:</strong> Draw connection points (visible when component selected)</li>
-<li><strong>Selection Overlay:</strong> Marquee rectangle, resize handles, focus indicator</li>
-</ol>
-</div></main>
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="component-registry.html">Architecture &amp; Internals</a><span>&rsaquo;</span> <span>Rendering Pipeline</span></nav>
+<div class="page-header"><h1>Rendering Pipeline</h1><p class="page-subtitle">Frame structure, culling, world vs. screen space and the export path</p></div>
+<p>Rendering goes through <code>RenderingHelper</code>, which owns the frame structure. <code>DrawingManager.Draw(SKCanvas)</code> is a one-line forwarder, and the same helper serves the export path with a different configuration.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#frame">Frame Structure</a></li>
+    <li><a href="#spaces">World vs. Screen Space</a></li>
+    <li><a href="#culling">Culling and Update</a></li>
+    <li><a href="#export">Export Path</a></li>
+    <li><a href="#cost">Measured Cost</a></li>
+  </ul>
 </div>
+
+<section class="section" id="frame">
+  <h2>Frame Structure</h2>
+  <p>Every frame runs the same ordered passes:</p>
+  <ol>
+    <li><strong>Update and partition</strong> &mdash; each component's <code>Update(DrawingContext)</code> runs once, then it is partitioned into <em>dynamic</em> (world space) or <em>static</em> (screen space, <code>IsStatic</code>) lists.</li>
+    <li><strong>World transform</strong> &mdash; <code>canvas.Translate(PanOffset)</code> followed by <code>canvas.Scale(Zoom)</code>.</li>
+    <li><strong>Grid</strong> &mdash; drawn in world space when <code>ShowGrid</code> is on.</li>
+    <li><strong>Components</strong> &mdash; each dynamic component's <code>Draw(canvas, drawingContext)</code> runs with a context whose <code>Bounds</code> is <code>canvas.DeviceClipBounds</code>.</li>
+    <li><strong>Connection lines</strong> &mdash; every line draws; invisible lines are skipped. A line being dragged is drawn last as a preview.</li>
+    <li><strong>Selection adorners</strong> &mdash; marquee rectangle, resize handles, then the host's <code>WorldOverlay</code> callback (comment pins use this).</li>
+    <li><strong>Static overlays</strong> &mdash; after <code>canvas.Restore()</code>, screen-space components (palette, property editor, minimap) draw without pan/zoom.</li>
+  </ol>
+
+  <div class="admonition note">
+    <p class="admonition-title">Overlay Hook</p>
+    <p><code>DrawingManager.WorldOverlay</code> is an <code>Action&lt;SKCanvas&gt;</code> invoked inside the world transform after selection adorners. Use it for world-space annotations that must not appear in exports.</p>
+  </div>
+</section>
+
+<section class="section" id="spaces">
+  <h2>World vs. Screen Space</h2>
+  <p>The split is explicit and drives correctness:</p>
+  <table>
+    <thead><tr><th>Space</th><th>Contents</th><th>Transform</th></tr></thead>
+    <tbody>
+      <tr><td>World</td><td>Diagram components, connection lines, grid, selection adorners, world overlay</td><td>Pan offset + zoom applied</td></tr>
+      <tr><td>Screen</td><td>Palette, property editors, minimap, context menus (components with <code>IsStatic = true</code>)</td><td>No transform; drawn after restore</td></tr>
+    </tbody>
+  </table>
+  <p>Input follows the same convention: the host converts pointer coordinates into world space before calling <code>HandleMouseDown/Move/Up</code>, so hit testing never deals with zoom.</p>
+</section>
+
+<section class="section" id="culling">
+  <h2>Culling and Update</h2>
+  <p>The <code>DrawingContext</code> passed to components carries <code>Zoom</code>, <code>PanOffset</code> and <code>Bounds</code> (the device clip rectangle). Components use <code>Bounds</code> to skip work that cannot be visible &mdash; that is why a component drawn with an empty viewport produces no ink, and why tests draw through a manager with a real surface.</p>
+  <p>Exceptions during <code>Update</code> or <code>Draw</code> are caught per component and written to the debug trace: one misbehaving component cannot take down the frame.</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">// The frame entry point
+public void Draw(SKCanvas canvas) =&gt; _renderingHelper.DrawAll(canvas);
+
+// What a component receives
+protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+{
+    if (!context.Bounds.IntersectsWith(Bounds)) return;   // culled
+    // ... draw
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="export">
+  <h2>Export Path</h2>
+  <p>Exports reuse the pipeline with everything interactive disabled: no pan/zoom, no grid, no selection adorners and no static overlays. That produces a clean diagram at 1:1 scale regardless of the current viewport.</p>
+  <table class="property-table">
+    <thead><tr><th>Call</th><th>Configuration</th></tr></thead>
+    <tbody>
+      <tr><td><code>DrawAll(canvas)</code></td><td><code>applyPanZoom: true</code>, grid, selection and static overlays on.</td></tr>
+      <tr><td><code>DrawForExport(canvas)</code></td><td>All off, <code>zoom: 1</code>, <code>pan: (0,0)</code>.</td></tr>
+    </tbody>
+  </table>
+  <p>The host wraps this for files: <code>ExportToPng(path, scale)</code> renders to an offscreen surface at the requested scale, <code>ExportToSvg</code> and <code>ExportToPdf</code> use the same draw pass with their respective Skia backends.</p>
+</section>
+
+<section class="section" id="cost">
+  <h2>Measured Cost</h2>
+  <p>The repository tracks render cost in <code>RenderPerformanceTests</code> (median of five runs on the CI machine):</p>
+  <table>
+    <thead><tr><th>Scenario</th><th>Frame time</th><th>Allocations</th></tr></thead>
+    <tbody>
+      <tr><td>200 components</td><td>~3.1 ms</td><td>~40.7 KB</td></tr>
+      <tr><td>200 components + 199 connection lines</td><td>~4.5 ms</td><td>~40.8 KB</td></tr>
+    </tbody>
+  </table>
+  <p>The line-heavy case is nearly allocation-neutral because <code>ConnectionLine</code> reuses its <code>SKPaint</code> across frames (the paint-reuse pass removed ~17 KB per frame and roughly a millisecond). Text goes through <code>TypefaceCache</code>, whose cached lookups are about 13&times; faster than resolving typefaces per draw.</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">// Reuse paints across frames; never allocate in DrawContent
+private readonly SKPaint _fill = new SKPaint { IsAntialias = true };
+
+// Cache typefaces instead of resolving them per frame
+var typeface = TypefaceCache.Get("Segoe UI", SKFontStyle.Normal);
+Console.WriteLine(TypefaceCache.CachedCount);   // entries currently cached</code></pre>
+  </div>
+  <p>See the <a href="../guides/performance.html">Performance Guide</a> for the full optimization checklist.</p>
+</section>
+
+</div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 </body></html>

@@ -7,6 +7,7 @@
 		<Nullable>disable</Nullable>
 		<RootNamespace>Beep.Skia.Sample.Server</RootNamespace>
 		<AssemblyName>Beep.Skia.Sample.Server</AssemblyName>
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>

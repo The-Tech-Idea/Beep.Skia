@@ -1,6 +1,6 @@
 # Beep.Skia Documentation Status
 
-**Last updated:** 2026-09-17 (round 4)
+**Last updated:** 2026-09-17 (round 5)
 **Total pages:** 105 | **Sections:** 14
 
 ---
@@ -28,7 +28,7 @@
 ## Page Inventory
 
 ### Getting Started (3)
-- [x] `getting-started/installation.html` — NuGet install, project setup, dependencies
+- [x] `getting-started/installation.html` — private feed prerequisite, real package/TFM tables, project setup, verification
 - [x] `getting-started/quick-start.html` — Complete tutorial with DrawingManager and SkiaHostControl
 - [x] `getting-started/architecture-overview.html` — Solution structure, layers, patterns
 - [x] `getting-started/samples.html` — WinForms editor sample and workflow server sample
@@ -102,11 +102,11 @@
 - [x] `guides/troubleshooting.html` — Restore/build, rendering, serialization, automation, extension and testing fixes
 
 ### Architecture & Internals (8)
-- [x] `architecture/component-registry.html`
-- [x] `architecture/rendering-pipeline.html`
-- [x] `architecture/interaction-system.html`
-- [x] `architecture/serialization-system.html`
-- [x] `architecture/material-design-system.html`
+- [x] `architecture/component-registry.html` — registry model, registration paths, queries, instantiation, consumers
+- [x] `architecture/rendering-pipeline.html` — frame passes, world/screen split, culling, export path, measured cost
+- [x] `architecture/interaction-system.html` — input flow, drag states, selection model, keyboard/clipboard, undo integration
+- [x] `architecture/serialization-system.html` — DTO fields, property routing, identity, load algorithm, invariants
+- [x] `architecture/material-design-system.html` — tokens, ThemeManager, state layers, MaterialControl surface, MaterialDesignColors
 - [x] `architecture/layout-engines.html`
 - [x] `architecture/history-undo-system.html` (+ action catalog)
 - [x] `architecture/event-catalog.html` — 16 DrawingManager events and interaction args
@@ -115,10 +115,10 @@
 ### Automation (6)
 - [x] `automation/workflow-engine.html` — Execution engine, retries, variables, pause/resume/cancel
 - [x] `automation/nodes.html` — AutomationNode base, trigger/data/logic node types
-- [x] `automation/triggers.html` — Trigger types and dispatch
-- [x] `automation/credentials.html` — Credential vault and connection manager
+- [x] `automation/triggers.html` — TriggerBase contract, TriggerType values, lifecycle, activation telemetry
+- [x] `automation/credentials.html` — vault API, CredentialType values, encrypted export/import, connection manager
 - [x] `automation/server-sku.html` — WorkflowExecutionService, API, HTTP router, server sample
-- [x] `automation/data-sources.html` — Datasource-backed workflow nodes
+- [x] `automation/data-sources.html` — IAutomationDataSourceProvider contract, registry, node properties, BeepDM wiring
 - [x] `automation/jobs.html` — ExecutionJob, JobState, results and engine execution records
 
 ### Ecosystem (4)

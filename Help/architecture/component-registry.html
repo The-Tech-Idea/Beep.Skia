@@ -15,19 +15,118 @@
 <body>
 <div class="container">
 <main class="content"><div class="content-wrapper">
-<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="../architecture/component-registry.html">Architecture & Internals</a><span>&rsaquo;</span> <span>SkiaComponentRegistry Architecture</span></nav><div class="page-header"><h1>SkiaComponentRegistry Architecture</h1><p class="page-subtitle">The static registry that discovers, loads, caches, and instantiates all SkiaComponent subclasses for dynamic plugin loading.</p></div>
-<p><strong>Namespace:</strong> <code>Beep.Skia</code> &mdash; <strong>Lines:</strong> 661</p>
-<p>The <code>SkiaComponentRegistry</code> is the central plugin discovery and instantiation system. It scans assemblies, resolves types, and provides factory methods for all <code>SkiaComponent</code> subclasses at runtime.</p>
-<h3>Key Responsibilities</h3>
-<ul>
-<li>Registration of component definitions discovered by the extension SDK and hosts</li>
-<li>Type caching by display name and full type name</li>
-<li>Instantiation with parameterless constructors</li>
-<li>Category-based grouping for palette display</li>
-<li>Instantiation support for palette drops, templates and deserialization</li>
-</ul>
-</div></main>
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="component-registry.html">Architecture &amp; Internals</a><span>&rsaquo;</span> <span>SkiaComponentRegistry</span></nav>
+<div class="page-header"><h1>SkiaComponentRegistry</h1><p class="page-subtitle">How component types are registered, queried and instantiated across the framework</p></div>
+<p><code>SkiaComponentRegistry</code> is a static catalog of component types. It is the single source of truth that the palette, templates, serialization and palette drops all read from. It stores no instances &mdash; only <code>AssemblyClassDefinition</code> metadata and factory helpers.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#model">What It Stores</a></li>
+    <li><a href="#registration">Registration</a></li>
+    <li><a href="#queries">Queries</a></li>
+    <li><a href="#instantiation">Instantiation</a></li>
+    <li><a href="#integration">Who Reads It</a></li>
+  </ul>
 </div>
+
+<section class="section" id="model">
+  <h2>What It Stores</h2>
+  <p>The registry keeps a <code>List&lt;AssemblyClassDefinition&gt;</code> (exposed as <code>LoadedComponents</code>). Each entry describes one component type:</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Type</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>className</code></td><td><code>string</code></td><td>Class name; the palette converts it to a display label.</td></tr>
+      <tr><td><code>dllname</code></td><td><code>string</code></td><td>Assembly that provides the type.</td></tr>
+      <tr><td><code>GuidID</code></td><td><code>string</code></td><td>Stable identifier for lookups.</td></tr>
+      <tr><td><code>type</code></td><td><code>Type</code></td><td>Resolved CLR type used for instantiation.</td></tr>
+      <tr><td><code>Methods</code></td><td><code>List&lt;MethodsClass&gt;</code></td><td>Optional command methods surfaced as palette children.</td></tr>
+    </tbody>
+  </table>
+  <p>Duplicates are rejected on insert by comparing <code>GuidID</code>, or <code>className</code> plus <code>dllname</code>. Re-registering the same type is therefore a no-op rather than an error.</p>
+</section>
+
+<section class="section" id="registration">
+  <h2>Registration</h2>
+  <p>Three shapes are available depending on how many entries you have:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">// One at a time
+SkiaComponentRegistry.AddComponent(definition);
+
+// A batch (skips duplicates individually)
+SkiaComponentRegistry.AddComponents(definitions);
+
+// Replace everything (used when re-scanning a plugin folder)
+SkiaComponentRegistry.SetComponents(definitions);</code></pre>
+  </div>
+  <p>In practice you rarely call these directly. The supported paths are:</p>
+  <ul>
+    <li><strong>Extension SDK</strong> &mdash; <code>ISkiaExtension.GetComponentTypes()</code> declares types and <code>ISkiaExtensionContext.RegisterComponent(type, category, displayName)</code> registers them; <code>SkiaExtensionHost</code> performs discovery. See <a href="../ecosystem/extensions.html">Extension SDK</a>.</li>
+    <li><strong>Assembly scanning</strong> &mdash; hosts that already use the shared BeepDM <code>AssemblyHandler</code> feed the discovered definitions into <code>SetComponents</code>/<code>AddComponents</code>.</li>
+    <li><strong>Tests and tools</strong> &mdash; construct <code>AssemblyClassDefinition</code> values directly and call <code>Clear()</code> between runs.</li>
+  </ul>
+</section>
+
+<section class="section" id="queries">
+  <h2>Queries</h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Returns</th></tr></thead>
+    <tbody>
+      <tr><td><code>GetComponents()</code></td><td>All registered definitions.</td></tr>
+      <tr><td><code>GetComponentsOrdered()</code></td><td>The same list ordered for display; the palette uses this.</td></tr>
+      <tr><td><code>GetComponentByName(className)</code></td><td>The definition for a class name, or null.</td></tr>
+      <tr><td><code>GetComponentByGuid(guid)</code></td><td>The definition for a stable id, or null.</td></tr>
+      <tr><td><code>GetComponentsByAssembly(assemblyName)</code></td><td>Everything provided by one assembly.</td></tr>
+      <tr><td><code>GetComponentsByType(typeName)</code></td><td>Everything matching a type name.</td></tr>
+      <tr><td><code>GetComponentsWithMethods()</code></td><td>Only components that expose command methods.</td></tr>
+      <tr><td><code>GetComponentsWithVisualProperties()</code></td><td>Components that carry designer/visual metadata.</td></tr>
+      <tr><td><code>GetComponentsByCapabilities(hasLocalDB, isDataSource, inMemory)</code></td><td>Capability-filtered subsets.</td></tr>
+      <tr><td><code>GetAvailableNamespaces()</code></td><td>Distinct namespaces, useful for grouping in tools.</td></tr>
+      <tr><td><code>IsComponentRegistered(className)</code></td><td>Fast existence check.</td></tr>
+      <tr><td><code>Clear()</code></td><td>Empties the registry (tests, host shutdown).</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="instantiation">
+  <h2>Instantiation</h2>
+  <p>Two overloads create instances: from a definition or from a class name. Both use the parameterless constructor, so every component type must have one.</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">// From a palette item (ComponentItem wraps the definition)
+var component = SkiaComponentRegistry.CreateComponentInstance(args.Component.ClassDefinition);
+
+// From a name
+var node = SkiaComponentRegistry.CreateComponentInstance("ProcessNode");
+
+if (node != null)
+{
+    node.X = 120;
+    node.Y = 80;
+    drawingManager.AddComponent(node);
+}</code></pre>
+  </div>
+  <p>Creation is deliberately dumb: it constructs the type and returns it. Positioning, naming, undo registration and parenting belong to the caller (the host control does all four when you drop from the palette).</p>
+</section>
+
+<section class="section" id="integration">
+  <h2>Who Reads It</h2>
+  <table>
+    <thead><tr><th>Consumer</th><th>Usage</th></tr></thead>
+    <tbody>
+      <tr><td><code>ComponentPalette</code></td><td><code>LoadComponentsFromRegistry()</code> groups <code>GetComponentsOrdered()</code> into categories.</td></tr>
+      <tr><td><code>DrawingManager</code> templates</td><td><code>GetTemplates()</code> and <code>LoadTemplate(dto)</code> build diagrams from built-in DTOs.</td></tr>
+      <tr><td>Serialization</td><td><code>LoadFromDto</code> resolves <code>ComponentDto.Type</code> with <code>Type.GetType()</code>; a missing type is skipped, not fatal.</td></tr>
+      <tr><td>Extension host</td><td>Registers extension components and commands during <code>Initialize</code>.</td></tr>
+      <tr><td>Tests</td><td>Whole-surface sweeps enumerate the registry to exercise every component type.</td></tr>
+    </tbody>
+  </table>
+  <div class="admonition note">
+    <p class="admonition-title">Registry vs. Extension SDK</p>
+    <p>The registry is storage; the extension SDK is the supported way to fill it. Prefer implementing <code>ISkiaExtension</code> over calling <code>AddComponent</code> directly so packages can be installed, versioned and uninstalled through the marketplace.</p>
+  </div>
+</section>
+
+</div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 </body></html>

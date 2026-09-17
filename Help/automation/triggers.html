@@ -34,7 +34,7 @@
   <table>
     <thead><tr><th>Trigger</th><th>Fires when</th><th>Key configuration</th></tr></thead>
     <tbody>
-      <tr><td><code>ManualTrigger</code></td><td>You call <code>ActivateAsync()</code> (or the user clicks)</td><td>Optional payload passed to the workflow</td></tr>
+      <tr><td><code>ManualTrigger</code></td><td>The host (or user) starts the workflow directly; the trigger only tracks active state</td><td>Optional activation payload</td></tr>
       <tr><td><code>ScheduleTrigger</code></td><td>A fixed interval elapses</td><td><code>Interval</code> (must be greater than zero)</td></tr>
       <tr><td><code>EventTrigger</code></td><td>An application event is raised</td><td>Event name and optional filter</td></tr>
       <tr><td><code>FileWatchTrigger</code></td><td>A file matching a filter is created, changed, deleted, or renamed</td><td><code>Path</code>, <code>Filter</code>, <code>IncludeSubdirectories</code></td></tr>
@@ -58,7 +58,7 @@
 var validation = await trigger.ValidateAsync();   // e.g. "Directory does not exist"
 if (!validation.IsValid) { /* surface it */ }
 
-trigger.Triggered += (s, e) =&gt; Console.WriteLine($"fired with {e.Data?.Count} field(s)");
+trigger.Triggered += (s, e) =&gt; Console.WriteLine($"fired with {e.TriggerData?.Count} field(s)");
 await trigger.StartAsync();
 
 // ... later
@@ -70,7 +70,22 @@ trigger.Dispose();   // stops the trigger and releases its watcher/timer</code><
     system handles. Disposal is idempotent and safe on an already-stopped trigger, and a stopped trigger can be restarted.
   </div>
   <p>Each trigger exposes <code>IsActive</code>, <code>IsEnabled</code>, <code>LastActivated</code> and
-  <code>ActivationCount</code> for monitoring, plus <code>Triggered</code> and <code>ErrorOccurred</code> events.</p>
+  <code>ActivationCount</code> for monitoring, plus <code>Triggered</code> and <code>ErrorOccurred</code> events. The <code>Triggered</code> event carries <code>TriggerId</code>, <code>TriggerType</code> and a <code>TriggerData</code> payload; failures arrive through <code>ErrorOccurred</code> with the exception and message.</p>
+
+<h3>TriggerBase Members</h3>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>Id</code></td><td><code>string</code></td><td>Short unique id assigned at construction.</td></tr>
+    <tr><td><code>Name</code> / <code>Description</code></td><td><code>string</code></td><td>Display identity of the trigger.</td></tr>
+    <tr><td><code>TriggerType</code></td><td><code>TriggerType</code></td><td><code>Manual</code>, <code>Scheduled</code>, <code>WebHook</code>, <code>DataChange</code>, <code>Event</code>, <code>Email</code>, <code>FileSystem</code> or <code>API</code>.</td></tr>
+    <tr><td><code>IsActive</code> / <code>IsEnabled</code></td><td><code>bool</code></td><td>Running state and a separate enable switch.</td></tr>
+    <tr><td><code>WorkflowId</code></td><td><code>string</code></td><td>The workflow this trigger starts.</td></tr>
+    <tr><td><code>Configuration</code></td><td><code>Dictionary&lt;string, object&gt;</code></td><td>Free-form settings, mirrored by <code>GetConfigurationSchema()</code>.</td></tr>
+    <tr><td><code>LastActivated</code> / <code>ActivationCount</code></td><td><code>DateTime?</code> / <code>long</code></td><td>Activation telemetry.</td></tr>
+    <tr><td><code>InitializeAsync</code> / <code>ValidateAsync</code> / <code>StartAsync</code> / <code>StopAsync</code></td><td><code>Task</code></td><td>Lifecycle, all cancellation-aware.</td></tr>
+  </tbody>
+</table>
 </section>
 
 <section class="section" id="example">
