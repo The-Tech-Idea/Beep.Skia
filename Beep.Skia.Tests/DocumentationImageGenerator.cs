@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Beep.Skia;
+using Beep.Skia.Model;
 using SkiaSharp;
 using Xunit;
 
@@ -171,6 +172,96 @@ namespace Beep.Skia.Tests
             }
 
             Assert.True(generated > 0, "no template images were generated");
+        }
+
+        [Fact]
+        public void GenerateArchitectureImage()
+        {
+            if (Environment.GetEnvironmentVariable("BEEP_SKIA_GENERATE_DOC_IMAGES") != "1")
+                return;
+
+            var root = FindRepositoryRoot();
+            Assert.False(string.IsNullOrEmpty(root), "repository root (containing Help/) was not found");
+
+            var outputDir = Path.Combine(root, "Help", "assets");
+            Directory.CreateDirectory(outputDir);
+
+            var manager = new DrawingManager();
+            var layers = new (string Title, float Y, string[] Boxes)[]
+            {
+                ("Hosts", 60, new[] { "WinForms", "WPF", "Blazor", "MAUI", "Avalonia" }),
+                ("DrawingManager", 190, new[] { "Canvas + viewport", "Selection", "History", "Templates", "Validation" }),
+                ("Components", 320, new[] { "SkiaComponent", "Material controls", "16 diagram families", "293 component types" }),
+                ("Connections", 450, new[] { "Routing", "Labels", "Animation", "ERD multiplicity" }),
+                ("Services", 580, new[] { "Serialization", "Automation", "Extensions", "Collaboration", "Assist" })
+            };
+
+            var midpoints = new List<SkiaComponent>();
+
+            foreach (var layer in layers)
+            {
+                var boxWidth = 180f;
+                var gap = 16f;
+                var totalWidth = layer.Boxes.Length * boxWidth + (layer.Boxes.Length - 1) * gap;
+                var x = 40f + (900f - totalWidth) / 2f;
+                SkiaComponent middle = null;
+                var index = 0;
+
+                foreach (var label in layer.Boxes)
+                {
+                    var box = new Beep.Skia.Flowchart.ProcessNode
+                    {
+                        Label = label,
+                        X = x,
+                        Y = layer.Y,
+                        Width = boxWidth,
+                        Height = 56
+                    };
+                    manager.AddComponent(box);
+                    if (index == layer.Boxes.Length / 2) middle = box;
+                    x += boxWidth + gap;
+                    index++;
+                }
+
+                if (middle != null) midpoints.Add(middle);
+
+                var band = new Beep.Skia.Components.Label
+                {
+                    Text = layer.Title,
+                    X = 40,
+                    Y = layer.Y - 32,
+                    Width = 900,
+                    Height = 26,
+                    TextFontSize = 14
+                };
+                manager.AddComponent(band);
+            }
+
+            for (var i = 0; i < midpoints.Count - 1; i++)
+            {
+                manager.ConnectComponents(midpoints[i], midpoints[i + 1]);
+                var line = manager.GetLines().Last();
+                line.RoutingMode = LineRoutingMode.Straight;
+                line.ShowEndArrow = true;
+                line.LineColor = new SKColor(0x79, 0x75, 0x7E);
+            }
+
+            var bounds = manager.GetContentBounds(24f);
+            var width = (int)Math.Ceiling(Math.Max(900, bounds.Width));
+            var height = (int)Math.Ceiling(Math.Max(200, bounds.Height));
+
+            using var surface = SKSurface.Create(new SKImageInfo(width, height));
+            var canvas = surface.Canvas;
+            canvas.Clear(SKColors.White);
+            canvas.Translate(-bounds.Left, -bounds.Top);
+            manager.Draw(canvas);
+
+            using var image = surface.Snapshot();
+            using var data = image.Encode(SKEncodedImageFormat.Png, 92);
+            using var stream = File.OpenWrite(Path.Combine(outputDir, "architecture.png"));
+            data.SaveTo(stream);
+
+            foreach (var component in manager.GetComponents()) component.Dispose();
         }
 
         private static string SafeName(string name)

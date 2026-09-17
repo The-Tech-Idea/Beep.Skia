@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Known Limitations | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Guides</span><span>&rsaquo;</span> <span>Known Limitations</span></nav>
+<div class="page-header"><h1>Known Limitations</h1><p class="page-subtitle">What Beep.Skia does not do, stated plainly, with the workaround where one exists</p></div>
+<p>Every framework has edges. This page lists them so you can plan around them instead of discovering them in production. It is maintained alongside the <a href="../../FEATURE_ROADMAP.md">feature roadmap</a>.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#platforms">Platforms and deployment</a></li>
+    <li><a href="#architecture">Architecture and threading</a></li>
+    <li><a href="#features">Feature boundaries</a></li>
+    <li><a href="#tooling">Tooling and process</a></li>
+    <li><a href="#not-planned">Deliberately out of scope</a></li>
+  </ul>
+</div>
+
+<section class="section" id="platforms">
+  <h2>Platforms and deployment</h2>
+  <table>
+    <thead><tr><th>Limitation</th><th>Detail</th><th>Workaround</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Windows hosts require .NET 10</strong></td>
+        <td>SkiaSharp's 4.x view packages ship no <code>net8.0</code> assets, so the WinForms and WPF hosts target <code>net10.0-windows10.0.19041.0</code>.</td>
+        <td>Use a <code>net8.0</code>/<code>net9.0</code> console or service with offscreen rendering if you cannot move to .NET 10 on Windows.</td>
+      </tr>
+      <tr>
+        <td><strong>The MAUI head is not CI-verified</strong></td>
+        <td>GitHub-hosted Windows runners cannot build <code>net10.0-ios</code>/<code>maccatalyst</code>; the project is excluded from <code>Beep.Skia.CI.slnf</code>.</td>
+        <td>Build the MAUI head locally with the workload installed. Treat it as preview quality until it is in CI.</td>
+      </tr>
+      <tr>
+        <td><strong>Avalonia renders offscreen</strong></td>
+        <td>The Avalonia control renders into an Avalonia bitmap rather than through <code>Avalonia.Skia</code>, which keeps SkiaSharp at 4.150.1 across the solution.</td>
+        <td>None needed for correctness; expect a copy per frame. If Avalonia adopts SkiaSharp 4.x assets, the surface can be swapped for a leased canvas.</td>
+      </tr>
+      <tr>
+        <td><strong>No mobile or browser runtime verification</strong></td>
+        <td>Blazor (WebAssembly) and MAUI compile, but the test suite and consumer validation run on Windows desktop only.</td>
+        <td>Test your target in your own pipeline; the core libraries are platform-neutral.</td>
+      </tr>
+      <tr>
+        <td><strong>Private feed required</strong></td>
+        <td>The core depends on <code>TheTechIdea.Beep.*</code> packages that are not on nuget.org at the required versions.</td>
+        <td>Configure the feed (see <a href="troubleshooting.html">Troubleshooting</a>).</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="architecture">
+  <h2>Architecture and threading</h2>
+  <table>
+    <thead><tr><th>Limitation</th><th>Detail</th><th>Workaround</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong><code>DrawingManager</code> is not thread-safe</strong></td>
+        <td>It owns mutable component and connection lists and is designed for single-threaded UI use.</td>
+        <td>Mutate only from the UI thread (marshalling input and background results back). The automation service, credential vault and collaboration service <em>are</em> thread-safe.</td>
+      </tr>
+      <tr>
+        <td><strong>No multi-user live editing</strong></td>
+        <td>Collaboration covers roles, comments, presence and an audit trail, but not operational-transform/CRDT merging of concurrent edits to the same component.</td>
+        <td>Use the comment/review workflow; serialized documents are the unit of merge.</td>
+      </tr>
+      <tr>
+        <td><strong>Undo is per-manager and in-memory</strong></td>
+        <td><code>HistoryManager</code> keeps a bounded stack (default depth 100); it is not persisted and does not span documents.</td>
+        <td>Persist checkpoints through <code>ToDto()</code> if you need longer history.</td>
+      </tr>
+      <tr>
+        <td><strong>Text rendering is Latin-centric</strong></td>
+        <td>Text goes through <code>TypefaceCache</code> and system typefaces; complex script shaping (HarfBuzz-style) is not part of the render path.</td>
+        <td>Choose typefaces that cover your script; text is drawn with the host's font stack.</td>
+      </tr>
+      <tr>
+        <td><strong>Exports are raster/vector snapshots</strong></td>
+        <td>PNG, SVG and PDF export the drawing, not a semantic model for other tools (except where a family provides one: BPMN, XMI, DDL).</td>
+        <td>Use the family exporters for interchange; the diagram DTO JSON is the lossless format.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="features">
+  <h2>Feature boundaries</h2>
+  <table>
+    <thead><tr><th>Limitation</th><th>Detail</th><th>Workaround</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Automation nodes are the executable surface</strong></td>
+        <td>The workflow engine executes <code>AutomationNode</code>-derived components; a diagram of plain shape nodes runs as an empty flow.</td>
+        <td>Use the automation node types (or wrap your logic in one); see <a href="../automation/nodes.html">Automation Nodes</a>.</td>
+      </tr>
+      <tr>
+        <td><strong>Trigger scheduling is in-process</strong></td>
+        <td>Schedule and file-watch triggers run inside the host process; missed windows while the app is closed are not replayed.</td>
+        <td>Use the server SKU with an external scheduler for durable scheduling.</td>
+      </tr>
+      <tr>
+        <td><strong>Credential vault is in-memory plus encrypted export</strong></td>
+        <td>There is no OS keychain integration or central secret store; the vault encrypts exports with a passphrase.</td>
+        <td>Load the passphrase from your platform's secret store at startup.</td>
+      </tr>
+      <tr>
+        <td><strong>Extension packages are trusted code</strong></td>
+        <td>Installation validates the archive, versions and dependencies, but an extension still runs with your process's privileges.</td>
+        <td>Install only from sources you trust; see <a href="../../SECURITY.md">SECURITY.md</a>.</td>
+      </tr>
+      <tr>
+        <td><strong>Assisted generation is rule-based by default</strong></td>
+        <td>The bundled assistant parses a small DSL and outlines; it is not an LLM. <code>IDiagramAssistant</code> is the seam for a model-backed implementation.</td>
+        <td>Implement <code>IDiagramAssistant</code> to plug in your own provider.</td>
+      </tr>
+      <tr>
+        <td><strong>No built-in persistence store</strong></td>
+        <td>The framework serializes to JSON/streams; it does not provide a database, document store or autosave.</td>
+        <td>Persist <code>ToDto()</code> output wherever your application stores data.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="tooling">
+  <h2>Tooling and process</h2>
+  <table>
+    <thead><tr><th>Limitation</th><th>Detail</th><th>Workaround</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Pre-1.0 API surface</strong></td>
+        <td>The package version is <code>1.0.0-alpha</code>; public APIs can still change between releases.</td>
+        <td>Pin package versions; watch <a href="../../CHANGELOG.md">CHANGELOG.md</a> and the roadmap.</td>
+      </tr>
+      <tr>
+        <td><strong>XML docs are 97% complete</strong></td>
+        <td>~3% of public members have no XML summary; a handful of generated reference entries are name-derived.</td>
+        <td>The <a href="../reference/api-index.html">API reference</a> and source are the authority; open an issue for a specific member.</td>
+      </tr>
+      <tr>
+        <td><strong>Generated docs can drift</strong></td>
+        <td>The reference pages, images and search index are generated from source; they are only as current as the last regeneration.</td>
+        <td>Regenerate with the scripts listed in <a href="../../docs/README.md">docs/README.md</a> when you change public APIs.</td>
+      </tr>
+      <tr>
+        <td><strong>No localization</strong></td>
+        <td>Documentation and built-in component strings are English-only.</td>
+        <td>Component labels are yours to set; documentation translation would need a fork.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="not-planned">
+  <h2>Deliberately out of scope</h2>
+  <ul>
+    <li><strong>A visual designer for the framework itself</strong> &mdash; the WinForms sample is the editor; there is no separate IDE.</li>
+    <li><strong>A diagram markup language</strong> &mdash; diagrams are C# objects or JSON; the assisted-generation DSL is an input aid, not a document format.</li>
+    <li><strong>Cloud rendering or a hosted service</strong> &mdash; rendering is in-process; the server SKU executes workflows, it does not render for clients.</li>
+    <li><strong>Real-time multiplayer cursors</strong> &mdash; presence and comments exist; live co-editing does not.</li>
+  </ul>
+  <div class="admonition note">
+    <p class="admonition-title">Found something else?</p>
+    <p>If a limitation is missing from this page, that is itself a documentation bug: report it via <a href="getting-help.html">Getting Help</a>.</p>
+  </div>
+</section>
+
+</div></main></div>
+</body></html>

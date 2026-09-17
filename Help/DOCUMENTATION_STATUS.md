@@ -1,7 +1,7 @@
 # Beep.Skia Documentation Status
 
-**Last updated:** 2026-09-17 (round 13)
-**Total pages:** 996 | **Sections:** 15
+**Last updated:** 2026-09-17 (round 14)
+**Total pages:** 997 | **Sections:** 15
 
 ---
 
@@ -13,7 +13,7 @@
 | Core Concepts | 8 | Complete |
 | Diagram Families | 16 | Complete |
 | UI Components | 17 | Complete |
-| Guides | 11 | Complete |
+| Guides | 12 | Complete |
 | Architecture & Internals | 8 | Complete |
 | Automation | 7 | Complete |
 | Ecosystem | 4 | Complete |
@@ -104,6 +104,7 @@
 - [x] `guides/troubleshooting.html` — Restore/build, rendering, serialization, automation, extension and testing fixes
 - [x] `guides/keyboard-shortcuts.html` — every keyboard and mouse shortcut with the API behind it
 - [x] `guides/getting-help.html` — in-app help, documentation map, code-level diagnostics and reporting paths
+- [x] `guides/known-limitations.html` — platform, threading, feature and tooling boundaries with workarounds
 
 ### Architecture & Internals (8)
 - [x] `architecture/component-registry.html` — registry model, registration paths, queries, instantiation, consumers
@@ -172,6 +173,7 @@
 ### Images (rendered from the framework)
 - [x] `assets/families/*.png` — one component grid per diagram family (16) plus `ui-controls.png`
 - [x] `assets/templates/*.png` — every built-in diagram template rendered from its own DTO (12 images), shown in the templates gallery
+- [x] `assets/architecture.png` — the layer architecture diagram, drawn with the framework itself and embedded in the architecture overview
 
 ### Assets
 - [x] `sphinx-style.css` — Sphinx/Furo-inspired theme with dark mode
