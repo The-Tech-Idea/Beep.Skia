@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -14,12 +14,24 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Beep.Skia\Beep.Skia.csproj" />
+    <ProjectReference Include="..\Beep.Skia.Loader\Beep.Skia.Loader.csproj" />
     <ProjectReference Include="..\Beep.Skia.Winform.Controls\Beep.Skia.Winform.Controls.csproj" />
     <ProjectReference Include="..\Beep.Skia.StateMachine\Beep.Skia.StateMachine.csproj" />
     <ProjectReference Include="..\Beep.Skia.UML\Beep.Skia.UML.csproj" />
     <ProjectReference Include="..\Beep.Skia.Network\Beep.Skia.Network.csproj" />
     <ProjectReference Include="..\Beep.Ski.Quantitative\Beep.Ski.Quantitative.csproj" />
     <ProjectReference Include="..\Beep.Skia.WellLogs\Beep.Skia.WellLogs.csproj" />
+    <ProjectReference Include="..\Beep.Skia.FlowChart\Beep.Skia.FlowChart.csproj" />
+    <ProjectReference Include="..\Beep.Skia.PM\Beep.Skia.PM.csproj" />
+    <ProjectReference Include="..\Beep.Skia.DFD\Beep.Skia.DFD.csproj" />
+    <ProjectReference Include="..\Beep.Skia.ERD\Beep.Skia.ERD.csproj" />
+    <ProjectReference Include="..\Beep.Skia.ETL\Beep.Skia.ETL.csproj" />
+    <ProjectReference Include="..\Beep.Skia.MindMap\Beep.Skia.MindMap.csproj" />
+    <ProjectReference Include="..\Beep.Skia.Business\Beep.Skia.Business.csproj" />
+    <ProjectReference Include="..\Beep.Skia.Security\Beep.Skia.Security.csproj" />
+    <ProjectReference Include="..\Beep.Skia.ML\Beep.Skia.ML.csproj" />
+    <ProjectReference Include="..\Beep.Skia.ECAD\Beep.Skia.ECAD.csproj" />
+    <ProjectReference Include="..\Beep.Skia.Cloud\Beep.Skia.Cloud.csproj" />
   </ItemGroup>
 
 </Project>

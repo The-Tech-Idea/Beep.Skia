@@ -43,6 +43,50 @@ namespace Beep.Skia.Tests
             Assert.True(anyOpaque, "Expected some pixels to be drawn by DrawingManager.Draw");
         }
 
+        [Fact]
+        public void DrawingManager_InvokesWorldOverlay_WithPanZoomTransform()
+        {
+            var dm = new DrawingManager();
+            dm.Zoom = 2f;
+            dm.PanOffset = new SKPoint(5f, 7f);
+
+            SKPoint observed = default;
+            bool invoked = false;
+            dm.WorldOverlay = canvas =>
+            {
+                invoked = true;
+                var matrix = canvas.TotalMatrix;
+                observed = new SKPoint(matrix.TransX, matrix.TransY);
+            };
+
+            using var bmp = new SKBitmap(200, 100, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+            using var canvas = new SKCanvas(bmp);
+            dm.Draw(canvas);
+
+            Assert.True(invoked, "Expected the world overlay to be invoked on interactive draws");
+            Assert.Equal(5f, observed.X, 2);
+            Assert.Equal(7f, observed.Y, 2);
+        }
+
+        [Fact]
+        public void DrawingManager_WorldOverlay_NotInvokedForExport()
+        {
+            var dm = new DrawingManager();
+            bool invoked = false;
+            dm.WorldOverlay = canvas => invoked = true;
+
+            var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beep_overlay_" + System.Guid.NewGuid().ToString("N") + ".png");
+            try
+            {
+                dm.ExportToPng(path);
+                Assert.False(invoked, "Overlays are interactive-only and must not appear in exports");
+            }
+            finally
+            {
+                try { System.IO.File.Delete(path); } catch { }
+            }
+        }
+
         private class TestRectComponent : SkiaComponent
         {
             protected override void DrawContent(SKCanvas canvas, DrawingContext context)
