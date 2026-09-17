@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using Beep.Skia;
 using System.Collections.Generic;
 using Beep.Skia.Model;
@@ -20,7 +20,7 @@ namespace Beep.Skia.UML
         private SKColor _selectionColor = SKColors.LightBlue;
 
         /// <summary>
-        /// Gets or sets the stereotype of this UML element (e.g., "<<interface>>", "<<abstract>>").
+        /// Gets or sets the stereotype of this UML element (e.g., "&lt;&lt;interface&gt;&gt;", "&lt;&lt;abstract&gt;&gt;").
         /// </summary>
         public string Stereotype
         {

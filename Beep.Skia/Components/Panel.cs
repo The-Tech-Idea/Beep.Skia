@@ -196,8 +196,6 @@ namespace Beep.Skia.Components
         }
 
         /// <summary>
-        /// Draws the panel's content.
-        /// <summary>
         /// Draws the panel's content including title.
         /// </summary>
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)

@@ -143,6 +143,17 @@ namespace Beep.Skia.Sample.WinForms
             ddExt.DropDownItems.Add("Manage Extensions…", null, (s, e) => DoManageExtensions());
             toolStrip1.Items.Add(ddExt);
 
+            // Help
+            var ddHelp = new ToolStripDropDownButton("Help");
+            ddHelp.DropDownItems.Add("Documentation (F1)", null, (s, e) => DoOpenHelp("index.html"));
+            ddHelp.DropDownItems.Add("Quick Start", null, (s, e) => DoOpenHelp("getting-started/quick-start.html"));
+            ddHelp.DropDownItems.Add("Sample Applications", null, (s, e) => DoOpenHelp("getting-started/samples.html"));
+            ddHelp.DropDownItems.Add("Troubleshooting", null, (s, e) => DoOpenHelp("guides/troubleshooting.html"));
+            ddHelp.DropDownItems.Add("API Reference", null, (s, e) => DoOpenHelp("reference/api-index.html"));
+            ddHelp.DropDownItems.Add(new ToolStripSeparator());
+            ddHelp.DropDownItems.Add("About Beep.Skia", null, (s, e) => DoShowAbout());
+            toolStrip1.Items.Add(ddHelp);
+
             toolStrip1.Items.Add(new ToolStripSeparator());
 
             // Theme
@@ -172,6 +183,51 @@ namespace Beep.Skia.Sample.WinForms
             return btn;
         }
 
+        private static string ResolveHelpRoot()
+        {
+            var dir = new System.IO.DirectoryInfo(AppContext.BaseDirectory);
+            for (int i = 0; i < 8 && dir != null; i++, dir = dir.Parent)
+            {
+                var candidate = System.IO.Path.Combine(dir.FullName, "Help");
+                if (System.IO.File.Exists(System.IO.Path.Combine(candidate, "index.html")))
+                    return candidate;
+            }
+            return null;
+        }
+
+        private void DoOpenHelp(string relativePath)
+        {
+            var root = ResolveHelpRoot();
+            if (root != null)
+            {
+                var full = System.IO.Path.Combine(root, relativePath.Replace('/', System.IO.Path.DirectorySeparatorChar));
+                if (System.IO.File.Exists(full))
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(full) { UseShellExecute = true });
+                    _statusLabel.Text = $"Opened documentation: {relativePath}";
+                    return;
+                }
+            }
+
+            var url = "https://github.com/The-Tech-Idea/Beep.Skia/blob/master/README.md";
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+            _statusLabel.Text = "Help folder not found next to the app; opened the repository README";
+        }
+
+        private void DoShowAbout()
+        {
+            var version = typeof(MainForm).Assembly.GetName().Version?.ToString() ?? "1.0.0";
+            var helpRoot = ResolveHelpRoot();
+            MessageBox.Show(
+                $"Beep.Skia diagram editor sample\n\n" +
+                $"Assembly version: {version}\n" +
+                $"Help folder: {(helpRoot ?? "not found (run from the repository to browse offline docs)")}\n\n" +
+                $"Documentation: Help/index.html\n" +
+                $"Repository: https://github.com/The-Tech-Idea/Beep.Skia",
+                "About Beep.Skia",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         private void BuildStatusBar()
         {
             _statusBar = new StatusStrip();
@@ -185,6 +241,14 @@ namespace Beep.Skia.Sample.WinForms
             this.KeyPreview = true;
             this.KeyDown += (s, e) =>
             {
+                if (e.KeyCode == Keys.F1)
+                {
+                    DoOpenHelp("index.html");
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    return;
+                }
+
                 int mods = 0;
                 if (e.Control) mods |= 1;
                 if (e.Shift) mods |= 2;

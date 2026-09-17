@@ -715,7 +715,7 @@ namespace Beep.Skia
         /// <summary>
         /// Gets the component at the specified point.
         /// </summary>
-        /// <param name="point">The point to test.</param>
+        /// <param name="canvasPoint">The world-space point to test.</param>
         /// <returns>The component at the specified point, or null if no component is found.</returns>
         internal SkiaComponent GetComponentAt(SKPoint canvasPoint)
         {

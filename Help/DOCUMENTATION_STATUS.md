@@ -1,6 +1,6 @@
 # Beep.Skia Documentation Status
 
-**Last updated:** 2026-09-17 (round 5)
+**Last updated:** 2026-09-17 (round 6)
 **Total pages:** 105 | **Sections:** 14
 
 ---
@@ -145,6 +145,15 @@
 - [x] `index.html` — Full sidebar navigation with iframe content
 - [x] `home.html` — Landing page with stats, features, quick start
 
+### Repository documentation
+- [x] `README.md` — project overview, layout, build/CI notes and documentation index
+- [x] `CONTRIBUTING.md` — prerequisites (private feed), build/test commands, conventions, adding a family, docs generators
+- [x] `CHANGELOG.md` — Keep a Changelog format with the full feature and hardening record
+- [x] `SECURITY.md` — supported versions, private reporting, security-relevant surfaces and user guidance
+- [x] `CODE_OF_CONDUCT.md` — Contributor Covenant 2.1
+- [x] `docs/README.md` — index of the working documents and tooling
+- [x] Per-project `README.md` in all 24 library projects (purpose, TFMs, package id, start-with types, links)
+
 ### Tooling (not counted as pages)
 - [x] `_gen_skia_docs.py` — Python generator for diagram family + architecture pages
 - [x] `_gen_automation_docs.ps1`, `_gen_ecosystem_docs.ps1`, `_gen_editor_guides_docs.ps1`, `_gen_release_notes.ps1` — PowerShell generators for the new sections
@@ -153,6 +162,7 @@
 - [x] `_gen_api_reference.ps1` — Generates the 24 per-project API reference pages from source
 - [x] `_gen_search_index.ps1` — Builds `search-index.js` (98 pages) for the site-wide search box
 - [x] `_gen_lib.ps1` — Shared extraction helpers (XML summaries, `[Description]` fallback, public members)
+- [x] `docs/_gen_project_readmes.ps1` — Regenerates the per-project READMEs from csproj metadata
 
 ### Assets
 - [x] `sphinx-style.css` — Sphinx/Furo-inspired theme with dark mode

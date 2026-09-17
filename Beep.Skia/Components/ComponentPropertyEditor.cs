@@ -1730,6 +1730,7 @@ namespace Beep.Skia.Components
             _propertyControls[label] = dropdown;
             _currentY += 35;
         }
+        /// <summary>
         /// Adds a color property control using hex (#RRGGBB or #AARRGGBB) or R,G,B[,A].
         /// </summary>
         private void AddColorProperty(string label, SKColor value, Action<SKColor> onChanged)

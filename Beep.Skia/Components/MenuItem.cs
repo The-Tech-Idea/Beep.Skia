@@ -260,6 +260,7 @@ namespace Beep.Skia.Components
         /// Initializes a new instance of the MenuItem class with text and shortcut.
         /// </summary>
         /// <param name="text">The text to display.</param>
+        /// <param name="icon">The icon glyph or path.</param>
         /// <param name="shortcut">The keyboard shortcut.</param>
         public MenuItem(string text, string icon, string shortcut)
         {

@@ -3,7 +3,7 @@ using SkiaSharp;
 namespace Beep.Skia.DFD
 {
     /// <summary>
-    /// DFD Process (Gane & Sarson): rectangular process with header band for ID/numbering.
+    /// DFD Process (Gane &amp; Sarson): rectangular process with header band for ID/numbering.
     /// </summary>
     public class DFDProcessGaneSarson : DFDControl
     {

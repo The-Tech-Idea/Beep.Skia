@@ -70,14 +70,42 @@ Beep.Skia.Loader/             BeepDM plugin-loader integration
 Beep.Skia.<Family>/           16 diagram families (Flowchart, ERD, UML, DFD, ETL, BPMN, PM, ...)
 Beep.Skia.Winform.Controls/   WinForms host control (flagship v1.0 host)
 Beep.Skia.{Wpf,Blazor,Maui,Avalonia}.Controls/   Additional platform hosts
-Beep.Skia.Sample.WinForms/    Flagship sample application
+Beep.Skia.Sample.WinForms/    Flagship sample application (Help menu + F1)
 Beep.Skia.Sample.Server/      ASP.NET workflow-execution host
 Beep.Skia.Tests/              501 tests covering every library
-docs/                         Feature notes, gap analyses and guides (docs/archive for history)
-FEATURE_ROADMAP.md            Live status of the feature programme
+Help/                         Documentation site - open Help/index.html
+docs/                         Working documents and analyses (docs/archive for history)
+CONTRIBUTING.md               Build, test and submission guide
+CHANGELOG.md                  Release history
+SECURITY.md                   Security policy and reporting
 ```
 
+Every library project has its own `README.md` describing its purpose, target frameworks, package
+id and the guide to start with.
+
+## Documentation
+
+- **Documentation site:** open [`Help/index.html`](Help/index.html) - 105 pages covering getting
+  started, core concepts, all 16 diagram families, UI components, automation, ecosystem,
+  architecture internals, a per-project API reference for every public type, troubleshooting and
+  site-wide search.
+- **In the sample app:** the WinForms sample has a **Help** menu and supports **F1**; both open
+  the local documentation, falling back to this README when the `Help` folder is not present.
+- **API reference:** [`Help/reference/api-index.html`](Help/reference/api-index.html) lists all
+  ~890 public types by assembly.
+- **Guides:** [installation](Help/getting-started/installation.html),
+  [quick start](Help/getting-started/quick-start.html),
+  [samples](Help/getting-started/samples.html),
+  [creating custom families](Help/guides/creating-custom-family.html),
+  [performance](Help/guides/performance.html),
+  [troubleshooting](Help/guides/troubleshooting.html).
+- **Project status:** [`FEATURE_ROADMAP.md`](FEATURE_ROADMAP.md) and
+  [`Help/DOCUMENTATION_STATUS.md`](Help/DOCUMENTATION_STATUS.md).
+
 ## Building and contributing
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full guide (conventions, adding a family, tests,
+documentation generators).
 
 - **Target frameworks:** the core, model and family libraries multi-target `net8.0` / `net9.0` /
   `net10.0`. The **Windows hosts** (WinForms, WPF) and the sample app target

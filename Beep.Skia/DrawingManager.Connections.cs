@@ -201,7 +201,7 @@ namespace Beep.Skia
         public void InferOutputSchemaForComponent(SkiaComponent component) => TryInferTransformSchema(component);
 
         /// <summary>
-        /// Reflection-based inference: call component.InferOutputSchemaFromUpstreams(Func<int,string>) if present,
+        /// Reflection-based inference: call component.InferOutputSchemaFromUpstreams(Func&lt;int,string&gt;) if present,
         /// and if NodeProperties indicate a Join, validate join keys exist and are type-compatible.
         /// </summary>
         private void TryInferTransformSchema(SkiaComponent component)

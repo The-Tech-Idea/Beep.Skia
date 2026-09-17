@@ -3,7 +3,7 @@ using SkiaSharp;
 namespace Beep.Skia.DFD
 {
     /// <summary>
-    /// DFD External Entity (Gane & Sarson): rectangle with a header band.
+    /// DFD External Entity (Gane &amp; Sarson): rectangle with a header band.
     /// </summary>
     public class DFDExternalEntityGaneSarson : DFDControl
     {

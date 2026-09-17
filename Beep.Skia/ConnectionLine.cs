@@ -671,6 +671,7 @@ namespace Beep.Skia
         /// <param name="canvas">The canvas to draw on.</param>
         /// <param name="lineStart">The start point of the line.</param>
         /// <param name="lineEnd">The end point of the line.</param>
+        /// <param name="directionMode">The configured flow direction.</param>
         private void DrawDataFlowParticles(SKCanvas canvas, SKPoint lineStart, SKPoint lineEnd, DataFlowDirection directionMode)
         {
             // Calculate line direction and length
