@@ -1,7 +1,7 @@
 # Beep.Skia Documentation Status
 
-**Last updated:** 2026-09-17 (round 8)
-**Total pages:** 105 | **Sections:** 14
+**Last updated:** 2026-09-17 (round 9)
+**Total pages:** 107 | **Sections:** 14
 
 ---
 
@@ -13,7 +13,7 @@
 | Core Concepts | 8 | Complete |
 | Diagram Families | 16 | Complete |
 | UI Components | 17 | Complete |
-| Guides | 9 | Complete |
+| Guides | 11 | Complete |
 | Architecture & Internals | 8 | Complete |
 | Automation | 7 | Complete |
 | Ecosystem | 4 | Complete |
@@ -100,6 +100,8 @@
 - [x] `guides/testing-and-quality.html` — Test strategy, sweeps, hardening record
 - [x] `guides/release-notes.html` — Versioning, packaging, release history
 - [x] `guides/troubleshooting.html` — Restore/build, rendering, serialization, automation, extension and testing fixes
+- [x] `guides/keyboard-shortcuts.html` — every keyboard and mouse shortcut with the API behind it
+- [x] `guides/getting-help.html` — in-app help, documentation map, code-level diagnostics and reporting paths
 
 ### Architecture & Internals (8)
 - [x] `architecture/component-registry.html` — registry model, registration paths, queries, instantiation, consumers

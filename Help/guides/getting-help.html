@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Getting Help | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Getting Help</span></nav>
+<div class="page-header"><h1>Getting Help</h1><p class="page-subtitle">Where to look when something does not work as expected</p></div>
+<p>Start with the symptom, not the technology: most problems are answered by one of the pages below, and the rest have a clear reporting path.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#in-app">In the Application</a></li>
+    <li><a href="#docs">In the Documentation</a></li>
+    <li><a href="#code">From the Code</a></li>
+    <li><a href="#report">Reporting a Problem</a></li>
+    <li><a href="#commercial">Commercial Support</a></li>
+  </ul>
+</div>
+
+<section class="section" id="in-app">
+  <h2>In the Application</h2>
+  <ul>
+    <li><strong>Help menu</strong> &mdash; the WinForms sample has a Help dropdown with Documentation, Quick Start, Sample Applications, Troubleshooting, API Reference and About.</li>
+    <li><strong>F1</strong> &mdash; opens the documentation site from the app (falls back to the repository README when the <code>Help</code> folder is not next to the executable).</li>
+    <li><strong>Status bar</strong> &mdash; reports the result of every command (validation summaries, workflow status, export paths).</li>
+    <li><strong>Tooltips</strong> &mdash; toolbar buttons and palette items describe their action.</li>
+  </ul>
+</section>
+
+<section class="section" id="docs">
+  <h2>In the Documentation</h2>
+  <table>
+    <thead><tr><th>You need</th><th>Go to</th></tr></thead>
+    <tbody>
+      <tr><td>Set up a project</td><td><a href="../getting-started/installation.html">Installation</a> (private feed, TFMs, packages)</td></tr>
+      <tr><td>Build your first diagram</td><td><a href="../getting-started/quick-start.html">Quick Start</a></td></tr>
+      <tr><td>A runnable app to compare against</td><td><a href="../getting-started/samples.html">Sample Applications</a></td></tr>
+      <tr><td>What a node type looks like</td><td>The family page (each has a rendered component grid)</td></tr>
+      <tr><td>An API member's meaning</td><td><a href="../reference/api-index.html">API Reference</a> (per-assembly pages with descriptions)</td></tr>
+      <tr><td>A keyboard or mouse shortcut</td><td><a href="keyboard-shortcuts.html">Keyboard and Mouse</a></td></tr>
+      <tr><td>Something fails at build or runtime</td><td><a href="troubleshooting.html">Troubleshooting</a></td></tr>
+      <tr><td>Measured performance and tuning</td><td><a href="performance.html">Performance Guide</a></td></tr>
+      <tr><td>To extend the framework</td><td><a href="creating-custom-family.html">Creating Custom Families</a>, <a href="../ecosystem/extensions.html">Extension SDK</a></td></tr>
+      <tr><td>Release and versioning policy</td><td><a href="release-notes.html">Release Notes</a>, <a href="../../CHANGELOG.md">CHANGELOG</a></td></tr>
+    </tbody>
+  </table>
+  <p>The site has full-text search in the sidebar: type two or more characters to search page titles, headings and body text across all pages.</p>
+</section>
+
+<section class="section" id="code">
+  <h2>From the Code</h2>
+  <ul>
+    <li><strong>IntelliSense</strong> &mdash; every package ships XML documentation, so member summaries and parameter descriptions appear in the IDE (97% of the public surface is documented).</li>
+    <li><strong>Diagnostics</strong> &mdash; the rendering pipeline catches per-component exceptions and writes them to the debug trace; check the Output window when a component misbehaves.</li>
+    <li><strong>Validation</strong> &mdash; run <code>DiagramValidator</code> (or the sample's Validate command) to get rule-based feedback with fix suggestions.</li>
+    <li><strong>Job results</strong> &mdash; workflow failures carry the failing node, error message and per-node status in <code>WorkflowResult</code>.</li>
+  </ul>
+</section>
+
+<section class="section" id="report">
+  <h2>Reporting a Problem</h2>
+  <ol>
+    <li>Check <a href="troubleshooting.html">Troubleshooting</a> first &mdash; restore, TFM, port-layout, drop-offset, serialization and automation issues are covered there.</li>
+    <li>Search the <a href="https://github.com/The-Tech-Idea/Beep.Skia/issues">issue tracker</a> for the same symptom.</li>
+    <li>Open an issue with: package and version (<code>Beep.Skia</code> version from the NuGet package or the assembly version), target framework, a minimal reproduction (a few lines that build a diagram or run a workflow), expected vs. actual behaviour, and the full exception text if there is one.</li>
+    <li>For security problems, do <strong>not</strong> open a public issue &mdash; follow <a href="../../SECURITY.md">SECURITY.md</a>.</li>
+  </ol>
+  <div class="admonition tip">
+    <p class="admonition-title">Faster reproductions</p>
+    <p>A diagram that reproduces the issue can be attached as JSON: <code>drawingManager.ToDto()</code> serialized with <code>System.Text.Json</code> is the complete state (components, properties, connections, theme).</p>
+  </div>
+</section>
+
+<section class="section" id="commercial">
+  <h2>Commercial Support</h2>
+  <p>Beep.Skia is developed by The Tech Idea. For commercial support, integration assistance or licensing questions, contact the maintainers through the organization profile on GitHub.</p>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

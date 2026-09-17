@@ -37,8 +37,41 @@ namespace Beep.Skia.Sample.WinForms
             BuildStatusBar();
             WireKeyboard();
             WireTheme();
+            ApplyHelpHints();
 
-            _statusLabel.Text = "Ready — Select a template from Templates menu or use the in-canvas palette";
+            _statusLabel.Text = "Ready — Select a template from Templates menu or use the in-canvas palette (F1 for documentation)";
+        }
+
+        private static readonly Dictionary<string, string> HelpToolTips = new()
+        {
+            ["Undo"] = "Undo the last action (Ctrl+Z)",
+            ["Redo"] = "Redo the last undone action (Ctrl+Y)",
+            ["Copy"] = "Copy the selection (Ctrl+C)",
+            ["Paste"] = "Paste at the pointer position (Ctrl+V)",
+            ["Delete"] = "Delete the selection and its attached lines (Del)",
+            ["Validate"] = "Run the diagram validator and report issues in the status bar",
+            ["Dark Mode"] = "Switch between the light and dark theme (Ctrl+T)",
+            ["PNG"] = "Export the diagram to a PNG file",
+            ["SVG"] = "Export the diagram to an SVG file",
+            ["PDF"] = "Export the diagram to a PDF file",
+            ["Print"] = "Show the print preview",
+            ["Save"] = "Save the diagram as JSON",
+            ["Load"] = "Load a diagram from JSON",
+            ["Clear"] = "Remove every component from the canvas"
+        };
+
+        private void ApplyHelpHints()
+        {
+            foreach (ToolStripItem item in toolStrip1.Items)
+            {
+                if (!string.IsNullOrEmpty(item.Text) && HelpToolTips.TryGetValue(item.Text, out var tip))
+                    item.ToolTipText = tip;
+            }
+
+            var hint = new ToolTip { AutoPopDelay = 8000, InitialDelay = 400 };
+            hint.SetToolTip(skiaHostControl1,
+                "Drag components from the in-canvas palette, then connect them by dragging from a port.\n" +
+                "Wheel zooms, middle-button drags pan, F1 opens the documentation.");
         }
 
         private void BuildToolbar()

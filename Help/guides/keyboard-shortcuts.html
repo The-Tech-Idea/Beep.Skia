@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyboard and Mouse | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} kbd{background:var(--color-code-background);border:1px solid var(--color-background-border);border-radius:4px;padding:0.1rem 0.35rem;font-family:var(--font-mono,monospace);font-size:0.85em}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Guides</span><span>&rsaquo;</span> <span>Keyboard and Mouse</span></nav>
+<div class="page-header"><h1>Keyboard and Mouse</h1><p class="page-subtitle">Every shortcut the canvas handles out of the box</p></div>
+<p><code>DrawingManager.HandleKeyDown(keyCode, modifiers)</code> implements the standard editor shortcuts, and the host control routes mouse input to <code>HandleMouseDown</code>/<code>Move</code>/<code>Up</code>/<code>Wheel</code> in world coordinates. This page is the complete reference.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#editing">Editing</a></li>
+    <li><a href="#selection">Selection and Navigation</a></li>
+    <li><a href="#view">View and Canvas</a></li>
+    <li><a href="#mouse">Mouse</a></li>
+    <li><a href="#host">Host Integration</a></li>
+  </ul>
+</div>
+
+<section class="section" id="editing">
+  <h2>Editing</h2>
+  <table>
+    <thead><tr><th>Shortcut</th><th>Action</th><th>API</th></tr></thead>
+    <tbody>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>Undo</td><td><code>Undo()</code></td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Redo</td><td><code>Redo()</code></td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd></td><td>Copy the selection (components and their internal lines)</td><td><code>CopySelectedComponents()</code></td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>X</kbd></td><td>Cut the selection</td><td><code>CopySelectedComponents()</code> + <code>DeleteSelectedComponents()</code></td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>V</kbd></td><td>Paste at the pointer position</td><td><code>PasteComponents(point)</code></td></tr>
+      <tr><td><kbd>Delete</kbd> / <kbd>Backspace</kbd></td><td>Delete the selection (components plus attached lines, one undo step)</td><td><code>DeleteSelectedComponents()</code></td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Request a save; the host handles it</td><td><code>SaveRequested</code> event</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="selection">
+  <h2>Selection and Navigation</h2>
+  <table>
+    <thead><tr><th>Shortcut</th><th>Action</th><th>API</th></tr></thead>
+    <tbody>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>A</kbd></td><td>Select all components</td><td><code>SelectAllComponents()</code></td></tr>
+      <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Cycle the selection forwards / backwards (keyboard accessibility)</td><td><code>SelectNextComponent(forward)</code></td></tr>
+      <tr><td><kbd>Escape</kbd></td><td>Clear the selection</td><td><code>SelectionManager.ClearSelection()</code></td></tr>
+      <tr><td><kbd>&larr;</kbd> <kbd>&rarr;</kbd> <kbd>&uarr;</kbd> <kbd>&darr;</kbd></td><td>Move the selection by 1 unit</td><td><code>MoveSelectedComponents(offset)</code></td></tr>
+      <tr><td><kbd>Shift</kbd>+arrows</td><td>Move the selection by 10 units</td><td><code>MoveSelectedComponents(offset)</code></td></tr>
+    </tbody>
+  </table>
+  <p>Arrow-key moves are recorded on the undo stack like any other move, so they can be undone individually.</p>
+</section>
+
+<section class="section" id="view">
+  <h2>View and Canvas</h2>
+  <table>
+    <thead><tr><th>Shortcut</th><th>Action</th><th>API</th></tr></thead>
+    <tbody>
+      <tr><td><kbd>+</kbd> / <kbd>-</kbd> (and numpad)</td><td>Zoom in / out by 10%, clamped to 0.1x &ndash; 5x</td><td><code>Zoom</code></td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>G</kbd></td><td>Toggle the grid</td><td><code>ShowGrid</code></td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>T</kbd></td><td>Toggle the theme (light / dark)</td><td><code>ThemeManager.ApplyTheme</code></td></tr>
+      <tr><td><kbd>F1</kbd></td><td>Open the documentation (host feature; the WinForms sample implements it)</td><td>host</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="mouse">
+  <h2>Mouse</h2>
+  <table>
+    <thead><tr><th>Gesture</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>Click a component</td><td>Select it</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+click / <kbd>Shift</kbd>+click</td><td>Add to or toggle the selection</td></tr>
+      <tr><td>Drag a component</td><td>Move it (with snapping when enabled); multi-selection moves together</td></tr>
+      <tr><td>Drag from a port</td><td>Draw a connection; release on a compatible port to connect</td></tr>
+      <tr><td>Drag on empty canvas</td><td>Marquee selection</td></tr>
+      <tr><td>Drag a resize handle</td><td>Resize the component (eight handles)</td></tr>
+      <tr><td>Right-click a component or the canvas</td><td>Context menu (<code>ComponentRightClicked</code> / <code>DiagramRightClicked</code>)</td></tr>
+      <tr><td>Double-click a component</td><td>Drill-down hook (<code>ComponentDoubleClicked</code>)</td></tr>
+      <tr><td>Mouse wheel</td><td>Zoom around the pointer (<code>HandleMouseWheel</code>)</td></tr>
+      <tr><td>Middle-button drag</td><td>Pan the viewport (<code>InteractionHelper.IsPanning</code>)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="host">
+  <h2>Host Integration</h2>
+  <p>The manager handles keys; the host forwards them. In WinForms that is a single call per key, with modifiers mapped to <code>SKKeyModifiers</code>:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">int mods = 0;
+if (e.Control) mods |= 1;
+if (e.Shift)   mods |= 2;
+if (e.Alt)     mods |= 4;
+
+if (drawingManager.HandleKeyDown((int)e.KeyCode, mods))
+{
+    e.Handled = true;          // the manager consumed the key
+    e.SuppressKeyPress = true;
+}</code></pre>
+  </div>
+  <p><code>HandleKeyDown</code> returns <code>true</code> when it acted on the key, so hosts can keep their own shortcuts (F1, menus, save dialogs) by handling them first. To rebind a shortcut, intercept the key in the host and call the corresponding manager API instead.</p>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>
