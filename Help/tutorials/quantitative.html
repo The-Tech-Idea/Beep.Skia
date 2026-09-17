@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial: Sketch a Trading Strategy | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .step{border-left:3px solid var(--color-brand-content);padding-left:1rem;margin:1.5rem 0} .step h3{margin-top:0}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Tutorials</span><span>&rsaquo;</span> <span>Tutorial: Sketch a Trading Strategy</span></nav>
+<div class="page-header"><h1>Tutorial: Sketch a Trading Strategy</h1><p class="page-subtitle">Time series, indicators and strategy nodes</p></div>
+<p><strong>You will build:</strong> a trading strategy sketch with indicators. <strong>Time:</strong> about 10 minutes. <strong>Prerequisites:</strong> <code>Beep.Skia</code> and <code>Beep.Ski.Quantitative</code>.</p>
+<div class="step"><h3>1. Data and indicators</h3>
+<pre><code class="language-csharp">using Beep.Skia;
+using Beep.Skia.Quantitative;
+
+var manager = new DrawingManager();
+
+var prices = new TimeSeriesNode { X = 60, Y = 120, Width = 180, Height = 80, Label = "AAPL 1d" };
+var rsi = new IndicatorNode { X = 300, Y = 60, Width = 180, Height = 80, Label = "RSI(14)" };
+var sma = new IndicatorNode { X = 300, Y = 200, Width = 180, Height = 80, Label = "SMA(50)" };
+
+foreach (var node in new SkiaComponent[] { prices, rsi, sma })
+    manager.AddComponent(node);
+
+manager.ConnectComponents(prices, rsi);
+manager.ConnectComponents(prices, sma);</code></pre>
+</div>
+<div class="step"><h3>2. Strategy</h3>
+<pre><code class="language-csharp">var strategy = new StrategyNodes { X = 560, Y = 120, Width = 200, Height = 100, Label = "Mean reversion" };
+manager.AddComponent(strategy);
+manager.ConnectComponents(rsi, strategy);
+manager.ConnectComponents(sma, strategy);
+
+foreach (var line in manager.GetLines())
+    line.RoutingMode = LineRoutingMode.Orthogonal;</code></pre>
+</div>
+<div class="step"><h3>3. Charts</h3>
+<p>The family also provides chart components (bar, line, pie, scatter, area) that read their series from the node properties.</p>
+<pre><code class="language-csharp">manager.RequestRedraw();
+// The sample adds a chart with Tools &gt; "Add Sample Chart (Quantitative)".</code></pre>
+</div>
+<h2>Next steps</h2>
+<ul>
+<li><a href="../diagram-families/quantitative.html">Quantitative family</a> &mdash; chart and indicator components</li>
+<li><a href="../guides/theming.html">Theming</a> &mdash; restyle the charts with theme tokens</li>
+</ul>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial: Draw a Circuit and Run ERC | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .step{border-left:3px solid var(--color-brand-content);padding-left:1rem;margin:1.5rem 0} .step h3{margin-top:0}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Tutorials</span><span>&rsaquo;</span> <span>Tutorial: Draw a Circuit and Run ERC</span></nav>
+<div class="page-header"><h1>Tutorial: Draw a Circuit and Run ERC</h1><p class="page-subtitle">ECAD symbols and the electrical rules check</p></div>
+<p><strong>You will build:</strong> a small circuit and run the electrical rules check. <strong>Time:</strong> about 15 minutes. <strong>Prerequisites:</strong> <code>Beep.Skia</code> and <code>Beep.Skia.ECAD</code>.</p>
+<div class="step"><h3>1. Components</h3>
+<pre><code class="language-csharp">using Beep.Skia;
+using Beep.Skia.ECAD;
+
+var manager = new DrawingManager();
+
+var supply = new ECADPowerSupplyNode { X = 60, Y = 140, Width = 120, Height = 80, Label = "5V" };
+var resistor = new ECADResistorNode { X = 260, Y = 150, Width = 100, Height = 60, Label = "R1" };
+var led = new ECADDiodeNode { X = 440, Y = 150, Width = 100, Height = 60, Label = "D1" };
+var ground = new ECADGroundNode { X = 620, Y = 160, Width = 80, Height = 60, Label = "GND" };
+
+foreach (var node in new SkiaComponent[] { supply, resistor, led, ground })
+    manager.AddComponent(node);</code></pre>
+</div>
+<div class="step"><h3>2. Wire it</h3>
+<pre><code class="language-csharp">manager.ConnectComponents(supply, resistor);
+manager.ConnectComponents(resistor, led);
+manager.ConnectComponents(led, ground);
+
+foreach (var line in manager.GetLines())
+    line.RoutingMode = LineRoutingMode.Orthogonal;</code></pre>
+</div>
+<div class="step"><h3>3. Electrical rules check</h3>
+<pre><code class="language-csharp">var checker = new ElectricalRulesChecker();
+checker.RunChecks(manager.GetComponents().ToList(), manager.GetLines());
+
+foreach (var violation in checker.Violations)
+    Console.WriteLine($"[{violation.Severity}] {violation.Category}: {violation.Message}");
+// violations carry the component/port/line so a host can select and highlight them</code></pre>
+</div>
+<h2>Next steps</h2>
+<ul>
+<li><a href="../diagram-families/ecad.html">ECAD family</a> &mdash; all symbol types and the rendered grid</li>
+<li><a href="../core-concepts/validation.html">Diagram validation</a> &mdash; structural rules beyond electrical ones</li>
+</ul>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

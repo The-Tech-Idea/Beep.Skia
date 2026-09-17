@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial: Build a Mind Map | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .step{border-left:3px solid var(--color-brand-content);padding-left:1rem;margin:1.5rem 0} .step h3{margin-top:0}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Tutorials</span><span>&rsaquo;</span> <span>Tutorial: Build a Mind Map</span></nav>
+<div class="page-header"><h1>Tutorial: Build a Mind Map</h1><p class="page-subtitle">Radial topics, auto-layout and collapse</p></div>
+<p><strong>You will build:</strong> a product mind map and collapse a branch. <strong>Time:</strong> about 10 minutes. <strong>Prerequisites:</strong> <code>Beep.Skia</code> and <code>Beep.Skia.MindMap</code>.</p>
+<div class="step"><h3>1. Root and branches</h3>
+<pre><code class="language-csharp">using Beep.Skia;
+using Beep.Skia.MindMap;
+
+var manager = new DrawingManager();
+
+var root = new CentralNode { X = 420, Y = 260, Width = 200, Height = 90, Title = "Product Strategy" };
+var marketing = new TopicNode { X = 180, Y = 140, Width = 180, Height = 70, Title = "Marketing" };
+var product = new TopicNode { X = 660, Y = 140, Width = 180, Height = 70, Title = "Product" };
+var social = new SubTopicNode { X = 40, Y = 60, Width = 160, Height = 60, Title = "Social media" };
+
+foreach (var node in new SkiaComponent[] { root, marketing, product, social })
+    manager.AddComponent(node);</code></pre>
+</div>
+<div class="step"><h3>2. Connect and lay out</h3>
+<pre><code class="language-csharp">manager.ConnectComponents(root, marketing);
+manager.ConnectComponents(root, product);
+manager.ConnectComponents(marketing, social);
+
+// Radial auto-layout repositions the graph around the root
+var layout = new RadialLayout();
+layout.Arrange(manager.GetComponents(), manager.GetLines());
+manager.RequestRedraw();</code></pre>
+</div>
+<div class="step"><h3>3. Collapse a branch</h3>
+<p><code>MindMapVisibility.Apply</code> hides the descendants of collapsed nodes and restores everything else; it returns how many items changed.</p>
+<pre><code class="language-csharp">marketing.IsCollapsed = true;
+int changed = MindMapVisibility.Apply(manager.GetComponents().ToList(), manager.GetLines());
+Console.WriteLine($"{changed} node(s)/line(s) changed visibility");
+manager.RequestRedraw();</code></pre>
+</div>
+<h2>Next steps</h2>
+<ul>
+<li><a href="../diagram-families/mindmap.html">Mind map family</a> &mdash; node types and the rendered grid</li>
+<li><a href="../ecosystem/assisted-generation.html">Assisted generation</a> &mdash; build the map from an indented outline</li>
+</ul>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

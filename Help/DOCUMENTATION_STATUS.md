@@ -1,7 +1,7 @@
 # Beep.Skia Documentation Status
 
-**Last updated:** 2026-09-17 (round 11)
-**Total pages:** 987 | **Sections:** 15
+**Last updated:** 2026-09-17 (round 12)
+**Total pages:** 995 | **Sections:** 15
 
 ---
 
@@ -28,7 +28,7 @@
 ## Page Inventory
 
 ### Getting Started (3)
-- [x] `tutorials/` — step-by-step walkthroughs (flowchart, ERD, ETL, BPMN, UML, PM, security, state machine)
+- [x] `tutorials/` — 16 step-by-step walkthroughs, one per family (flowchart, ERD, ETL, BPMN, UML, PM, security, state machine, mind map, DFD, network, ECAD, cloud, ML, quantitative, well logs)
 - [x] `getting-started/learning-path.html` — the reading order in four stages, plus where to start by role
 - [x] `getting-started/installation.html` — private feed prerequisite, real package/TFM tables, project setup, verification
 - [x] `getting-started/quick-start.html` — Complete tutorial with DrawingManager and SkiaHostControl

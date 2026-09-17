@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial: Render a Well Log | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .step{border-left:3px solid var(--color-brand-content);padding-left:1rem;margin:1.5rem 0} .step h3{margin-top:0}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Tutorials</span><span>&rsaquo;</span> <span>Tutorial: Render a Well Log</span></nav>
+<div class="page-header"><h1>Tutorial: Render a Well Log</h1><p class="page-subtitle">Tracks, curves, LAS parsing and layout</p></div>
+<p><strong>You will build:</strong> a multi-track well log canvas. <strong>Time:</strong> about 15 minutes. <strong>Prerequisites:</strong> <code>Beep.Skia</code> and <code>Beep.Skia.WellLogs</code>.</p>
+<div class="step"><h3>1. Canvas and tracks</h3>
+<p><code>WellLogCanvas</code> owns the depth range and the track list; <code>WellLogTemplates</code> provides ready-made track sets (gamma ray, resistivity, density, neutron, sonic).</p>
+<pre><code class="language-csharp">using Beep.Skia;
+using Beep.Skia.WellLogs;
+
+var manager = new DrawingManager();
+
+var canvas = new WellLogCanvas
+{
+    X = 40, Y = 40, Width = 900, Height = 520,
+    DepthFrom = 1000, DepthTo = 1500
+};
+manager.AddComponent(canvas);</code></pre>
+</div>
+<div class="step"><h3>2. Data</h3>
+<p>LAS 2.0/3.0 files parse into curve data plus the well header; the renderer draws curves, fills and lithology patterns.</p>
+<pre><code class="language-csharp">// var log = LasParser.Parse(File.ReadAllText("well.las"));
+// canvas.SetCurves(log.Curves);
+// canvas.SetHeader(log.Header);
+manager.RequestRedraw();</code></pre>
+</div>
+<div class="step"><h3>3. Layout and rendering</h3>
+<p><code>WellLogLayoutEngine</code> computes track widths, headers and depth grids; <code>WellLogRenderer</code> draws them with the brush library.</p>
+<pre><code class="language-csharp">// The canvas runs the layout engine internally on resize and depth changes.
+// Brush patterns come from WellLogBrushLibrary (sandstone, shale, limestone, ...).</code></pre>
+</div>
+<h2>Next steps</h2>
+<ul>
+<li><a href="../diagram-families/welllogs.html">Well logs family</a> &mdash; tracks, curves and templates</li>
+<li><a href="../guides/performance.html">Performance</a> &mdash; large logs render per-track with culling</li>
+</ul>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial: Draw a Data Flow Diagram | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .step{border-left:3px solid var(--color-brand-content);padding-left:1rem;margin:1.5rem 0} .step h3{margin-top:0}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Tutorials</span><span>&rsaquo;</span> <span>Tutorial: Draw a Data Flow Diagram</span></nav>
+<div class="page-header"><h1>Tutorial: Draw a Data Flow Diagram</h1><p class="page-subtitle">Processes, stores, flows and level drill-down</p></div>
+<p><strong>You will build:</strong> a level-0 data flow diagram and drill into a process. <strong>Time:</strong> about 15 minutes. <strong>Prerequisites:</strong> <code>Beep.Skia</code> and <code>Beep.Skia.DFD</code>.</p>
+<div class="step"><h3>1. Processes, stores and externals</h3>
+<pre><code class="language-csharp">using Beep.Skia;
+using Beep.Skia.DFD;
+
+var manager = new DrawingManager();
+
+var customer = new DFDExternalEntityGaneSarson { X = 40, Y = 140, Width = 160, Height = 80, Label = "Customer" };
+var order = new DFDProcessGaneSarson { X = 300, Y = 140, Width = 180, Height = 90, Label = "1. Take order" };
+var store = new DFDDataStore { X = 580, Y = 150, Width = 180, Height = 70, Label = "D1 Orders" };
+
+foreach (var node in new SkiaComponent[] { customer, order, store })
+    manager.AddComponent(node);</code></pre>
+</div>
+<div class="step"><h3>2. Flows</h3>
+<pre><code class="language-csharp">manager.ConnectComponents(customer, order);
+manager.GetLines().Last().Label1 = "order details";
+manager.ConnectComponents(order, store);
+manager.GetLines().Last().Label1 = "order record";
+
+foreach (var line in manager.GetLines())
+    line.RoutingMode = LineRoutingMode.Orthogonal;</code></pre>
+</div>
+<div class="step"><h3>3. Drill down a level</h3>
+<p><code>DFDLevelNavigator</code> manages the level stack so the same canvas can show level 0 and the decomposition of a process.</p>
+<pre><code class="language-csharp">var navigator = new DFDLevelNavigator();
+navigator.Enter(manager, order);        // descend into "1. Take order"
+// ... build the child level on the canvas ...
+navigator.Up(manager);                  // return to the parent level</code></pre>
+</div>
+<h2>Next steps</h2>
+<ul>
+<li><a href="../diagram-families/dfd.html">DFD family</a> &mdash; Gane-Sarson and Yourdon shapes</li>
+<li><a href="bpmn.html">BPMN tutorial</a> &mdash; when the model is executable process rather than data movement</li>
+</ul>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>
