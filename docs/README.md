@@ -23,6 +23,15 @@ per-project API reference, troubleshooting and search).
 | Script | Purpose |
 |--------|---------|
 | [`_gen_project_readmes.ps1`](_gen_project_readmes.ps1) | Regenerates `README.md` for every library project from csproj metadata |
+| [`_gen_xml_docs.ps1`](_gen_xml_docs.ps1) | Adds XML documentation comments to undocumented public members (harvests `ParameterInfo.Description`/`SetProp` text) |
+
+Documentation images (one grid per diagram family, rendered through the real pipeline) are produced by
+`Beep.Skia.Tests/DocumentationImageGenerator.cs`:
+
+```powershell
+$env:BEEP_SKIA_GENERATE_DOC_IMAGES=1
+dotnet test Beep.Skia.Tests/Beep.Skia.Tests.csproj --filter DocumentationImageGenerator
+```
 
 Documentation-site generators live next to the site in [`Help/`](../Help/):
 `_gen_component_reference.ps1`, `_gen_api_reference.ps1`, `_gen_type_sections.ps1`,
