@@ -1,7 +1,7 @@
 # Beep.Skia Documentation Status
 
-**Last updated:** 2026-09-17 (round 9)
-**Total pages:** 107 | **Sections:** 14
+**Last updated:** 2026-09-17 (round 10)
+**Total pages:** 108 | **Sections:** 14
 
 ---
 
@@ -9,7 +9,7 @@
 
 | Section | Pages | Status |
 |---------|-------|--------|
-| Getting Started | 4 | Complete |
+| Getting Started | 5 | Complete |
 | Core Concepts | 8 | Complete |
 | Diagram Families | 16 | Complete |
 | UI Components | 17 | Complete |
@@ -28,6 +28,7 @@
 ## Page Inventory
 
 ### Getting Started (3)
+- [x] `getting-started/learning-path.html` — the reading order in four stages, plus where to start by role
 - [x] `getting-started/installation.html` — private feed prerequisite, real package/TFM tables, project setup, verification
 - [x] `getting-started/quick-start.html` — Complete tutorial with DrawingManager and SkiaHostControl
 - [x] `getting-started/architecture-overview.html` — Solution structure, layers, patterns

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Path | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .path-step{display:flex;gap:1rem;margin:1rem 0;padding:0.75rem 1rem;border:1px solid var(--color-background-border);border-radius:8px} .path-step .n{font-weight:700;color:var(--color-brand-content);min-width:2rem}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Getting Started</span><span>&rsaquo;</span> <span>Learning Path</span></nav>
+<div class="page-header"><h1>Learning Path</h1><p class="page-subtitle">The order to read these docs in, from first diagram to custom extension</p></div>
+<p>There are 107 pages here. This page is the shortest route through them, in four stages. Each stage stands on its own; stop when you have what you need.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#stage-1">Stage 1 &mdash; First diagram (1 hour)</a></li>
+    <li><a href="#stage-2">Stage 2 &mdash; Real application (a day)</a></li>
+    <li><a href="#stage-3">Stage 3 &mdash; A diagram family in depth (a day each)</a></li>
+    <li><a href="#stage-4">Stage 4 &mdash; Automation, extensions and scale</a></li>
+    <li><a href="#by-role">Where to Start by Role</a></li>
+  </ul>
+</div>
+
+<section class="section" id="stage-1">
+  <h2>Stage 1 &mdash; First diagram (1 hour)</h2>
+  <div class="path-step"><span class="n">1</span><div><a href="installation.html">Installation</a> &mdash; configure the private feed, pick a target framework, install <code>Beep.Skia</code> and run the verification snippet.</div></div>
+  <div class="path-step"><span class="n">2</span><div><a href="quick-start.html">Quick Start</a> &mdash; create a <code>DrawingManager</code>, add <code>ProcessNode</code>s, connect them, and host it in a WinForms form with <code>SkiaHostControl</code>.</div></div>
+  <div class="path-step"><span class="n">3</span><div><a href="samples.html">Sample Applications</a> &mdash; run the editor sample and try the Templates menu, the palette, validation and export. Everything else in these docs maps to something you can see there.</div></div>
+  <div class="path-step"><span class="n">4</span><div><a href="architecture-overview.html">Architecture Overview</a> &mdash; the layer model: components, manager, connections, serialization, hosts.</div></div>
+</section>
+
+<section class="section" id="stage-2">
+  <h2>Stage 2 &mdash; Real application (a day)</h2>
+  <div class="path-step"><span class="n">5</span><div><a href="../core-concepts/skia-component.html">SkiaComponent</a> &mdash; the component model: geometry, <code>NodeProperties</code>, ports, the draw entry point, lifecycle.</div></div>
+  <div class="path-step"><span class="n">6</span><div><a href="../core-concepts/drawing-manager.html">DrawingManager</a> &mdash; components, connections, selection, viewport, templates, undo.</div></div>
+  <div class="path-step"><span class="n">7</span><div><a href="../core-concepts/connection-system.html">Connection System</a> and <a href="../core-concepts/connection-animation.html">Connection Animation</a> &mdash; routing modes, labels, multiplicity, data-flow visuals.</div></div>
+  <div class="path-step"><span class="n">8</span><div><a href="../core-concepts/interaction.html">Interaction Model</a> and <a href="../guides/keyboard-shortcuts.html">Keyboard and Mouse</a> &mdash; what the user can do without you writing input code.</div></div>
+  <div class="path-step"><span class="n">9</span><div><a href="../core-concepts/serialization.html">Serialization</a> &mdash; save and load diagrams, schema versioning, custom component types.</div></div>
+  <div class="path-step"><span class="n">10</span><div><a href="../guides/theming.html">Theming</a> and <a href="../guides/performance.html">Performance</a> &mdash; make it look right and keep it fast at scale.</div></div>
+</section>
+
+<section class="section" id="stage-3">
+  <h2>Stage 3 &mdash; A diagram family in depth (a day each)</h2>
+  <p>Pick the family you need. Each family page starts with a rendered grid of its node types, so you can see what you are working with before reading a line of code.</p>
+  <table>
+    <thead><tr><th>If you build</th><th>Read</th></tr></thead>
+    <tbody>
+      <tr><td>Process flows with generated code or simulation</td><td><a href="../diagram-families/flowchart.html">Flowchart</a> (code generation, simulation)</td></tr>
+      <tr><td>BPMN processes exchanged with modeling tools</td><td><a href="../diagram-families/business-process.html">Business Process</a> (import/export)</td></tr>
+      <tr><td>Database schemas and migrations</td><td><a href="../diagram-families/erd.html">ERD</a> and <a href="../diagram-families/erd-advanced.html">ERD Enterprise Features</a> (DDL, schema diff, migration scripts)</td></tr>
+      <tr><td>Data pipelines</td><td><a href="../diagram-families/etl.html">ETL</a> and <a href="../diagram-families/etl-advanced.html">ETL Professional Features</a> (lookups, SCD/CDC, expressions, profiling)</td></tr>
+      <tr><td>Threat models</td><td><a href="../diagram-families/security.html">Security</a> (STRIDE, DREAD, MITRE)</td></tr>
+      <tr><td>Project plans</td><td><a href="../diagram-families/project-management.html">Project Management</a> (CPM, Gantt)</td></tr>
+      <tr><td>Hardware or circuits</td><td><a href="../diagram-families/ecad.html">ECAD</a> (symbols, electrical rules check)</td></tr>
+      <tr><td>Anything else</td><td>The other nine family pages in the sidebar &mdash; each follows the same shape: grid, node catalog, ports, features.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="stage-4">
+  <h2>Stage 4 &mdash; Automation, extensions and scale</h2>
+  <div class="path-step"><span class="n">11</span><div><a href="../automation/workflow-engine.html">Workflow Engine</a> and <a href="../automation/nodes.html">Automation Nodes</a> &mdash; run the diagram you drew.</div></div>
+  <div class="path-step"><span class="n">12</span><div><a href="../automation/triggers.html">Triggers</a>, <a href="../automation/credentials.html">Credentials</a>, <a href="../automation/data-sources.html">Data Sources</a> &mdash; make it run on a schedule against real data, without secrets in the diagram.</div></div>
+  <div class="path-step"><span class="n">13</span><div><a href="../automation/server-sku.html">Server Execution SKU</a> and <a href="../automation/jobs.html">Jobs and Results</a> &mdash; queue workflows as HTTP jobs and watch their state.</div></div>
+  <div class="path-step"><span class="n">14</span><div><a href="../guides/creating-custom-family.html">Creating Custom Families</a> and <a href="../ecosystem/extensions.html">Extension SDK</a> &mdash; ship your own node types.</div></div>
+  <div class="path-step"><span class="n">15</span><div><a href="../ecosystem/marketplace.html">Marketplace</a> and <a href="../ecosystem/collaboration.html">Collaboration</a> &mdash; distribute packages and review diagrams as a team.</div></div>
+  <div class="path-step"><span class="n">16</span><div><a href="../architecture/component-registry.html">Architecture &amp; Internals</a> &mdash; the registry, rendering pipeline, serialization system and event model, once you need to know how it works inside.</div></div>
+</section>
+
+<section class="section" id="by-role">
+  <h2>Where to Start by Role</h2>
+  <table>
+    <thead><tr><th>Role</th><th>Shortest path</th></tr></thead>
+    <tbody>
+      <tr><td>App developer embedding a canvas</td><td>Installation &rarr; Quick Start &rarr; <a href="../hosts/winforms.html">WinForms Controls</a> &rarr; Serialization</td></tr>
+      <tr><td>Diagram author / power user</td><td><a href="samples.html">Sample Applications</a> &rarr; <a href="../guides/keyboard-shortcuts.html">Keyboard and Mouse</a> &rarr; your family page</td></tr>
+      <tr><td>Data engineer</td><td>ETL &rarr; ETL Professional Features &rarr; Data Sources &rarr; Workflow Engine</td></tr>
+      <tr><td>DBA / architect</td><td>ERD &rarr; ERD Enterprise Features &rarr; Serialization</td></tr>
+      <tr><td>Security engineer</td><td>Security &rarr; Validation &rarr; Collaboration</td></tr>
+      <tr><td>Extension author</td><td>Creating Custom Families &rarr; Extension SDK &rarr; Marketplace</td></tr>
+      <tr><td>Evaluating the framework</td><td><a href="../index.html">Home</a> (feature tour) &rarr; Samples &rarr; Performance Guide &rarr; <a href="../reference/api-index.html">API Reference</a></td></tr>
+    </tbody>
+  </table>
+  <p>Stuck at any point: <a href="../guides/getting-help.html">Getting Help</a>.</p>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>
