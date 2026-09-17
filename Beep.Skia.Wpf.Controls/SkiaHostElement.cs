@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using SkiaSharp;
+using SkiaSharp.Views.Desktop;
 using SkiaSharp.Views.WPF;
 using Beep.Skia;
 using Beep.Skia.Components;
@@ -23,12 +24,6 @@ namespace Beep.Skia.Wpf.Controls
         private Palette _palette;
         private ComponentPropertyEditor _propertyEditor;
         private readonly Dictionary<Guid, SkiaComponent> _componentRegistry = new();
-
-        private SkiaComponent _dragComponent;
-        private bool _isDraggingComponent;
-        private SKPoint _dragStartCanvas;
-        private float _dragComponentStartX;
-        private float _dragComponentStartY;
 
         [Category("Behavior"), DefaultValue(false)]
         [Description("Center the component on the drop point.")]
@@ -133,7 +128,7 @@ namespace Beep.Skia.Wpf.Controls
                     var display = def.className ?? def.type?.Name ?? def.dllname ?? "Unknown";
                     var compType = def.type?.AssemblyQualifiedName ?? def.className ?? string.Empty;
                     if (!string.IsNullOrEmpty(compType))
-                        _palette.AddItem(display, compType);
+                        _palette.AddItem(new PaletteItem { Name = display, ComponentType = compType });
                 }
             }
             catch { }
@@ -169,7 +164,7 @@ namespace Beep.Skia.Wpf.Controls
         private void OnSkMouseDown(object sender, MouseButtonEventArgs e)
         {
             var pt = ToCanvasPoint(e.GetPosition(_skElement));
-            int btn = e.ChangedButton == MouseButton.Left ? 0 : e.ChangedButton == MouseButton.Right ? 1 : 2;
+            int btn = e.ChangedButton == System.Windows.Input.MouseButton.Left ? 0 : e.ChangedButton == System.Windows.Input.MouseButton.Right ? 1 : 2;
             _drawingManager.HandleMouseDown(pt, SKKeyModifiers.None, btn);
             this.Focus();
         }
@@ -183,7 +178,7 @@ namespace Beep.Skia.Wpf.Controls
         private void OnSkMouseUp(object sender, MouseButtonEventArgs e)
         {
             var pt = ToCanvasPoint(e.GetPosition(_skElement));
-            int btn = e.ChangedButton == MouseButton.Left ? 0 : e.ChangedButton == MouseButton.Right ? 1 : 2;
+            int btn = e.ChangedButton == System.Windows.Input.MouseButton.Left ? 0 : e.ChangedButton == System.Windows.Input.MouseButton.Right ? 1 : 2;
             _drawingManager.HandleMouseUp(pt, SKKeyModifiers.None, btn);
         }
 

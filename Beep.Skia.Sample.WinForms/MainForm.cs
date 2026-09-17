@@ -5,20 +5,30 @@ using System.Text.Json;
 using System.Windows.Forms;
 using Beep.Skia;
 using Beep.Skia.Components;
+using Beep.Skia.DFD;
+using Beep.Skia.Flowchart;
 using Beep.Skia.Layout;
 using Beep.Skia.Model;
 using Beep.Skia.Serialization;
+using ExecutionContext = Beep.Skia.Model.ExecutionContext;
 
 namespace Beep.Skia.Sample.WinForms
 {
     public partial class MainForm : Form
     {
-        private StatusStrip _statusBar;
-        private ToolStripStatusLabel _statusLabel;
-        private ToolStripDropDownButton _ddTemplates;
-        private ToolStripButton _tbTheme, _tbExportPng, _tbExportSvg, _tbValidate, _tbArrange, _tbClear;
-        private ToolStripButton _tbUndo, _tbRedo;
-        private ToolStripButton _tbCopy, _tbPaste, _tbDelete;
+        private StatusStrip _statusBar = null!;
+        private ToolStripStatusLabel _statusLabel = null!;
+        private ToolStripDropDownButton _ddTemplates = null!;
+        private ToolStripButton _tbTheme = null!, _tbExportPng = null!, _tbExportSvg = null!, _tbExportPdf = null!, _tbPrint = null!, _tbValidate = null!, _tbClear = null!;
+        private ToolStripButton _tbUndo = null!, _tbRedo = null!;
+        private ToolStripButton _tbCopy = null!, _tbPaste = null!, _tbDelete = null!;
+        private FlowchartSimulator _simulator = null!;
+        private SkiaComponent _simHighlighted = null!;
+        private SkiaSharp.SKColor? _simOriginalStroke;
+        private readonly DFDLevelNavigator _levelNavigator = new DFDLevelNavigator();
+        private WorkflowEngine _workflowEngine = null!;
+        private string _activeExecutionId = null!;
+        private readonly System.Collections.Generic.List<string> _runHistory = new System.Collections.Generic.List<string>();
 
         public MainForm()
         {
@@ -57,9 +67,81 @@ namespace Beep.Skia.Sample.WinForms
 
             toolStrip1.Items.Add(new ToolStripSeparator());
 
-            // Diagram operations
-            _tbArrange = AddToolBtn("Arrange", (s, e) => DoArrange());
+            // Auto-layout dropdown
+            var ddLayout = new ToolStripDropDownButton("Layout");
+            ddLayout.DropDownItems.Add("Grid", null, (s, e) => DoLayout("grid"));
+            ddLayout.DropDownItems.Add("Hierarchical", null, (s, e) => DoLayout("hierarchical"));
+            ddLayout.DropDownItems.Add("Radial", null, (s, e) => DoLayout("radial"));
+            ddLayout.DropDownItems.Add("MindMap (radial)", null, (s, e) => DoLayout("mindmap"));
+            ddLayout.DropDownItems.Add("Force-directed", null, (s, e) => DoLayout("force"));
+            toolStrip1.Items.Add(ddLayout);
+
+            // Alignment dropdown
+            var ddAlign = new ToolStripDropDownButton("Align");
+            ddAlign.DropDownItems.Add("Left", null, (s, e) => DoAlign("left"));
+            ddAlign.DropDownItems.Add("Right", null, (s, e) => DoAlign("right"));
+            ddAlign.DropDownItems.Add("Top", null, (s, e) => DoAlign("top"));
+            ddAlign.DropDownItems.Add("Bottom", null, (s, e) => DoAlign("bottom"));
+            ddAlign.DropDownItems.Add("Center (H)", null, (s, e) => DoAlign("centerH"));
+            ddAlign.DropDownItems.Add("Center (V)", null, (s, e) => DoAlign("centerV"));
+            ddAlign.DropDownItems.Add(new ToolStripSeparator());
+            ddAlign.DropDownItems.Add("Distribute (H)", null, (s, e) => DoAlign("distH"));
+            ddAlign.DropDownItems.Add("Distribute (V)", null, (s, e) => DoAlign("distV"));
+            toolStrip1.Items.Add(ddAlign);
+
             _tbValidate = AddToolBtn("Validate", (s, e) => DoValidate());
+
+            // Analyzer tools
+            var ddTools = new ToolStripDropDownButton("Tools");
+            ddTools.DropDownItems.Add("Run ERC (ECAD)", null, (s, e) => DoElectricalRulesCheck());
+            ddTools.DropDownItems.Add("Generate STRIDE Threats", null, (s, e) => DoStrideAnalysis());
+            ddTools.DropDownItems.Add("Compute Schedule (PM)", null, (s, e) => DoComputeSchedule());
+            ddTools.DropDownItems.Add("Add Gantt Timeline (PM)", null, (s, e) => DoAddGantt());
+            ddTools.DropDownItems.Add("Drill Into Process (DFD)", null, (s, e) => DoDrillDown());
+            ddTools.DropDownItems.Add("Go Up Level (DFD)", null, (s, e) => DoGoUpLevel());
+            ddTools.DropDownItems.Add("Import DDL… (ERD)", null, (s, e) => DoImportDdl());
+            ddTools.DropDownItems.Add("Compare Schemas… (ERD)", null, (s, e) => DoCompareSchemas());
+            ddTools.DropDownItems.Add("Expression Tester… (ETL)", null, (s, e) => DoExpressionTester());
+            ddTools.DropDownItems.Add("Data Profiler… (ETL)", null, (s, e) => DoDataProfiler());
+            ddTools.DropDownItems.Add("Flatten JSON/XML… (ETL)", null, (s, e) => DoFlattenStructured());
+            ddTools.DropDownItems.Add("Export BPMN… (Business)", null, (s, e) => DoExportBpmn());
+            ddTools.DropDownItems.Add("Export XMI… (UML)", null, (s, e) => DoExportXmi());
+            ddTools.DropDownItems.Add("Toggle Collapse (MindMap)", null, (s, e) => DoToggleCollapse());
+            ddTools.DropDownItems.Add("Add Sample Chart (Quantitative)", null, (s, e) => DoAddSampleChart());
+            ddTools.DropDownItems.Add("Export ML Pipeline… (ML)", null, (s, e) => DoExportMlPipeline());
+            ddTools.DropDownItems.Add(new ToolStripSeparator());
+            ddTools.DropDownItems.Add("Run Workflow (Automation)", null, (s, e) => DoRunWorkflow());
+            ddTools.DropDownItems.Add("Execution Service…", null, (s, e) => DoShowExecutionService());
+            ddTools.DropDownItems.Add("Cancel Workflow", null, (s, e) => DoCancelWorkflow());
+            ddTools.DropDownItems.Add("Run History…", null, (s, e) => DoShowRunHistory());
+            ddTools.DropDownItems.Add("Analyze Network", null, (s, e) => DoNetworkAnalysis());
+            ddTools.DropDownItems.Add("Find Shortest Path (Network)", null, (s, e) => DoFindShortestPath());
+            ddTools.DropDownItems.Add("Generate Code… (Flowchart)", null, (s, e) => DoGenerateCode());
+            toolStrip1.Items.Add(ddTools);
+
+            // Flowchart simulation
+            var ddSimulate = new ToolStripDropDownButton("Simulate");
+            ddSimulate.DropDownItems.Add("Step", null, (s, e) => DoSimStep());
+            ddSimulate.DropDownItems.Add("Run", null, (s, e) => DoSimRun());
+            ddSimulate.DropDownItems.Add("Reset", null, (s, e) => DoSimReset());
+            toolStrip1.Items.Add(ddSimulate);
+
+            // Collaboration
+            var ddCollab = new ToolStripDropDownButton("Collaborate");
+            ddCollab.DropDownItems.Add("Comments…", null, (s, e) => DoShowComments());
+            ddCollab.DropDownItems.Add("Toggle Comment Pins", null, (s, e) => DoToggleCommentPins());
+            ddCollab.DropDownItems.Add("Presence Snapshot", null, (s, e) => DoPresenceSnapshot());
+            toolStrip1.Items.Add(ddCollab);
+
+            // Assisted generation
+            var ddAssist = new ToolStripDropDownButton("Generate");
+            ddAssist.DropDownItems.Add("From Description…", null, (s, e) => DoGenerateFromDescription());
+            toolStrip1.Items.Add(ddAssist);
+
+            // Extensions
+            var ddExt = new ToolStripDropDownButton("Extensions");
+            ddExt.DropDownItems.Add("Manage Extensions…", null, (s, e) => DoManageExtensions());
+            toolStrip1.Items.Add(ddExt);
 
             toolStrip1.Items.Add(new ToolStripSeparator());
 
@@ -69,6 +151,8 @@ namespace Beep.Skia.Sample.WinForms
             // Export
             _tbExportPng = AddToolBtn("PNG", (s, e) => ExportPng());
             _tbExportSvg = AddToolBtn("SVG", (s, e) => ExportSvg());
+            _tbExportPdf = AddToolBtn("PDF", (s, e) => ExportPdf());
+            _tbPrint = AddToolBtn("Print", (s, e) => PrintDiagram());
 
             toolStrip1.Items.Add(new ToolStripSeparator());
 
@@ -177,14 +261,41 @@ namespace Beep.Skia.Sample.WinForms
             }
         }
 
-        private void DoArrange()
+        private void DoLayout(string kind)
         {
             var mgr = skiaHostControl1?.DrawingManager;
-            if (mgr != null)
+            if (mgr == null) return;
+
+            IAutoLayout layout = kind switch
             {
-                mgr.ArrangeDiagram(new GridAutoLayout { Columns = 3, StartX = 50, StartY = 50 });
-                _statusLabel.Text = "Arranged (grid)";
+                "hierarchical" => new HierarchicalLayout(),
+                "radial" => new RadialLayout(),
+                "mindmap" => new Beep.Skia.MindMap.MindMapLayout(),
+                "force" => new ForceDirectedLayout(),
+                _ => new GridAutoLayout { Columns = 3, StartX = 50, StartY = 50 }
+            };
+
+            mgr.ArrangeDiagram(layout);
+            _statusLabel.Text = $"Arranged ({kind})";
+        }
+
+        private void DoAlign(string kind)
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            switch (kind)
+            {
+                case "left": mgr.AlignLeft(); break;
+                case "right": mgr.AlignRight(); break;
+                case "top": mgr.AlignTop(); break;
+                case "bottom": mgr.AlignBottom(); break;
+                case "centerH": mgr.AlignCenterHorizontal(); break;
+                case "centerV": mgr.AlignCenterVertical(); break;
+                case "distH": mgr.DistributeHorizontal(); break;
+                case "distV": mgr.DistributeVertical(); break;
             }
+            _statusLabel.Text = $"Aligned ({kind})";
         }
 
         private void DoValidate()
@@ -206,6 +317,813 @@ namespace Beep.Skia.Sample.WinForms
                 MessageBox.Show(msg, "Diagram Validation", MessageBoxButtons.OK,
                     errors > 0 ? MessageBoxIcon.Error : MessageBoxIcon.Warning);
             }
+        }
+
+        private void DoElectricalRulesCheck()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            var components = mgr.GetComponents().Where(c => c is Beep.Skia.ECAD.ECADControl).ToList();
+            if (components.Count == 0)
+            {
+                _statusLabel.Text = "ERC: no ECAD components in the diagram";
+                return;
+            }
+
+            var checker = new Beep.Skia.ECAD.ElectricalRulesChecker();
+            checker.RunChecks(mgr.GetComponents(), mgr.GetLines());
+
+            if (checker.Violations.Count == 0)
+            {
+                _statusLabel.Text = "ERC passed — no electrical rule violations";
+                MessageBox.Show("ERC passed — no violations.", "Electrical Rules Check",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var errors = checker.Violations.Count(v => v.Severity == Beep.Skia.ECAD.ElectricalViolationSeverity.Error);
+            _statusLabel.Text = $"ERC: {checker.Violations.Count} violations ({errors} errors)";
+            var msg = string.Join("\n", checker.Violations.Take(12).Select(v => $"[{v.Severity}] {v.Message}"));
+            if (checker.Violations.Count > 12) msg += $"\n... and {checker.Violations.Count - 12} more";
+            MessageBox.Show(msg, "Electrical Rules Check", MessageBoxButtons.OK,
+                errors > 0 ? MessageBoxIcon.Error : MessageBoxIcon.Warning);
+        }
+
+        private void DoStrideAnalysis()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            var assets = mgr.GetComponents().Where(c => c is Beep.Skia.Security.AssetNode).ToList();
+            if (assets.Count == 0)
+            {
+                _statusLabel.Text = "STRIDE: no asset nodes in the diagram";
+                return;
+            }
+
+            var analyzer = new Beep.Skia.Security.StrideAnalyzer();
+            analyzer.Analyze(mgr.GetComponents());
+
+            // Materialize threats on the canvas so they can be inspected and connected.
+            float x = 60, y = 60;
+            foreach (var threat in analyzer.Threats)
+            {
+                var node = new Beep.Skia.Security.ThreatNode
+                {
+                    X = x,
+                    Y = y,
+                    Width = 180,
+                    Height = 72
+                };
+                node.ThreatName = threat.Threat;
+                node.Severity = Enum.TryParse<Beep.Skia.Security.Severity>(threat.Severity, true, out var sev)
+                    ? sev
+                    : Beep.Skia.Security.Severity.Medium;
+                mgr.AddComponent(node);
+
+                x += 200;
+                if (x > 900) { x = 60; y += 92; }
+            }
+
+            _statusLabel.Text = $"STRIDE: generated {analyzer.Threats.Count} threats";
+            var msg = string.Join("\n", analyzer.Threats.Take(10).Select(t =>
+                $"[{t.Category}] {t.Threat} — DREAD {t.Dread.Average:0.0} ({t.Dread.RiskLevel})" +
+                (t.Techniques.Count > 0 ? $" [{t.Techniques[0].Id}]" : "")));
+            if (analyzer.Threats.Count > 10) msg += $"\n... and {analyzer.Threats.Count - 10} more";
+            MessageBox.Show(msg, "STRIDE Threat Analysis", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void DoComputeSchedule()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            var tasks = mgr.GetComponents().Where(c => c is Beep.Skia.PM.TaskNode).ToList();
+            if (tasks.Count == 0)
+            {
+                _statusLabel.Text = "Schedule: no task nodes in the diagram";
+                return;
+            }
+
+            var calculator = new Beep.Skia.PM.CriticalPathCalculator();
+            calculator.Calculate(mgr.GetComponents(), mgr.GetLines());
+
+            var criticalNames = calculator.CriticalPath.Select(t => t.Name ?? t.GetType().Name).ToList();
+            _statusLabel.Text = $"Schedule: {calculator.ProjectDuration} days, {criticalNames.Count} critical tasks";
+
+            var msg = $"Project duration: {calculator.ProjectDuration} days\n" +
+                      $"Critical path: {(criticalNames.Count > 0 ? string.Join(" → ", criticalNames) : "(none)")}";
+            MessageBox.Show(msg, "Critical Path", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void DoAddGantt()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            var tasks = mgr.GetComponents().OfType<Beep.Skia.PM.TaskNode>().ToList();
+            if (tasks.Count == 0)
+            {
+                _statusLabel.Text = "Gantt: no task nodes in the diagram";
+                return;
+            }
+
+            var calculator = new Beep.Skia.PM.CriticalPathCalculator();
+            calculator.Calculate(mgr.GetComponents(), mgr.GetLines());
+
+            var contentBounds = mgr.GetContentBounds();
+            var gantt = new Beep.Skia.PM.GanttTimelineNode
+            {
+                X = contentBounds.Left,
+                Y = contentBounds.Bottom + 20
+            };
+            gantt.SetSchedule(tasks, calculator);
+            mgr.AddComponent(gantt);
+
+            _statusLabel.Text = $"Gantt timeline added ({gantt.Rows.Count} rows)";
+        }
+
+        private async void DoRunWorkflow()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            var automation = mgr.GetComponents().OfType<Beep.Skia.Components.AutomationNode>().ToList();
+            if (automation.Count == 0)
+            {
+                _statusLabel.Text = "Workflow: add automation nodes (DataInput, DataTransform, Conditional, …) first";
+                return;
+            }
+
+            var engine = new WorkflowEngine();
+            var workflow = mgr.ToWorkflowDefinition("Canvas Workflow");
+            if (workflow.Nodes.Count == 0)
+            {
+                _statusLabel.Text = "Workflow: no executable automation nodes found";
+                return;
+            }
+
+            foreach (var node in automation)
+            {
+                node.SetExecutionStatus(NodeStatus.Idle);
+            }
+
+            var context = new ExecutionContext(workflow.Id, Guid.NewGuid().ToString("N")[..12]);
+            var startedAt = DateTime.UtcNow;
+            _workflowEngine = engine;
+            _activeExecutionId = context.ExecutionId;
+
+            var timer = new System.Windows.Forms.Timer { Interval = 120 };
+            timer.Tick += (s, e) => SyncWorkflowStatus(engine, mgr, workflow, context.ExecutionId);
+            timer.Start();
+
+            _statusLabel.Text = $"Workflow running ({workflow.Nodes.Count} nodes)…";
+            try
+            {
+                await engine.LoadWorkflowAsync(workflow);
+                var result = await engine.ExecuteWorkflowAsync(workflow.Id, context);
+                var elapsed = DateTime.UtcNow - startedAt;
+
+                SyncWorkflowStatus(engine, mgr, workflow, context.ExecutionId);
+                _runHistory.Add($"{DateTime.Now:HH:mm:ss} {result.Status} in {elapsed.TotalMilliseconds:0} ms — {result.NodeResults.Count} node(s) ok, {result.Errors.Count} error(s)");
+                _statusLabel.Text = $"Workflow {result.Status} in {elapsed.TotalMilliseconds:0} ms";
+            }
+            catch (Exception ex)
+            {
+                _runHistory.Add($"{DateTime.Now:HH:mm:ss} failed: {ex.Message}");
+                _statusLabel.Text = "Workflow failed: " + ex.Message;
+            }
+            finally
+            {
+                timer.Stop();
+                timer.Dispose();
+                _activeExecutionId = string.Empty;
+            }
+        }
+
+        private void SyncWorkflowStatus(WorkflowEngine engine, DrawingManager mgr, WorkflowDefinition workflow, string executionId)
+        {
+            var execution = engine.GetExecutionStatus(executionId);
+            if (execution == null) return;
+
+            var components = mgr.GetComponents().OfType<Beep.Skia.Components.AutomationNode>().ToList();
+            foreach (var nodeExec in execution.NodeExecutions)
+            {
+                var definition = workflow.Nodes.FirstOrDefault(n => n.Id == nodeExec.NodeId);
+                if (definition == null) continue;
+
+                var component = components.FirstOrDefault(c => c.Name == definition.Name);
+                if (component == null || component.Status == nodeExec.Status) continue;
+
+                component.SetExecutionStatus(nodeExec.Status);
+            }
+            skiaHostControl1?.Invalidate();
+        }
+
+        private void DoCancelWorkflow()
+        {
+            if (_workflowEngine == null || string.IsNullOrEmpty(_activeExecutionId))
+            {
+                _statusLabel.Text = "Workflow: no run in progress";
+                return;
+            }
+
+            _ = _workflowEngine.CancelExecutionAsync(_activeExecutionId);
+            _statusLabel.Text = "Workflow cancellation requested";
+        }
+
+        private void DoShowRunHistory()
+        {
+            var text = _runHistory.Count == 0
+                ? "(no workflow runs yet)"
+                : string.Join(Environment.NewLine, _runHistory);
+            using var preview = new TextPreviewForm("Workflow Run History", text);
+            preview.ShowDialog(this);
+        }
+
+        private void DoExportMlPipeline()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+            if (!mgr.GetComponents().Any(c => c is Beep.Skia.ML.MLControl))
+            {
+                _statusLabel.Text = "ML: no ML pipeline nodes in the diagram";
+                return;
+            }
+
+            using var dlg = new SaveFileDialog
+            {
+                Title = "Export ML Pipeline",
+                Filter = "JSON (*.json)|*.json|All files (*.*)|*.*",
+                FileName = "pipeline.json"
+            };
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+
+            try
+            {
+                var json = new Beep.Skia.ML.MLPipelineExporter().ExportJson(mgr, "Pipeline");
+                File.WriteAllText(dlg.FileName, json);
+                _statusLabel.Text = $"Exported ML pipeline: {dlg.FileName}";
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "ML export failed: " + ex.Message;
+            }
+        }
+
+        private void DoAddSampleChart()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            var bounds = mgr.GetContentBounds();
+            var chart = new Beep.Ski.Quantitative.ChartNode
+            {
+                X = bounds.Left,
+                Y = bounds.Bottom + 20,
+                Width = 320,
+                Height = 200,
+                ChartType = "Line",
+                Title = "Demo Prices"
+            };
+
+            var random = new Random(7);
+            double price = 100;
+            var close = new Beep.Ski.Quantitative.ChartSeries { Name = "close" };
+            var volume = new Beep.Ski.Quantitative.ChartSeries { Name = "volume" };
+            for (int i = 0; i < 60; i++)
+            {
+                price += (random.NextDouble() - 0.5) * 4;
+                close.Values.Add(Math.Round(price, 2));
+                volume.Values.Add(random.Next(50, 200));
+            }
+            chart.SetData(close, volume);
+
+            mgr.AddComponent(chart);
+            _statusLabel.Text = "Sample chart added (Quantitative)";
+        }
+
+        private void DoToggleCollapse()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            var selected = mgr.SelectionManager.SelectedComponents
+                .OfType<Beep.Skia.MindMap.MindMapControl>()
+                .ToList();
+            if (selected.Count == 0)
+            {
+                _statusLabel.Text = "MindMap: select one or more mind-map nodes to collapse/expand";
+                return;
+            }
+
+            foreach (var node in selected)
+                node.IsCollapsed = !node.IsCollapsed;
+
+            var changes = Beep.Skia.MindMap.MindMapVisibility.Apply(mgr.GetComponents(), mgr.GetLines());
+            skiaHostControl1?.Invalidate();
+            _statusLabel.Text = $"MindMap: toggled {selected.Count} node(s), {changes} visibility change(s)";
+        }
+
+        private void DoExportBpmn()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+            if (!mgr.GetComponents().Any(c => c is Beep.Skia.Business.BusinessControl))
+            {
+                _statusLabel.Text = "BPMN: no business process nodes in the diagram";
+                return;
+            }
+
+            using var dlg = new SaveFileDialog
+            {
+                Title = "Export BPMN 2.0",
+                Filter = "BPMN XML (*.bpmn;*.xml)|*.bpmn;*.xml|All files (*.*)|*.*",
+                FileName = "process.bpmn"
+            };
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+
+            try
+            {
+                var xml = new Beep.Skia.Business.BpmnExporter().Export(mgr.GetComponents(), mgr.GetLines(), "Process");
+                File.WriteAllText(dlg.FileName, xml);
+                _statusLabel.Text = $"Exported BPMN: {dlg.FileName}";
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "BPMN export failed: " + ex.Message;
+            }
+        }
+
+        private void DoExportXmi()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+            if (!mgr.GetComponents().Any(c => c is Beep.Skia.UML.UMLControl))
+            {
+                _statusLabel.Text = "XMI: no UML elements in the diagram";
+                return;
+            }
+
+            using var dlg = new SaveFileDialog
+            {
+                Title = "Export XMI",
+                Filter = "XMI (*.xmi;*.xml)|*.xmi;*.xml|All files (*.*)|*.*",
+                FileName = "model.xmi"
+            };
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+
+            try
+            {
+                var xmi = new Beep.Skia.UML.XmiExporter().Export(mgr.GetComponents(), mgr.GetLines(), "Model");
+                File.WriteAllText(dlg.FileName, xmi);
+                _statusLabel.Text = $"Exported XMI: {dlg.FileName}";
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "XMI export failed: " + ex.Message;
+            }
+        }
+
+        private void DoFlattenStructured()
+        {
+            using var dlg = new OpenFileDialog
+            {
+                Title = "Open JSON or XML",
+                Filter = "Structured data (*.json;*.xml)|*.json;*.xml|All files (*.*)|*.*"
+            };
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+
+            try
+            {
+                var text = File.ReadAllText(dlg.FileName);
+                var flattener = new Beep.Skia.ETL.StructuredDataFlattener();
+                var isXml = dlg.FileName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase);
+                var rows = isXml ? flattener.FlattenXml(text) : flattener.FlattenJson(text);
+
+                if (rows.Count == 0)
+                {
+                    _statusLabel.Text = "Flatten: no rows found";
+                    return;
+                }
+
+                var schema = flattener.InferSchema(rows);
+                var profile = new Beep.Skia.ETL.DataProfiler().Profile(rows);
+                var schemaText = string.Join("\n", schema.Select(c =>
+                    $"  {c.Name,-32} {c.DataType,-10} {(c.IsNullable ? "NULL" : "NOT NULL")}"));
+
+                var report = $"Inferred schema ({schema.Count} columns):\n{schemaText}\n\n" +
+                             profile.Summary() + "\n\n--- Preview (first 20 rows) ---\n" +
+                             Beep.Skia.ETL.DataPreviewFormatter.ToTable(rows, 20);
+
+                using var preview = new TextPreviewForm("Structured Data", report);
+                preview.ShowDialog(this);
+
+                _statusLabel.Text = $"Flattened {rows.Count} rows / {schema.Count} columns";
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "Flatten failed: " + ex.Message;
+            }
+        }
+
+        private void DoDataProfiler()
+        {
+            try
+            {
+                var rows = BuildDemoRows(120);
+                var profile = new Beep.Skia.ETL.DataProfiler().Profile(rows);
+
+                var metrics = new Beep.Skia.ETL.PipelineMetrics();
+                metrics.Start();
+                metrics.Measure("Extract", 0, () => rows.Count);
+                metrics.Measure("Profile", rows.Count, () => profile.Columns.Count);
+                metrics.Complete();
+
+                var text = profile.Summary() + "\n\n--- Preview (first 15 rows) ---\n" +
+                           Beep.Skia.ETL.DataPreviewFormatter.ToTable(rows, 15) + "\n\n" +
+                           metrics.Summary();
+
+                using var preview = new TextPreviewForm("Data Profile", text);
+                preview.ShowDialog(this);
+
+                _statusLabel.Text = $"Profiled {profile.RowCount} rows / {profile.Columns.Count} columns";
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "Profile failed: " + ex.Message;
+            }
+        }
+
+        private static System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>> BuildDemoRows(int count)
+        {
+            var rows = new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>();
+            var random = new Random(42);
+            var regions = new[] { "North", "South", "East", "West" };
+            for (int i = 0; i < count; i++)
+            {
+                rows.Add(new System.Collections.Generic.Dictionary<string, object>
+                {
+                    ["order_id"] = 1000 + i,
+                    ["customer"] = $"Customer {random.Next(1, 25)}",
+                    ["region"] = regions[random.Next(regions.Length)],
+                    ["amount"] = Math.Round(random.NextDouble() * 500, 2),
+                    ["quantity"] = random.Next(1, 10),
+                    ["ordered_at"] = DateTime.UtcNow.AddDays(-random.Next(0, 90)),
+                    ["notes"] = i % 7 == 0 ? null! : "priority"
+                });
+            }
+            return rows;
+        }
+
+        private void DoExpressionTester()
+        {
+            using var tester = new ExpressionTesterForm();
+            tester.ShowDialog(this);
+            _statusLabel.Text = "Expression tester closed";
+        }
+
+        private void DoShowComments()
+        {
+            using var comments = new CommentsForm(skiaHostControl1);
+            comments.ShowDialog(this);
+            _statusLabel.Text = "Comments closed";
+        }
+
+        private void DoToggleCommentPins()
+        {
+            skiaHostControl1.ShowCommentPins = !skiaHostControl1.ShowCommentPins;
+            skiaHostControl1.RefreshCommentPins();
+            _statusLabel.Text = skiaHostControl1.ShowCommentPins ? "Comment pins shown" : "Comment pins hidden";
+        }
+
+        private void DoPresenceSnapshot()
+        {
+            try
+            {
+                var service = skiaHostControl1.Collaboration;
+                service.SetPresence(skiaHostControl1.DocumentId, "local", "editing");
+                var active = service.GetPresence(skiaHostControl1.DocumentId);
+                var lines = active.Select(p => $"{p.UserId} — {p.Activity} (last seen {p.LastSeen:HH:mm:ss})");
+                _statusLabel.Text = $"{active.Count} active collaborator(s)";
+                MessageBox.Show(this,
+                    active.Count == 0 ? "No active collaborators." : string.Join(Environment.NewLine, lines),
+                    "Presence",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "Presence failed: " + ex.Message;
+            }
+        }
+
+        private void DoGenerateFromDescription()
+        {
+            try
+            {
+                using var form = new DiagramAssistForm(skiaHostControl1.DrawingManager);
+                form.ShowDialog(this);
+                _statusLabel.Text = "Diagram generation closed";
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "Generation failed: " + ex.Message;
+            }
+        }
+
+        private void DoShowExecutionService()
+        {
+            try
+            {
+                using var form = new ExecutionServiceForm(skiaHostControl1.DrawingManager);
+                form.ShowDialog(this);
+                _statusLabel.Text = "Execution service closed";
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "Execution service failed: " + ex.Message;
+            }
+        }
+
+        private void DoManageExtensions()
+        {
+            try
+            {
+                using var form = new ExtensionsForm(skiaHostControl1);
+                form.ShowDialog(this);
+                _statusLabel.Text = "Extension manager closed";
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "Extension manager failed: " + ex.Message;
+            }
+        }
+
+        private void DoCompareSchemas()
+        {
+            using var sourceDlg = new OpenFileDialog
+            {
+                Title = "Select SOURCE schema (current)",
+                Filter = "SQL files (*.sql)|*.sql|All files (*.*)|*.*"
+            };
+            if (sourceDlg.ShowDialog(this) != DialogResult.OK) return;
+
+            using var targetDlg = new OpenFileDialog
+            {
+                Title = "Select TARGET schema (desired)",
+                Filter = "SQL files (*.sql)|*.sql|All files (*.*)|*.*"
+            };
+            if (targetDlg.ShowDialog(this) != DialogResult.OK) return;
+
+            try
+            {
+                var importer = new Beep.Skia.ERD.DDLImporter();
+                var source = importer.Parse(File.ReadAllText(sourceDlg.FileName));
+                var target = importer.Parse(File.ReadAllText(targetDlg.FileName));
+
+                var diff = new Beep.Skia.ERD.SchemaComparer().Compare(source, target);
+                var generator = new Beep.Skia.ERD.MigrationScriptGenerator();
+                var text = diff.Summary() + "\n\n" +
+                           generator.GenerateForward(diff) + "\n" +
+                           generator.GenerateRollback(diff);
+
+                using var preview = new TextPreviewForm("Schema Migration", text);
+                preview.ShowDialog(this);
+
+                _statusLabel.Text = diff.HasChanges
+                    ? $"Schema compare: {diff.Changes.Count} change(s)"
+                    : "Schema compare: schemas are identical";
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "Schema compare failed: " + ex.Message;
+            }
+        }
+
+        private void DoDrillDown()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            var process = mgr.SelectionManager.SelectedComponents.OfType<DFDProcess>().FirstOrDefault();
+            if (process == null)
+            {
+                _statusLabel.Text = "DFD: select a process node with a child diagram";
+                return;
+            }
+            if (process.ChildDiagramData == null)
+            {
+                _statusLabel.Text = $"DFD: '{process.Label}' has no child diagram";
+                return;
+            }
+
+            if (_levelNavigator.Current == null) _levelNavigator.Reset();
+            _levelNavigator.DrillDown(process.Label ?? process.Name ?? "Process", mgr.ToDto(), process.ChildDiagramData);
+            mgr.LoadFromDto(process.ChildDiagramData);
+            _statusLabel.Text = $"DFD level: {_levelNavigator.Breadcrumb}";
+        }
+
+        private void DoGoUpLevel()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            if (!_levelNavigator.CanGoUp)
+            {
+                _statusLabel.Text = "DFD: already at the top level";
+                return;
+            }
+
+            var frame = _levelNavigator.GoUp();
+            if (frame?.Diagram != null) mgr.LoadFromDto(frame.Diagram);
+            _statusLabel.Text = $"DFD level: {_levelNavigator.Breadcrumb}";
+        }
+
+        private void DoImportDdl()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            using var dlg = new OpenFileDialog
+            {
+                Title = "Import DDL",
+                Filter = "SQL files (*.sql)|*.sql|All files (*.*)|*.*"
+            };
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+
+            try
+            {
+                var ddl = File.ReadAllText(dlg.FileName);
+                var importer = new Beep.Skia.ERD.DDLImporter(Beep.Skia.ERD.DDLImporter.SQLDialect.ANSI);
+                var entities = importer.ImportToEntities(ddl, Beep.Skia.ERD.DDLImporter.SQLDialect.ANSI);
+
+                float x = 60, y = 60;
+                foreach (var entity in entities)
+                {
+                    entity.X = x;
+                    entity.Y = y;
+                    entity.Width = 220;
+                    entity.Height = 140;
+                    mgr.AddComponent(entity);
+
+                    x += 260;
+                    if (x > 1000) { x = 60; y += 180; }
+                }
+
+                _statusLabel.Text = $"Imported {entities.Count} tables from DDL";
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "DDL import failed: " + ex.Message;
+            }
+        }
+
+        private void DoSimReset()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            ClearSimHighlight();
+            _simulator = new FlowchartSimulator();
+            _simulator.Reset(mgr.GetComponents(), mgr.GetLines());
+            HighlightSimCurrent();
+
+            _statusLabel.Text = _simulator.IsFinished
+                ? "Simulation: no entry node found"
+                : $"Simulation reset at '{SimNodeName(_simulator.CurrentNode!)}'";
+        }
+
+        private void DoSimStep()
+        {
+            if (_simulator == null) { DoSimReset(); if (_simulator == null) return; }
+            if (_simulator.IsFinished) { _statusLabel.Text = "Simulation already finished — press Reset"; return; }
+
+            ClearSimHighlight();
+            _simulator.Step();
+            HighlightSimCurrent();
+
+            _statusLabel.Text = _simulator.IsFinished
+                ? $"Simulation finished after {_simulator.StepCount} steps"
+                : $"Step {_simulator.StepCount}: '{SimNodeName(_simulator.CurrentNode!)}'";
+        }
+
+        private void DoSimRun()
+        {
+            if (_simulator == null) { DoSimReset(); if (_simulator == null) return; }
+
+            ClearSimHighlight();
+            var finished = _simulator.Run(500);
+            HighlightSimCurrent();
+
+            _statusLabel.Text = finished
+                ? $"Simulation finished after {_simulator.StepCount} steps"
+                : $"Simulation capped at {_simulator.StepCount} steps (possible cycle)";
+        }
+
+        private void HighlightSimCurrent()
+        {
+            if (_simulator?.CurrentNode is FlowchartControl node)
+            {
+                _simHighlighted = node;
+                _simOriginalStroke = node.CustomStrokeColor;
+                node.CustomStrokeColor = new SkiaSharp.SKColor(255, 152, 0); // amber
+                node.InvalidateVisual();
+                skiaHostControl1?.Invalidate();
+            }
+        }
+
+        private void ClearSimHighlight()
+        {
+            if (_simHighlighted is FlowchartControl node)
+            {
+                node.CustomStrokeColor = _simOriginalStroke;
+                node.InvalidateVisual();
+            }
+            _simHighlighted = null!;
+            _simOriginalStroke = null;
+            skiaHostControl1?.Invalidate();
+        }
+
+        private static string SimNodeName(SkiaComponent node)
+        {
+            if (node == null) return "(none)";
+            return string.IsNullOrWhiteSpace(node.Name) ? node.GetType().Name : node.Name;
+        }
+
+        private void DoGenerateCode()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            var hasFlowchart = mgr.GetComponents().Any(c => c is Beep.Skia.Flowchart.FlowchartControl);
+            if (!hasFlowchart)
+            {
+                _statusLabel.Text = "Codegen: no flowchart nodes in the diagram";
+                return;
+            }
+
+            using var preview = new CodePreviewForm(lang =>
+                new Beep.Skia.Flowchart.FlowchartCodeGenerator().Generate(mgr, lang));
+            preview.ShowDialog(this);
+            _statusLabel.Text = "Generated flowchart code";
+        }
+
+        private void DoNetworkAnalysis()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            var nodes = mgr.GetComponents().OfType<Beep.Skia.Network.NetworkNode>().ToList();
+            var links = mgr.GetComponents().OfType<Beep.Skia.Network.NetworkLink>().ToList();
+            if (nodes.Count == 0)
+            {
+                _statusLabel.Text = "Network: no network nodes in the diagram";
+                return;
+            }
+
+            new Beep.Skia.Network.CentralityMeasure().CalculateCentrality(nodes, links);
+            new Beep.Skia.Network.CommunityDetector().DetectCommunities(nodes, links);
+
+            var pageRank = Beep.Skia.Network.NetworkAlgorithms.PageRank(nodes, links);
+            Beep.Skia.Network.NetworkAlgorithms.ApplyPageRank(pageRank);
+
+            int communities = nodes.Select(n => n.CommunityId).Distinct().Count();
+            var top = string.Join(", ", pageRank.Top(3).Select(kvp => $"{kvp.Key.Name} ({kvp.Value:0.###})"));
+            _statusLabel.Text = $"Network: {nodes.Count} nodes, {links.Count} links, {communities} communities | top: {top}";
+        }
+
+        private void DoFindShortestPath()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+
+            var selected = mgr.SelectionManager.SelectedComponents
+                .OfType<Beep.Skia.Network.NetworkNode>()
+                .ToList();
+            if (selected.Count != 2)
+            {
+                _statusLabel.Text = "Path: select exactly two network nodes";
+                return;
+            }
+
+            var links = mgr.GetComponents().OfType<Beep.Skia.Network.NetworkLink>().ToList();
+            foreach (var node in mgr.GetComponents().OfType<Beep.Skia.Network.NetworkNode>())
+            {
+                if (node.IsHighlighted) { node.IsHighlighted = false; node.InvalidateVisual(); }
+            }
+
+            var path = Beep.Skia.Network.NetworkAlgorithms.ShortestPath(selected[0], selected[1], links);
+            if (path.Count == 0)
+            {
+                _statusLabel.Text = $"Path: no route from '{selected[0].Name}' to '{selected[1].Name}'";
+                return;
+            }
+
+            foreach (var node in path) { node.IsHighlighted = true; node.InvalidateVisual(); }
+            var cost = Beep.Skia.Network.NetworkAlgorithms.PathCost(path, links);
+            _statusLabel.Text = $"Path ({cost:0.##}): {string.Join(" -> ", path.Select(n => n.Name))}";
         }
 
         private void ToggleTheme()
@@ -240,13 +1158,54 @@ namespace Beep.Skia.Sample.WinForms
             {
                 var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                     $"skia_diagram_{DateTime.Now:yyyyMMdd_HHmmss}.svg");
-                mgr.ExportToSvg(path);
+                mgr.ExportToSvg(path, background: SkiaSharp.SKColors.White);
                 _statusLabel.Text = $"Exported: {path}";
                 MessageBox.Show($"Exported to:\n{path}", "Export SVG", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 _statusLabel.Text = "Export failed: " + ex.Message;
+            }
+        }
+
+        private void ExportPdf()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+            try
+            {
+                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                    $"skia_diagram_{DateTime.Now:yyyyMMdd_HHmmss}.pdf");
+                mgr.ExportToPdf(path);
+                _statusLabel.Text = $"Exported: {path}";
+                MessageBox.Show($"Exported to:\n{path}", "Export PDF", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "Export failed: " + ex.Message;
+            }
+        }
+
+        private void PrintDiagram()
+        {
+            var mgr = skiaHostControl1?.DrawingManager;
+            if (mgr == null) return;
+            try
+            {
+                var doc = mgr.CreatePrintDocument("Beep.Skia Diagram");
+                using var preview = new PrintPreviewDialog
+                {
+                    Document = doc,
+                    Width = 1000,
+                    Height = 700,
+                    Text = "Print Preview"
+                };
+                preview.ShowDialog(this);
+                _statusLabel.Text = "Print preview closed";
+            }
+            catch (Exception ex)
+            {
+                _statusLabel.Text = "Print failed: " + ex.Message;
             }
         }
 
@@ -259,6 +1218,10 @@ namespace Beep.Skia.Sample.WinForms
                 var dto = mgr.ToDto();
                 var json = JsonSerializer.Serialize(dto, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText("skia_layout.json", json);
+
+                Beep.Skia.Collaboration.CollaborationSerializer.Save(
+                    skiaHostControl1!.Collaboration, "skia_collaboration.json");
+
                 _statusLabel.Text = "Saved layout to skia_layout.json";
             }
             catch (Exception ex)
@@ -277,6 +1240,14 @@ namespace Beep.Skia.Sample.WinForms
                 if (dto != null)
                 {
                     skiaHostControl1?.DrawingManager?.LoadFromDto(dto);
+
+                    if (File.Exists("skia_collaboration.json"))
+                    {
+                        var restored = Beep.Skia.Collaboration.CollaborationSerializer.Load("skia_collaboration.json");
+                        skiaHostControl1!.Collaboration.Restore(restored.CreateSnapshot());
+                        skiaHostControl1.RefreshCommentPins();
+                    }
+
                     _statusLabel.Text = "Loaded layout from skia_layout.json";
                 }
             }

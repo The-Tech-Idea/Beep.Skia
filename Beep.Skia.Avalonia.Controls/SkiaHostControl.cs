@@ -4,29 +4,111 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using SkiaSharp;
-using SkiaSharp.Views.Avalonia;
 using Beep.Skia;
 using Beep.Skia.Components;
 using Beep.Skia.Model;
 
 namespace Beep.Skia.Avalonia.Controls
 {
+    /// <summary>Event data for an Avalonia Skia surface paint.</summary>
+    public class SkiaSurfacePaintEventArgs : EventArgs
+    {
+        public SkiaSurfacePaintEventArgs(SKCanvas canvas, int width, int height)
+        {
+            Canvas = canvas;
+            Width = width;
+            Height = height;
+        }
+
+        /// <summary>Canvas to draw on (already cleared to white).</summary>
+        public SKCanvas Canvas { get; }
+
+        /// <summary>Pixel width of the surface.</summary>
+        public int Width { get; }
+
+        /// <summary>Pixel height of the surface.</summary>
+        public int Height { get; }
+    }
+
     /// <summary>
-    /// Avalonia host control for Beep.Skia diagrams.
-    /// Uses SKControl from SkiaSharp.Views.Avalonia for cross-platform rendering.
+    /// Avalonia control that renders Beep.Skia diagrams.
+    ///
+    /// SkiaSharp ships no Avalonia view package, so this control renders into an offscreen
+    /// <see cref="SKSurface"/> backed by the memory of an Avalonia <see cref="WriteableBitmap"/>
+    /// (BGRA8888, premultiplied) and blits it. It therefore depends only on Avalonia + SkiaSharp
+    /// and works with the same SkiaSharp version as the rest of the solution.
+    /// </summary>
+    public class SkiaSurface : Control
+    {
+        private WriteableBitmap _bitmap;
+        private PixelSize _bitmapPixelSize;
+
+        /// <summary>Raised when the surface needs to be redrawn.</summary>
+        public event EventHandler<SkiaSurfacePaintEventArgs> PaintSurface;
+
+        public override void Render(global::Avalonia.Media.DrawingContext context)
+        {
+            var size = Bounds.Size;
+            if (size.Width < 1 || size.Height < 1) return;
+
+            var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0;
+            if (scaling <= 0) scaling = 1.0;
+
+            var pixelSize = new PixelSize(
+                Math.Max(1, (int)Math.Ceiling(size.Width * scaling)),
+                Math.Max(1, (int)Math.Ceiling(size.Height * scaling)));
+
+            if (_bitmap == null || _bitmapPixelSize != pixelSize)
+            {
+                _bitmap?.Dispose();
+                _bitmap = new WriteableBitmap(
+                    pixelSize,
+                    new Vector(96 * scaling, 96 * scaling),
+                    PixelFormat.Bgra8888,
+                    AlphaFormat.Premul);
+                _bitmapPixelSize = pixelSize;
+            }
+
+            using (var framebuffer = _bitmap.Lock())
+            {
+                var info = new SKImageInfo(
+                    framebuffer.Size.Width,
+                    framebuffer.Size.Height,
+                    SKColorType.Bgra8888,
+                    SKAlphaType.Premul);
+
+                using var surface = SKSurface.Create(info, framebuffer.Address, framebuffer.RowBytes);
+                if (surface != null)
+                {
+                    var canvas = surface.Canvas;
+                    canvas.Clear(SKColors.White);
+                    try { PaintSurface?.Invoke(this, new SkiaSurfacePaintEventArgs(canvas, info.Width, info.Height)); }
+                    catch { }
+                    canvas.Flush();
+                }
+            }
+
+            context.DrawImage(_bitmap, new Rect(0, 0, size.Width, size.Height));
+        }
+    }
+
+    /// <summary>
+    /// Avalonia host control for Beep.Skia diagrams. Uses <see cref="SkiaSurface"/> for
+    /// cross-platform rendering and forwards pointer input to the DrawingManager.
     /// </summary>
     public class SkiaHostControl : UserControl
     {
-        private SKControl _skiaControl;
+        private SkiaSurface _skiaControl;
         private DrawingManager _drawingManager;
-        private readonly Dictionary<Guid, SkiaComponent> _componentRegistry = new();
+        private readonly Dictionary<Guid, SkiaComponent> _componentRegistry = new Dictionary<Guid, SkiaComponent>();
 
         public DrawingManager DrawingManager => _drawingManager;
 
-        public SkiaComponentDescriptorCollection DesignTimeComponents { get; set; } = new();
+        public SkiaComponentDescriptorCollection DesignTimeComponents { get; set; } = new SkiaComponentDescriptorCollection();
 
         public SkiaHostControl()
         {
@@ -45,7 +127,7 @@ namespace Beep.Skia.Avalonia.Controls
             _drawingManager.SelectionChanged += (_, _) =>
                 Dispatcher.UIThread.InvokeAsync(() => _skiaControl?.InvalidateVisual());
 
-            _skiaControl = new SKControl();
+            _skiaControl = new SkiaSurface();
             _skiaControl.PaintSurface += OnPaintSurface;
             _skiaControl.PointerPressed += OnPointerPressed;
             _skiaControl.PointerMoved += OnPointerMoved;
@@ -55,14 +137,13 @@ namespace Beep.Skia.Avalonia.Controls
             Content = _skiaControl;
         }
 
-        private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        private void OnPaintSurface(object sender, SkiaSurfacePaintEventArgs e)
         {
-            var canvas = e.Surface.Canvas;
-            canvas.Clear(SKColors.White);
-            _drawingManager?.Draw(canvas);
+            e.Canvas.Clear(SKColors.White);
+            _drawingManager?.Draw(e.Canvas);
         }
 
-        private SKPoint ToSKPoint(Point pt) => new SKPoint((float)pt.X, (float)pt.Y);
+        private static SKPoint ToSKPoint(Point pt) => new SKPoint((float)pt.X, (float)pt.Y);
 
         private void OnPointerPressed(object sender, PointerPressedEventArgs e)
         {

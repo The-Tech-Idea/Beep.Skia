@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing;
@@ -22,8 +23,81 @@ namespace Beep.Skia.Winform.Controls
     // private Beep.Skia.ComponentManager _componentManager;
     private SkiaComponentDescriptorCollection _designTimeComponents = new SkiaComponentDescriptorCollection();
     private Palette _palette;
+    private Beep.Skia.Components.ContextMenu _contextMenu;
+    private System.Windows.Forms.TextBox _paletteSearch;
+    private MinimapControl _minimap;
+    private Beep.Skia.Extensions.SkiaExtensionHost _extensionHost;
+    private Beep.Skia.Extensions.Marketplace.ExtensionPackageManager _extensionPackages;
+    private readonly List<PaletteItem> _extensionPaletteItems = new List<PaletteItem>();
+    private Beep.Skia.Collaboration.CollaborationService _collaboration;
+    private readonly Beep.Skia.Collaboration.CommentPinLayer _commentPins = new Beep.Skia.Collaboration.CommentPinLayer();
+
+    /// <summary>Folder that holds installed extensions (packages plus loose assemblies).</summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public string ExtensionsRoot { get; set; } =
+        System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Extensions");
+
+    /// <summary>Package manager for installing, updating, and removing extensions.</summary>
+    public Beep.Skia.Extensions.Marketplace.ExtensionPackageManager Extensions
+        => _extensionPackages ?? (_extensionPackages = new Beep.Skia.Extensions.Marketplace.ExtensionPackageManager(ExtensionsRoot));
+
+    /// <summary>Extension host with the currently loaded extensions.</summary>
+    public Beep.Skia.Extensions.SkiaExtensionHost ExtensionHost
+        => _extensionHost ?? (_extensionHost = new Beep.Skia.Extensions.SkiaExtensionHost());
+
+    /// <summary>
+    /// Reloads extensions from the install root and refreshes their palette entries.
+    /// Returns the number of extension components added.
+    /// </summary>
+        public int ReloadExtensions()
+        {
+            try
+            {
+                foreach (var item in _extensionPaletteItems) _palette?.RemoveItem(item);
+                _extensionPaletteItems.Clear();
+
+                ExtensionHost.Clear();
+                ExtensionHost.LoadFromDirectory(ExtensionsRoot);
+                foreach (var directory in Extensions.GetLoadDirectories())
+                    ExtensionHost.LoadFromDirectory(directory);
+
+                foreach (var descriptor in ExtensionHost.Components)
+                {
+                    var item = new PaletteItem
+                    {
+                        Name = descriptor.DisplayName ?? descriptor.ComponentType?.Name ?? "Extension",
+                        ComponentType = descriptor.AssemblyQualifiedName,
+                        Category = descriptor.Category ?? "Extensions"
+                    };
+                    _palette?.AddItem(item);
+                    _extensionPaletteItems.Add(item);
+                }
+
+                _palette?.RefreshLayout();
+                _skControl?.Invalidate();
+            }
+            catch { }
+
+            return _extensionPaletteItems.Count;
+        }
+
+    /// <summary>Collaboration service backing comments, sharing, presence, and audit.</summary>
+    public Beep.Skia.Collaboration.CollaborationService Collaboration
+        => _collaboration ?? (_collaboration = new Beep.Skia.Collaboration.CollaborationService());
+
+    /// <summary>Document id used for collaboration state.</summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public string DocumentId { get; set; } = "diagram";
+
+    /// <summary>Shows or hides comment pins in the canvas.</summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool ShowCommentPins { get; set; } = true;
+
+    /// <summary>Comment pin layer currently rendered over the diagram.</summary>
+    public Beep.Skia.Collaboration.CommentPinLayer CommentPins => _commentPins;
     private ComponentPropertyEditor _propertyEditor;
     private SkiaComponentPropertyWrapper _selectedComponentWrapper;
+    private SkiaMultiComponentWrapper _selectedMultiWrapper;
     // Runtime registry of created components keyed by Guid Id for quick lookup
     private readonly Dictionary<Guid, Beep.Skia.SkiaComponent> _componentRegistry = new Dictionary<Guid, Beep.Skia.SkiaComponent>();
     [Browsable(false)]
@@ -56,13 +130,48 @@ namespace Beep.Skia.Winform.Controls
 
     private bool _designDescriptorsInstantiated = false;
 
-    public SkiaHostControl()
+        public SkiaHostControl()
         {
             InitializeSkiaSurface();
             AllowDrop = true;
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+
+            // Accessibility: expose the canvas to assistive technology and honor OS high contrast.
+            try
+            {
+                this.AccessibleName = "Skia diagram canvas";
+                this.AccessibleRole = AccessibleRole.Diagram;
+                this.AccessibleDescription = "Diagram editor canvas. Tab cycles through components; arrow keys move the selection; Delete removes it.";
+
+                if (SystemInformation.HighContrast)
+                    Beep.Skia.ThemeManager.ApplyTheme("HighContrast");
+
+                Microsoft.Win32.SystemEvents.UserPreferenceChanged += (s, e) =>
+                {
+                    try
+                    {
+                        if (SystemInformation.HighContrast)
+                            Beep.Skia.ThemeManager.ApplyTheme("HighContrast");
+                        _skControl?.Invalidate();
+                    }
+                    catch { }
+                };
+            }
+            catch { }
+
             _drawingManager = new Beep.Skia.DrawingManager();
-            _drawingManager.DrawSurface += (s, e) => _skControl?.Invalidate();
+            _drawingManager.DrawSurface += (s, e) =>
+            {
+                // Comment pins follow component geometry, so rebuild them when the diagram changes
+                // (dragging fires DrawSurface) rather than on every paint.
+                RebuildCommentPins();
+                _skControl?.Invalidate();
+            };
+            _drawingManager.WorldOverlay = canvas =>
+            {
+                if (!ShowCommentPins) return;
+                _commentPins.Draw(canvas);
+            };
             // Keep the property editor synchronized with current selection
             _drawingManager.SelectionChanged += (s, e) =>
             {
@@ -83,12 +192,28 @@ namespace Beep.Skia.Winform.Controls
                         // Check if DDL was generated (ERD entity export)
                         CheckForDDLExport(sm.SelectedComponents[0]);
                     }
+                    else if (sm.SelectedComponents != null && sm.SelectedComponents.Count > 1)
+                    {
+                        _propertyEditor.SelectedComponent = null;
+                        SyncPropertyGridToMultiSelection(sm.SelectedComponents.ToList());
+                    }
                     else
                     {
                         _propertyEditor.SelectedLine = null;
                         _propertyEditor.SelectedComponent = null;
                         ClearSelectionWrapper();
                     }
+                    try
+                    {
+                        this.AccessibleDescription = sm.SelectionCount switch
+                        {
+                            0 => "Diagram editor canvas. Tab cycles through components.",
+                            1 => $"Selected component: {sm.SelectedComponents[0].Name}.",
+                            _ => $"{sm.SelectionCount} components selected."
+                        };
+                    }
+                    catch { }
+
                     _skControl?.Invalidate();
                 }
                 catch { }
@@ -168,20 +293,20 @@ namespace Beep.Skia.Winform.Controls
                             }
                             if (!string.IsNullOrWhiteSpace(compType))
                             {
-                                _palette.Items.Add(new PaletteItem { Name = display, ComponentType = compType, Category = category });
+                                _palette.AddItem(new PaletteItem { Name = display, ComponentType = compType, Category = category });
                             }
                         }
                         catch { }
                     }
 
                     // Add ERD multiplicity presets (tool items with no component type)
-                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: One (|)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.One, EndMultiplicity = null });
-                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: Many (crow's foot)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.Many, EndMultiplicity = null });
-                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: One and only one (||)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.OneOnly, EndMultiplicity = null });
-                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: Zero or one (o|)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.ZeroOrOne, EndMultiplicity = null });
-                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: One or many (|<)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.OneOrMany, EndMultiplicity = null });
-                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: Zero or many (o<)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.ZeroOrMany, EndMultiplicity = null });
-                    _palette.Items.Add(new PaletteItem { Name = "ERD preset: Clear (none)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.Unspecified, EndMultiplicity = null });
+                    _palette.AddItem(new PaletteItem { Name = "ERD preset: One (|)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.One, EndMultiplicity = null });
+                    _palette.AddItem(new PaletteItem { Name = "ERD preset: Many (crow's foot)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.Many, EndMultiplicity = null });
+                    _palette.AddItem(new PaletteItem { Name = "ERD preset: One and only one (||)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.OneOnly, EndMultiplicity = null });
+                    _palette.AddItem(new PaletteItem { Name = "ERD preset: Zero or one (o|)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.ZeroOrOne, EndMultiplicity = null });
+                    _palette.AddItem(new PaletteItem { Name = "ERD preset: One or many (|<)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.OneOrMany, EndMultiplicity = null });
+                    _palette.AddItem(new PaletteItem { Name = "ERD preset: Zero or many (o<)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.ZeroOrMany, EndMultiplicity = null });
+                    _palette.AddItem(new PaletteItem { Name = "ERD preset: Clear (none)", Category = "ERD", StartMultiplicity = Beep.Skia.Model.ERDMultiplicity.Unspecified, EndMultiplicity = null });
                 }
                 catch { }
 
@@ -251,7 +376,63 @@ namespace Beep.Skia.Winform.Controls
                     }
                     catch { }
                 };
+                // Load installed extension packages into the palette.
+                ReloadExtensions();
+
                 _drawingManager?.AddComponent(_palette);
+
+                // Palette search box (sits above the in-canvas palette).
+                try
+                {
+                    _paletteSearch = new System.Windows.Forms.TextBox
+                    {
+                        Left = 8,
+                        Top = 12,
+                        Width = Math.Max(140, (int)_palette.Width),
+                        Height = 22,
+                        PlaceholderText = "Search palette…",
+                        Font = new Font("Segoe UI", 8f)
+                    };
+                    _paletteSearch.TextChanged += (s2, e2) =>
+                    {
+                        try
+                        {
+                            _palette.SearchText = _paletteSearch.Text;
+                            _skControl?.Invalidate();
+                        }
+                        catch { }
+                    };
+                    this.Controls.Add(_paletteSearch);
+                    _paletteSearch.BringToFront();
+                }
+                catch { }
+
+                // Minimap overlay (bottom-left).
+                try
+                {
+                    _minimap = new MinimapControl
+                    {
+                        Manager = _drawingManager,
+                        X = 8,
+                        Y = Math.Max(220, this.Height - 170),
+                        Width = 200,
+                        Height = 150
+                    };
+                    this.SizeChanged += (s2, e2) =>
+                    {
+                        try
+                        {
+                            if (_minimap != null)
+                            {
+                                _minimap.Y = Math.Max(220, this.Height - 170);
+                                _skControl?.Invalidate();
+                            }
+                        }
+                        catch { }
+                    };
+                    _drawingManager?.AddComponent(_minimap);
+                }
+                catch { }
 
                 // Create and add the property editor panel inside the Skia surface
                 try
@@ -301,9 +482,199 @@ namespace Beep.Skia.Winform.Controls
                 catch { }
             }
             catch { }
+            SetupContextMenu();
             _skControl.PaintSurface += SkControl_PaintSurface;
             this.DragEnter += SkiaHostControl_DragEnter;
             this.DragDrop += SkiaHostControl_DragDrop;
+        }
+
+        /// <summary>
+        /// Creates the in-canvas context menu and wires it to right-click events.
+        /// </summary>
+        private void SetupContextMenu()
+        {
+            try
+            {
+                _contextMenu = new Beep.Skia.Components.ContextMenu
+                {
+                    IsStatic = true,
+                    Visible = false
+                };
+                _contextMenu.AddStandardItems(_drawingManager);
+                _contextMenu.AddContextItem("Export PNG…", (s, e) => { _contextMenu.Hide(); PromptExportPng(); });
+                _contextMenu.AddContextItem("Export SVG…", (s, e) => { _contextMenu.Hide(); PromptExportSvg(); });
+                _contextMenu.AddContextItem("Export PDF…", (s, e) => { _contextMenu.Hide(); PromptExportPdf(); });
+                _contextMenu.AddContextItem("Print…", (s, e) => { _contextMenu.Hide(); PrintWithPreview(); });
+                _drawingManager.AddComponent(_contextMenu);
+                // The menu is chrome, not user content; keep it out of undo history.
+                _drawingManager.HistoryManager.Clear();
+
+                _drawingManager.ComponentRightClicked += (s, e) => ShowContextMenuAt(e.CanvasPosition);
+                _drawingManager.LineRightClicked += (s, e) => ShowContextMenuAt(e.CanvasPosition);
+                _drawingManager.DiagramRightClicked += (s, e) => ShowContextMenuAt(e.CanvasPosition);
+            }
+            catch { }
+        }
+
+        private void ShowContextMenuAt(SKPoint canvasPoint)
+        {
+            try
+            {
+                if (_contextMenu == null) return;
+                _contextMenu.Show(canvasPoint);
+                _skControl?.Invalidate();
+            }
+            catch { }
+        }
+
+        // ── Collaboration ─────────────────────────────────────────────────────
+
+        /// <summary>Rebuilds comment pins from the current components and comments.</summary>
+        public void RebuildCommentPins()
+        {
+            try
+            {
+                _commentPins.Rebuild(
+                    _drawingManager?.GetComponents() ?? (IReadOnlyList<Beep.Skia.SkiaComponent>)Array.Empty<Beep.Skia.SkiaComponent>(),
+                    _collaboration?.AllComments ?? (IReadOnlyList<Beep.Skia.Collaboration.DiagramComment>)Array.Empty<Beep.Skia.Collaboration.DiagramComment>());
+            }
+            catch { }
+        }
+
+        /// <summary>Rebuilds comment pins and repaints the canvas.</summary>
+        public void RefreshCommentPins()
+        {
+            RebuildCommentPins();
+            _skControl?.Invalidate();
+        }
+
+        /// <summary>
+        /// Adds a comment anchored to the first selected component.
+        /// Returns null when nothing is selected or the user cannot comment.
+        /// </summary>
+        public Beep.Skia.Collaboration.DiagramComment AddCommentToSelection(string text, string authorId = "local")
+        {
+            try
+            {
+                var selected = _drawingManager?.SelectionManager?.SelectedComponents;
+                var component = selected?.FirstOrDefault();
+                if (component == null) return null;
+
+                EnsureLocalUser(authorId);
+                var comment = Collaboration.AddComment(DocumentId, authorId, text, component.Name ?? component.Id.ToString());
+                RefreshCommentPins();
+                return comment;
+            }
+            catch { return null; }
+        }
+
+        /// <summary>Resolves a comment by id and repaints.</summary>
+        public bool ResolveComment(string commentId, string userId = "local")
+        {
+            var resolved = Collaboration.ResolveComment(DocumentId, commentId, userId);
+            if (resolved) RefreshCommentPins();
+            return resolved;
+        }
+
+        private void EnsureLocalUser(string userId)
+        {
+            var service = Collaboration;
+            if (service.GetUser(userId) == null)
+            {
+                service.RegisterUser(new Beep.Skia.Collaboration.CollaborationUser
+                {
+                    Id = userId,
+                    DisplayName = userId
+                });
+            }
+            if (service.GetShare(DocumentId) == null)
+                service.Share(DocumentId, userId);
+        }
+
+        // ── Export / Print ────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Exports the current diagram to a PNG file.
+        /// </summary>
+        public void ExportToPng(string filePath, float scale = 2f)
+        {
+            _drawingManager?.ExportToPng(filePath, scale);
+        }
+
+        /// <summary>
+        /// Exports the current diagram to an SVG file with a white background.
+        /// </summary>
+        public void ExportToSvg(string filePath)
+        {
+            _drawingManager?.ExportToSvg(filePath, background: SKColors.White);
+        }
+
+        /// <summary>
+        /// Exports the current diagram to a PDF file.
+        /// </summary>
+        public void ExportToPdf(string filePath)
+        {
+            _drawingManager?.ExportToPdf(filePath);
+        }
+
+        /// <summary>
+        /// Shows a print preview for the current diagram.
+        /// </summary>
+        public void PrintWithPreview()
+        {
+            try
+            {
+                if (_drawingManager == null) return;
+                var doc = _drawingManager.CreatePrintDocument("Beep.Skia Diagram");
+                using var preview = new PrintPreviewDialog
+                {
+                    Document = doc,
+                    Width = 1000,
+                    Height = 700,
+                    Text = "Print Preview"
+                };
+                preview.ShowDialog(this);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Print failed: {ex.Message}", "Print", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void PromptExportPng()
+        {
+            using var dlg = new SaveFileDialog
+            {
+                Title = "Export PNG",
+                Filter = "PNG image (*.png)|*.png",
+                FileName = $"skia_diagram_{DateTime.Now:yyyyMMdd_HHmmss}.png"
+            };
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+            try { ExportToPng(dlg.FileName); } catch (Exception ex) { MessageBox.Show(ex.Message, "Export PNG"); }
+        }
+
+        private void PromptExportSvg()
+        {
+            using var dlg = new SaveFileDialog
+            {
+                Title = "Export SVG",
+                Filter = "SVG image (*.svg)|*.svg",
+                FileName = $"skia_diagram_{DateTime.Now:yyyyMMdd_HHmmss}.svg"
+            };
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+            try { ExportToSvg(dlg.FileName); } catch (Exception ex) { MessageBox.Show(ex.Message, "Export SVG"); }
+        }
+
+        private void PromptExportPdf()
+        {
+            using var dlg = new SaveFileDialog
+            {
+                Title = "Export PDF",
+                Filter = "PDF document (*.pdf)|*.pdf",
+                FileName = $"skia_diagram_{DateTime.Now:yyyyMMdd_HHmmss}.pdf"
+            };
+            if (dlg.ShowDialog(this) != DialogResult.OK) return;
+            try { ExportToPdf(dlg.FileName); } catch (Exception ex) { MessageBox.Show(ex.Message, "Export PDF"); }
         }
 
         /// <summary>
@@ -420,7 +791,7 @@ namespace Beep.Skia.Winform.Controls
                             {
                                 var msg = $"Instantiating descriptor: Type={t.FullName} Name={nameToUse} RequestedX={desc.X},RequestedY={desc.Y},W={desc.Width},H={desc.Height}";
                                 Console.WriteLine(msg);
-                                try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { }
+                                try { System.Diagnostics.Debug.WriteLine(msg); } catch { }
                             }
                             catch { }
 
@@ -429,7 +800,7 @@ namespace Beep.Skia.Winform.Controls
                             {
                                 var msg = $"Descriptor instantiated: Type={t.FullName} Name={obj.Name} FinalX={obj.X},FinalY={obj.Y},W={obj.Width},H={obj.Height}";
                                 Console.WriteLine(msg);
-                                try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { }
+                                try { System.Diagnostics.Debug.WriteLine(msg); } catch { }
                             }
                             catch { }
                         }
@@ -506,16 +877,16 @@ namespace Beep.Skia.Winform.Controls
                     {
                         var msgReuse = $"[CreateAndAddComponent] Detected reused instance for type {componentType.FullName}. Cloning new instance.";
                         Console.WriteLine(msgReuse);
-                        try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msgReuse + Environment.NewLine); } catch { }
+                        try { System.Diagnostics.Debug.WriteLine(msgReuse); } catch { }
                         obj = Activator.CreateInstance(componentType) as Beep.Skia.SkiaComponent; // try again fresh
                     }
                 }
                 catch { }
 
-                try { var msg = $"CreateAndAddComponent requested: Type={componentType.FullName} ReqX={x},ReqY={y},W={width},H={height},Name={name}"; Console.WriteLine(msg); try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { } } catch { }
+                try { System.Diagnostics.Debug.WriteLine($"CreateAndAddComponent requested: Type={componentType.FullName} ReqX={x},ReqY={y},W={width},H={height},Name={name}"); } catch { }
 
                 // Log initial coordinates right after creation
-                try { var msg2 = $"CreateAndAddComponent AfterCreation: Type={componentType.FullName} X={obj.X},Y={obj.Y},W={obj.Width},H={obj.Height}"; Console.WriteLine(msg2); try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg2 + Environment.NewLine); } catch { } } catch { }
+                try { System.Diagnostics.Debug.WriteLine($"CreateAndAddComponent AfterCreation: Type={componentType.FullName} X={obj.X},Y={obj.Y},W={obj.Width},H={obj.Height}"); } catch { }
 
                 // Assign properties defensively
                 try { obj.X = x; } catch { }
@@ -524,7 +895,7 @@ namespace Beep.Skia.Winform.Controls
                 try { obj.Height = height; } catch { }
 
                 // Log coordinates after assignment
-                try { var msg3 = $"CreateAndAddComponent AfterAssignment: Type={componentType.FullName} X={obj.X},Y={obj.Y},W={obj.Width},H={obj.Height}"; Console.WriteLine(msg3); try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg3 + Environment.NewLine); } catch { } } catch { }
+                try { System.Diagnostics.Debug.WriteLine($"CreateAndAddComponent AfterAssignment: Type={componentType.FullName} X={obj.X},Y={obj.Y},W={obj.Width},H={obj.Height}"); } catch { }
                 // If the caller passed a descriptor name that may encode additional properties, nothing else here.
 
                 // Ensure unique name (optional force) to avoid same-identity replacement illusions
@@ -581,7 +952,7 @@ namespace Beep.Skia.Winform.Controls
 
                     _drawingManager?.AddComponent(obj);
                     try { _componentRegistry[obj.Id] = obj; } catch { }
-                try { var msg = $"CreateAndAddComponent created: Type={componentType.FullName} Name={obj.Name} FinalX={obj.X},FinalY={obj.Y},W={obj.Width},H={obj.Height}"; Console.WriteLine(msg); try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { } } catch { }
+                try { System.Diagnostics.Debug.WriteLine($"CreateAndAddComponent created: Type={componentType.FullName} Name={obj.Name} FinalX={obj.X},FinalY={obj.Y},W={obj.Width},H={obj.Height}"); } catch { }
                 _skControl?.Invalidate();
                 return obj;
             }
@@ -597,7 +968,7 @@ namespace Beep.Skia.Winform.Controls
             if (desc == null) return null;
             try
             {
-                try { var msg = $"CreateAndAddComponentFromDescriptor requested: Type={desc.ComponentType} ReqX={desc.X},ReqY={desc.Y},W={desc.Width},H={desc.Height},Name={desc.Name}"; Console.WriteLine(msg); try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { } } catch { }
+                try { System.Diagnostics.Debug.WriteLine($"CreateAndAddComponentFromDescriptor requested: Type={desc.ComponentType} ReqX={desc.X},ReqY={desc.Y},W={desc.Width},H={desc.Height},Name={desc.Name}"); } catch { }
                 if (string.IsNullOrEmpty(desc.ComponentType)) return null;
                 var t = Type.GetType(desc.ComponentType);
                 if (t == null) return null;
@@ -614,7 +985,7 @@ namespace Beep.Skia.Winform.Controls
                     {
                         var msgReuse = $"[CreateAndAddComponentFromDescriptor] Detected reused instance for type {t.FullName}. Cloning new instance.";
                         Console.WriteLine(msgReuse);
-                        try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msgReuse + Environment.NewLine); } catch { }
+                        try { System.Diagnostics.Debug.WriteLine(msgReuse); } catch { }
                         obj = Activator.CreateInstance(t) as Beep.Skia.SkiaComponent; // attempt second instantiation
                     }
                 }
@@ -625,7 +996,7 @@ namespace Beep.Skia.Winform.Controls
                 try { obj.Y = desc.Y; } catch { }
                 try { obj.Width = desc.Width; } catch { }
                 try { obj.Height = desc.Height; } catch { }
-                try { var msg = $"After apply: component X={obj.X}, Y={obj.Y}, W={obj.Width}, H={obj.Height}"; Console.WriteLine(msg); try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { } } catch { }
+                try { System.Diagnostics.Debug.WriteLine($"After apply: component X={obj.X}, Y={obj.Y}, W={obj.Width}, H={obj.Height}"); } catch { }
 
                 var nameToUse = desc.Name;
                 if (AlwaysUniqueNamesOnDrop || string.IsNullOrEmpty(nameToUse) || NameExists(nameToUse))
@@ -680,7 +1051,7 @@ namespace Beep.Skia.Winform.Controls
                 catch { }
                 _drawingManager?.AddComponent(obj);
                 try { _componentRegistry[obj.Id] = obj; } catch { }
-                try { var msg = $"CreateAndAddComponentFromDescriptor created: Type={t.FullName} Name={obj.Name} FinalX={obj.X},FinalY={obj.Y},W={obj.Width},H={obj.Height}"; Console.WriteLine(msg); try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg + Environment.NewLine); } catch { } } catch { }
+                try { System.Diagnostics.Debug.WriteLine($"CreateAndAddComponentFromDescriptor created: Type={t.FullName} Name={obj.Name} FinalX={obj.X},FinalY={obj.Y},W={obj.Width},H={obj.Height}"); } catch { }
                 _skControl?.Invalidate();
                 return obj;
             }
@@ -984,21 +1355,43 @@ namespace Beep.Skia.Winform.Controls
         {
             try
             {
-                if (_propertyEditor == null) return;
-                Beep.Skia.Components.PropertyEditorKey? key = e.KeyCode switch
+                // When the in-canvas property editor has a target, give it navigation/editing keys first.
+                bool editorActive = _propertyEditor != null &&
+                                    (_propertyEditor.SelectedComponent != null || _propertyEditor.SelectedLine != null);
+
+                if (editorActive)
                 {
-                    Keys.Left => Beep.Skia.Components.PropertyEditorKey.Left,
-                    Keys.Right => Beep.Skia.Components.PropertyEditorKey.Right,
-                    Keys.Back => Beep.Skia.Components.PropertyEditorKey.Back,
-                    Keys.Delete => Beep.Skia.Components.PropertyEditorKey.Delete,
-                    Keys.Home => Beep.Skia.Components.PropertyEditorKey.Home,
-                    Keys.End => Beep.Skia.Components.PropertyEditorKey.End,
-                    _ => null
-                };
-                if (key.HasValue)
+                    Beep.Skia.Components.PropertyEditorKey? key = e.KeyCode switch
+                    {
+                        Keys.Left => Beep.Skia.Components.PropertyEditorKey.Left,
+                        Keys.Right => Beep.Skia.Components.PropertyEditorKey.Right,
+                        Keys.Back => Beep.Skia.Components.PropertyEditorKey.Back,
+                        Keys.Delete => Beep.Skia.Components.PropertyEditorKey.Delete,
+                        Keys.Home => Beep.Skia.Components.PropertyEditorKey.Home,
+                        Keys.End => Beep.Skia.Components.PropertyEditorKey.End,
+                        _ => null
+                    };
+                    if (key.HasValue)
+                    {
+                        _propertyEditor.HandleKeyDown(key.Value);
+                        _skControl.Invalidate();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                        return;
+                    }
+                }
+
+                // Diagram-wide shortcuts (undo/redo, copy/paste, delete, arrows, zoom, grid, theme).
+                int mods = 0;
+                if (e.Control) mods |= 1;
+                if (e.Shift) mods |= 2;
+                if (e.Alt) mods |= 4;
+
+                if (_drawingManager.HandleKeyDown((int)e.KeyCode, mods))
                 {
-                    _propertyEditor.HandleKeyDown(key.Value);
-                    _skControl.Invalidate();
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    _skControl?.Invalidate();
                 }
             }
             catch { }
@@ -1013,6 +1406,24 @@ namespace Beep.Skia.Winform.Controls
                 _skControl.Invalidate();
             }
             catch { }
+        }
+
+        /// <summary>
+        /// Intercepts Tab / Shift+Tab for keyboard selection cycling before WinForms dialog navigation.
+        /// </summary>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            try
+            {
+                if ((keyData & Keys.KeyCode) == Keys.Tab && _drawingManager != null)
+                {
+                    _drawingManager.SelectNextComponent((keyData & Keys.Shift) == 0);
+                    _skControl?.Invalidate();
+                    return true;
+                }
+            }
+            catch { }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void SkControl_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
@@ -1061,7 +1472,7 @@ namespace Beep.Skia.Winform.Controls
             {
                 var msg0 = $"[DragDrop] RAW screen=({e.X},{e.Y}) client=({clientPoint.X},{clientPoint.Y})";
                 System.Console.WriteLine(msg0);
-                try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, msg0 + System.Environment.NewLine); } catch { }
+                try { System.Diagnostics.Debug.WriteLine(msg0); } catch { }
             }
             catch { }
 
@@ -1083,7 +1494,7 @@ namespace Beep.Skia.Winform.Controls
                             {
                                 var preMsg = $"[DragDrop] PreTransform canvasPoint=({canvasPoint.X},{canvasPoint.Y}) PanOffset={mgr.PanOffset} Zoom={mgr.Zoom}";
                                 System.Console.WriteLine(preMsg);
-                                try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, preMsg + System.Environment.NewLine); } catch { }
+                                try { System.Diagnostics.Debug.WriteLine(preMsg); } catch { }
                             }
                             catch { }
                             var offset = new SKPoint(canvasPoint.X - mgr.PanOffset.X, canvasPoint.Y - mgr.PanOffset.Y);
@@ -1092,7 +1503,7 @@ namespace Beep.Skia.Winform.Controls
                             {
                                 var postMsg = $"[DragDrop] PostTransform canvasPoint=({canvasPoint.X},{canvasPoint.Y})";
                                 System.Console.WriteLine(postMsg);
-                                try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, postMsg + System.Environment.NewLine); } catch { }
+                                try { System.Diagnostics.Debug.WriteLine(postMsg); } catch { }
                             }
                             catch { }
                         }
@@ -1116,7 +1527,7 @@ namespace Beep.Skia.Winform.Controls
                     {
                         var posMsg = $"[DragDrop] DescriptorPlacement Type={typeName} W={w} H={h} newX={newX} newY={newY} CenterOnDrop={CenterOnDrop}";
                         System.Console.WriteLine(posMsg);
-                        try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, posMsg + System.Environment.NewLine); } catch { }
+                        try { System.Diagnostics.Debug.WriteLine(posMsg); } catch { }
                     }
                     catch { }
 
@@ -1143,14 +1554,14 @@ namespace Beep.Skia.Winform.Controls
                         {
                             var before = $"[DragDrop] PostCreate BEFORE adjust: Type={created.GetType().Name} X={created.X} Y={created.Y}";
                             Console.WriteLine(before);
-                            try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, before + System.Environment.NewLine); } catch { }
+                            try { System.Diagnostics.Debug.WriteLine(before); } catch { }
 
                             created.X = newX;
                             created.Y = newY;
 
                             var after = $"[DragDrop] PostCreate AFTER adjust: Type={created.GetType().Name} ForcedX={created.X} ForcedY={created.Y}";
                             Console.WriteLine(after);
-                            try { var lp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "beepskia_render.log"); System.IO.File.AppendAllText(lp, after + System.Environment.NewLine); } catch { }
+                            try { System.Diagnostics.Debug.WriteLine(after); } catch { }
                         }
                         catch { }
                     }
@@ -1168,13 +1579,30 @@ namespace Beep.Skia.Winform.Controls
             if (!DesignMode || component == null) return;
             try
             {
-                _selectedComponentWrapper = new SkiaComponentPropertyWrapper(component);
+                _selectedComponentWrapper = new SkiaComponentPropertyWrapper(component, _ => _skControl?.Invalidate());
                 var selService = this.Site?.GetService(typeof(System.ComponentModel.Design.ISelectionService))
                     as System.ComponentModel.Design.ISelectionService;
                 if (selService != null)
                 {
                     selService.SetSelectedComponents(new object[] { _selectedComponentWrapper });
                 }
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// Shows common editable properties for a multi-component selection in the PropertyGrid.
+        /// </summary>
+        private void SyncPropertyGridToMultiSelection(System.Collections.Generic.List<SkiaComponent> components)
+        {
+            if (!DesignMode || components == null || components.Count == 0) return;
+            try
+            {
+                _selectedMultiWrapper?.Dispose();
+                _selectedMultiWrapper = new SkiaMultiComponentWrapper(components, _ => _skControl?.Invalidate());
+                var selService = this.Site?.GetService(typeof(System.ComponentModel.Design.ISelectionService))
+                    as System.ComponentModel.Design.ISelectionService;
+                selService?.SetSelectedComponents(new object[] { _selectedMultiWrapper });
             }
             catch { }
         }
@@ -1189,6 +1617,8 @@ namespace Beep.Skia.Winform.Controls
             {
                 _selectedComponentWrapper?.Dispose();
                 _selectedComponentWrapper = null;
+                _selectedMultiWrapper?.Dispose();
+                _selectedMultiWrapper = null;
                 var selService = this.Site?.GetService(typeof(System.ComponentModel.Design.ISelectionService))
                     as System.ComponentModel.Design.ISelectionService;
                 if (selService != null)

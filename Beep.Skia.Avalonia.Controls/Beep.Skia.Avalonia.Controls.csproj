@@ -9,7 +9,7 @@
 		<Authors>The Tech Idea</Authors>
 		<Company>The Tech Idea</Company>
 		<Copyright>2025</Copyright>
-		<PackageProjectUrl>https://github.com/The-Tech-Idea/</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/The-Tech-Idea/Beep.Skia</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/The-Tech-Idea/Beep.Skia</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Description>Avalonia host controls for Beep.Skia components</Description>
@@ -17,9 +17,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp" Version="3.119.0" />
-		<PackageReference Include="SkiaSharp.Views.Avalonia" Version="3.119.0" />
-		<PackageReference Include="Avalonia" Version="11.0.0" />
+		<PackageReference Include="SkiaSharp" Version="4.150.1" />
+		<PackageReference Include="Avalonia" Version="11.3.5" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst;net8.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks>net10.0-android;net10.0-ios;net10.0-maccatalyst;net10.0-windows10.0.19041.0</TargetFrameworks>
 		<UseMaui>true</UseMaui>
 		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -10,7 +10,7 @@
 		<Authors>The Tech Idea</Authors>
 		<Company>The Tech Idea</Company>
 		<Copyright>2025</Copyright>
-		<PackageProjectUrl>https://github.com/The-Tech-Idea/</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/The-Tech-Idea/Beep.Skia</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/The-Tech-Idea/Beep.Skia</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Description>MAUI host controls for Beep.Skia components — cross-platform (Android, iOS, macOS, Windows)</Description>
@@ -18,8 +18,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.20" />
 		<PackageReference Include="SkiaSharp" Version="4.150.1" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="4.150.1" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -15,6 +15,7 @@ namespace Beep.Skia.Winform.Controls
     {
         // Underlying Skia component instance (may be null in designer)
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SkiaComponent SkiaComponent { get; protected set; }
 
         public SkiaControl()

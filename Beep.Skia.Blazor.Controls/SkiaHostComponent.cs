@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Versioning;
 using Microsoft.AspNetCore.Components;
 using SkiaSharp;
 using SkiaSharp.Views.Blazor;
@@ -13,6 +14,7 @@ namespace Beep.Skia.Blazor.Controls
     /// Blazor WebAssembly host component for Beep.Skia diagrams.
     /// Uses SKCanvasView for WebGL/Canvas2D rendering in the browser.
     /// </summary>
+    [SupportedOSPlatform("browser")]
     public class SkiaHostComponent : ComponentBase, IDisposable
     {
         protected SKCanvasView _skiaView;

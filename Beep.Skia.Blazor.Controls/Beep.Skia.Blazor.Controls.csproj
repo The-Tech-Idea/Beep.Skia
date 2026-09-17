@@ -9,7 +9,7 @@
 		<Authors>The Tech Idea</Authors>
 		<Company>The Tech Idea</Company>
 		<Copyright>2025</Copyright>
-		<PackageProjectUrl>https://github.com/The-Tech-Idea/</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/The-Tech-Idea/Beep.Skia</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/The-Tech-Idea/Beep.Skia</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Description>Blazor WebAssembly host controls for Beep.Skia components</Description>

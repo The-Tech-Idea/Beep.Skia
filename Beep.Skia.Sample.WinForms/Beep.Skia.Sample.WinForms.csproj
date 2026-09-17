@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <NoWarn>$(NoWarn);NU1701</NoWarn>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,6 +25,11 @@
     <ProjectReference Include="..\Beep.Skia.FlowChart\Beep.Skia.FlowChart.csproj" />
     <ProjectReference Include="..\Beep.Skia.PM\Beep.Skia.PM.csproj" />
     <ProjectReference Include="..\Beep.Skia.StateMachine\Beep.Skia.StateMachine.csproj" />
+    <ProjectReference Include="..\Beep.Skia.ECAD\Beep.Skia.ECAD.csproj" />
+    <ProjectReference Include="..\Beep.Skia.Security\Beep.Skia.Security.csproj" />
+    <ProjectReference Include="..\Beep.Skia.MindMap\Beep.Skia.MindMap.csproj" />
+    <ProjectReference Include="..\Beep.Ski.Quantitative\Beep.Ski.Quantitative.csproj" />
+    <ProjectReference Include="..\Beep.Skia.ML\Beep.Skia.ML.csproj" />
   </ItemGroup>
 
 </Project>
