@@ -5,8 +5,14 @@ using System.Linq;
 
 namespace Beep.Skia.WellLogs
 {
+    /// <summary>
+    /// Gets or sets the well log renderer.
+    /// </summary>
     public static class WellLogRenderer
     {
+        /// <summary>
+        /// Gets or sets the draw.
+        /// </summary>
         public static void Draw(SKCanvas canvas, SKRect bounds, WellLogDocument document, float trackGap = 6f, float headerHeight = 28f)
         {
             if (canvas == null || document == null || document.Tracks.Count == 0)

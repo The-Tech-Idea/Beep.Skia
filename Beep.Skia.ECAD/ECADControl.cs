@@ -14,11 +14,26 @@ namespace Beep.Skia.ECAD
         private SKColor _border = MaterialColors.Outline;
         private float _borderThickness = 2f;
 
+        /// <summary>
+        /// Gets or sets the background color.
+        /// </summary>
         public SKColor BackgroundColor { get => _background; set { if (_background != value) { _background = value; if (NodeProperties.TryGetValue("BackgroundColor", out var p)) p.ParameterCurrentValue = value; else NodeProperties["BackgroundColor"] = new ParameterInfo { ParameterName = "BackgroundColor", ParameterType = typeof(SKColor), DefaultParameterValue = value, ParameterCurrentValue = value, Description = "Background color" }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the border color.
+        /// </summary>
         public SKColor BorderColor { get => _border; set { if (_border != value) { _border = value; if (NodeProperties.TryGetValue("BorderColor", out var p)) p.ParameterCurrentValue = value; else NodeProperties["BorderColor"] = new ParameterInfo { ParameterName = "BorderColor", ParameterType = typeof(SKColor), DefaultParameterValue = value, ParameterCurrentValue = value, Description = "Border color" }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the border thickness.
+        /// </summary>
         public float BorderThickness { get => _borderThickness; set { if (Math.Abs(_borderThickness - value) > float.Epsilon) { _borderThickness = value; if (NodeProperties.TryGetValue("BorderThickness", out var p)) p.ParameterCurrentValue = value; else NodeProperties["BorderThickness"] = new ParameterInfo { ParameterName = "BorderThickness", ParameterType = typeof(float), DefaultParameterValue = value, ParameterCurrentValue = value, Description = "Border thickness" }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Gets or sets the in port count.
+        /// </summary>
         public int InPortCount { get => InConnectionPoints.Count; set { int v = Math.Max(0, value); if (InConnectionPoints.Count != v) { EnsurePortCounts(v, OutConnectionPoints.Count); if (NodeProperties.TryGetValue("InPortCount", out var p)) p.ParameterCurrentValue = v; else NodeProperties["InPortCount"] = new ParameterInfo { ParameterName = "InPortCount", ParameterType = typeof(int), DefaultParameterValue = v, ParameterCurrentValue = v, Description = "Number of inputs" }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the out port count.
+        /// </summary>
         public int OutPortCount { get => OutConnectionPoints.Count; set { int v = Math.Max(0, value); if (OutConnectionPoints.Count != v) { EnsurePortCounts(InConnectionPoints.Count, v); if (NodeProperties.TryGetValue("OutPortCount", out var p)) p.ParameterCurrentValue = v; else NodeProperties["OutPortCount"] = new ParameterInfo { ParameterName = "OutPortCount", ParameterType = typeof(int), DefaultParameterValue = v, ParameterCurrentValue = v, Description = "Number of outputs" }; InvalidateVisual(); } } }
 
         protected ECADControl()

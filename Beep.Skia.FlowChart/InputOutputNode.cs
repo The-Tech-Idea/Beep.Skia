@@ -9,6 +9,9 @@ namespace Beep.Skia.Flowchart
     public class InputOutputNode : FlowchartControl
     {
         private string _label = "Input/Output";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -25,6 +28,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Text shown inside the parallelogram.
+        /// </summary>
         public InputOutputNode()
         {
             Name = "Flowchart Input/Output";

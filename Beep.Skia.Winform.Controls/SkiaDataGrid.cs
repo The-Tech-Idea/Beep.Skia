@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaDataGridComponent _grid;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaDataGrid class.
+        /// </summary>
         public SkiaDataGrid()
         {
             _grid = CreateSkiaComponent<SkiaDataGridComponent>();

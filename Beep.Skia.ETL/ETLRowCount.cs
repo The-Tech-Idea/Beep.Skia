@@ -10,6 +10,9 @@ namespace Beep.Skia.ETL
     public class ETLRowCount : ETLControl
     {
         private bool _addCountColumn = false;
+        /// <summary>
+        /// Gets or sets the add count column.
+        /// </summary>
         public bool AddCountColumn
         {
             get => _addCountColumn;
@@ -24,6 +27,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _countColumnName = "RowNumber";
+        /// <summary>
+        /// Gets or sets the count column name.
+        /// </summary>
         public string CountColumnName
         {
             get => _countColumnName;
@@ -38,6 +44,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// Add row number column to output
+        /// </summary>
         public ETLRowCount()
         {
             Title = "Row Count";

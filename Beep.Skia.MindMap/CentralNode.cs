@@ -8,6 +8,9 @@ namespace Beep.Skia.MindMap
     public class CentralNode : MindMapControl
     {
         private string _title = "Central Topic";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -22,6 +25,9 @@ namespace Beep.Skia.MindMap
         }
 
         private string? _notes;
+        /// <summary>
+        /// Gets or sets the notes.
+        /// </summary>
         public string? Notes
         {
             get => _notes;
@@ -35,6 +41,9 @@ namespace Beep.Skia.MindMap
             }
         }
 
+        /// <summary>
+        /// Topic title
+        /// </summary>
         public CentralNode()
         {
             Width = 220; Height = 120;

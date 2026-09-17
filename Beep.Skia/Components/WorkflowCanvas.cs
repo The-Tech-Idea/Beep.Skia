@@ -1070,6 +1070,9 @@ namespace Beep.Skia.Components
     /// </summary>
     public class NodeSelectedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the node.
+        /// </summary>
         public AutomationNode Node { get; set; }
     }
 
@@ -1078,6 +1081,9 @@ namespace Beep.Skia.Components
     /// </summary>
     public class ConnectionCreatedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the connection.
+        /// </summary>
         public WorkflowConnection Connection { get; set; }
     }
 
@@ -1086,6 +1092,9 @@ namespace Beep.Skia.Components
     /// </summary>
     public class ConnectionRemovedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the connection.
+        /// </summary>
         public WorkflowConnection Connection { get; set; }
     }
 
@@ -1094,7 +1103,13 @@ namespace Beep.Skia.Components
     /// </summary>
     public class WorkflowExecutionStateChangedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the old state.
+        /// </summary>
         public WorkflowExecutionState OldState { get; set; }
+        /// <summary>
+        /// Gets or sets the new state.
+        /// </summary>
         public WorkflowExecutionState NewState { get; set; }
     }
 
@@ -1103,6 +1118,9 @@ namespace Beep.Skia.Components
     /// </summary>
     public class NodeAddedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the node.
+        /// </summary>
         public AutomationNode Node { get; set; }
     }
 
@@ -1111,6 +1129,9 @@ namespace Beep.Skia.Components
     /// </summary>
     public class NodeRemovedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the node.
+        /// </summary>
         public AutomationNode Node { get; set; }
     }
     #endregion

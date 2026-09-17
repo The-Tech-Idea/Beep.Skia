@@ -9,6 +9,9 @@ namespace Beep.Skia.ETL
     public class ETLSort : ETLControl
     {
         private string _sortColumns = "";
+        /// <summary>
+        /// Gets or sets the sort columns.
+        /// </summary>
         public string SortColumns
         {
             get => _sortColumns;
@@ -24,6 +27,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _sortDirections = "ASC";
+        /// <summary>
+        /// Gets or sets the sort directions.
+        /// </summary>
         public string SortDirections
         {
             get => _sortDirections;
@@ -39,6 +45,9 @@ namespace Beep.Skia.ETL
         }
 
         private bool _removeDuplicates = false;
+        /// <summary>
+        /// Gets or sets the remove duplicates.
+        /// </summary>
         public bool RemoveDuplicates
         {
             get => _removeDuplicates;
@@ -52,6 +61,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// Comma-separated column names to sort by
+        /// </summary>
         public ETLSort()
         {
             Title = "Sort";

@@ -9,9 +9,21 @@ namespace Beep.Skia
     /// </summary>
     public class ComponentClickEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the component.
+        /// </summary>
         public IDrawableComponent Component { get; set; }
+        /// <summary>
+        /// Gets or sets the click position.
+        /// </summary>
         public SKPoint ClickPosition { get; set; }
+        /// <summary>
+        /// Gets or sets the button.
+        /// </summary>
         public MouseButton Button { get; set; }
+        /// <summary>
+        /// Gets or sets the is double click.
+        /// </summary>
         public bool IsDoubleClick { get; set; }
     }
 
@@ -20,9 +32,21 @@ namespace Beep.Skia
     /// </summary>
     public class LineClickEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the line.
+        /// </summary>
         public IConnectionLine Line { get; set; }
+        /// <summary>
+        /// Gets or sets the click position.
+        /// </summary>
         public SKPoint ClickPosition { get; set; }
+        /// <summary>
+        /// Gets or sets the button.
+        /// </summary>
         public MouseButton Button { get; set; }
+        /// <summary>
+        /// Gets or sets the is double click.
+        /// </summary>
         public bool IsDoubleClick { get; set; }
     }
 
@@ -31,7 +55,13 @@ namespace Beep.Skia
     /// </summary>
     public class DiagramClickEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the click position.
+        /// </summary>
         public SKPoint ClickPosition { get; set; }
+        /// <summary>
+        /// Gets or sets the button.
+        /// </summary>
         public MouseButton Button { get; set; }
     }
 
@@ -40,9 +70,21 @@ namespace Beep.Skia
     /// </summary>
     public class HoverChangedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the component.
+        /// </summary>
         public IDrawableComponent Component { get; set; }
+        /// <summary>
+        /// Gets or sets the line.
+        /// </summary>
         public IConnectionLine Line { get; set; }
+        /// <summary>
+        /// Gets or sets the is hovered.
+        /// </summary>
         public bool IsHovered { get; set; }
+        /// <summary>
+        /// Gets or sets the position.
+        /// </summary>
         public SKPoint Position { get; set; }
     }
 }

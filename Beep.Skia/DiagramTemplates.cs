@@ -31,6 +31,9 @@ namespace Beep.Skia
 
         // ── FlowChart: Order Validation ──────────────────────────────────────
 
+        /// <summary>
+        /// Gets or sets the flow chart order validation.
+        /// </summary>
         public static DiagramDto FlowChartOrderValidation()
         {
             var dto = new DiagramDto();
@@ -59,6 +62,9 @@ namespace Beep.Skia
 
         // ── ERD: E-Commerce Schema ───────────────────────────────────────────
 
+        /// <summary>
+        /// Gets or sets the ERD ecommerce.
+        /// </summary>
         public static DiagramDto ERDEcommerce()
         {
             var dto = new DiagramDto();
@@ -82,6 +88,9 @@ namespace Beep.Skia
 
         // ── ETL: Data Warehouse Pipeline ─────────────────────────────────────
 
+        /// <summary>
+        /// Gets or sets the ETL pipeline.
+        /// </summary>
         public static DiagramDto ETLPipeline()
         {
             var dto = new DiagramDto();
@@ -102,6 +111,9 @@ namespace Beep.Skia
 
         // ── DFD: Order System Level 0 ────────────────────────────────────────
 
+        /// <summary>
+        /// Gets or sets the DFD order system.
+        /// </summary>
         public static DiagramDto DFDOrderSystem()
         {
             var dto = new DiagramDto();
@@ -120,6 +132,9 @@ namespace Beep.Skia
 
         // ── UML: Class Diagram ───────────────────────────────────────────────
 
+        /// <summary>
+        /// Gets or sets the UML class diagram.
+        /// </summary>
         public static DiagramDto UMLClassDiagram()
         {
             var dto = new DiagramDto();
@@ -145,6 +160,9 @@ namespace Beep.Skia
 
         // ── Network: Social Graph ────────────────────────────────────────────
 
+        /// <summary>
+        /// Gets or sets the network social graph.
+        /// </summary>
         public static DiagramDto NetworkSocialGraph()
         {
             var dto = new DiagramDto();
@@ -167,6 +185,9 @@ namespace Beep.Skia
 
         // ── MindMap: Product Strategy ────────────────────────────────────────
 
+        /// <summary>
+        /// Gets or sets the mind map product strategy.
+        /// </summary>
         public static DiagramDto MindMapProductStrategy()
         {
             var dto = new DiagramDto();
@@ -191,6 +212,9 @@ namespace Beep.Skia
 
         // ── StateMachine: Login Process ──────────────────────────────────────
 
+        /// <summary>
+        /// Gets or sets the state machine login.
+        /// </summary>
         public static DiagramDto StateMachineLogin()
         {
             var dto = new DiagramDto();
@@ -211,6 +235,9 @@ namespace Beep.Skia
 
         // ── Business: Purchase Approval ──────────────────────────────────────
 
+        /// <summary>
+        /// Gets or sets the business purchase approval.
+        /// </summary>
         public static DiagramDto BusinessPurchaseApproval()
         {
             var dto = new DiagramDto();
@@ -230,6 +257,9 @@ namespace Beep.Skia
 
         // ── PM: Sprint Plan ─────────────────────────────────────────────────
 
+        /// <summary>
+        /// Gets or sets the PM sprint plan.
+        /// </summary>
         public static DiagramDto PMSprintPlan()
         {
             var dto = new DiagramDto();
@@ -249,6 +279,9 @@ namespace Beep.Skia
 
         // ── FlowChart: Purchase Approval ─────────────────────────────────────
 
+        /// <summary>
+        /// Gets or sets the flow chart approval.
+        /// </summary>
         public static DiagramDto FlowChartApproval()
         {
             var dto = new DiagramDto();
@@ -269,6 +302,9 @@ namespace Beep.Skia
 
         // ── StateMachine: Order Lifecycle ────────────────────────────────────
 
+        /// <summary>
+        /// Gets or sets the state machine order.
+        /// </summary>
         public static DiagramDto StateMachineOrder()
         {
             var dto = new DiagramDto();

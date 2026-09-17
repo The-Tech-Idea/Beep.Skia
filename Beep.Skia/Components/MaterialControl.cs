@@ -19,29 +19,101 @@ namespace Beep.Skia.Components
         protected static class MaterialColors
         {
             private static SkiaTheme T => ThemeManager.Current;
+            /// <summary>
+            /// Gets or sets the primary.
+            /// </summary>
             public static SKColor Primary => T.Primary;
+            /// <summary>
+            /// Gets or sets the on primary.
+            /// </summary>
             public static SKColor OnPrimary => T.OnPrimary;
+            /// <summary>
+            /// Gets or sets the primary container.
+            /// </summary>
             public static SKColor PrimaryContainer => T.PrimaryContainer;
+            /// <summary>
+            /// Gets or sets the on primary container.
+            /// </summary>
             public static SKColor OnPrimaryContainer => T.OnPrimaryContainer;
+            /// <summary>
+            /// Gets or sets the secondary.
+            /// </summary>
             public static SKColor Secondary => T.Secondary;
+            /// <summary>
+            /// Gets or sets the on secondary.
+            /// </summary>
             public static SKColor OnSecondary => T.OnSecondary;
+            /// <summary>
+            /// Gets or sets the secondary container.
+            /// </summary>
             public static SKColor SecondaryContainer => T.SecondaryContainer;
+            /// <summary>
+            /// Gets or sets the on secondary container.
+            /// </summary>
             public static SKColor OnSecondaryContainer => T.OnSecondaryContainer;
+            /// <summary>
+            /// Gets or sets the tertiary.
+            /// </summary>
             public static SKColor Tertiary => T.Tertiary;
+            /// <summary>
+            /// Gets or sets the on tertiary.
+            /// </summary>
             public static SKColor OnTertiary => T.OnTertiary;
+            /// <summary>
+            /// Gets or sets the tertiary container.
+            /// </summary>
             public static SKColor TertiaryContainer => T.TertiaryContainer;
+            /// <summary>
+            /// Gets or sets the on tertiary container.
+            /// </summary>
             public static SKColor OnTertiaryContainer => T.OnTertiaryContainer;
+            /// <summary>
+            /// Gets or sets the error.
+            /// </summary>
             public static SKColor Error => T.Error;
+            /// <summary>
+            /// Gets or sets the on error.
+            /// </summary>
             public static SKColor OnError => T.OnError;
+            /// <summary>
+            /// Gets or sets the error container.
+            /// </summary>
             public static SKColor ErrorContainer => T.ErrorContainer;
+            /// <summary>
+            /// Gets or sets the on error container.
+            /// </summary>
             public static SKColor OnErrorContainer => T.OnErrorContainer;
+            /// <summary>
+            /// Gets or sets the surface.
+            /// </summary>
             public static SKColor Surface => T.Surface;
+            /// <summary>
+            /// Gets or sets the on surface.
+            /// </summary>
             public static SKColor OnSurface => T.OnSurface;
+            /// <summary>
+            /// Gets or sets the surface variant.
+            /// </summary>
             public static SKColor SurfaceVariant => T.SurfaceVariant;
+            /// <summary>
+            /// Gets or sets the on surface variant.
+            /// </summary>
             public static SKColor OnSurfaceVariant => T.OnSurfaceVariant;
+            /// <summary>
+            /// Gets or sets the surface container.
+            /// </summary>
             public static SKColor SurfaceContainer => T.SurfaceContainer;
+            /// <summary>
+            /// Gets or sets the surface container high.
+            /// </summary>
             public static SKColor SurfaceContainerHigh => T.SurfaceContainerHigh;
+            /// <summary>
+            /// Gets or sets the outline.
+            /// </summary>
             public static SKColor Outline => T.Outline;
+            /// <summary>
+            /// Gets or sets the outline variant.
+            /// </summary>
             public static SKColor OutlineVariant => T.OutlineVariant;
         }
 

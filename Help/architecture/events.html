@@ -87,29 +87,7 @@
     </tbody>
   </table>
 </section>
-<section class="section" id="raising">
-  <h2>How Events Are Raised</h2>
-  <ul>
-    <li><strong>Thread:</strong> every manager event is raised on the thread that delivers input (the UI thread in desktop hosts), so handlers may touch UI state directly.</li>
-    <li><strong>Order:</strong> for one gesture, the interaction event fires before the resulting lifecycle event (for example <code>ComponentDoubleClicked</code> before any <code>SelectionChanged</code> caused by the click).</li>
-    <li><strong>Handled:</strong> setting <code>e.Handled = true</code> marks the interaction as consumed; the default behaviour (for example clearing the selection) is skipped.</li>
-    <li><strong>Exceptions:</strong> an exception thrown by a handler is the host's responsibility; the manager does not catch them, so keep handlers short and defensive.</li>
-  </ul>
-
-  <h3>Choosing the Right Arguments</h3>
-  <table>
-    <thead><tr><th>You want</th><th>Use</th></tr></thead>
-    <tbody>
-      <tr><td>Pointer interaction with a component, line or empty canvas</td><td>The interaction arguments on this page (<code>ComponentInteractionEventArgs</code>, <code>LineInteractionEventArgs</code>, <code>DiagramInteractionEventArgs</code>)</td></tr>
-      <tr><td>A component drag finishing</td><td><code>ComponentDropEventArgs</code> with canvas and screen positions plus final bounds</td></tr>
-      <tr><td>Component state transitions (selected, disabled, disposing)</td><td><code>ComponentStateChangedEventArgs</code> from the component's <code>StateChanged</code> event</td></tr>
-      <tr><td>Structural changes (nodes or lines added or removed)</td><td><code>NodeAddedEventArgs</code>, <code>NodeRemovedEventArgs</code>, <code>ConnectionCreatedEventArgs</code>, <code>ConnectionRemovedEventArgs</code></td></tr>
-      <tr><td>Selection changes</td><td>The manager's <code>SelectionChanged</code> event, or <code>NodeSelectedEventArgs</code> for a single node</td></tr>
-      <tr><td>A simpler, flat payload for host code</td><td>The legacy <code>Beep.Skia.Events</code> types (<code>ComponentClickEventArgs</code>, <code>LineClickEventArgs</code>, <code>DiagramClickEventArgs</code>, <code>HoverChangedEventArgs</code>)</td></tr>
-    </tbody>
-  </table>
-  <p>The complete event catalog &mdash; all sixteen manager events, their arguments and handling examples &mdash; is on the <a href="event-catalog.html">Event Catalog</a> page.</p>
-</section></div></main></div>
+</div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 </body></html>

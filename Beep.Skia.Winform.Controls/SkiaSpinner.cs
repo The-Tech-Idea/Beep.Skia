@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaSpinnerComponent _spinner;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaSpinner class.
+        /// </summary>
         public SkiaSpinner()
         {
             _spinner = CreateSkiaComponent<SkiaSpinnerComponent>();

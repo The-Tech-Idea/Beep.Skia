@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaCheckBoxComponent _chk;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaCheckBox class.
+        /// </summary>
         public SkiaCheckBox()
         {
             _chk = CreateSkiaComponent<SkiaCheckBoxComponent>();

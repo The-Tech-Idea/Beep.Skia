@@ -51,6 +51,9 @@ namespace Beep.Skia.Components
         /// </summary>
         public float LaneSpacing { get; set; } = 2f;
 
+        /// <summary>
+        /// Initializes a new instance of the SwimlaneContainer class.
+        /// </summary>
         public SwimlaneContainer()
         {
             Name = "SwimlaneContainer";
@@ -247,6 +250,9 @@ namespace Beep.Skia.Components
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);
@@ -282,6 +288,9 @@ namespace Beep.Skia.Components
         /// </summary>
         public object Tag { get; set; }
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => Title ?? "(unnamed)";
     }
 }

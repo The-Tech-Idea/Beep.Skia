@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class ExtractNode : FlowchartControl
     {
         private string _label = "Extract";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Extract operation description.
+        /// </summary>
         public ExtractNode()
         {
             Name = "Flowchart Extract";

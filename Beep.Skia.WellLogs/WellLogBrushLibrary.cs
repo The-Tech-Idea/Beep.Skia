@@ -4,17 +4,44 @@ using System.Collections.Generic;
 
 namespace Beep.Skia.WellLogs
 {
+    /// <summary>
+    /// Gets or sets the well log brush definition.
+    /// </summary>
     public sealed class WellLogBrushDefinition
     {
+        /// <summary>
+        /// Gets or sets the key.
+        /// </summary>
         public string Key { get; set; } = "default";
+        /// <summary>
+        /// Gets or sets the display name.
+        /// </summary>
         public string DisplayName { get; set; } = "Default";
+        /// <summary>
+        /// Gets or sets the primary color.
+        /// </summary>
         public SKColor PrimaryColor { get; set; } = new SKColor(235, 238, 244);
+        /// <summary>
+        /// Gets or sets the secondary color.
+        /// </summary>
         public SKColor SecondaryColor { get; set; } = new SKColor(150, 156, 166);
+        /// <summary>
+        /// Gets or sets the pattern.
+        /// </summary>
         public WellLogBrushPattern Pattern { get; set; } = WellLogBrushPattern.Solid;
+        /// <summary>
+        /// Gets or sets the spacing.
+        /// </summary>
         public float Spacing { get; set; } = 8f;
+        /// <summary>
+        /// Gets or sets the stroke width.
+        /// </summary>
         public float StrokeWidth { get; set; } = 1f;
     }
 
+    /// <summary>
+    /// Gets or sets the well log brush library.
+    /// </summary>
     public static class WellLogBrushLibrary
     {
         private static readonly Dictionary<string, WellLogBrushDefinition> _definitions =
@@ -121,6 +148,9 @@ namespace Beep.Skia.WellLogs
 
         public static IReadOnlyDictionary<string, WellLogBrushDefinition> Definitions => _definitions;
 
+        /// <summary>
+        /// Gets or sets the get.
+        /// </summary>
         public static WellLogBrushDefinition Get(string key)
         {
             if (string.IsNullOrWhiteSpace(key))
@@ -133,6 +163,9 @@ namespace Beep.Skia.WellLogs
                 : _definitions["default"];
         }
 
+        /// <summary>
+        /// Gets or sets the create fill paint.
+        /// </summary>
         public static SKPaint CreateFillPaint(string key, SKRect bounds, byte alpha = 90)
         {
             var definition = Get(key);
@@ -159,6 +192,9 @@ namespace Beep.Skia.WellLogs
             return paint;
         }
 
+        /// <summary>
+        /// Gets or sets the draw pattern.
+        /// </summary>
         public static void DrawPattern(SKCanvas canvas, SKRect bounds, string key, byte alpha = 96)
         {
             var definition = Get(key);

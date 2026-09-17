@@ -14,11 +14,26 @@ namespace Beep.Skia.Security
         private DateTime _detectedOn = DateTime.Now;
         private Confidence _confidence = Confidence.Medium;
 
+        /// <summary>
+        /// Gets or sets the incident id.
+        /// </summary>
         public string IncidentId { get => _incidentId; set { var v = value ?? string.Empty; if (_incidentId != v) { _incidentId = v; if (NodeProperties.TryGetValue("IncidentId", out var p)) p.ParameterCurrentValue = _incidentId; else NodeProperties["IncidentId"] = new ParameterInfo { ParameterName = "IncidentId", ParameterType = typeof(string), DefaultParameterValue = _incidentId, ParameterCurrentValue = _incidentId, Description = "Incident ID" }; Name = _incidentId; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
         public IncidentStatus Status { get => _status; set { if (_status != value) { _status = value; if (NodeProperties.TryGetValue("Status", out var p)) p.ParameterCurrentValue = _status; else NodeProperties["Status"] = new ParameterInfo { ParameterName = "Status", ParameterType = typeof(IncidentStatus), DefaultParameterValue = _status, ParameterCurrentValue = _status, Description = "Incident status", Choices = Enum.GetNames(typeof(IncidentStatus)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the detected on.
+        /// </summary>
         public DateTime DetectedOn { get => _detectedOn; set { if (_detectedOn != value) { _detectedOn = value; if (NodeProperties.TryGetValue("DetectedOn", out var p)) p.ParameterCurrentValue = _detectedOn; else NodeProperties["DetectedOn"] = new ParameterInfo { ParameterName = "DetectedOn", ParameterType = typeof(DateTime), DefaultParameterValue = _detectedOn, ParameterCurrentValue = _detectedOn, Description = "Detection timestamp" }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the confidence.
+        /// </summary>
         public Confidence Confidence { get => _confidence; set { if (_confidence != value) { _confidence = value; if (NodeProperties.TryGetValue("Confidence", out var p)) p.ParameterCurrentValue = _confidence; else NodeProperties["Confidence"] = new ParameterInfo { ParameterName = "Confidence", ParameterType = typeof(Confidence), DefaultParameterValue = _confidence, ParameterCurrentValue = _confidence, Description = "Detection confidence", Choices = Enum.GetNames(typeof(Confidence)) }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Incident ID
+        /// </summary>
         public IncidentNode()
         {
             Width = 180; Height = 90;

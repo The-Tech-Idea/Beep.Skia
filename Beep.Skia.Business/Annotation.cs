@@ -16,6 +16,9 @@ namespace Beep.Skia.Business
         private AnnotationType _annotationType = AnnotationType.Note;
         private bool _showBorder = true;
         private bool _showBackground = true;
+        /// <summary>
+        /// Annotation text
+        /// </summary>
         public string AnnotationText
         {
             get => _annotationText;
@@ -30,6 +33,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Annotation type
+        /// </summary>
         public AnnotationType AnnotationType
         {
             get => _annotationType;
@@ -43,6 +49,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Show border
+        /// </summary>
         public bool ShowBorder
         {
             get => _showBorder;
@@ -56,6 +65,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Show background
+        /// </summary>
         public bool ShowBackground
         {
             get => _showBackground;
@@ -70,6 +82,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Annotation text
+        /// </summary>
         public Annotation()
         {
             Width = 120;

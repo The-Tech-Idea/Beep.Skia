@@ -78,9 +78,9 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>UMLActivationBar()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>UMLActivationBar()</code></td><td>Method</td><td>Optional activation label</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -92,9 +92,9 @@
     <tbody>
       <tr><td><code>string ActionName</code></td><td>Property</td><td>Gets or sets the action name.</td></tr>
       <tr><td><code>ActivityNodeType ActionType</code></td><td>Property</td><td>Gets or sets the action type.</td></tr>
-      <tr><td><code>UMLActivityNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>UMLActivityNode()</code></td><td>Method</td><td>Action name</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -117,9 +117,9 @@
     <tbody>
       <tr><td><code>string ArtifactName</code></td><td>Property</td><td>Gets or sets the artifact name.</td></tr>
       <tr><td><code>string FileName</code></td><td>Property</td><td>Gets or sets the file name.</td></tr>
-      <tr><td><code>UMLArtifactNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>UMLArtifactNode()</code></td><td>Method</td><td>Artifact name</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -166,9 +166,9 @@
       <tr><td><code>static readonly string[] Operators =</code></td><td>Field</td><td>Supported interaction operators.</td></tr>
       <tr><td><code>string Operator</code></td><td>Property</td><td>Gets or sets the operator.</td></tr>
       <tr><td><code>string GuardCondition</code></td><td>Property</td><td>Gets or sets the guard condition.</td></tr>
-      <tr><td><code>UMLCombinedFragment()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>UMLCombinedFragment()</code></td><td>Method</td><td>Interaction operator</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -181,9 +181,9 @@
       <tr><td><code>string ComponentName</code></td><td>Property</td><td>Gets or sets the component name.</td></tr>
       <tr><td><code>string ProvidedInterfaces</code></td><td>Property</td><td>Gets or sets the provided interfaces.</td></tr>
       <tr><td><code>string RequiredInterfaces</code></td><td>Property</td><td>Gets or sets the required interfaces.</td></tr>
-      <tr><td><code>UMLComponentNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>UMLComponentNode()</code></td><td>Method</td><td>Component name</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -205,7 +205,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string Stereotype</code></td><td>Property</td><td>Gets or sets the stereotype of this UML element (e.g., "&gt;", "&gt;").</td></tr>
+      <tr><td><code>string Stereotype</code></td><td>Property</td><td>Gets or sets the stereotype of this UML element (e.g., "&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;", "&amp;lt;&amp;lt;abstract&amp;gt;&amp;gt;").</td></tr>
       <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of this UML element.</td></tr>
       <tr><td><code>SKColor BorderColor</code></td><td>Property</td><td>Gets or sets the border color of this UML element.</td></tr>
       <tr><td><code>float BorderThickness</code></td><td>Property</td><td>Gets or sets the border thickness.</td></tr>
@@ -233,9 +233,9 @@
     <tbody>
       <tr><td><code>string NodeName</code></td><td>Property</td><td>Gets or sets the node name.</td></tr>
       <tr><td><code>string NodeType</code></td><td>Property</td><td>Gets or sets the node type.</td></tr>
-      <tr><td><code>UMLDeploymentNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>UMLDeploymentNode()</code></td><td>Method</td><td>Node name</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -271,7 +271,7 @@
       <tr><td><code>string ObjectName</code></td><td>Property</td><td>Gets or sets the object name.</td></tr>
       <tr><td><code>string ClassName</code></td><td>Property</td><td>Gets or sets the class name.</td></tr>
       <tr><td><code>float LifelineLength</code></td><td>Property</td><td>Gets or sets the lifeline length.</td></tr>
-      <tr><td><code>UMLLifeline()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>UMLLifeline()</code></td><td>Method</td><td>Sequence object name</td></tr>
     </tbody>
   </table>
 </section>
@@ -308,9 +308,9 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string PackageName</code></td><td>Property</td><td>Gets or sets the package name.</td></tr>
-      <tr><td><code>UMLPackageNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>UMLPackageNode()</code></td><td>Method</td><td>Package name</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -321,9 +321,9 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string SystemName</code></td><td>Property</td><td>Gets or sets the system name.</td></tr>
-      <tr><td><code>UMLSystemBoundary()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>UMLSystemBoundary()</code></td><td>Method</td><td>System or subsystem name</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -356,9 +356,9 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string UseCaseName</code></td><td>Property</td><td>Gets or sets the use case name.</td></tr>
-      <tr><td><code>UMLUseCaseNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>UMLUseCaseNode()</code></td><td>Method</td><td>Use case name</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>

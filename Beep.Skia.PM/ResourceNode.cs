@@ -10,6 +10,9 @@ namespace Beep.Skia.PM
     public class ResourceNode : PMControl
     {
         private string _resourceName = "Resource";
+        /// <summary>
+        /// Gets or sets the resource name.
+        /// </summary>
         public string ResourceName
         {
             get => _resourceName;
@@ -27,6 +30,9 @@ namespace Beep.Skia.PM
         }
 
         private string _resourceType = "Person";
+        /// <summary>
+        /// Gets or sets the resource type.
+        /// </summary>
         public string ResourceType
         {
             get => _resourceType;
@@ -44,6 +50,9 @@ namespace Beep.Skia.PM
         }
 
         private int _allocationPercent = 100;
+        /// <summary>
+        /// Gets or sets the allocation percent.
+        /// </summary>
         public int AllocationPercent
         {
             get => _allocationPercent;
@@ -61,6 +70,9 @@ namespace Beep.Skia.PM
         }
 
         private decimal _costPerHour = 0;
+        /// <summary>
+        /// Gets or sets the cost per hour.
+        /// </summary>
         public decimal CostPerHour
         {
             get => _costPerHour;
@@ -76,6 +88,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Resource name or identifier
+        /// </summary>
         public ResourceNode()
         {
             Name = "PM Resource";

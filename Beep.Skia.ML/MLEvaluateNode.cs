@@ -13,10 +13,22 @@ namespace Beep.Skia.ML
         private MetricKind _metric = MetricKind.Accuracy;
         private double _threshold = 0.9;
 
+        /// <summary>
+        /// Gets or sets the step name.
+        /// </summary>
         public string StepName { get => _name; set { var v = value ?? string.Empty; if (_name != v) { _name = v; if (NodeProperties.TryGetValue("StepName", out var p)) p.ParameterCurrentValue = _name; else NodeProperties["StepName"] = new ParameterInfo { ParameterName = "StepName", ParameterType = typeof(string), DefaultParameterValue = _name, ParameterCurrentValue = _name, Description = "Step name" }; Name = _name; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the metric.
+        /// </summary>
         public MetricKind Metric { get => _metric; set { if (_metric != value) { _metric = value; if (NodeProperties.TryGetValue("Metric", out var p)) p.ParameterCurrentValue = _metric; else NodeProperties["Metric"] = new ParameterInfo { ParameterName = "Metric", ParameterType = typeof(MetricKind), DefaultParameterValue = _metric, ParameterCurrentValue = _metric, Description = "Metric kind", Choices = Enum.GetNames(typeof(MetricKind)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the threshold.
+        /// </summary>
         public double Threshold { get => _threshold; set { var v = Math.Max(0, Math.Min(1, value)); if (Math.Abs(_threshold - v) > double.Epsilon) { _threshold = v; if (NodeProperties.TryGetValue("Threshold", out var p)) p.ParameterCurrentValue = _threshold; else NodeProperties["Threshold"] = new ParameterInfo { ParameterName = "Threshold", ParameterType = typeof(double), DefaultParameterValue = _threshold, ParameterCurrentValue = _threshold, Description = "Threshold (0..1)" }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Step name
+        /// </summary>
         public MLEvaluateNode()
         {
             Width = 160; Height = 80;

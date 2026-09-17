@@ -14,6 +14,9 @@ namespace Beep.Skia.Business
         private string _ruleSetName = "Rule Engine";
         private int _ruleCount = 0;
         private bool _isActive = true;
+        /// <summary>
+        /// Rule set name
+        /// </summary>
         public string RuleSetName
         {
             get => _ruleSetName;
@@ -29,6 +32,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Number of rules
+        /// </summary>
         public int RuleCount
         {
             get => _ruleCount;
@@ -43,6 +49,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Active state
+        /// </summary>
         public bool IsActive
         {
             get => _isActive;
@@ -57,6 +66,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Rule set name
+        /// </summary>
         public RuleEngine()
         {
             Width = 100;

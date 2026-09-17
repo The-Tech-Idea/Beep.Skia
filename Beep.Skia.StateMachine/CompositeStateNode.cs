@@ -13,6 +13,9 @@ namespace Beep.Skia.StateMachine
     public class CompositeStateNode : StateMachineControl
     {
         private string _title = "Composite";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -27,6 +30,9 @@ namespace Beep.Skia.StateMachine
         }
 
         private float _titleBarHeight = 24f;
+        /// <summary>
+        /// Gets or sets the title bar height.
+        /// </summary>
         public float TitleBarHeight
         {
             get => _titleBarHeight;
@@ -58,6 +64,9 @@ namespace Beep.Skia.StateMachine
             }
         }
 
+        /// <summary>
+        /// Composite state name
+        /// </summary>
         public CompositeStateNode()
         {
             Width = 240; Height = 180;
@@ -151,6 +160,9 @@ namespace Beep.Skia.StateMachine
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

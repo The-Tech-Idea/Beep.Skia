@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaCardComponent _card;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaCard class.
+        /// </summary>
         public SkiaCard()
         {
             _card = CreateSkiaComponent<SkiaCardComponent>();

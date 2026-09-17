@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class MultiDocumentNode : FlowchartControl
     {
         private string _label = "Multi-Document";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Multi-document label.
+        /// </summary>
         public MultiDocumentNode()
         {
             Name = "Flowchart Multi-Document";

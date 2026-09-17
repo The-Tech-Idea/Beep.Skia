@@ -5,8 +5,14 @@ using System.Linq;
 
 namespace Beep.Skia.WellLogs
 {
+    /// <summary>
+    /// Gets or sets the well log track layout.
+    /// </summary>
     public sealed class WellLogTrackLayout
     {
+        /// <summary>
+        /// Initializes a new instance of the WellLogTrackLayout class.
+        /// </summary>
         public WellLogTrackLayout(WellLogTrack track, SKRect trackBounds, SKRect headerBounds, SKRect plotBounds)
         {
             Track = track;
@@ -15,14 +21,32 @@ namespace Beep.Skia.WellLogs
             PlotBounds = plotBounds;
         }
 
+        /// <summary>
+        /// Gets or sets the track.
+        /// </summary>
         public WellLogTrack Track { get; }
+        /// <summary>
+        /// Gets or sets the track bounds.
+        /// </summary>
         public SKRect TrackBounds { get; }
+        /// <summary>
+        /// Gets or sets the header bounds.
+        /// </summary>
         public SKRect HeaderBounds { get; }
+        /// <summary>
+        /// Gets or sets the plot bounds.
+        /// </summary>
         public SKRect PlotBounds { get; }
     }
 
+    /// <summary>
+    /// Gets or sets the well log layout engine.
+    /// </summary>
     public static class WellLogLayoutEngine
     {
+        /// <summary>
+        /// Gets or sets the build track layouts.
+        /// </summary>
         public static IReadOnlyList<WellLogTrackLayout> BuildTrackLayouts(SKRect bounds, WellLogDocument document, float trackGap = 6f, float defaultHeaderHeight = 28f)
         {
             if (document == null || document.Tracks.Count == 0)
@@ -66,6 +90,9 @@ namespace Beep.Skia.WellLogs
             return layouts;
         }
 
+        /// <summary>
+        /// Gets or sets the map depth to y.
+        /// </summary>
         public static float MapDepthToY(WellLogDepthAxis axis, float depth, SKRect plotBounds)
         {
             if (axis == null || axis.DepthSpan <= 0f)
@@ -81,6 +108,9 @@ namespace Beep.Skia.WellLogs
                 : plotBounds.Bottom - normalized * plotBounds.Height;
         }
 
+        /// <summary>
+        /// Gets or sets the map value to x.
+        /// </summary>
         public static float MapValueToX(WellLogCurve curve, float value, SKRect plotBounds)
         {
             if (curve == null)

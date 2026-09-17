@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaFabComponent _fab;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaFloatingActionButton class.
+        /// </summary>
         public SkiaFloatingActionButton()
         {
             _fab = CreateSkiaComponent<SkiaFabComponent>();

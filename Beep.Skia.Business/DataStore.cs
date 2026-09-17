@@ -12,6 +12,9 @@ namespace Beep.Skia.Business
     public class DataStore : BusinessControl
     {
         private string _label = "Data Store";
+        /// <summary>
+        /// Display label
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Display label
+        /// </summary>
         public DataStore()
         {
             Width = 90;

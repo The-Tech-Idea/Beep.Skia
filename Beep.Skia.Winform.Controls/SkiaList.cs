@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaListComponent _list;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaList class.
+        /// </summary>
         public SkiaList()
         {
             _list = CreateSkiaComponent<SkiaListComponent>();

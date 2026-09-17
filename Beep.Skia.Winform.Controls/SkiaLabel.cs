@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaLabelComponent _label;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaLabel class.
+        /// </summary>
         public SkiaLabel()
         {
             _label = CreateSkiaComponent<SkiaLabelComponent>();

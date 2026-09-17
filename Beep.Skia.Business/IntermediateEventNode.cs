@@ -16,6 +16,9 @@ namespace Beep.Skia.Business
         private EventType _eventType = EventType.Timer;
         private EventPosition _eventPosition = EventPosition.IntermediateCatch;
 
+        /// <summary>
+        /// Event label
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -31,6 +34,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Event type
+        /// </summary>
         public EventType EventType
         {
             get => _eventType;
@@ -44,6 +50,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Catch or Throw
+        /// </summary>
         public EventPosition EventPosition
         {
             get => _eventPosition;
@@ -57,6 +66,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Event label
+        /// </summary>
         public IntermediateEventNode()
         {
             Width = 60;
@@ -212,6 +224,9 @@ namespace Beep.Skia.Business
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

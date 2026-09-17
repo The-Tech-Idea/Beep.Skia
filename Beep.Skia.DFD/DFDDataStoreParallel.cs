@@ -7,6 +7,9 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDDataStoreParallel : DFDControl
     {
+        /// <summary>
+        /// Initializes a new instance of the DFDDataStoreParallel class.
+        /// </summary>
         public DFDDataStoreParallel()
         {
             Name = "Data Store (Parallel)";

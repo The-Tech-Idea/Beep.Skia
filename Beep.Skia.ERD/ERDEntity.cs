@@ -20,15 +20,36 @@ namespace Beep.Skia.ERD
 
         private class RowEntry
         {
+            /// <summary>
+            /// Gets or sets the id.
+            /// </summary>
             public Guid Id { get; set; }
+            /// <summary>
+            /// Gets or sets the text.
+            /// </summary>
             public string Text { get; set; } = string.Empty;
+            /// <summary>
+            /// Gets or sets the data type.
+            /// </summary>
             public string DataType { get; set; } = "string";
+            /// <summary>
+            /// Gets or sets the is primary key.
+            /// </summary>
             public bool IsPrimaryKey { get; set; }
+            /// <summary>
+            /// Gets or sets the is foreign key.
+            /// </summary>
             public bool IsForeignKey { get; set; }
+            /// <summary>
+            /// Entity name/title
+            /// </summary>
             public bool IsNullable { get; set; } = true;
         }
 
         private string _entityName = "Entity";
+        /// <summary>
+        /// Entity name/title
+        /// </summary>
         public string EntityName
         {
             get => _entityName;
@@ -63,6 +84,9 @@ namespace Beep.Skia.ERD
 
         // Multiline or comma-separated rows; parsed into _rows for rendering/persistence
     private string _rowsText = "Id\nName";
+        /// <summary>
+        /// One row name per line or comma-separated
+        /// </summary>
         public string RowsText
         {
             get => _rowsText;
@@ -102,6 +126,9 @@ namespace Beep.Skia.ERD
             new RowEntry { Id = Guid.NewGuid(), Text = "Name", DataType = "string", IsNullable = false }
         };
 
+        /// <summary>
+        /// Gets or sets the rows.
+        /// </summary>
         public IReadOnlyList<string> Rows => _rowEntries.Select(r => r.Text).ToList();
 
         // Map row ID -> its left/right CPs
@@ -109,6 +136,9 @@ namespace Beep.Skia.ERD
         private readonly Dictionary<Guid, ConnectionPoint> _rowToOutCp = new();
 
         // Persistable representation of row IDs alongside RowsText
+        /// <summary>
+        /// Gets or sets the row ids csv.
+        /// </summary>
         [Browsable(false)]
         public string RowIdsCsv
         {
@@ -146,6 +176,9 @@ namespace Beep.Skia.ERD
             }
         }
 
+        /// <summary>
+        /// Entity name/title
+        /// </summary>
         public ERDEntity()
         {
             Name = "ERD Entity";
@@ -427,8 +460,14 @@ namespace Beep.Skia.ERD
         }
 
         // Hide port counts in property editor for ERDEntity; rows drive counts
+        /// <summary>
+        /// Gets or sets the in port count.
+        /// </summary>
         [Browsable(false)]
         public new int InPortCount { get => base.InPortCount; set => base.InPortCount = value; }
+        /// <summary>
+        /// Gets or sets the out port count.
+        /// </summary>
         [Browsable(false)]
         public new int OutPortCount { get => base.OutPortCount; set => base.OutPortCount = value; }
 

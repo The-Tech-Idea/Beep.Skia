@@ -27,14 +27,38 @@ namespace Beep.Skia.ERD
     /// </summary>
     public class SchemaChange
     {
+        /// <summary>
+        /// Gets or sets the kind.
+        /// </summary>
         public SchemaChangeKind Kind { get; set; }
+        /// <summary>
+        /// Gets or sets the table name.
+        /// </summary>
         public string TableName { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the column.
+        /// </summary>
         public DDLImporter.ColumnInfo? Column { get; set; }
+        /// <summary>
+        /// Gets or sets the previous column.
+        /// </summary>
         public DDLImporter.ColumnInfo? PreviousColumn { get; set; }
+        /// <summary>
+        /// Gets or sets the constraint.
+        /// </summary>
         public DDLImporter.ConstraintInfo? Constraint { get; set; }
+        /// <summary>
+        /// Gets or sets the table.
+        /// </summary>
         public DDLImporter.TableInfo? Table { get; set; }
+        /// <summary>
+        /// Gets or sets the previous table.
+        /// </summary>
         public DDLImporter.TableInfo? PreviousTable { get; set; }
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"{Kind}: {TableName}{(Column != null ? "." + Column.Name : "")}";
     }
 
@@ -43,10 +67,19 @@ namespace Beep.Skia.ERD
     /// </summary>
     public class SchemaComparisonResult
     {
+        /// <summary>
+        /// Gets or sets the changes.
+        /// </summary>
         public List<SchemaChange> Changes { get; } = new List<SchemaChange>();
 
+        /// <summary>
+        /// Gets or sets the has changes.
+        /// </summary>
         public bool HasChanges => Changes.Count > 0;
 
+        /// <summary>
+        /// Gets or sets the of kind.
+        /// </summary>
         public IEnumerable<SchemaChange> OfKind(SchemaChangeKind kind) => Changes.Where(c => c.Kind == kind);
 
         /// <summary>
@@ -108,6 +141,9 @@ namespace Beep.Skia.ERD
     /// </summary>
     public class SchemaComparer
     {
+        /// <summary>
+        /// Gets or sets the compare.
+        /// </summary>
         public SchemaComparisonResult Compare(
             IEnumerable<DDLImporter.TableInfo> source,
             IEnumerable<DDLImporter.TableInfo> target)

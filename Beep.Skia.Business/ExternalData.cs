@@ -12,6 +12,9 @@ namespace Beep.Skia.Business
     public class ExternalData : BusinessControl
     {
         private string _label = "External Data";
+        /// <summary>
+        /// Display label
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Display label
+        /// </summary>
         public ExternalData()
         {
             Width = 110;

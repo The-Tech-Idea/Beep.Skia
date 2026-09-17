@@ -7,6 +7,9 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDProcessOval : DFDControl
     {
+        /// <summary>
+        /// Initializes a new instance of the DFDProcessOval class.
+        /// </summary>
         public DFDProcessOval()
         {
             Name = "Process (Oval)";

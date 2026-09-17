@@ -25,8 +25,14 @@ namespace Beep.Skia.Components
     public class ComponentPropertyEditor : SkiaComponent
     {
         // Owning DrawingManager (set by host) to enable actions like schema inference
+        /// <summary>
+        /// Gets or sets the manager.
+        /// </summary>
         public DrawingManager Manager { get; set; }
         // Hide this infrastructure component from the palette/toolbox
+        /// <summary>
+        /// Gets or sets the show in palette.
+        /// </summary>
         public override bool ShowInPalette { get; set; } = false;
         // Note: Render as an overlay; do not move/scale with canvas pan/zoom
         #region Private Fields
@@ -819,6 +825,9 @@ namespace Beep.Skia.Components
             private readonly Action<List<Beep.Skia.Model.ColumnDefinition>> _onChanged;
             private readonly List<string> _typeChoices;
 
+            /// <summary>
+            /// Initializes a new instance of the SkiaComponentGrid class.
+            /// </summary>
             public SkiaComponentGrid(List<Beep.Skia.Model.ColumnDefinition> columns, Action<List<Beep.Skia.Model.ColumnDefinition>> onChanged, IEnumerable<string> extraTypeChoices = null)
             {
                 ShowInPalette = false;
@@ -956,6 +965,9 @@ namespace Beep.Skia.Components
             private readonly Func<T, float, Action, IEnumerable<SkiaComponent>> _renderRow;
             private readonly Action<List<T>> _commit;
 
+            /// <summary>
+            /// Initializes a new instance of the SimpleListEditor class.
+            /// </summary>
             public SimpleListEditor(List<T> items, string drawHeader, Func<T, float, Action, IEnumerable<SkiaComponent>> onRenderRow, Action<List<T>> onCommit)
             {
                 ShowInPalette = false;
@@ -1928,6 +1940,9 @@ namespace Beep.Skia.Components
         }
 
         // --- Input routing for embedded controls ---
+        /// <summary>
+        /// Gets or sets the handle mouse down.
+        /// </summary>
         public override bool HandleMouseDown(SKPoint point, InteractionContext context)
         {
             // Forward to children in reverse order (topmost first)
@@ -1958,6 +1973,9 @@ namespace Beep.Skia.Components
             return base.HandleMouseDown(point, context);
         }
 
+        /// <summary>
+        /// Gets or sets the handle mouse move.
+        /// </summary>
         public override bool HandleMouseMove(SKPoint point, InteractionContext context)
         {
             for (int i = _childComponents.Count - 1; i >= 0; i--)
@@ -1977,6 +1995,9 @@ namespace Beep.Skia.Components
             return base.HandleMouseMove(point, context);
         }
 
+        /// <summary>
+        /// Gets or sets the handle mouse up.
+        /// </summary>
         public override bool HandleMouseUp(SKPoint point, InteractionContext context)
         {
             for (int i = _childComponents.Count - 1; i >= 0; i--)
@@ -1996,6 +2017,9 @@ namespace Beep.Skia.Components
         }
 
         // Receive keyboard input from host and route to focused textbox
+        /// <summary>
+        /// Gets or sets the handle key char.
+        /// </summary>
         public void HandleKeyChar(char ch)
         {
             if (_focusedTextBox == null) return;
@@ -2010,6 +2034,9 @@ namespace Beep.Skia.Components
             }
         }
 
+        /// <summary>
+        /// Gets or sets the handle key down.
+        /// </summary>
         public void HandleKeyDown(PropertyEditorKey key)
         {
             if (_focusedTextBox == null) return;

@@ -14,11 +14,26 @@ namespace Beep.Skia.ECAD
         private double _forwardVoltage = 0.7;
         private double _maxCurrent = 1.0;
 
+        /// <summary>
+        /// Gets or sets the diode type.
+        /// </summary>
         public string DiodeType { get => _type; set { var v = value ?? ""; if (_type != v) { _type = v; UpdateNodeProperty("DiodeType", _type); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the package.
+        /// </summary>
         public string Package { get => _package; set { var v = value ?? ""; if (_package != v) { _package = v; UpdateNodeProperty("Package", _package); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the forward voltage.
+        /// </summary>
         public double ForwardVoltage { get => _forwardVoltage; set { if (Math.Abs(_forwardVoltage - value) > 0.001) { _forwardVoltage = value; UpdateNodeProperty("ForwardVoltage", _forwardVoltage); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the max current.
+        /// </summary>
         public double MaxCurrent { get => _maxCurrent; set { if (Math.Abs(_maxCurrent - value) > 0.001) { _maxCurrent = value; UpdateNodeProperty("MaxCurrent", _maxCurrent); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Diode type
+        /// </summary>
         public ECADDiodeNode()
         {
             Width = 80; Height = 40; Name = "Diode";

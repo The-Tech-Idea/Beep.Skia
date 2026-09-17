@@ -11,6 +11,9 @@ namespace Beep.Skia.StateMachine
     public class InitialStateNode : StateMachineControl
     {
         private string _title = "Initial";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -24,6 +27,9 @@ namespace Beep.Skia.StateMachine
             }
         }
 
+        /// <summary>
+        /// Label
+        /// </summary>
         public InitialStateNode()
         {
             Width = 40; Height = 40;

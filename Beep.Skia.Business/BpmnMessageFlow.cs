@@ -20,6 +20,9 @@ namespace Beep.Skia.Business
             set => _messageName = value ?? string.Empty;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the BpmnMessageFlow class.
+        /// </summary>
         public BpmnMessageFlow() : base(() => { })
         {
             DashPattern = new float[] { 6f, 4f };

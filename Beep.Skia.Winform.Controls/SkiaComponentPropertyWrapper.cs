@@ -18,10 +18,22 @@ namespace Beep.Skia.Winform.Controls
         private readonly Action<SkiaComponent> _onChanged;
         private readonly PropertyDescriptorCollection _properties;
 
+        /// <summary>
+        /// Gets or sets the component.
+        /// </summary>
         public SkiaComponent Component => _component;
+        /// <summary>
+        /// Gets or sets the component type name.
+        /// </summary>
         public string ComponentTypeName { get; }
+        /// <summary>
+        /// Gets or sets the component name.
+        /// </summary>
         public string ComponentName { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaComponentPropertyWrapper class.
+        /// </summary>
         public SkiaComponentPropertyWrapper(SkiaComponent component, Action<SkiaComponent> onChanged = null)
         {
             _component = component ?? throw new ArgumentNullException(nameof(component));
@@ -70,6 +82,9 @@ namespace Beep.Skia.Winform.Controls
             _properties = new PropertyDescriptorCollection(props.ToArray());
         }
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"[{ComponentTypeName}] {ComponentName}";
 
         // ICustomTypeDescriptor — delegates everything else to default
@@ -86,6 +101,9 @@ namespace Beep.Skia.Winform.Controls
         PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties(Attribute[] attributes) => _properties;
         object ICustomTypeDescriptor.GetPropertyOwner(PropertyDescriptor pd) => this;
 
+        /// <summary>
+        /// Gets or sets the dispose.
+        /// </summary>
         public void Dispose()
         {
             _properties.Clear();
@@ -102,9 +120,18 @@ namespace Beep.Skia.Winform.Controls
         private readonly Action<IReadOnlyList<SkiaComponent>> _onChanged;
         private readonly PropertyDescriptorCollection _properties;
 
+        /// <summary>
+        /// Gets or sets the components.
+        /// </summary>
         public IReadOnlyList<SkiaComponent> Components => _components;
+        /// <summary>
+        /// Gets or sets the count.
+        /// </summary>
         public int Count => _components.Count;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaMultiComponentWrapper class.
+        /// </summary>
         public SkiaMultiComponentWrapper(IReadOnlyList<SkiaComponent> components, Action<IReadOnlyList<SkiaComponent>> onChanged = null)
         {
             _components = (components ?? throw new ArgumentNullException(nameof(components)))
@@ -172,6 +199,9 @@ namespace Beep.Skia.Winform.Controls
             return keys.OrderBy(k => k, StringComparer.OrdinalIgnoreCase).ToList();
         }
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"[{Count} components selected]";
 
         AttributeCollection ICustomTypeDescriptor.GetAttributes() => TypeDescriptor.GetAttributes(GetType());
@@ -187,6 +217,9 @@ namespace Beep.Skia.Winform.Controls
         PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties(Attribute[] attributes) => _properties;
         object ICustomTypeDescriptor.GetPropertyOwner(PropertyDescriptor pd) => this;
 
+        /// <summary>
+        /// Gets or sets the dispose.
+        /// </summary>
         public void Dispose()
         {
             _properties.Clear();
@@ -203,6 +236,9 @@ namespace Beep.Skia.Winform.Controls
         private readonly Action<object> _setter;
         private readonly string[] _choices;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaNodePropertyDescriptor class.
+        /// </summary>
         public SkiaNodePropertyDescriptor(string name, Type type, Func<object> getter, Action<object> setter,
             string category, string description, string[] choices = null)
             : base(name, null)
@@ -215,22 +251,52 @@ namespace Beep.Skia.Winform.Controls
             PropertyType = type;
         }
 
+        /// <summary>
+        /// Gets or sets the component type.
+        /// </summary>
         public override Type ComponentType => typeof(object);
+        /// <summary>
+        /// Gets or sets the is read only.
+        /// </summary>
         public override bool IsReadOnly => false;
+        /// <summary>
+        /// Gets or sets the property type.
+        /// </summary>
         public override Type PropertyType { get; }
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
         public override string Description { get; }
+        /// <summary>
+        /// Gets or sets the category.
+        /// </summary>
         public override string Category { get; }
 
+        /// <summary>
+        /// Gets or sets the can reset value.
+        /// </summary>
         public override bool CanResetValue(object component) => false;
+        /// <summary>
+        /// Gets or sets the reset value.
+        /// </summary>
         public override void ResetValue(object component) { }
+        /// <summary>
+        /// Gets or sets the should serialize value.
+        /// </summary>
         public override bool ShouldSerializeValue(object component) => true;
 
+        /// <summary>
+        /// Gets or sets the get value.
+        /// </summary>
         public override object GetValue(object component)
         {
             try { return _getter(); }
             catch { return null; }
         }
 
+        /// <summary>
+        /// Gets or sets the set value.
+        /// </summary>
         public override void SetValue(object component, object value)
         {
             try
@@ -256,6 +322,9 @@ namespace Beep.Skia.Winform.Controls
             catch { }
         }
 
+        /// <summary>
+        /// Gets or sets the converter.
+        /// </summary>
         public override TypeConverter Converter
         {
             get
@@ -276,13 +345,25 @@ namespace Beep.Skia.Winform.Controls
     {
         private readonly string[] _values;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaEnumConverter class.
+        /// </summary>
         public SkiaEnumConverter(string[] values)
         {
             _values = values ?? Array.Empty<string>();
         }
 
+        /// <summary>
+        /// Gets or sets the get standard values supported.
+        /// </summary>
         public override bool GetStandardValuesSupported(ITypeDescriptorContext context) => true;
+        /// <summary>
+        /// Gets or sets the get standard values exclusive.
+        /// </summary>
         public override bool GetStandardValuesExclusive(ITypeDescriptorContext context) => false;
+        /// <summary>
+        /// Gets or sets the get standard values.
+        /// </summary>
         public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
             => new StandardValuesCollection(_values);
     }
@@ -292,18 +373,30 @@ namespace Beep.Skia.Winform.Controls
     /// </summary>
     public class SkiaColorConverter : TypeConverter
     {
+        /// <summary>
+        /// Gets or sets the can convert from.
+        /// </summary>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
             => sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
 
+        /// <summary>
+        /// Gets or sets the can convert to.
+        /// </summary>
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
             => destinationType == typeof(string) || base.CanConvertTo(context, destinationType);
 
+        /// <summary>
+        /// Gets or sets the convert from.
+        /// </summary>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             if (value is string text) return Parse(text);
             return base.ConvertFrom(context, culture, value);
         }
 
+        /// <summary>
+        /// Gets or sets the convert to.
+        /// </summary>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
             if (destinationType == typeof(string) && value is SKColor color)

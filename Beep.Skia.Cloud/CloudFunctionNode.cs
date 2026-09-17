@@ -13,10 +13,22 @@ namespace Beep.Skia.Cloud
         private RuntimeKind _runtime = RuntimeKind.DotNet;
         private int _memoryMB = 256;
 
+        /// <summary>
+        /// Gets or sets the function name.
+        /// </summary>
         public string FunctionName { get => _name; set { var v = value ?? string.Empty; if (_name != v) { _name = v; if (NodeProperties.TryGetValue("FunctionName", out var p)) p.ParameterCurrentValue = _name; else NodeProperties["FunctionName"] = new ParameterInfo { ParameterName = "FunctionName", ParameterType = typeof(string), DefaultParameterValue = _name, ParameterCurrentValue = _name, Description = "Function name" }; Name = _name; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the runtime.
+        /// </summary>
         public RuntimeKind Runtime { get => _runtime; set { if (_runtime != value) { _runtime = value; if (NodeProperties.TryGetValue("Runtime", out var p)) p.ParameterCurrentValue = _runtime; else NodeProperties["Runtime"] = new ParameterInfo { ParameterName = "Runtime", ParameterType = typeof(RuntimeKind), DefaultParameterValue = _runtime, ParameterCurrentValue = _runtime, Description = "Runtime", Choices = Enum.GetNames(typeof(RuntimeKind)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the memory MB.
+        /// </summary>
         public int MemoryMB { get => _memoryMB; set { var v = Math.Max(64, Math.Min(8192, value)); if (_memoryMB != v) { _memoryMB = v; if (NodeProperties.TryGetValue("MemoryMB", out var p)) p.ParameterCurrentValue = _memoryMB; else NodeProperties["MemoryMB"] = new ParameterInfo { ParameterName = "MemoryMB", ParameterType = typeof(int), DefaultParameterValue = _memoryMB, ParameterCurrentValue = _memoryMB, Description = "Memory (MB)" }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Function name
+        /// </summary>
         public CloudFunctionNode()
         {
             Width = 160; Height = 80;

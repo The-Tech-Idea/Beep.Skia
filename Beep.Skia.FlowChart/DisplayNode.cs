@@ -9,6 +9,9 @@ namespace Beep.Skia.Flowchart
     public class DisplayNode : FlowchartControl
     {
         private string _label = "Display";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -25,6 +28,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Text shown inside the display symbol.
+        /// </summary>
         public DisplayNode()
         {
             Name = "Flowchart Display";

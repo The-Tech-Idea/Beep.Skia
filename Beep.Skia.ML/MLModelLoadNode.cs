@@ -11,11 +11,26 @@ namespace Beep.Skia.ML
         private string _device = "CPU";
         private bool _validateModel = true;
 
+        /// <summary>
+        /// Gets or sets the model path.
+        /// </summary>
         public string ModelPath { get => _modelPath; set { var v = value ?? ""; if (_modelPath != v) { _modelPath = v; UpdateNodeProperty("ModelPath", _modelPath); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the framework.
+        /// </summary>
         public string Framework { get => _framework; set { var v = value ?? ""; if (_framework != v) { _framework = v; UpdateNodeProperty("Framework", _framework); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the device.
+        /// </summary>
         public string Device { get => _device; set { var v = value ?? ""; if (_device != v) { _device = v; UpdateNodeProperty("Device", _device); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the validate model.
+        /// </summary>
         public bool ValidateModel { get => _validateModel; set { if (_validateModel != value) { _validateModel = value; UpdateNodeProperty("ValidateModel", _validateModel); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Model path
+        /// </summary>
         public MLModelLoadNode()
         {
             Width = 130; Height = 80; Name = "Model Load";

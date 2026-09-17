@@ -17,36 +17,99 @@ namespace Beep.Skia.ERD
 
         public class TableInfo
         {
+            /// <summary>
+            /// Gets or sets the table name.
+            /// </summary>
             public string TableName { get; set; } = string.Empty;
+            /// <summary>
+            /// Gets or sets the schema name.
+            /// </summary>
             public string? SchemaName { get; set; }
+            /// <summary>
+            /// Gets or sets the columns.
+            /// </summary>
             public List<ColumnInfo> Columns { get; set; } = new();
+            /// <summary>
+            /// Gets or sets the constraints.
+            /// </summary>
             public List<ConstraintInfo> Constraints { get; set; } = new();
         }
 
         public class ColumnInfo
         {
+            /// <summary>
+            /// Gets or sets the name.
+            /// </summary>
             public string Name { get; set; } = string.Empty;
+            /// <summary>
+            /// Gets or sets the data type.
+            /// </summary>
             public string DataType { get; set; } = string.Empty;
+            /// <summary>
+            /// Gets or sets the is primary key.
+            /// </summary>
             public bool IsPrimaryKey { get; set; }
+            /// <summary>
+            /// Gets or sets the is nullable.
+            /// </summary>
             public bool IsNullable { get; set; } = true;
+            /// <summary>
+            /// Gets or sets the is auto increment.
+            /// </summary>
             public bool IsAutoIncrement { get; set; }
+            /// <summary>
+            /// Gets or sets the default value.
+            /// </summary>
             public string? DefaultValue { get; set; }
+            /// <summary>
+            /// Gets or sets the max length.
+            /// </summary>
             public int? MaxLength { get; set; }
+            /// <summary>
+            /// Gets or sets the precision.
+            /// </summary>
             public int? Precision { get; set; }
+            /// <summary>
+            /// Gets or sets the scale.
+            /// </summary>
             public int? Scale { get; set; }
         }
 
         public class ConstraintInfo
         {
+            /// <summary>
+            /// Gets or sets the name.
+            /// </summary>
             public string Name { get; set; } = string.Empty;
+            /// <summary>
+            /// Gets or sets the type.
+            /// </summary>
             public string Type { get; set; } = string.Empty;
+            /// <summary>
+            /// Gets or sets the columns.
+            /// </summary>
             public string Columns { get; set; } = string.Empty;
+            /// <summary>
+            /// Gets or sets the referenced table.
+            /// </summary>
             public string? ReferencedTable { get; set; }
+            /// <summary>
+            /// Gets or sets the referenced columns.
+            /// </summary>
             public string? ReferencedColumns { get; set; }
+            /// <summary>
+            /// Gets or sets the on delete.
+            /// </summary>
             public string? OnDelete { get; set; }
+            /// <summary>
+            /// Gets or sets the on update.
+            /// </summary>
             public string? OnUpdate { get; set; }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the DDLImporter class.
+        /// </summary>
         public DDLImporter(SQLDialect dialect = SQLDialect.ANSI) { _dialect = dialect; }
 
         /// <summary>Parses DDL and returns table definitions.</summary>

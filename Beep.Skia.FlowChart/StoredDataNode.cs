@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class StoredDataNode : FlowchartControl
     {
         private string _label = "Stored Data";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Text shown inside the stored data symbol.
+        /// </summary>
         public StoredDataNode()
         {
             Name = "Flowchart Stored Data";

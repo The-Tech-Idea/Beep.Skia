@@ -14,7 +14,13 @@ namespace Beep.Skia.Triggers
     {
         private TriggerType _triggerType = TriggerType.Event;
 
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public override string Name => "Event Trigger";
+        /// <summary>
+        /// Gets or sets the trigger type.
+        /// </summary>
         public override TriggerType TriggerType => _triggerType;
 
         /// <summary>Allows hosting a webhook/API/data-change trigger with the same implementation.</summary>
@@ -24,21 +30,33 @@ namespace Beep.Skia.Triggers
             set => _triggerType = value;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the EventTrigger class.
+        /// </summary>
         public EventTrigger()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the EventTrigger class.
+        /// </summary>
         public EventTrigger(TriggerType eventKind)
         {
             _triggerType = eventKind;
         }
 
+        /// <summary>
+        /// Gets or sets the start async.
+        /// </summary>
         public override Task<bool> StartAsync(CancellationToken cancellationToken = default)
         {
             IsActive = true;
             return Task.FromResult(true);
         }
 
+        /// <summary>
+        /// Gets or sets the stop async.
+        /// </summary>
         public override Task<bool> StopAsync(CancellationToken cancellationToken = default)
         {
             IsActive = false;

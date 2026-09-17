@@ -8,6 +8,9 @@ namespace Beep.Skia.MindMap
     public class SubTopicNode : MindMapControl
     {
         private string _title = "SubTopic";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -22,6 +25,9 @@ namespace Beep.Skia.MindMap
         }
 
         private string? _notes;
+        /// <summary>
+        /// Gets or sets the notes.
+        /// </summary>
         public string? Notes
         {
             get => _notes;
@@ -35,6 +41,9 @@ namespace Beep.Skia.MindMap
             }
         }
 
+        /// <summary>
+        /// Topic title
+        /// </summary>
         public SubTopicNode()
         {
             Width = 140; Height = 56;

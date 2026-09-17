@@ -14,7 +14,13 @@ namespace Beep.Skia.Triggers
     /// </summary>
     public class FileWatchTrigger : TriggerBase
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public override string Name => "File Watch Trigger";
+        /// <summary>
+        /// Gets or sets the trigger type.
+        /// </summary>
         public override TriggerType TriggerType => TriggerType.FileSystem;
 
         /// <summary>Directory to watch.</summary>
@@ -28,6 +34,9 @@ namespace Beep.Skia.Triggers
 
         private FileSystemWatcher _watcher;
 
+        /// <summary>
+        /// Gets or sets the initialize async.
+        /// </summary>
         public override Task<bool> InitializeAsync(Dictionary<string, object> configuration, CancellationToken cancellationToken = default)
         {
             base.InitializeAsync(configuration, cancellationToken);
@@ -37,11 +46,17 @@ namespace Beep.Skia.Triggers
             return Task.FromResult(true);
         }
 
+        /// <summary>
+        /// Gets or sets the validate async.
+        /// </summary>
         public override Task<ValidationResult> ValidateAsync(CancellationToken cancellationToken = default)
             => Task.FromResult(Directory.Exists(Path)
                 ? ValidationResult.Success()
                 : ValidationResult.Failure($"Directory does not exist: {Path}"));
 
+        /// <summary>
+        /// Gets or sets the start async.
+        /// </summary>
         public override Task<bool> StartAsync(CancellationToken cancellationToken = default)
         {
             if (IsActive) return Task.FromResult(true);
@@ -73,6 +88,9 @@ namespace Beep.Skia.Triggers
             }
         }
 
+        /// <summary>
+        /// Gets or sets the stop async.
+        /// </summary>
         public override Task<bool> StopAsync(CancellationToken cancellationToken = default)
         {
             if (_watcher != null)

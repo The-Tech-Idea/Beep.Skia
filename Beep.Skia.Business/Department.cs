@@ -12,6 +12,9 @@ namespace Beep.Skia.Business
     {
         private string _departmentName = "Department";
         private int _employeeCount = 0;
+        /// <summary>
+        /// Department name
+        /// </summary>
         public string DepartmentName
         {
             get => _departmentName;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Employees count
+        /// </summary>
         public int EmployeeCount
         {
             get => _employeeCount;
@@ -42,6 +48,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Department name
+        /// </summary>
         public Department()
         {
             Width = 140;

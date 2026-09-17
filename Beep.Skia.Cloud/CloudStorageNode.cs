@@ -14,10 +14,22 @@ namespace Beep.Skia.Cloud
         private CloudProvider _provider = CloudProvider.Azure;
         private StorageType _storageType = StorageType.Blob;
 
+        /// <summary>
+        /// Gets or sets the resource name.
+        /// </summary>
         public string ResourceName { get => _resourceName; set { var v = value ?? string.Empty; if (_resourceName != v) { _resourceName = v; if (NodeProperties.TryGetValue("ResourceName", out var p)) p.ParameterCurrentValue = _resourceName; else NodeProperties["ResourceName"] = new ParameterInfo { ParameterName = "ResourceName", ParameterType = typeof(string), DefaultParameterValue = _resourceName, ParameterCurrentValue = _resourceName, Description = "Resource name" }; Name = _resourceName; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public CloudProvider Provider { get => _provider; set { if (_provider != value) { _provider = value; if (NodeProperties.TryGetValue("Provider", out var p)) p.ParameterCurrentValue = _provider; else NodeProperties["Provider"] = new ParameterInfo { ParameterName = "Provider", ParameterType = typeof(CloudProvider), DefaultParameterValue = _provider, ParameterCurrentValue = _provider, Description = "Cloud provider", Choices = Enum.GetNames(typeof(CloudProvider)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the storage type.
+        /// </summary>
         public StorageType StorageType { get => _storageType; set { if (_storageType != value) { _storageType = value; if (NodeProperties.TryGetValue("StorageType", out var p)) p.ParameterCurrentValue = _storageType; else NodeProperties["StorageType"] = new ParameterInfo { ParameterName = "StorageType", ParameterType = typeof(StorageType), DefaultParameterValue = _storageType, ParameterCurrentValue = _storageType, Description = "Storage type", Choices = Enum.GetNames(typeof(StorageType)) }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Resource name
+        /// </summary>
         public CloudStorageNode()
         {
             Width = 120; Height = 80;

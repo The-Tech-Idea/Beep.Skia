@@ -13,10 +13,22 @@ namespace Beep.Skia.ML
         private DataConnector _connector = DataConnector.File;
         private string _format = "CSV";
 
+        /// <summary>
+        /// Gets or sets the source name.
+        /// </summary>
         public string SourceName { get => _name; set { var v = value ?? string.Empty; if (_name != v) { _name = v; if (NodeProperties.TryGetValue("SourceName", out var p)) p.ParameterCurrentValue = _name; else NodeProperties["SourceName"] = new ParameterInfo { ParameterName = "SourceName", ParameterType = typeof(string), DefaultParameterValue = _name, ParameterCurrentValue = _name, Description = "Source name" }; Name = _name; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the connector.
+        /// </summary>
         public DataConnector Connector { get => _connector; set { if (_connector != value) { _connector = value; if (NodeProperties.TryGetValue("Connector", out var p)) p.ParameterCurrentValue = _connector; else NodeProperties["Connector"] = new ParameterInfo { ParameterName = "Connector", ParameterType = typeof(DataConnector), DefaultParameterValue = _connector, ParameterCurrentValue = _connector, Description = "Data connector", Choices = Enum.GetNames(typeof(DataConnector)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the format.
+        /// </summary>
         public string Format { get => _format; set { var v = value ?? string.Empty; if (_format != v) { _format = v; if (NodeProperties.TryGetValue("Format", out var p)) p.ParameterCurrentValue = _format; else NodeProperties["Format"] = new ParameterInfo { ParameterName = "Format", ParameterType = typeof(string), DefaultParameterValue = _format, ParameterCurrentValue = _format, Description = "Data format" }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Source name
+        /// </summary>
         public MLDataSourceNode()
         {
             Width = 120; Height = 80;

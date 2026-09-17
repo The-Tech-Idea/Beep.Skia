@@ -13,13 +13,34 @@ namespace Beep.Skia.ML
         private int _randomSeed = 42;
         private bool _stratify = false;
 
+        /// <summary>
+        /// Gets or sets the train ratio.
+        /// </summary>
         public double TrainRatio { get => _trainRatio; set { double v = Math.Clamp(value, 0.1, 0.9); if (Math.Abs(_trainRatio - v) > 0.001) { _trainRatio = v; UpdateNodeProperty("TrainRatio", _trainRatio); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the validation ratio.
+        /// </summary>
         public double ValidationRatio { get => _validationRatio; set { double v = Math.Clamp(value, 0, 0.5); if (Math.Abs(_validationRatio - v) > 0.001) { _validationRatio = v; UpdateNodeProperty("ValidationRatio", _validationRatio); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the test ratio.
+        /// </summary>
         public double TestRatio { get => _testRatio; set { double v = Math.Clamp(value, 0.05, 0.5); if (Math.Abs(_testRatio - v) > 0.001) { _testRatio = v; UpdateNodeProperty("TestRatio", _testRatio); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the shuffle.
+        /// </summary>
         public bool Shuffle { get => _shuffle; set { if (_shuffle != value) { _shuffle = value; UpdateNodeProperty("Shuffle", _shuffle); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the random seed.
+        /// </summary>
         public int RandomSeed { get => _randomSeed; set { if (_randomSeed != value) { _randomSeed = value; UpdateNodeProperty("RandomSeed", _randomSeed); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the stratify.
+        /// </summary>
         public bool Stratify { get => _stratify; set { if (_stratify != value) { _stratify = value; UpdateNodeProperty("Stratify", _stratify); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Train ratio
+        /// </summary>
         public MLDataSplitterNode()
         {
             Width = 140; Height = 90; Name = "Data Splitter";

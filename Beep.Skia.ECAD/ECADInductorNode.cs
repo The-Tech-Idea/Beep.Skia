@@ -14,11 +14,26 @@ namespace Beep.Skia.ECAD
         private double _tolerance = 10.0;
         private double _current = 1.0;
 
+        /// <summary>
+        /// Gets or sets the component value.
+        /// </summary>
         public string ComponentValue { get => _value; set { var v = value ?? ""; if (_value != v) { _value = v; UpdateNodeProperty("ComponentValue", _value); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the package.
+        /// </summary>
         public string Package { get => _package; set { var v = value ?? ""; if (_package != v) { _package = v; UpdateNodeProperty("Package", _package); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the tolerance.
+        /// </summary>
         public double Tolerance { get => _tolerance; set { if (Math.Abs(_tolerance - value) > 0.001) { _tolerance = value; UpdateNodeProperty("Tolerance", _tolerance); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the rated current.
+        /// </summary>
         public double RatedCurrent { get => _current; set { if (Math.Abs(_current - value) > 0.001) { _current = value; UpdateNodeProperty("RatedCurrent", _current); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Inductance value
+        /// </summary>
         public ECADInductorNode()
         {
             Width = 100; Height = 40; Name = "Inductor";

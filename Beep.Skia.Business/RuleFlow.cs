@@ -14,6 +14,9 @@ namespace Beep.Skia.Business
         private string _flowLabel = "";
         private FlowDirection _direction = FlowDirection.True;
         private bool _isActive = false;
+        /// <summary>
+        /// Flow label
+        /// </summary>
         public string FlowLabel
         {
             get => _flowLabel;
@@ -28,6 +31,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Flow direction
+        /// </summary>
         public FlowDirection Direction
         {
             get => _direction;
@@ -41,6 +47,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Active state
+        /// </summary>
         public bool IsActive
         {
             get => _isActive;
@@ -55,6 +64,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Flow label
+        /// </summary>
         public RuleFlow()
         {
             Width = 80;

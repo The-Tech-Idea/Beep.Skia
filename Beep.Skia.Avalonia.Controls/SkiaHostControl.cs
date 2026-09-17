@@ -17,6 +17,9 @@ namespace Beep.Skia.Avalonia.Controls
     /// <summary>Event data for an Avalonia Skia surface paint.</summary>
     public class SkiaSurfacePaintEventArgs : EventArgs
     {
+        /// <summary>
+        /// Initializes a new instance of the SkiaSurfacePaintEventArgs class.
+        /// </summary>
         public SkiaSurfacePaintEventArgs(SKCanvas canvas, int width, int height)
         {
             Canvas = canvas;
@@ -50,6 +53,9 @@ namespace Beep.Skia.Avalonia.Controls
         /// <summary>Raised when the surface needs to be redrawn.</summary>
         public event EventHandler<SkiaSurfacePaintEventArgs> PaintSurface;
 
+        /// <summary>
+        /// Gets or sets the render.
+        /// </summary>
         public override void Render(global::Avalonia.Media.DrawingContext context)
         {
             var size = Bounds.Size;
@@ -106,10 +112,19 @@ namespace Beep.Skia.Avalonia.Controls
         private DrawingManager _drawingManager;
         private readonly Dictionary<Guid, SkiaComponent> _componentRegistry = new Dictionary<Guid, SkiaComponent>();
 
+        /// <summary>
+        /// Gets or sets the drawing manager.
+        /// </summary>
         public DrawingManager DrawingManager => _drawingManager;
 
+        /// <summary>
+        /// Gets or sets the design time components.
+        /// </summary>
         public SkiaComponentDescriptorCollection DesignTimeComponents { get; set; } = new SkiaComponentDescriptorCollection();
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaHostControl class.
+        /// </summary>
         public SkiaHostControl()
         {
             ClipToBounds = true;
@@ -194,6 +209,9 @@ namespace Beep.Skia.Avalonia.Controls
             _skiaControl?.InvalidateVisual();
         }
 
+        /// <summary>
+        /// Gets or sets the create and add component.
+        /// </summary>
         public SkiaComponent CreateAndAddComponent(Type type, float x, float y, float w, float h, string name = null)
         {
             if (type == null || Activator.CreateInstance(type) is not SkiaComponent comp) return null;

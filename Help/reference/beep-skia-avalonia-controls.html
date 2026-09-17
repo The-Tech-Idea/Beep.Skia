@@ -32,9 +32,9 @@
     <tbody>
       <tr><td><code>DrawingManager DrawingManager</code></td><td>Property</td><td>Gets or sets the drawing manager.</td></tr>
       <tr><td><code>SkiaComponentDescriptorCollection DesignTimeComponents</code></td><td>Property</td><td>Gets or sets the design time components.</td></tr>
-      <tr><td><code>SkiaHostControl()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SkiaHostControl()</code></td><td>Method</td><td>Initializes a new instance of the SkiaHostControl class.</td></tr>
       <tr><td><code>void LoadDesignTimeComponents()</code></td><td>Method</td><td>Instantiates design-time descriptors into real components.</td></tr>
-      <tr><td><code>SkiaComponent CreateAndAddComponent(Type type, float x, float y, float w, float h, string name = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SkiaComponent CreateAndAddComponent(Type type, float x, float y, float w, float h, string name = null)</code></td><td>Method</td><td>Gets or sets the create and add component.</td></tr>
     </tbody>
   </table>
 </section>
@@ -45,7 +45,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>event EventHandler&lt;SkiaSurfacePaintEventArgs&gt; PaintSurface</code></td><td>Event</td><td>Raised when the surface needs to be redrawn.</td></tr>
-      <tr><td><code>override void Render(global::Avalonia.Media.DrawingContext context)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Render(global::Avalonia.Media.DrawingContext context)</code></td><td>Method</td><td>Gets or sets the render.</td></tr>
     </tbody>
   </table>
 </section>
@@ -55,7 +55,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>SkiaSurfacePaintEventArgs(SKCanvas canvas, int width, int height)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SkiaSurfacePaintEventArgs(SKCanvas canvas, int width, int height)</code></td><td>Method</td><td>Initializes a new instance of the SkiaSurfacePaintEventArgs class.</td></tr>
       <tr><td><code>SKCanvas Canvas</code></td><td>Property</td><td>Canvas to draw on (already cleared to white).</td></tr>
       <tr><td><code>int Width</code></td><td>Property</td><td>Pixel width of the surface.</td></tr>
       <tr><td><code>int Height</code></td><td>Property</td><td>Pixel height of the surface.</td></tr>

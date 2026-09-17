@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class ConnectorNode : FlowchartControl
     {
         private string _connectorId = "A";
+        /// <summary>
+        /// Gets or sets the connector id.
+        /// </summary>
         public string ConnectorId
         {
             get => _connectorId;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Flowchart
         }
 
         private ConnectorDirection _direction = ConnectorDirection.To;
+        /// <summary>
+        /// Gets or sets the direction.
+        /// </summary>
         public ConnectorDirection Direction
         {
             get => _direction;
@@ -50,6 +56,9 @@ namespace Beep.Skia.Flowchart
             From   // Outgoing connector (sends flow to another page)
         }
 
+        /// <summary>
+        /// Identifier for matching From/To pairs (e.g., 'A', '1', 'Page2').
+        /// </summary>
         public ConnectorNode()
         {
             Name = "Flowchart Connector";

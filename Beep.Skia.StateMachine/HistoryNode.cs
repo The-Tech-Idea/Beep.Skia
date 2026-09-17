@@ -14,6 +14,9 @@ namespace Beep.Skia.StateMachine
     public class HistoryNode : StateMachineControl
     {
         private string _title = "H";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -28,6 +31,9 @@ namespace Beep.Skia.StateMachine
         }
 
         private bool _isDeep = false;
+        /// <summary>
+        /// Gets or sets the is deep.
+        /// </summary>
         public bool IsDeep
         {
             get => _isDeep;
@@ -41,6 +47,9 @@ namespace Beep.Skia.StateMachine
             }
         }
 
+        /// <summary>
+        /// Deep history (H*) or shallow history (H)
+        /// </summary>
         public HistoryNode()
         {
             Width = 36; Height = 36;
@@ -110,6 +119,9 @@ namespace Beep.Skia.StateMachine
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

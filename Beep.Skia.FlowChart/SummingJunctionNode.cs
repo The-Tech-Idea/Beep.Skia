@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class SummingJunctionNode : FlowchartControl
     {
         private string _label = "";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Optional label for the summing junction.
+        /// </summary>
         public SummingJunctionNode()
         {
             Name = "Flowchart Summing Junction";

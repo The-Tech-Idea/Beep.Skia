@@ -112,6 +112,9 @@ namespace Beep.Skia.Winform.Controls
     public bool CenterOnDrop { get; set; } = false;
 
     // Enable/disable runtime dragging of existing Skia components
+    /// <summary>
+    /// Gets or sets the allow component dragging.
+    /// </summary>
     [Category("Behavior"), DefaultValue(true)]
     [Description("Allow picking up and moving existing components with the mouse.")]
     public bool AllowComponentDragging { get; set; } = true;
@@ -123,6 +126,9 @@ namespace Beep.Skia.Winform.Controls
     private float _dragComponentStartX;
     private float _dragComponentStartY;
 
+        /// <summary>
+        /// Gets or sets the drawing manager.
+        /// </summary>
         public Beep.Skia.DrawingManager DrawingManager => _drawingManager;
         // Runtime manager for components (preferred for rendering and input)
         [Browsable(false)]
@@ -130,6 +136,9 @@ namespace Beep.Skia.Winform.Controls
 
     private bool _designDescriptorsInstantiated = false;
 
+        /// <summary>
+        /// Diagram editor canvas. Tab cycles through components; arrow keys move the selection; Delete removes it.
+        /// </summary>
         public SkiaHostControl()
         {
             InitializeSkiaSurface();
@@ -743,11 +752,17 @@ namespace Beep.Skia.Winform.Controls
             g.DrawRectangle(borderPen, 0, 0, rect.Width - 1, rect.Height - 1);
         }
 
+        /// <summary>
+        /// Gets or sets the begin init.
+        /// </summary>
         public void BeginInit()
         {
             // no-op
         }
 
+    /// <summary>
+    /// Gets or sets the end init.
+    /// </summary>
     public void EndInit()
         {
             // At runtime, after designer serialization, instantiate any descriptors into real components
@@ -823,6 +838,9 @@ namespace Beep.Skia.Winform.Controls
             }
         }
 
+        /// <summary>
+        /// Gets or sets the design time components.
+        /// </summary>
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
     [Description("Components hosted by this Skia host at design time.")]
         public SkiaComponentDescriptorCollection DesignTimeComponents
@@ -859,6 +877,9 @@ namespace Beep.Skia.Winform.Controls
 
         // Helper used by the generated InitializeComponent code to construct and add
         // a Skia component directly (this is what the custom serializer emits).
+        /// <summary>
+        /// Gets or sets the create and add component.
+        /// </summary>
         [Browsable(false)]
         public Beep.Skia.SkiaComponent CreateAndAddComponent(Type componentType, float x, float y, float width, float height, string name)
         {
@@ -963,6 +984,9 @@ namespace Beep.Skia.Winform.Controls
         }
 
         // Public helper to create and add a component from a descriptor, applying its PropertyBag.
+        /// <summary>
+        /// Gets or sets the create and add component from descriptor.
+        /// </summary>
         public Beep.Skia.SkiaComponent CreateAndAddComponentFromDescriptor(SkiaComponentDescriptor desc)
         {
             if (desc == null) return null;

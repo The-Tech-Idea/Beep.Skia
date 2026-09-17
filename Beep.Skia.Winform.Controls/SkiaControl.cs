@@ -14,10 +14,16 @@ namespace Beep.Skia.Winform.Controls
     public class SkiaControl : UserControl
     {
         // Underlying Skia component instance (may be null in designer)
+        /// <summary>
+        /// Gets or sets the skia component.
+        /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SkiaComponent SkiaComponent { get; protected set; }
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaControl class.
+        /// </summary>
         public SkiaControl()
         {
             // Default control styles for a lightweight wrapper

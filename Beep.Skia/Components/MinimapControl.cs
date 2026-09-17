@@ -20,11 +20,26 @@ namespace Beep.Skia.Components
         /// <summary>Draws the viewport rectangle when true.</summary>
         public bool ShowViewport { get; set; } = true;
 
+        /// <summary>
+        /// Gets or sets the minimap background.
+        /// </summary>
         public SKColor MinimapBackground { get; set; } = new SKColor(0xFA, 0xFA, 0xFA);
+        /// <summary>
+        /// Gets or sets the component fill.
+        /// </summary>
         public SKColor ComponentFill { get; set; } = new SKColor(0x90, 0xCA, 0xF9);
+        /// <summary>
+        /// Gets or sets the component stroke.
+        /// </summary>
         public SKColor ComponentStroke { get; set; } = new SKColor(0x42, 0x42, 0x42);
+        /// <summary>
+        /// Gets or sets the viewport stroke.
+        /// </summary>
         public SKColor ViewportStroke { get; set; } = new SKColor(0xE5, 0x39, 0x35);
 
+        /// <summary>
+        /// Initializes a new instance of the MinimapControl class.
+        /// </summary>
         public MinimapControl()
         {
             Name = "Minimap";

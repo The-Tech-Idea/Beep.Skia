@@ -27,17 +27,50 @@ namespace Beep.Skia.Components
         /// </summary>
         public class ListItem
         {
+            /// <summary>
+            /// Gets or sets the primary text.
+            /// </summary>
             public string PrimaryText { get; set; }
+            /// <summary>
+            /// Gets or sets the secondary text.
+            /// </summary>
             public string SecondaryText { get; set; }
+            /// <summary>
+            /// Gets or sets the tertiary text.
+            /// </summary>
             public string TertiaryText { get; set; }
+            /// <summary>
+            /// Gets or sets the leading icon.
+            /// </summary>
             public string LeadingIcon { get; set; }
+            /// <summary>
+            /// Gets or sets the trailing icon.
+            /// </summary>
             public string TrailingIcon { get; set; }
+            /// <summary>
+            /// Gets or sets the leading icon color.
+            /// </summary>
             public SKColor? LeadingIconColor { get; set; }
+            /// <summary>
+            /// Gets or sets the trailing icon color.
+            /// </summary>
             public SKColor? TrailingIconColor { get; set; }
+            /// <summary>
+            /// Gets or sets the tag.
+            /// </summary>
             public object Tag { get; set; }
+            /// <summary>
+            /// Gets or sets the is enabled.
+            /// </summary>
             public bool IsEnabled { get; set; } = true;
+            /// <summary>
+            /// Gets or sets the show divider.
+            /// </summary>
             public bool ShowDivider { get; set; } = true;
 
+            /// <summary>
+            /// Initializes a new instance of the ListItem class.
+            /// </summary>
             public ListItem(string primaryText, string secondaryText = null, string tertiaryText = null,
                           string leadingIcon = null, string trailingIcon = null, object tag = null)
             {

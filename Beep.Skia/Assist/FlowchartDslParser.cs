@@ -8,35 +8,80 @@ namespace Beep.Skia.Assist
     /// <summary>A parsed DSL node with layout geometry.</summary>
     public class DslNode
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the type keyword.
+        /// </summary>
         public string TypeKeyword { get; set; } = "process";
 
         /// <summary>Resolved component class name (e.g. ProcessNode, DecisionNode).</summary>
         public string ClassName { get; set; } = "ProcessNode";
 
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the rank.
+        /// </summary>
         public int Rank { get; set; }
+        /// <summary>
+        /// Gets or sets the x.
+        /// </summary>
         public float X { get; set; }
+        /// <summary>
+        /// Gets or sets the y.
+        /// </summary>
         public float Y { get; set; }
+        /// <summary>
+        /// Gets or sets the width.
+        /// </summary>
         public float Width { get; set; } = 170f;
+        /// <summary>
+        /// Gets or sets the height.
+        /// </summary>
         public float Height { get; set; } = 54f;
     }
 
     /// <summary>A parsed DSL edge.</summary>
     public class DslEdge
     {
+        /// <summary>
+        /// Gets or sets the from.
+        /// </summary>
         public string From { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the to.
+        /// </summary>
         public string To { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label { get; set; }
     }
 
     /// <summary>Parsed graph of nodes and edges with warnings.</summary>
     public class DslGraph
     {
+        /// <summary>
+        /// Gets or sets the nodes.
+        /// </summary>
         public List<DslNode> Nodes { get; } = new List<DslNode>();
+        /// <summary>
+        /// Gets or sets the edges.
+        /// </summary>
         public List<DslEdge> Edges { get; } = new List<DslEdge>();
+        /// <summary>
+        /// Gets or sets the warnings.
+        /// </summary>
         public List<string> Warnings { get; } = new List<string>();
 
+        /// <summary>
+        /// Gets or sets the find.
+        /// </summary>
         public DslNode Find(string name)
             => Nodes.FirstOrDefault(n => string.Equals(n.Name, name, StringComparison.OrdinalIgnoreCase));
     }

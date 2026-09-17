@@ -26,8 +26,14 @@ namespace Beep.Skia.Collaboration
         /// <summary>Unresolved comment ids anchored to this component.</summary>
         public List<string> CommentIds { get; } = new List<string>();
 
+        /// <summary>
+        /// Gets or sets the comment count.
+        /// </summary>
         public int CommentCount => CommentIds.Count;
 
+        /// <summary>
+        /// Gets or sets the contains.
+        /// </summary>
         public bool Contains(SKPoint point, float radius = CommentPinLayer.PinRadius)
         {
             var dx = point.X - Position.X;
@@ -35,6 +41,9 @@ namespace Beep.Skia.Collaboration
             return dx * dx + dy * dy <= radius * radius;
         }
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"#{Index} on {ComponentId} ({CommentCount} comment(s))";
     }
 
@@ -51,6 +60,9 @@ namespace Beep.Skia.Collaboration
 
         private readonly List<CommentPin> _pins = new List<CommentPin>();
 
+        /// <summary>
+        /// Gets or sets the pins.
+        /// </summary>
         public IReadOnlyList<CommentPin> Pins => _pins.AsReadOnly();
 
         /// <summary>

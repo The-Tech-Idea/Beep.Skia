@@ -20,6 +20,9 @@ namespace Beep.Skia.UML
         };
 
         private string _operator = "alt";
+        /// <summary>
+        /// Gets or sets the operator.
+        /// </summary>
         public string Operator
         {
             get => _operator;
@@ -35,6 +38,9 @@ namespace Beep.Skia.UML
         }
 
         private string _guardCondition = string.Empty;
+        /// <summary>
+        /// Gets or sets the guard condition.
+        /// </summary>
         public string GuardCondition
         {
             get => _guardCondition;
@@ -48,6 +54,9 @@ namespace Beep.Skia.UML
             }
         }
 
+        /// <summary>
+        /// Interaction operator
+        /// </summary>
         public UMLCombinedFragment()
         {
             Width = 320;
@@ -119,6 +128,9 @@ namespace Beep.Skia.UML
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

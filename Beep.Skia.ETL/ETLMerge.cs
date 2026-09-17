@@ -10,6 +10,9 @@ namespace Beep.Skia.ETL
     public class ETLMerge : ETLControl
     {
         private int _inputCount = 2;
+        /// <summary>
+        /// Gets or sets the input count.
+        /// </summary>
         public int InputCount
         {
             get => _inputCount;
@@ -26,6 +29,9 @@ namespace Beep.Skia.ETL
         }
 
         private bool _removeDuplicates = false;
+        /// <summary>
+        /// Gets or sets the remove duplicates.
+        /// </summary>
         public bool RemoveDuplicates
         {
             get => _removeDuplicates;
@@ -39,6 +45,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// Number of input streams to merge (2-8)
+        /// </summary>
         public ETLMerge()
         {
             Title = "Merge";

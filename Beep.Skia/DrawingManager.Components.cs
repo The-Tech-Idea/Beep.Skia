@@ -5,6 +5,9 @@ using System.Linq;
 using Beep.Skia.Model;
 namespace Beep.Skia
 {
+    /// <summary>
+    /// Gets or sets the drawing manager.
+    /// </summary>
     public partial class DrawingManager
     {
         /// <summary>
@@ -605,6 +608,9 @@ namespace Beep.Skia
             DrawSurface?.Invoke(this, null);
         }
 
+        /// <summary>
+        /// Gets or sets the align right.
+        /// </summary>
         public void AlignRight()
         {
             var selected = _selectionManager.SelectedComponents.ToList();
@@ -619,6 +625,9 @@ namespace Beep.Skia
             DrawSurface?.Invoke(this, null);
         }
 
+        /// <summary>
+        /// Gets or sets the align top.
+        /// </summary>
         public void AlignTop()
         {
             var selected = _selectionManager.SelectedComponents.ToList();
@@ -632,6 +641,9 @@ namespace Beep.Skia
             DrawSurface?.Invoke(this, null);
         }
 
+        /// <summary>
+        /// Gets or sets the align bottom.
+        /// </summary>
         public void AlignBottom()
         {
             var selected = _selectionManager.SelectedComponents.ToList();
@@ -646,6 +658,9 @@ namespace Beep.Skia
             DrawSurface?.Invoke(this, null);
         }
 
+        /// <summary>
+        /// Gets or sets the align center horizontal.
+        /// </summary>
         public void AlignCenterHorizontal()
         {
             var selected = _selectionManager.SelectedComponents.ToList();
@@ -660,6 +675,9 @@ namespace Beep.Skia
             DrawSurface?.Invoke(this, null);
         }
 
+        /// <summary>
+        /// Gets or sets the align center vertical.
+        /// </summary>
         public void AlignCenterVertical()
         {
             var selected = _selectionManager.SelectedComponents.ToList();
@@ -674,6 +692,9 @@ namespace Beep.Skia
             DrawSurface?.Invoke(this, null);
         }
 
+        /// <summary>
+        /// Gets or sets the distribute horizontal.
+        /// </summary>
         public void DistributeHorizontal()
         {
             var selected = _selectionManager.SelectedComponents.OrderBy(c => c.X).ToList();
@@ -693,6 +714,9 @@ namespace Beep.Skia
             DrawSurface?.Invoke(this, null);
         }
 
+        /// <summary>
+        /// Gets or sets the distribute vertical.
+        /// </summary>
         public void DistributeVertical()
         {
             var selected = _selectionManager.SelectedComponents.OrderBy(c => c.Y).ToList();

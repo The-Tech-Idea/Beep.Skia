@@ -12,27 +12,51 @@ namespace Beep.Skia.Network
     public abstract class NetworkControl : MaterialControl
     {
         private SKColor _primaryColor = MaterialColors.Primary;
+        /// <summary>
+        /// Gets or sets the primary color.
+        /// </summary>
         public SKColor PrimaryColor { get => _primaryColor; set { if (_primaryColor == value) return; _primaryColor = value; if (NodeProperties.TryGetValue("PrimaryColor", out var pi)) pi.ParameterCurrentValue = _primaryColor; InvalidateVisual(); } }
 
         private SKColor _secondaryColor = MaterialColors.Secondary;
+        /// <summary>
+        /// Gets or sets the secondary color.
+        /// </summary>
         public SKColor SecondaryColor { get => _secondaryColor; set { if (_secondaryColor == value) return; _secondaryColor = value; if (NodeProperties.TryGetValue("SecondaryColor", out var pi)) pi.ParameterCurrentValue = _secondaryColor; InvalidateVisual(); } }
 
         private SKColor _accentColor = MaterialColors.Tertiary;
+        /// <summary>
+        /// Gets or sets the accent color.
+        /// </summary>
         public SKColor AccentColor { get => _accentColor; set { if (_accentColor == value) return; _accentColor = value; if (NodeProperties.TryGetValue("AccentColor", out var pi)) pi.ParameterCurrentValue = _accentColor; InvalidateVisual(); } }
 
         private SKColor _borderColor = MaterialColors.Outline;
+        /// <summary>
+        /// Gets or sets the border color.
+        /// </summary>
         public SKColor BorderColor { get => _borderColor; set { if (_borderColor == value) return; _borderColor = value; if (NodeProperties.TryGetValue("BorderColor", out var pi)) pi.ParameterCurrentValue = _borderColor; InvalidateVisual(); } }
 
         private float _borderThickness = 1.5f;
+        /// <summary>
+        /// Gets or sets the border thickness.
+        /// </summary>
         public float BorderThickness { get => _borderThickness; set { if (System.Math.Abs(_borderThickness - value) < 0.0001f) return; _borderThickness = value; if (NodeProperties.TryGetValue("BorderThickness", out var pi)) pi.ParameterCurrentValue = _borderThickness; InvalidateVisual(); } }
 
         private float _cornerRadius = 6f;
+        /// <summary>
+        /// Gets or sets the corner radius.
+        /// </summary>
         public float CornerRadius { get => _cornerRadius; set { if (System.Math.Abs(_cornerRadius - value) < 0.0001f) return; _cornerRadius = value; if (NodeProperties.TryGetValue("CornerRadius", out var pi)) pi.ParameterCurrentValue = _cornerRadius; InvalidateVisual(); } }
 
         private bool _isHighlighted = false;
+        /// <summary>
+        /// Gets or sets the is highlighted.
+        /// </summary>
         public bool IsHighlighted { get => _isHighlighted; set { if (_isHighlighted == value) return; _isHighlighted = value; if (NodeProperties.TryGetValue("IsHighlighted", out var pi)) pi.ParameterCurrentValue = _isHighlighted; InvalidateVisual(); } }
 
         private SKColor _highlightColor = MaterialColors.Tertiary;
+        /// <summary>
+        /// Gets or sets the highlight color.
+        /// </summary>
         public SKColor HighlightColor { get => _highlightColor; set { if (_highlightColor == value) return; _highlightColor = value; if (NodeProperties.TryGetValue("HighlightColor", out var pi)) pi.ParameterCurrentValue = _highlightColor; InvalidateVisual(); } }
 
         /// <summary>

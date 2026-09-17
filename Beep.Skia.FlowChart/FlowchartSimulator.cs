@@ -10,8 +10,17 @@ namespace Beep.Skia.Flowchart
     /// </summary>
     public class SimulationEdge
     {
+        /// <summary>
+        /// Gets or sets the line.
+        /// </summary>
         public IConnectionLine? Line { get; set; }
+        /// <summary>
+        /// Gets or sets the target.
+        /// </summary>
         public SkiaComponent? Target { get; set; }
+        /// <summary>
+        /// Gets or sets the port index.
+        /// </summary>
         public int PortIndex { get; set; }
     }
 
@@ -20,8 +29,17 @@ namespace Beep.Skia.Flowchart
     /// </summary>
     public class SimulationStepEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets or sets the node.
+        /// </summary>
         public SkiaComponent? Node { get; set; }
+        /// <summary>
+        /// Gets or sets the outgoing.
+        /// </summary>
         public IReadOnlyList<SimulationEdge> Outgoing { get; set; } = new List<SimulationEdge>();
+        /// <summary>
+        /// Gets or sets the is finished.
+        /// </summary>
         public bool IsFinished { get; set; }
     }
 

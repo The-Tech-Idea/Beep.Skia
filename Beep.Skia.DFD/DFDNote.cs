@@ -7,6 +7,9 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDNote : DFDControl
     {
+        /// <summary>
+        /// Initializes a new instance of the DFDNote class.
+        /// </summary>
         public DFDNote()
         {
             Name = "Note";

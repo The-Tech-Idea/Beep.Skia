@@ -8,7 +8,13 @@ namespace Beep.Skia.Model
     /// </summary>
     public class IndexDefinition
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the is unique.
+        /// </summary>
         public bool IsUnique { get; set; } = false;
         /// <summary>
         /// Ordered list of column names participating in the index.

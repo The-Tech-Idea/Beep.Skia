@@ -365,9 +365,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>AddComponentAction(DrawingManager manager, SkiaComponent component)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>AddComponentAction(DrawingManager manager, SkiaComponent component)</code></td><td>Method</td><td>Initializes a new instance of the AddComponentAction class.</td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td>Gets or sets the execute.</td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td>Gets or sets the undo.</td></tr>
     </tbody>
   </table>
 </section>
@@ -377,9 +377,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>AlignComponentsAction(DrawingManager manager, List&lt;SkiaComponent&gt; components, List&lt;SKPoint&gt; beforePositions)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>AlignComponentsAction(DrawingManager manager, List&lt;SkiaComponent&gt; components, List&lt;SKPoint&gt; beforePositions)</code></td><td>Method</td><td>Initializes a new instance of the AlignComponentsAction class.</td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td>Gets or sets the execute.</td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td>Gets or sets the undo.</td></tr>
     </tbody>
   </table>
 </section>
@@ -392,8 +392,8 @@
       <tr><td><code>bool Success</code></td><td>Property</td><td>Gets or sets the success.</td></tr>
       <tr><td><code>string Error</code></td><td>Property</td><td>Gets or sets the error.</td></tr>
       <tr><td><code>object Payload</code></td><td>Property</td><td>Gets or sets the payload.</td></tr>
-      <tr><td><code>static ApiResponse Ok(object payload = null)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static ApiResponse Fail(string error)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static ApiResponse Ok(object payload = null)</code></td><td>Method</td><td>Gets or sets the ok.</td></tr>
+      <tr><td><code>static ApiResponse Fail(string error)</code></td><td>Method</td><td>Gets or sets the fail.</td></tr>
     </tbody>
   </table>
 </section>
@@ -409,7 +409,7 @@
       <tr><td><code>string Action</code></td><td>Property</td><td>Gets or sets the action.</td></tr>
       <tr><td><code>string Details</code></td><td>Property</td><td>Gets or sets the details.</td></tr>
       <tr><td><code>DateTime Timestamp</code></td><td>Property</td><td>Gets or sets the timestamp.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -426,7 +426,7 @@
       <tr><td><code>string CredentialName</code></td><td>Property</td><td>Gets or sets the credential name.</td></tr>
       <tr><td><code>Dictionary&lt;string, string&gt; Properties</code></td><td>Property</td><td>Gets or sets the properties.</td></tr>
       <tr><td><code>DateTime UpdatedAt</code></td><td>Property</td><td>Gets or sets the updated at.</td></tr>
-      <tr><td><code>AutomationConnection Clone()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>AutomationConnection Clone()</code></td><td>Method</td><td>Gets or sets the clone.</td></tr>
     </tbody>
   </table>
 </section>
@@ -721,10 +721,10 @@
       <tr><td><code>DocumentShare Share( string documentId, string ownerId, params (string UserId, CollaborationRole Role)[] members)</code></td><td>Method</td><td>Shares a document with the given members. The owner is registered as Admin. Returns a snapshot of the resulting share.</td></tr>
       <tr><td><code>DocumentShare GetShare(string documentId)</code></td><td>Method</td><td>Gets a snapshot of the sharing state for a document, or null when not shared.</td></tr>
       <tr><td><code>CollaborationRole? GetRole(string documentId, string userId)</code></td><td>Method</td><td>Gets a user's role on a document (public documents grant Viewer).</td></tr>
-      <tr><td><code>bool CanView(string documentId, string userId)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>bool CanComment(string documentId, string userId)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>bool CanEdit(string documentId, string userId)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>bool CanAdminister(string documentId, string userId)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>bool CanView(string documentId, string userId)</code></td><td>Method</td><td>Gets or sets the can view.</td></tr>
+      <tr><td><code>bool CanComment(string documentId, string userId)</code></td><td>Method</td><td>Gets or sets the can comment.</td></tr>
+      <tr><td><code>bool CanEdit(string documentId, string userId)</code></td><td>Method</td><td>Gets or sets the can edit.</td></tr>
+      <tr><td><code>bool CanAdminister(string documentId, string userId)</code></td><td>Method</td><td>Gets or sets the can administer.</td></tr>
       <tr><td><code>bool Grant(string documentId, string requesterId, string userId, CollaborationRole role)</code></td><td>Method</td><td>Grants or updates a member role (admin only).</td></tr>
       <tr><td><code>bool Revoke(string documentId, string requesterId, string userId)</code></td><td>Method</td><td>Revokes a member (admin only; the owner cannot be revoked).</td></tr>
       <tr><td><code>bool SetPublic(string documentId, string requesterId, bool isPublic)</code></td><td>Method</td><td>Toggles public (view-only) access (admin only).</td></tr>
@@ -833,8 +833,8 @@
       <tr><td><code>SKRect ComponentBounds</code></td><td>Property</td><td>Bounds of the anchored component.</td></tr>
       <tr><td><code>List&lt;string&gt; CommentIds</code></td><td>Property</td><td>Unresolved comment ids anchored to this component.</td></tr>
       <tr><td><code>int CommentCount</code></td><td>Property</td><td>Gets or sets the comment count.</td></tr>
-      <tr><td><code>bool Contains(SKPoint point, float radius = CommentPinLayer.PinRadius)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>bool Contains(SKPoint point, float radius = CommentPinLayer.PinRadius)</code></td><td>Method</td><td>Gets or sets the contains.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1038,11 +1038,11 @@
       <tr><td><code>Beep.Skia.Model.IConnectionLine SelectedLine</code></td><td>Property</td><td>Gets or sets the currently selected line for editing.</td></tr>
       <tr><td><code>bool IsDirty</code></td><td>Property</td><td>Gets whether the current properties have unsaved changes.</td></tr>
       <tr><td><code>ComponentPropertyEditor()</code></td><td>Method</td><td>Initializes a new instance of the ComponentPropertyEditor class.</td></tr>
-      <tr><td><code>override bool HandleMouseDown(SKPoint point, InteractionContext context)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override bool HandleMouseMove(SKPoint point, InteractionContext context)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override bool HandleMouseUp(SKPoint point, InteractionContext context)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void HandleKeyChar(char ch)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void HandleKeyDown(PropertyEditorKey key)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool HandleMouseDown(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Gets or sets the handle mouse down.</td></tr>
+      <tr><td><code>override bool HandleMouseMove(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Gets or sets the handle mouse move.</td></tr>
+      <tr><td><code>override bool HandleMouseUp(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Gets or sets the handle mouse up.</td></tr>
+      <tr><td><code>void HandleKeyChar(char ch)</code></td><td>Method</td><td>Gets or sets the handle key char.</td></tr>
+      <tr><td><code>void HandleKeyDown(PropertyEditorKey key)</code></td><td>Method</td><td>Gets or sets the handle key down.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1064,7 +1064,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>ConditionalNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ConditionalNode()</code></td><td>Method</td><td>Initializes a new instance of the ConditionalNode class.</td></tr>
       <tr><td><code>List&lt;ConditionRule&gt; Conditions</code></td><td>Property</td><td>Gets or sets the list of conditions to evaluate.</td></tr>
       <tr><td><code>string LogicOperator</code></td><td>Property</td><td>Gets or sets the logic operator to combine conditions (AND, OR).</td></tr>
       <tr><td><code>string DefaultPath</code></td><td>Property</td><td>Gets or sets the default path when conditions don't match (true, false, custom path name).</td></tr>
@@ -1115,9 +1115,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>ConnectAutomationNodesAction(DrawingManager manager, Components.AutomationNode node1, Components.AutomationNode node2, IConnectionLine line, IConnectionPoint outputPoint, IConnectionPoint inputPoint)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ConnectAutomationNodesAction(DrawingManager manager, Components.AutomationNode node1, Components.AutomationNode node2, IConnectionLine line, IConnectionPoint outputPoint, IConnectionPoint inputPoint)</code></td><td>Method</td><td>Initializes a new instance of the ConnectAutomationNodesAction class.</td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td>Gets or sets the execute.</td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td>Gets or sets the undo.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1127,9 +1127,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>ConnectComponentsAction(DrawingManager manager, SkiaComponent component1, SkiaComponent component2, IConnectionLine line)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ConnectComponentsAction(DrawingManager manager, SkiaComponent component1, SkiaComponent component2, IConnectionLine line)</code></td><td>Method</td><td>Initializes a new instance of the ConnectComponentsAction class.</td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td>Gets or sets the execute.</td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td>Gets or sets the undo.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1211,7 +1211,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>CredentialVault Vault</code></td><td>Property</td><td>Credential vault used to resolve connection secrets.</td></tr>
-      <tr><td><code>ConnectionManager(CredentialVault vault = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ConnectionManager(CredentialVault vault = null)</code></td><td>Method</td><td>Initializes a new instance of the ConnectionManager class.</td></tr>
       <tr><td><code>int Count</code></td><td>Property</td><td>Gets or sets the count.</td></tr>
       <tr><td><code>void Register(AutomationConnection connection)</code></td><td>Method</td><td>Adds or replaces a connection definition.</td></tr>
       <tr><td><code>AutomationConnection Get(string name)</code></td><td>Method</td><td>Gets a connection by name, or null.</td></tr>
@@ -1317,7 +1317,7 @@
       <tr><td><code>string Secret</code></td><td>Property</td><td>Gets or sets the secret.</td></tr>
       <tr><td><code>Dictionary&lt;string, string&gt; Metadata</code></td><td>Property</td><td>Gets or sets the metadata.</td></tr>
       <tr><td><code>DateTime UpdatedAt</code></td><td>Property</td><td>Gets or sets the updated at.</td></tr>
-      <tr><td><code>CredentialEntry Clone()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>CredentialEntry Clone()</code></td><td>Method</td><td>Gets or sets the clone.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1351,7 +1351,7 @@
     <tbody>
       <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
       <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description.</td></tr>
-      <tr><td><code>IEnumerable&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>IEnumerable&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Gets or sets the validate.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1424,7 +1424,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>DataInputNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DataInputNode()</code></td><td>Method</td><td>Initializes a new instance of the DataInputNode class.</td></tr>
       <tr><td><code>string InputMode</code></td><td>Property</td><td>Gets or sets the input mode (JSON, Form, Code).</td></tr>
       <tr><td><code>string JsonData</code></td><td>Property</td><td>Gets or sets the JSON data for JSON input mode.</td></tr>
       <tr><td><code>Dictionary&lt;string, object&gt; FormData</code></td><td>Property</td><td>Gets or sets the form data for Form input mode.</td></tr>
@@ -1532,7 +1532,7 @@
     <tbody>
       <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
       <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description.</td></tr>
-      <tr><td><code>IEnumerable&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>IEnumerable&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Gets or sets the validate.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1542,9 +1542,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>DeleteComponentsAction(DrawingManager manager, List&lt;SkiaComponent&gt; components, List&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DeleteComponentsAction(DrawingManager manager, List&lt;SkiaComponent&gt; components, List&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Initializes a new instance of the DeleteComponentsAction class.</td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td>Gets or sets the execute.</td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td>Gets or sets the undo.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1554,7 +1554,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>DiagramAssistantRegistry(bool includeDefaultAssistant = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DiagramAssistantRegistry(bool includeDefaultAssistant = true)</code></td><td>Method</td><td>Initializes a new instance of the DiagramAssistantRegistry class.</td></tr>
       <tr><td><code>IReadOnlyList&lt;IDiagramAssistant&gt; Assistants</code></td><td>Property</td><td>Gets or sets the assistants.</td></tr>
       <tr><td><code>void Register(IDiagramAssistant assistant, int priority = 0)</code></td><td>Method</td><td>Adds an assistant at the given priority (0 = first to be tried).</td></tr>
       <tr><td><code>bool Unregister(string name)</code></td><td>Method</td><td>Removes an assistant by name.</td></tr>
@@ -1634,7 +1634,7 @@
       <tr><td><code>IConnectionLine Line</code></td><td>Property</td><td>Gets or sets the line.</td></tr>
       <tr><td><code>string RuleName</code></td><td>Property</td><td>Gets or sets the rule name.</td></tr>
       <tr><td><code>string FixSuggestion</code></td><td>Property</td><td>Gets or sets the fix suggestion.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1664,7 +1664,7 @@
       <tr><td><code>string Explanation</code></td><td>Property</td><td>Human-readable summary of what was generated.</td></tr>
       <tr><td><code>List&lt;string&gt; Warnings</code></td><td>Property</td><td>Non-fatal issues encountered while generating.</td></tr>
       <tr><td><code>string Provider</code></td><td>Property</td><td>Name of the assistant that produced this suggestion.</td></tr>
-      <tr><td><code>static DiagramSuggestion Failed(string provider, string reason)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static DiagramSuggestion Failed(string provider, string reason)</code></td><td>Method</td><td>Gets or sets the failed.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1674,18 +1674,18 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>static DiagramDto FlowChartOrderValidation()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static DiagramDto ERDEcommerce()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static DiagramDto ETLPipeline()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static DiagramDto DFDOrderSystem()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static DiagramDto UMLClassDiagram()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static DiagramDto NetworkSocialGraph()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static DiagramDto MindMapProductStrategy()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static DiagramDto StateMachineLogin()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static DiagramDto BusinessPurchaseApproval()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static DiagramDto PMSprintPlan()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static DiagramDto FlowChartApproval()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static DiagramDto StateMachineOrder()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static DiagramDto FlowChartOrderValidation()</code></td><td>Method</td><td>Gets or sets the flow chart order validation.</td></tr>
+      <tr><td><code>static DiagramDto ERDEcommerce()</code></td><td>Method</td><td>Gets or sets the ERD ecommerce.</td></tr>
+      <tr><td><code>static DiagramDto ETLPipeline()</code></td><td>Method</td><td>Gets or sets the ETL pipeline.</td></tr>
+      <tr><td><code>static DiagramDto DFDOrderSystem()</code></td><td>Method</td><td>Gets or sets the DFD order system.</td></tr>
+      <tr><td><code>static DiagramDto UMLClassDiagram()</code></td><td>Method</td><td>Gets or sets the UML class diagram.</td></tr>
+      <tr><td><code>static DiagramDto NetworkSocialGraph()</code></td><td>Method</td><td>Gets or sets the network social graph.</td></tr>
+      <tr><td><code>static DiagramDto MindMapProductStrategy()</code></td><td>Method</td><td>Gets or sets the mind map product strategy.</td></tr>
+      <tr><td><code>static DiagramDto StateMachineLogin()</code></td><td>Method</td><td>Gets or sets the state machine login.</td></tr>
+      <tr><td><code>static DiagramDto BusinessPurchaseApproval()</code></td><td>Method</td><td>Gets or sets the business purchase approval.</td></tr>
+      <tr><td><code>static DiagramDto PMSprintPlan()</code></td><td>Method</td><td>Gets or sets the PM sprint plan.</td></tr>
+      <tr><td><code>static DiagramDto FlowChartApproval()</code></td><td>Method</td><td>Gets or sets the flow chart approval.</td></tr>
+      <tr><td><code>static DiagramDto StateMachineOrder()</code></td><td>Method</td><td>Gets or sets the state machine order.</td></tr>
       <tr><td><code>static IReadOnlyDictionary&lt;string, Func&lt;DiagramDto&gt;&gt; All</code></td><td>Property</td><td>Gets or sets the all.</td></tr>
     </tbody>
   </table>
@@ -1697,9 +1697,9 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>IReadOnlyList&lt;IDiagramRule&gt; Rules</code></td><td>Property</td><td>Gets or sets the rules.</td></tr>
-      <tr><td><code>void AddRule(IDiagramRule rule)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void AddDefaultRules()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>List&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void AddRule(IDiagramRule rule)</code></td><td>Method</td><td>Gets or sets the add rule.</td></tr>
+      <tr><td><code>void AddDefaultRules()</code></td><td>Method</td><td>Gets or sets the add default rules.</td></tr>
+      <tr><td><code>List&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Gets or sets the validate.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1709,9 +1709,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>DisconnectComponentsAction(DrawingManager manager, SkiaComponent component1, SkiaComponent component2, IConnectionLine line)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DisconnectComponentsAction(DrawingManager manager, SkiaComponent component1, SkiaComponent component2, IConnectionLine line)</code></td><td>Method</td><td>Initializes a new instance of the DisconnectComponentsAction class.</td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td>Gets or sets the execute.</td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td>Gets or sets the undo.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1725,7 +1725,7 @@
       <tr><td><code>string OwnerId</code></td><td>Property</td><td>Gets or sets the owner id.</td></tr>
       <tr><td><code>Dictionary&lt;string, CollaborationRole&gt; Members</code></td><td>Property</td><td>Member roles (userId → role). The owner is always Admin.</td></tr>
       <tr><td><code>bool IsPublic</code></td><td>Property</td><td>When true, any registered user can view the document.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1750,6 +1750,7 @@
 </section>
 <section class="section" id="type-drawingmanager">
   <h2>DrawingManager <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the drawing manager.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
@@ -1824,7 +1825,7 @@
       <tr><td><code>List&lt;DslNode&gt; Nodes</code></td><td>Property</td><td>Gets or sets the nodes.</td></tr>
       <tr><td><code>List&lt;DslEdge&gt; Edges</code></td><td>Property</td><td>Gets or sets the edges.</td></tr>
       <tr><td><code>List&lt;string&gt; Warnings</code></td><td>Property</td><td>Gets or sets the warnings.</td></tr>
-      <tr><td><code>DslNode Find(string name)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DslNode Find(string name)</code></td><td>Method</td><td>Gets or sets the find.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1854,7 +1855,7 @@
     <tbody>
       <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
       <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description.</td></tr>
-      <tr><td><code>IEnumerable&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>IEnumerable&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Gets or sets the validate.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1867,10 +1868,10 @@
       <tr><td><code>override string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
       <tr><td><code>override TriggerType TriggerType</code></td><td>Property</td><td>Gets or sets the trigger type.</td></tr>
       <tr><td><code>TriggerType EventKind</code></td><td>Property</td><td>Allows hosting a webhook/API/data-change trigger with the same implementation.</td></tr>
-      <tr><td><code>EventTrigger()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>EventTrigger(TriggerType eventKind)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override Task&lt;bool&gt; StartAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override Task&lt;bool&gt; StopAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>EventTrigger()</code></td><td>Method</td><td>Initializes a new instance of the EventTrigger class.</td></tr>
+      <tr><td><code>EventTrigger(TriggerType eventKind)</code></td><td>Method</td><td>Initializes a new instance of the EventTrigger class.</td></tr>
+      <tr><td><code>override Task&lt;bool&gt; StartAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the start async.</td></tr>
+      <tr><td><code>override Task&lt;bool&gt; StopAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the stop async.</td></tr>
       <tr><td><code>Task Notify(Dictionary&lt;string, object&gt; payload = null)</code></td><td>Method</td><td>Fires the trigger with the given payload (webhook body, queue message, changed record, ...).</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetConfigurationSchema()</code></td><td>Method</td><td></td></tr>
     </tbody>
@@ -1895,7 +1896,7 @@
       <tr><td><code>Dictionary&lt;string, object&gt; Inputs</code></td><td>Property</td><td>Input variables for this execution.</td></tr>
       <tr><td><code>WorkflowResult Result</code></td><td>Property</td><td>Engine result once the job has finished.</td></tr>
       <tr><td><code>TimeSpan? Duration</code></td><td>Property</td><td>Gets or sets the duration.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1910,7 +1911,7 @@
       <tr><td><code>string Category</code></td><td>Property</td><td>Gets or sets the category.</td></tr>
       <tr><td><code>string DisplayName</code></td><td>Property</td><td>Gets or sets the display name.</td></tr>
       <tr><td><code>string AssemblyQualifiedName</code></td><td>Property</td><td>Gets or sets the assembly qualified name.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1923,8 +1924,8 @@
       <tr><td><code>bool Success</code></td><td>Property</td><td>Gets or sets the success.</td></tr>
       <tr><td><code>string Error</code></td><td>Property</td><td>Gets or sets the error.</td></tr>
       <tr><td><code>InstalledExtension Extension</code></td><td>Property</td><td>Gets or sets the extension.</td></tr>
-      <tr><td><code>static ExtensionInstallResult Ok(InstalledExtension extension)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static ExtensionInstallResult Fail(string error)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static ExtensionInstallResult Ok(InstalledExtension extension)</code></td><td>Method</td><td>Gets or sets the ok.</td></tr>
+      <tr><td><code>static ExtensionInstallResult Fail(string error)</code></td><td>Method</td><td>Gets or sets the fail.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1934,7 +1935,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>ExtensionLoadedEventArgs(LoadedExtension extension)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ExtensionLoadedEventArgs(LoadedExtension extension)</code></td><td>Method</td><td>Initializes a new instance of the ExtensionLoadedEventArgs class.</td></tr>
       <tr><td><code>LoadedExtension Extension</code></td><td>Property</td><td>Gets or sets the extension.</td></tr>
     </tbody>
   </table>
@@ -1973,7 +1974,7 @@
       <tr><td><code>string Id</code></td><td>Property</td><td>Gets or sets the id.</td></tr>
       <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
       <tr><td><code>string Version</code></td><td>Property</td><td>Gets or sets the version.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1985,7 +1986,7 @@
     <tbody>
       <tr><td><code>const string PackageExtension = ".beepkg"</code></td><td>Constant</td><td>Constant package extension.</td></tr>
       <tr><td><code>static ExtensionPackage Build(string sourceDirectory, ExtensionManifest manifest, string outputPath)</code></td><td>Method</td><td>Builds a package from a directory. The manifest is written as manifest.json and every other file in the directory is included.</td></tr>
-      <tr><td><code>static string ComputeSha256(string filePath)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static string ComputeSha256(string filePath)</code></td><td>Method</td><td>Gets or sets the compute sha256.</td></tr>
       <tr><td><code>static ExtensionManifest ReadManifest(string packagePath)</code></td><td>Method</td><td>Reads a manifest from a package archive without extracting it. Returns null when the archive is missing, corrupt, or has no manifest.</td></tr>
     </tbody>
   </table>
@@ -1996,7 +1997,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>ExtensionPackageManager(string installRoot, IExtensionRegistry registry = null, string hostVersion = "1.0.0")</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ExtensionPackageManager(string installRoot, IExtensionRegistry registry = null, string hostVersion = "1.0.0")</code></td><td>Method</td><td>Initializes a new instance of the ExtensionPackageManager class.</td></tr>
       <tr><td><code>string InstallRoot</code></td><td>Property</td><td>Root folder that holds installed extensions.</td></tr>
       <tr><td><code>IExtensionRegistry Registry</code></td><td>Property</td><td>Optional registry used by InstallFromRegistry and Update.</td></tr>
       <tr><td><code>long MaxEntryUncompressedBytes</code></td><td>Property</td><td>Maximum uncompressed size of a single package entry (default 256 MB).</td></tr>
@@ -2005,8 +2006,8 @@
       <tr><td><code>SemanticVersion HostVersion</code></td><td>Property</td><td>Host version used for manifest min-host-version checks.</td></tr>
       <tr><td><code>IReadOnlyList&lt;InstalledExtension&gt; Installed</code></td><td>Property</td><td>Installed extensions keyed by id (active version).</td></tr>
       <tr><td><code>IReadOnlyList&lt;InstallLogEntry&gt; Log</code></td><td>Property</td><td>Operation log, oldest first.</td></tr>
-      <tr><td><code>InstalledExtension GetInstalled(string id)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>bool IsInstalled(string id, string version = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>InstalledExtension GetInstalled(string id)</code></td><td>Method</td><td>Gets or sets the get installed.</td></tr>
+      <tr><td><code>bool IsInstalled(string id, string version = null)</code></td><td>Method</td><td>Gets or sets the is installed.</td></tr>
       <tr><td><code>IReadOnlyList&lt;string&gt; GetLoadDirectories()</code></td><td>Method</td><td>Folders that should be scanned by SkiaExtensionHost for the active extensions.</td></tr>
       <tr><td><code>ExtensionInstallResult Install(string packagePath, bool force = false)</code></td><td>Method</td><td>Installs a package archive. Validates the manifest, host version, and dependencies.</td></tr>
       <tr><td><code>ExtensionInstallResult InstallFromRegistry(string id, string version = null, bool force = false)</code></td><td>Method</td><td>Downloads a package from the registry and installs it.</td></tr>
@@ -2103,10 +2104,10 @@
       <tr><td><code>string Path</code></td><td>Property</td><td>Directory to watch.</td></tr>
       <tr><td><code>string Filter</code></td><td>Property</td><td>File filter (e.g., *.csv).</td></tr>
       <tr><td><code>bool IncludeSubdirectories</code></td><td>Property</td><td>Whether to watch subdirectories.</td></tr>
-      <tr><td><code>override Task&lt;bool&gt; InitializeAsync(Dictionary&lt;string, object&gt; configuration, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override Task&lt;ValidationResult&gt; ValidateAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override Task&lt;bool&gt; StartAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override Task&lt;bool&gt; StopAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Task&lt;bool&gt; InitializeAsync(Dictionary&lt;string, object&gt; configuration, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the initialize async.</td></tr>
+      <tr><td><code>override Task&lt;ValidationResult&gt; ValidateAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the validate async.</td></tr>
+      <tr><td><code>override Task&lt;bool&gt; StartAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the start async.</td></tr>
+      <tr><td><code>override Task&lt;bool&gt; StopAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the stop async.</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetConfigurationSchema()</code></td><td>Method</td><td></td></tr>
     </tbody>
   </table>
@@ -2179,7 +2180,7 @@
       <tr><td><code>float Damping</code></td><td>Property</td><td>Gets or sets the damping.</td></tr>
       <tr><td><code>float CenterX</code></td><td>Property</td><td>Gets or sets the center x.</td></tr>
       <tr><td><code>float CenterY</code></td><td>Property</td><td>Gets or sets the center y.</td></tr>
-      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Gets or sets the arrange.</td></tr>
     </tbody>
   </table>
 </section>
@@ -2210,7 +2211,7 @@
       <tr><td><code>float VerticalSpacing</code></td><td>Property</td><td>Gets or sets the vertical spacing.</td></tr>
       <tr><td><code>float StartX</code></td><td>Property</td><td>Gets or sets the start x.</td></tr>
       <tr><td><code>float StartY</code></td><td>Property</td><td>Gets or sets the start y.</td></tr>
-      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Gets or sets the arrange.</td></tr>
     </tbody>
   </table>
 </section>
@@ -2244,7 +2245,7 @@
       <tr><td><code>float NodeSpacing</code></td><td>Property</td><td>Gets or sets the node spacing.</td></tr>
       <tr><td><code>float StartX</code></td><td>Property</td><td>Gets or sets the start x.</td></tr>
       <tr><td><code>float StartY</code></td><td>Property</td><td>Gets or sets the start y.</td></tr>
-      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Gets or sets the arrange.</td></tr>
     </tbody>
   </table>
 </section>
@@ -2343,7 +2344,7 @@
       <tr><td><code>string InstallPath</code></td><td>Property</td><td>Gets or sets the install path.</td></tr>
       <tr><td><code>DateTime InstalledAt</code></td><td>Property</td><td>Gets or sets the installed at.</td></tr>
       <tr><td><code>bool Enabled</code></td><td>Property</td><td>Gets or sets the enabled.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -2357,7 +2358,7 @@
       <tr><td><code>string Action</code></td><td>Property</td><td>Gets or sets the action.</td></tr>
       <tr><td><code>string Detail</code></td><td>Property</td><td>Gets or sets the detail.</td></tr>
       <tr><td><code>bool Success</code></td><td>Property</td><td>Gets or sets the success.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -2410,7 +2411,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>JobStateChangedEventArgs(ExecutionJob job, JobState oldState, JobState newState)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>JobStateChangedEventArgs(ExecutionJob job, JobState oldState, JobState newState)</code></td><td>Method</td><td>Initializes a new instance of the JobStateChangedEventArgs class.</td></tr>
       <tr><td><code>ExecutionJob Job</code></td><td>Property</td><td>Gets or sets the job.</td></tr>
       <tr><td><code>JobState OldState</code></td><td>Property</td><td>Gets or sets the old state.</td></tr>
       <tr><td><code>JobState NewState</code></td><td>Property</td><td>Gets or sets the new state.</td></tr>
@@ -2644,7 +2645,7 @@
       <tr><td><code>List&lt;Type&gt; ComponentTypes</code></td><td>Property</td><td>Gets or sets the component types.</td></tr>
       <tr><td><code>List&lt;string&gt; Errors</code></td><td>Property</td><td>Gets or sets the errors.</td></tr>
       <tr><td><code>bool Success</code></td><td>Property</td><td>Gets or sets the success.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -2654,14 +2655,14 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>LocalExtensionRegistry(string root, bool scanOnCreate = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>LocalExtensionRegistry(string root, bool scanOnCreate = true)</code></td><td>Method</td><td>Initializes a new instance of the LocalExtensionRegistry class.</td></tr>
       <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
       <tr><td><code>string Root</code></td><td>Property</td><td>Folder containing the .beepkg files.</td></tr>
       <tr><td><code>IReadOnlyList&lt;ExtensionPackage&gt; Packages</code></td><td>Property</td><td>Packages currently indexed, newest version per id first.</td></tr>
       <tr><td><code>void Refresh()</code></td><td>Method</td><td>Rescans the registry folder.</td></tr>
-      <tr><td><code>IReadOnlyList&lt;ExtensionPackage&gt; Search(string query = null, string tag = null, int max = 50)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>ExtensionPackage GetPackage(string id, string version = null)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>bool TryDownload(ExtensionPackage package, string targetPath, out string error)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>IReadOnlyList&lt;ExtensionPackage&gt; Search(string query = null, string tag = null, int max = 50)</code></td><td>Method</td><td>Gets or sets the search.</td></tr>
+      <tr><td><code>ExtensionPackage GetPackage(string id, string version = null)</code></td><td>Method</td><td>Gets or sets the get package.</td></tr>
+      <tr><td><code>bool TryDownload(ExtensionPackage package, string targetPath, out string error)</code></td><td>Method</td><td>Gets or sets the try download.</td></tr>
     </tbody>
   </table>
 </section>
@@ -2673,8 +2674,8 @@
     <tbody>
       <tr><td><code>override string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
       <tr><td><code>override TriggerType TriggerType</code></td><td>Property</td><td>Gets or sets the trigger type.</td></tr>
-      <tr><td><code>override Task&lt;bool&gt; StartAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override Task&lt;bool&gt; StopAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Task&lt;bool&gt; StartAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the start async.</td></tr>
+      <tr><td><code>override Task&lt;bool&gt; StopAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the stop async.</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetConfigurationSchema()</code></td><td>Method</td><td></td></tr>
     </tbody>
   </table>
@@ -2699,7 +2700,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>ManualTriggerNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ManualTriggerNode()</code></td><td>Method</td><td>Initializes a new instance of the ManualTriggerNode class.</td></tr>
       <tr><td><code>event EventHandler&lt;ManualTriggerEventArgs&gt; ManuallyTriggered</code></td><td>Event</td><td>Event raised when the manual trigger is activated.</td></tr>
       <tr><td><code>event EventHandler&lt;TriggerConfirmationEventArgs&gt; ConfirmationRequested</code></td><td>Event</td><td>Event raised when trigger confirmation is requested.</td></tr>
       <tr><td><code>string TriggerText</code></td><td>Property</td><td>Gets or sets the text displayed on the trigger button.</td></tr>
@@ -2793,13 +2794,13 @@
       <tr><td><code>MenuPosition Position</code></td><td>Property</td><td>Gets or sets the position.</td></tr>
       <tr><td><code>SKPoint AnchorPoint</code></td><td>Property</td><td>Gets or sets the anchor point.</td></tr>
       <tr><td><code>bool Visible</code></td><td>Property</td><td>Gets or sets the visible.</td></tr>
-      <tr><td><code>Menu() { Visible = false; RecalcSize(); }</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void AddItem(MenuItem item) { if (item == null || _items.Contains(item)) return; _items.Add(item); item.ParentMenu = this; RecalcSize(); InvalidateVisual(); }</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void RemoveItem(MenuItem item) { if (item == null) return; if (_items.Remove(item)) { if (_selected == item) _selected = null; item.ParentMenu = null; RecalcSize(); InvalidateVisual(); } }</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void ClearItems() { foreach (var i in _items) i.ParentMenu = null; _items.Clear(); _selected = null; RecalcSize(); InvalidateVisual(); }</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void Show(SKPoint anchor) { AnchorPoint = anchor; Visible = true; }</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void Hide() { Visible = false; }</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override bool ContainsPoint(SKPoint point)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>Menu() { Visible = false; RecalcSize(); }</code></td><td>Method</td><td>Initializes a new instance of the Menu class.</td></tr>
+      <tr><td><code>void AddItem(MenuItem item) { if (item == null || _items.Contains(item)) return; _items.Add(item); item.ParentMenu = this; RecalcSize(); InvalidateVisual(); }</code></td><td>Method</td><td>Gets or sets the add item.</td></tr>
+      <tr><td><code>void RemoveItem(MenuItem item) { if (item == null) return; if (_items.Remove(item)) { if (_selected == item) _selected = null; item.ParentMenu = null; RecalcSize(); InvalidateVisual(); } }</code></td><td>Method</td><td>Gets or sets the remove item.</td></tr>
+      <tr><td><code>void ClearItems() { foreach (var i in _items) i.ParentMenu = null; _items.Clear(); _selected = null; RecalcSize(); InvalidateVisual(); }</code></td><td>Method</td><td>Gets or sets the clear items.</td></tr>
+      <tr><td><code>void Show(SKPoint anchor) { AnchorPoint = anchor; Visible = true; }</code></td><td>Method</td><td>Gets or sets the show.</td></tr>
+      <tr><td><code>void Hide() { Visible = false; }</code></td><td>Method</td><td>Gets or sets the hide.</td></tr>
+      <tr><td><code>override bool ContainsPoint(SKPoint point)</code></td><td>Method</td><td>Gets or sets the contains point.</td></tr>
     </tbody>
   </table>
 </section>
@@ -2903,7 +2904,7 @@
       <tr><td><code>MenuItem()</code></td><td>Method</td><td>Initializes a new instance of the MenuItem class.</td></tr>
       <tr><td><code>MenuItem(string text)</code></td><td>Method</td><td>Initializes a new instance of the MenuItem class with text. The text to display.</td></tr>
       <tr><td><code>MenuItem(string text, string icon)</code></td><td>Method</td><td>Initializes a new instance of the MenuItem class with text and icon. The text to display. The icon to display.</td></tr>
-      <tr><td><code>MenuItem(string text, string icon, string shortcut)</code></td><td>Method</td><td>Initializes a new instance of the MenuItem class with text and shortcut. The text to display. The keyboard shortcut.</td></tr>
+      <tr><td><code>MenuItem(string text, string icon, string shortcut)</code></td><td>Method</td><td>Initializes a new instance of the MenuItem class with text and shortcut. The text to display. The icon glyph or path. The keyboard shortcut.</td></tr>
       <tr><td><code>void OnClick()</code></td><td>Method</td><td>Called when the menu item is clicked.</td></tr>
       <tr><td><code>void Draw(SKCanvas canvas, SKRect bounds, DrawingContext drawingContext)</code></td><td>Method</td><td>Draws the menu item on the specified canvas. The canvas to draw on. The bounds of the menu item. The drawing context.</td></tr>
       <tr><td><code>static MenuItem Separator()</code></td><td>Method</td><td>Creates a separator menu item. A separator menu item.</td></tr>
@@ -2939,7 +2940,7 @@
       <tr><td><code>float Width</code></td><td>Property</td><td>Gets or sets the width.</td></tr>
       <tr><td><code>float Height</code></td><td>Property</td><td>Gets or sets the height.</td></tr>
       <tr><td><code>string TypeKeyword</code></td><td>Property</td><td>Type keyword: central (depth 0), topic (depth 1), subtopic (depth 2+).</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -2969,7 +2970,7 @@
       <tr><td><code>SKColor ComponentFill</code></td><td>Property</td><td>Gets or sets the component fill.</td></tr>
       <tr><td><code>SKColor ComponentStroke</code></td><td>Property</td><td>Gets or sets the component stroke.</td></tr>
       <tr><td><code>SKColor ViewportStroke</code></td><td>Property</td><td>Gets or sets the viewport stroke.</td></tr>
-      <tr><td><code>MinimapControl()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>MinimapControl()</code></td><td>Method</td><td>Initializes a new instance of the MinimapControl class.</td></tr>
       <tr><td><code>SKRect CalculateWorldBounds()</code></td><td>Method</td><td>World-space bounds of the diagram content (minimum 1x1).</td></tr>
       <tr><td><code>float CalculateScale()</code></td><td>Method</td><td>Scale factor mapping world units to minimap pixels.</td></tr>
       <tr><td><code>SKPoint MapWorldToMinimap(SKPoint world)</code></td><td>Method</td><td>Maps a world-space point to canvas coordinates inside the minimap.</td></tr>
@@ -2987,9 +2988,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>MoveComponentsAction(DrawingManager manager, List&lt;SkiaComponent&gt; components, SKPoint offset)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>MoveComponentsAction(DrawingManager manager, List&lt;SkiaComponent&gt; components, SKPoint offset)</code></td><td>Method</td><td>Initializes a new instance of the MoveComponentsAction class.</td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td>Gets or sets the execute.</td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td>Gets or sets the undo.</td></tr>
     </tbody>
   </table>
 </section>
@@ -2999,9 +3000,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>MoveLineAction(DrawingManager manager, IConnectionLine line, IConnectionPoint oldStartPoint, IConnectionPoint oldEndPoint, IConnectionPoint newStartPoint, IConnectionPoint newEndPoint)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>MoveLineAction(DrawingManager manager, IConnectionLine line, IConnectionPoint oldStartPoint, IConnectionPoint oldEndPoint, IConnectionPoint newStartPoint, IConnectionPoint newEndPoint)</code></td><td>Method</td><td>Initializes a new instance of the MoveLineAction class.</td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td>Gets or sets the execute.</td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td>Gets or sets the undo.</td></tr>
     </tbody>
   </table>
 </section>
@@ -3105,7 +3106,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>override void Draw(SKCanvas canvas, SKRect bounds)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void Draw(SKCanvas canvas, SKRect bounds)</code></td><td>Method</td><td>Gets or sets the draw.</td></tr>
     </tbody>
   </table>
 </section>
@@ -3309,7 +3310,7 @@
     <tbody>
       <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
       <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description.</td></tr>
-      <tr><td><code>IEnumerable&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>IEnumerable&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Gets or sets the validate.</td></tr>
     </tbody>
   </table>
 </section>
@@ -3321,7 +3322,7 @@
     <tbody>
       <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
       <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description.</td></tr>
-      <tr><td><code>IEnumerable&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>IEnumerable&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Gets or sets the validate.</td></tr>
     </tbody>
   </table>
 </section>
@@ -3332,21 +3333,21 @@
     <tbody>
       <tr><td><code>List&lt;PaletteItem&gt; Items</code></td><td>Property</td><td>Gets or sets the items.</td></tr>
       <tr><td><code>List&lt;PaletteCategory&gt; Categories</code></td><td>Property</td><td>Gets or sets the categories.</td></tr>
-      <tr><td><code>Palette()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>Palette()</code></td><td>Method</td><td>Initializes a new instance of the Palette class.</td></tr>
       <tr><td><code>bool AutoHeight</code></td><td>Property</td><td>Gets or sets the auto height.</td></tr>
       <tr><td><code>bool AutoWidth</code></td><td>Property</td><td>Gets or sets the auto width.</td></tr>
       <tr><td><code>float? MaxHeight</code></td><td>Property</td><td>Gets or sets the max height.</td></tr>
-      <tr><td><code>void RefreshLayout()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void RefreshLayout()</code></td><td>Method</td><td>Gets or sets the refresh layout.</td></tr>
       <tr><td><code>string SearchText</code></td><td>Property</td><td>Filters visible palette items by name or category (case-insensitive substring). Empty clears the filter and shows all items.</td></tr>
       <tr><td><code>void ApplyFilter(string query)</code></td><td>Method</td><td>Applies a search filter (alias for SearchText).</td></tr>
       <tr><td><code>int VisibleItemCount</code></td><td>Property</td><td>Gets the number of items currently visible after filtering.</td></tr>
-      <tr><td><code>void AddItem(PaletteItem item)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>bool RemoveItem(PaletteItem item)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override bool HandleMouseDown(SKPoint point, InteractionContext context)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override bool ContainsPoint(SKPoint point)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override bool HandleMouseMove(SKPoint point, InteractionContext context)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override bool HandleMouseUp(SKPoint point, InteractionContext context)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void ScrollBy(float deltaPixels)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void AddItem(PaletteItem item)</code></td><td>Method</td><td>Gets or sets the add item.</td></tr>
+      <tr><td><code>bool RemoveItem(PaletteItem item)</code></td><td>Method</td><td>Gets or sets the remove item.</td></tr>
+      <tr><td><code>override bool HandleMouseDown(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Gets or sets the handle mouse down.</td></tr>
+      <tr><td><code>override bool ContainsPoint(SKPoint point)</code></td><td>Method</td><td>Gets or sets the contains point.</td></tr>
+      <tr><td><code>override bool HandleMouseMove(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Gets or sets the handle mouse move.</td></tr>
+      <tr><td><code>override bool HandleMouseUp(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Gets or sets the handle mouse up.</td></tr>
+      <tr><td><code>void ScrollBy(float deltaPixels)</code></td><td>Method</td><td>Gets or sets the scroll by.</td></tr>
     </tbody>
   </table>
 </section>
@@ -3406,9 +3407,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>PasteComponentsAction(DrawingManager manager, List&lt;SkiaComponent&gt; components, List&lt;IConnectionLine&gt; lines = null)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>PasteComponentsAction(DrawingManager manager, List&lt;SkiaComponent&gt; components, List&lt;IConnectionLine&gt; lines = null)</code></td><td>Method</td><td>Initializes a new instance of the PasteComponentsAction class.</td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td>Gets or sets the execute.</td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td>Gets or sets the undo.</td></tr>
     </tbody>
   </table>
 </section>
@@ -3464,7 +3465,7 @@
       <tr><td><code>float RadiusIncrement</code></td><td>Property</td><td>Gets or sets the radius increment.</td></tr>
       <tr><td><code>float StartAngle</code></td><td>Property</td><td>Gets or sets the start angle.</td></tr>
       <tr><td><code>float SweepAngle</code></td><td>Property</td><td>Gets or sets the sweep angle.</td></tr>
-      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Gets or sets the arrange.</td></tr>
     </tbody>
   </table>
 </section>
@@ -3522,9 +3523,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>RemoveComponentAction(DrawingManager manager, SkiaComponent component, List&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Execute()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void Undo()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>RemoveComponentAction(DrawingManager manager, SkiaComponent component, List&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Initializes a new instance of the RemoveComponentAction class.</td></tr>
+      <tr><td><code>override void Execute()</code></td><td>Method</td><td>Gets or sets the execute.</td></tr>
+      <tr><td><code>override void Undo()</code></td><td>Method</td><td>Gets or sets the undo.</td></tr>
     </tbody>
   </table>
 </section>
@@ -3553,7 +3554,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
-      <tr><td><code>DiagramSuggestion Generate(DiagramRequest request)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DiagramSuggestion Generate(DiagramRequest request)</code></td><td>Method</td><td>Gets or sets the generate.</td></tr>
     </tbody>
   </table>
 </section>
@@ -3566,10 +3567,10 @@
       <tr><td><code>override string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
       <tr><td><code>override TriggerType TriggerType</code></td><td>Property</td><td>Gets or sets the trigger type.</td></tr>
       <tr><td><code>TimeSpan Interval</code></td><td>Property</td><td>Interval between activations.</td></tr>
-      <tr><td><code>override Task&lt;bool&gt; InitializeAsync(Dictionary&lt;string, object&gt; configuration, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override Task&lt;ValidationResult&gt; ValidateAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override Task&lt;bool&gt; StartAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override async Task&lt;bool&gt; StopAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Task&lt;bool&gt; InitializeAsync(Dictionary&lt;string, object&gt; configuration, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the initialize async.</td></tr>
+      <tr><td><code>override Task&lt;ValidationResult&gt; ValidateAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the validate async.</td></tr>
+      <tr><td><code>override Task&lt;bool&gt; StartAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the start async.</td></tr>
+      <tr><td><code>override async Task&lt;bool&gt; StopAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the stop async.</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetConfigurationSchema()</code></td><td>Method</td><td></td></tr>
     </tbody>
   </table>
@@ -3724,19 +3725,19 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>SemanticVersion(int major, int minor = 0, int patch = 0, string prerelease = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SemanticVersion(int major, int minor = 0, int patch = 0, string prerelease = null)</code></td><td>Method</td><td>Initializes a new instance of the SemanticVersion class.</td></tr>
       <tr><td><code>int Major</code></td><td>Property</td><td>Gets or sets the major.</td></tr>
       <tr><td><code>int Minor</code></td><td>Property</td><td>Gets or sets the minor.</td></tr>
       <tr><td><code>int Patch</code></td><td>Property</td><td>Gets or sets the patch.</td></tr>
       <tr><td><code>string Prerelease</code></td><td>Property</td><td>Gets or sets the prerelease.</td></tr>
       <tr><td><code>bool IsPrerelease</code></td><td>Property</td><td>Gets or sets the is prerelease.</td></tr>
-      <tr><td><code>static bool TryParse(string text, out SemanticVersion version)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static SemanticVersion Parse(string text)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>int CompareTo(SemanticVersion other)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>bool Equals(SemanticVersion other)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override bool Equals(object obj)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override int GetHashCode()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static bool TryParse(string text, out SemanticVersion version)</code></td><td>Method</td><td>Gets or sets the try parse.</td></tr>
+      <tr><td><code>static SemanticVersion Parse(string text)</code></td><td>Method</td><td>Gets or sets the parse.</td></tr>
+      <tr><td><code>int CompareTo(SemanticVersion other)</code></td><td>Method</td><td>Gets or sets the compare to.</td></tr>
+      <tr><td><code>bool Equals(SemanticVersion other)</code></td><td>Method</td><td>Gets or sets the equals.</td></tr>
+      <tr><td><code>override bool Equals(object obj)</code></td><td>Method</td><td>Gets or sets the equals.</td></tr>
+      <tr><td><code>override int GetHashCode()</code></td><td>Method</td><td>Gets or sets the get hash code.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
       <tr><td><code>static bool operator &gt;(SemanticVersion left, SemanticVersion right)</code></td><td>Method</td><td></td></tr>
       <tr><td><code>static bool operator &lt;(SemanticVersion left, SemanticVersion right)</code></td><td>Method</td><td></td></tr>
       <tr><td><code>static bool operator &gt;=(SemanticVersion left, SemanticVersion right)</code></td><td>Method</td><td></td></tr>
@@ -3807,7 +3808,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>SkiaComponentDescriptor() { }</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SkiaComponentDescriptor() { }</code></td><td>Method</td><td>Initializes a new instance of the SkiaComponentDescriptor class.</td></tr>
       <tr><td><code>string ComponentType</code></td><td>Property</td><td>Assembly-qualified type name of the component (e.g. "Beep.Skia.Components.Button, Beep.Skia").</td></tr>
       <tr><td><code>float X</code></td><td>Property</td><td>Gets or sets the x.</td></tr>
       <tr><td><code>float Y</code></td><td>Property</td><td>Gets or sets the y.</td></tr>
@@ -3824,7 +3825,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>SkiaComponentDescriptorCollection() { }</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SkiaComponentDescriptorCollection() { }</code></td><td>Method</td><td>Initializes a new instance of the SkiaComponentDescriptorCollection class.</td></tr>
     </tbody>
   </table>
 </section>
@@ -3918,7 +3919,7 @@
       <tr><td><code>static SkiaTheme HighContrast</code></td><td>Property</td><td>High-contrast theme for accessibility.</td></tr>
       <tr><td><code>static SkiaTheme Nord</code></td><td>Property</td><td>Nord theme — cool blue/gray palette.</td></tr>
       <tr><td><code>static SkiaTheme Dracula</code></td><td>Property</td><td>Dracula theme — dark purple/green palette.</td></tr>
-      <tr><td><code>SkiaTheme Clone()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SkiaTheme Clone()</code></td><td>Method</td><td>Gets or sets the clone.</td></tr>
     </tbody>
   </table>
 </section>
@@ -4163,7 +4164,7 @@
       <tr><td><code>bool IsCollapsed</code></td><td>Property</td><td>Whether this lane is currently collapsed.</td></tr>
       <tr><td><code>List&lt;SkiaComponent&gt; Children</code></td><td>Property</td><td>Gets the list of components that belong to this lane.</td></tr>
       <tr><td><code>object Tag</code></td><td>Property</td><td>Optional tag for lane identification.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -4178,13 +4179,13 @@
       <tr><td><code>IReadOnlyList&lt;Swimlane&gt; Lanes</code></td><td>Property</td><td>Gets the list of lanes in this container.</td></tr>
       <tr><td><code>bool AllowCollapse</code></td><td>Property</td><td>Gets or sets whether lane headers are collapsible.</td></tr>
       <tr><td><code>float LaneSpacing</code></td><td>Property</td><td>Gets or sets the separation between lanes in pixels.</td></tr>
-      <tr><td><code>SwimlaneContainer()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SwimlaneContainer()</code></td><td>Method</td><td>Initializes a new instance of the SwimlaneContainer class.</td></tr>
       <tr><td><code>Swimlane AddLane(string title)</code></td><td>Method</td><td>Adds a new lane with the given title.</td></tr>
       <tr><td><code>void RemoveLane(Swimlane lane)</code></td><td>Method</td><td>Removes a lane and all its children.</td></tr>
       <tr><td><code>void AddToLane(SkiaComponent component, Swimlane lane)</code></td><td>Method</td><td>Adds a component to a specific lane.</td></tr>
       <tr><td><code>Swimlane GetLaneAtPoint(SKPoint localPoint)</code></td><td>Method</td><td>Gets the lane that contains the given point (in component-local coordinates).</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -4437,7 +4438,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>TimerTriggerNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>TimerTriggerNode()</code></td><td>Method</td><td>Initializes a new instance of the TimerTriggerNode class.</td></tr>
       <tr><td><code>event EventHandler&lt;TimerTriggeredEventArgs&gt; TimerTriggered</code></td><td>Event</td><td>Event raised when the timer triggers workflow execution.</td></tr>
       <tr><td><code>TimerTriggerMode TriggerType</code></td><td>Property</td><td>Gets or sets the type of timer trigger (Interval, Cron, OneTime).</td></tr>
       <tr><td><code>TimeSpan Interval</code></td><td>Property</td><td>Gets or sets the interval for interval-based triggers.</td></tr>
@@ -4586,14 +4587,14 @@
       <tr><td><code>long ActivationCount</code></td><td>Property</td><td>Gets or sets the activation count.</td></tr>
       <tr><td><code>event EventHandler&lt;TriggerEventArgs&gt; Triggered</code></td><td>Event</td><td>Raised when triggered changes.</td></tr>
       <tr><td><code>event EventHandler&lt;TriggerErrorEventArgs&gt; ErrorOccurred</code></td><td>Event</td><td>Raised when error occurred changes.</td></tr>
-      <tr><td><code>virtual Task&lt;bool&gt; InitializeAsync(Dictionary&lt;string, object&gt; configuration, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>virtual Task&lt;bool&gt; InitializeAsync(Dictionary&lt;string, object&gt; configuration, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the initialize async.</td></tr>
       <tr><td><code>abstract Task&lt;bool&gt; StartAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
       <tr><td><code>abstract Task&lt;bool&gt; StopAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>virtual Task&lt;ValidationResult&gt; ValidateAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>virtual Task&lt;bool&gt; TestAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>virtual Task&lt;ValidationResult&gt; ValidateAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the validate async.</td></tr>
+      <tr><td><code>virtual Task&lt;bool&gt; TestAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the test async.</td></tr>
       <tr><td><code>void Dispose()</code></td><td>Method</td><td>Stops the trigger and releases its resources. Safe to call multiple times.</td></tr>
       <tr><td><code>virtual Dictionary&lt;string, object&gt; GetConfigurationSchema()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>virtual Task ActivateAsync(Dictionary&lt;string, object&gt; testData = null, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>virtual Task ActivateAsync(Dictionary&lt;string, object&gt; testData = null, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the activate async.</td></tr>
     </tbody>
   </table>
 </section>
@@ -4634,7 +4635,7 @@
     <tbody>
       <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
       <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description.</td></tr>
-      <tr><td><code>IEnumerable&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>IEnumerable&lt;DiagramIssue&gt; Validate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Gets or sets the validate.</td></tr>
     </tbody>
   </table>
 </section>
@@ -4718,22 +4719,22 @@
       <tr><td><code>event EventHandler&lt;WorkflowExecutionEventArgs&gt; WorkflowPaused</code></td><td>Event</td><td>Raised when workflow paused changes.</td></tr>
       <tr><td><code>event EventHandler&lt;WorkflowExecutionEventArgs&gt; WorkflowResumed</code></td><td>Event</td><td>Raised when workflow resumed changes.</td></tr>
       <tr><td><code>event EventHandler&lt;WorkflowExecutionEventArgs&gt; WorkflowCancelled</code></td><td>Event</td><td>Raised when workflow cancelled changes.</td></tr>
-      <tr><td><code>Task StartAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>Task StopAsync(bool graceful = true, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>Task&lt;bool&gt; LoadWorkflowAsync(WorkflowDefinition workflow, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>Task&lt;bool&gt; UnloadWorkflowAsync(string workflowId, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>Task&lt;WorkflowResult&gt; ExecuteWorkflowAsync( string workflowId, Dictionary&lt;string, object&gt; inputData = null, ExecutionPriority priority = ExecutionPriority.Normal, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>async Task&lt;WorkflowResult&gt; ExecuteWorkflowAsync( string workflowId, ExecutionContext context, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>Task&lt;bool&gt; PauseExecutionAsync(string executionId, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>Task&lt;bool&gt; ResumeExecutionAsync(string executionId, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>Task&lt;bool&gt; CancelExecutionAsync(string executionId, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>WorkflowExecution GetExecutionStatus(string executionId)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>Task&lt;IEnumerable&lt;WorkflowExecution&gt;&gt; GetExecutionHistoryAsync( string workflowId, int limit = 100, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>async Task&lt;ValidationResult&gt; ValidateWorkflowAsync(WorkflowDefinition workflow, CancellationToken cancellationToken = default)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void RegisterNodeType(string nodeType, Func&lt;IAutomationNode&gt; factory)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>bool UnregisterNodeType(string nodeType)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>IEnumerable&lt;string&gt; GetRegisteredNodeTypes()</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void RegisterDefaults()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>Task StartAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the start async.</td></tr>
+      <tr><td><code>Task StopAsync(bool graceful = true, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the stop async.</td></tr>
+      <tr><td><code>Task&lt;bool&gt; LoadWorkflowAsync(WorkflowDefinition workflow, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the load workflow async.</td></tr>
+      <tr><td><code>Task&lt;bool&gt; UnloadWorkflowAsync(string workflowId, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the unload workflow async.</td></tr>
+      <tr><td><code>Task&lt;WorkflowResult&gt; ExecuteWorkflowAsync( string workflowId, Dictionary&lt;string, object&gt; inputData = null, ExecutionPriority priority = ExecutionPriority.Normal, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the execute workflow async.</td></tr>
+      <tr><td><code>async Task&lt;WorkflowResult&gt; ExecuteWorkflowAsync( string workflowId, ExecutionContext context, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the execute workflow async.</td></tr>
+      <tr><td><code>Task&lt;bool&gt; PauseExecutionAsync(string executionId, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the pause execution async.</td></tr>
+      <tr><td><code>Task&lt;bool&gt; ResumeExecutionAsync(string executionId, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the resume execution async.</td></tr>
+      <tr><td><code>Task&lt;bool&gt; CancelExecutionAsync(string executionId, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the cancel execution async.</td></tr>
+      <tr><td><code>WorkflowExecution GetExecutionStatus(string executionId)</code></td><td>Method</td><td>Gets or sets the get execution status.</td></tr>
+      <tr><td><code>Task&lt;IEnumerable&lt;WorkflowExecution&gt;&gt; GetExecutionHistoryAsync( string workflowId, int limit = 100, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the get execution history async.</td></tr>
+      <tr><td><code>async Task&lt;ValidationResult&gt; ValidateWorkflowAsync(WorkflowDefinition workflow, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the validate workflow async.</td></tr>
+      <tr><td><code>void RegisterNodeType(string nodeType, Func&lt;IAutomationNode&gt; factory)</code></td><td>Method</td><td>Gets or sets the register node type.</td></tr>
+      <tr><td><code>bool UnregisterNodeType(string nodeType)</code></td><td>Method</td><td>Gets or sets the unregister node type.</td></tr>
+      <tr><td><code>IEnumerable&lt;string&gt; GetRegisteredNodeTypes()</code></td><td>Method</td><td>Gets or sets the get registered node types.</td></tr>
+      <tr><td><code>void RegisterDefaults()</code></td><td>Method</td><td>Gets or sets the register defaults.</td></tr>
     </tbody>
   </table>
 </section>
@@ -4743,16 +4744,16 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>WorkflowExecutionApi(WorkflowExecutionService service)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>WorkflowExecutionApi(WorkflowExecutionService service)</code></td><td>Method</td><td>Initializes a new instance of the WorkflowExecutionApi class.</td></tr>
       <tr><td><code>WorkflowExecutionService Service</code></td><td>Property</td><td>Gets or sets the service.</td></tr>
       <tr><td><code>ApiResponse PublishDiagram(string diagramJson, string workflowName = null)</code></td><td>Method</td><td>Publishes a diagram (serialized DiagramDto) as an executable workflow. Only automation-node components are included.</td></tr>
-      <tr><td><code>ApiResponse ListWorkflows()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ApiResponse ListWorkflows()</code></td><td>Method</td><td>Gets or sets the list workflows.</td></tr>
       <tr><td><code>ApiResponse Submit(string workflowId, string submittedBy = null, string inputsJson = null)</code></td><td>Method</td><td>Submits a job for a published workflow; inputsJson is an optional JSON object.</td></tr>
-      <tr><td><code>ApiResponse GetJob(string jobId)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>ApiResponse ListJobs(string state = null, int limit = 50)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>ApiResponse Cancel(string jobId)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>ApiResponse Pause(string jobId)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>ApiResponse Resume(string jobId)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ApiResponse GetJob(string jobId)</code></td><td>Method</td><td>Gets or sets the get job.</td></tr>
+      <tr><td><code>ApiResponse ListJobs(string state = null, int limit = 50)</code></td><td>Method</td><td>Gets or sets the list jobs.</td></tr>
+      <tr><td><code>ApiResponse Cancel(string jobId)</code></td><td>Method</td><td>Gets or sets the cancel.</td></tr>
+      <tr><td><code>ApiResponse Pause(string jobId)</code></td><td>Method</td><td>Gets or sets the pause.</td></tr>
+      <tr><td><code>ApiResponse Resume(string jobId)</code></td><td>Method</td><td>Gets or sets the resume.</td></tr>
       <tr><td><code>string ToJson(ApiResponse response)</code></td><td>Method</td><td>Serializes a response envelope for transport.</td></tr>
     </tbody>
   </table>
@@ -4763,22 +4764,22 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>WorkflowExecutionService(int maxConcurrency = 2, WorkflowEngine engine = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>WorkflowExecutionService(int maxConcurrency = 2, WorkflowEngine engine = null)</code></td><td>Method</td><td>Initializes a new instance of the WorkflowExecutionService class.</td></tr>
       <tr><td><code>int MaxConcurrency</code></td><td>Property</td><td>Maximum number of jobs that may run at the same time.</td></tr>
       <tr><td><code>WorkflowEngine Engine</code></td><td>Property</td><td>The underlying workflow engine.</td></tr>
       <tr><td><code>event EventHandler&lt;JobStateChangedEventArgs&gt; JobStateChanged</code></td><td>Event</td><td>Raised on every job state transition.</td></tr>
       <tr><td><code>IReadOnlyList&lt;WorkflowDefinition&gt; Workflows</code></td><td>Property</td><td>Published workflows available for submission.</td></tr>
       <tr><td><code>void Publish(WorkflowDefinition workflow)</code></td><td>Method</td><td>Publishes (or replaces) a workflow so it can be submitted for execution.</td></tr>
-      <tr><td><code>bool RemoveWorkflow(string workflowId)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>WorkflowDefinition GetWorkflow(string workflowId)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>bool RemoveWorkflow(string workflowId)</code></td><td>Method</td><td>Gets or sets the remove workflow.</td></tr>
+      <tr><td><code>WorkflowDefinition GetWorkflow(string workflowId)</code></td><td>Method</td><td>Gets or sets the get workflow.</td></tr>
       <tr><td><code>ExecutionJob Submit(string workflowId, string submittedBy = "anonymous", IDictionary&lt;string, object&gt; inputs = null)</code></td><td>Method</td><td>Submits a job for the given published workflow. Returns null when the workflow is unknown. The job starts as soon as a concurrency slot is available.</td></tr>
-      <tr><td><code>ExecutionJob GetJob(string jobId)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ExecutionJob GetJob(string jobId)</code></td><td>Method</td><td>Gets or sets the get job.</td></tr>
       <tr><td><code>IReadOnlyList&lt;ExecutionJob&gt; GetJobs(JobState? state = null, int limit = 50)</code></td><td>Method</td><td>Lists jobs, newest first, optionally filtered by state.</td></tr>
       <tr><td><code>bool Cancel(string jobId)</code></td><td>Method</td><td>Cancels a queued or running job. Returns false when it already finished.</td></tr>
       <tr><td><code>bool Pause(string jobId)</code></td><td>Method</td><td>Pauses a running job.</td></tr>
       <tr><td><code>bool Resume(string jobId)</code></td><td>Method</td><td>Resumes a paused job.</td></tr>
       <tr><td><code>bool WaitForCompletion(string jobId, TimeSpan timeout)</code></td><td>Method</td><td>Waits until a job reaches a terminal state, or the timeout elapses.</td></tr>
-      <tr><td><code>void Dispose()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void Dispose()</code></td><td>Method</td><td>Gets or sets the dispose.</td></tr>
     </tbody>
   </table>
 </section>
@@ -4821,7 +4822,7 @@
     <tbody>
       <tr><td><code>int StatusCode</code></td><td>Property</td><td>Gets or sets the status code.</td></tr>
       <tr><td><code>ApiResponse Body</code></td><td>Property</td><td>Gets or sets the body.</td></tr>
-      <tr><td><code>static WorkflowHttpResponse From(ApiResponse response)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static WorkflowHttpResponse From(ApiResponse response)</code></td><td>Method</td><td>Gets or sets the from.</td></tr>
     </tbody>
   </table>
 </section>
@@ -4831,8 +4832,8 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>WorkflowRequestRouter(WorkflowExecutionApi api)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>WorkflowHttpResponse Route(WorkflowHttpRequest request)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>WorkflowRequestRouter(WorkflowExecutionApi api)</code></td><td>Method</td><td>Initializes a new instance of the WorkflowRequestRouter class.</td></tr>
+      <tr><td><code>WorkflowHttpResponse Route(WorkflowHttpRequest request)</code></td><td>Method</td><td>Gets or sets the route.</td></tr>
       <tr><td><code>static string[] SplitPath(string path)</code></td><td>Method</td><td>Splits a path into lowercase segments without empty entries.</td></tr>
     </tbody>
   </table>

@@ -25,6 +25,9 @@ namespace Beep.Skia.ERD
         private readonly SQLDialect _dialect;
         private readonly StringBuilder _sb;
 
+        /// <summary>
+        /// Initializes a new instance of the DDLExporter class.
+        /// </summary>
         public DDLExporter(SQLDialect dialect = SQLDialect.ANSI)
         {
             _dialect = dialect;

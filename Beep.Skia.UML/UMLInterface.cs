@@ -38,6 +38,9 @@ namespace Beep.Skia.UML
         /// </summary>
         public List<string> Operations { get; set; } = new List<string>();
 
+        /// <summary>
+        /// Gets or sets the operations text.
+        /// </summary>
         public string OperationsText
         {
             get => string.Join("\n", Operations ?? Enumerable.Empty<string>());

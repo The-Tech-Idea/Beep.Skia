@@ -7,10 +7,19 @@ namespace Beep.Skia.Automation
     /// <summary>A transport-neutral HTTP request passed to <see cref="WorkflowRequestRouter"/>.</summary>
     public class WorkflowHttpRequest
     {
+        /// <summary>
+        /// Gets or sets the method.
+        /// </summary>
         public string Method { get; set; } = "GET";
+        /// <summary>
+        /// Gets or sets the path.
+        /// </summary>
         public string Path { get; set; } = "/";
         public Dictionary<string, string> Query { get; set; } =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        /// <summary>
+        /// Gets or sets the body.
+        /// </summary>
         public string Body { get; set; }
 
         /// <summary>Convenience constructor for tests and adapters. A query string in the path is accepted.</summary>
@@ -70,9 +79,18 @@ namespace Beep.Skia.Automation
     /// <summary>HTTP-shaped result produced by the router.</summary>
     public class WorkflowHttpResponse
     {
+        /// <summary>
+        /// Gets or sets the status code.
+        /// </summary>
         public int StatusCode { get; set; } = 200;
+        /// <summary>
+        /// Gets or sets the body.
+        /// </summary>
         public ApiResponse Body { get; set; } = ApiResponse.Ok();
 
+        /// <summary>
+        /// Gets or sets the from.
+        /// </summary>
         public static WorkflowHttpResponse From(ApiResponse response)
             => new WorkflowHttpResponse
             {
@@ -108,11 +126,17 @@ namespace Beep.Skia.Automation
     {
         private readonly WorkflowExecutionApi _api;
 
+        /// <summary>
+        /// Initializes a new instance of the WorkflowRequestRouter class.
+        /// </summary>
         public WorkflowRequestRouter(WorkflowExecutionApi api)
         {
             _api = api ?? throw new ArgumentNullException(nameof(api));
         }
 
+        /// <summary>
+        /// Gets or sets the route.
+        /// </summary>
         public WorkflowHttpResponse Route(WorkflowHttpRequest request)
         {
             if (request == null) return WorkflowHttpResponse.From(ApiResponse.Fail("Request is required."));

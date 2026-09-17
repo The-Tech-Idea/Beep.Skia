@@ -727,6 +727,9 @@ namespace Beep.Skia.Components
     /// </summary>
     public class NavigationDrawerDivider : NavigationDrawerBaseItem
     {
+        /// <summary>
+        /// Gets or sets the draw.
+        /// </summary>
         public override void Draw(SKCanvas canvas, SKRect bounds)
         {
             using (var paint = new SKPaint())

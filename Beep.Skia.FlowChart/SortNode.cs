@@ -9,6 +9,9 @@ namespace Beep.Skia.Flowchart
     public class SortNode : FlowchartControl
     {
         private string _label = "Sort";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
         }
 
         private string _sortKey = "";
+        /// <summary>
+        /// Gets or sets the sort key.
+        /// </summary>
         public string SortKey
         {
             get => _sortKey;
@@ -42,6 +48,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Sort operation description.
+        /// </summary>
         public SortNode()
         {
             Name = "Flowchart Sort";

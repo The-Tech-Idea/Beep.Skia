@@ -11,10 +11,22 @@ namespace Beep.Skia.Business
     /// </summary>
     public class ConditionBuilder : BusinessControl
     {
+        /// <summary>
+        /// Gets or sets the condition text.
+        /// </summary>
         public string ConditionText { get; set; } = "Condition";
+        /// <summary>
+        /// Gets or sets the condition type.
+        /// </summary>
         public ConditionType ConditionType { get; set; } = ConditionType.Simple;
+        /// <summary>
+        /// Gets or sets the is valid.
+        /// </summary>
         public bool IsValid { get; set; } = true;
 
+        /// <summary>
+        /// Initializes a new instance of the ConditionBuilder class.
+        /// </summary>
         public ConditionBuilder()
         {
             Width = 120;

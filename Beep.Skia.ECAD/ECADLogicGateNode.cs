@@ -14,11 +14,26 @@ namespace Beep.Skia.ECAD
         private int _inputs = 2;
         private double _propagationDelay = 10.0;
 
+        /// <summary>
+        /// Gets or sets the gate type.
+        /// </summary>
         public string GateType { get => _gateType; set { var v = value ?? ""; if (_gateType != v) { _gateType = v; UpdateNodeProperty("GateType", _gateType); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the logic family.
+        /// </summary>
         public string LogicFamily { get => _family; set { var v = value ?? ""; if (_family != v) { _family = v; UpdateNodeProperty("LogicFamily", _family); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the num inputs.
+        /// </summary>
         public int NumInputs { get => _inputs; set { int v = Math.Clamp(value, 2, 8); if (_inputs != v) { _inputs = v; EnsurePortCounts(_inputs, 1); UpdateNodeProperty("NumInputs", _inputs); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the propagation delay.
+        /// </summary>
         public double PropagationDelay { get => _propagationDelay; set { if (Math.Abs(_propagationDelay - value) > 0.001) { _propagationDelay = value; UpdateNodeProperty("PropagationDelay", _propagationDelay); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Gate type
+        /// </summary>
         public ECADLogicGateNode()
         {
             Width = 80; Height = 60; Name = "Logic Gate";

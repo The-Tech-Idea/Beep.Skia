@@ -13,6 +13,9 @@ namespace Beep.Skia.DFD
         private string _label = "Process";
         private string _processId = "";
 
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -58,6 +61,9 @@ namespace Beep.Skia.DFD
         /// </summary>
         public bool HasChildDiagram => ChildDiagramData != null;
 
+        /// <summary>
+        /// Text label shown with the process.
+        /// </summary>
         public DFDProcess()
         {
             Name = "Process";

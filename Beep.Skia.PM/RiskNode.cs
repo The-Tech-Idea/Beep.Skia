@@ -10,6 +10,9 @@ namespace Beep.Skia.PM
     public class RiskNode : PMControl
     {
         private string _riskDescription = "Risk";
+        /// <summary>
+        /// Gets or sets the risk description.
+        /// </summary>
         public string RiskDescription
         {
             get => _riskDescription;
@@ -27,6 +30,9 @@ namespace Beep.Skia.PM
         }
 
         private string _probability = "Medium";
+        /// <summary>
+        /// Gets or sets the probability.
+        /// </summary>
         public string Probability
         {
             get => _probability;
@@ -44,6 +50,9 @@ namespace Beep.Skia.PM
         }
 
         private string _impact = "Medium";
+        /// <summary>
+        /// Gets or sets the impact.
+        /// </summary>
         public string Impact
         {
             get => _impact;
@@ -61,6 +70,9 @@ namespace Beep.Skia.PM
         }
 
         private string _mitigationPlan = "";
+        /// <summary>
+        /// Gets or sets the mitigation plan.
+        /// </summary>
         public string MitigationPlan
         {
             get => _mitigationPlan;
@@ -77,6 +89,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Risk description
+        /// </summary>
         public RiskNode()
         {
             Name = "PM Risk";

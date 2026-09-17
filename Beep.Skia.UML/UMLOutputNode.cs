@@ -15,12 +15,18 @@ namespace Beep.Skia.UML
         /// Gets or sets the output type (File, Database, API, etc.).
         /// </summary>
     private string _outputType = "Output";
+    /// <summary>
+    /// Gets or sets the output type.
+    /// </summary>
     public string OutputType { get => _outputType; set { if (_outputType == value) return; _outputType = value ?? string.Empty; if (NodeProperties.TryGetValue("OutputType", out var pi)) pi.ParameterCurrentValue = _outputType; InvalidateVisual(); } }
 
         /// <summary>
         /// Gets or sets the output destination or filename.
         /// </summary>
     private string _outputDestination = "";
+    /// <summary>
+    /// Output type (File, DB, API)
+    /// </summary>
     public string OutputDestination { get => _outputDestination; set { if (_outputDestination == value) return; _outputDestination = value ?? string.Empty; if (NodeProperties.TryGetValue("OutputDestination", out var pi)) pi.ParameterCurrentValue = _outputDestination; InvalidateVisual(); } }
 
         /// <summary>

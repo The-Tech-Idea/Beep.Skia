@@ -9,11 +9,26 @@ namespace Beep.Skia.Automation
     /// <summary>Transport-neutral API response envelope.</summary>
     public class ApiResponse
     {
+        /// <summary>
+        /// Gets or sets the success.
+        /// </summary>
         public bool Success { get; set; }
+        /// <summary>
+        /// Gets or sets the error.
+        /// </summary>
         public string Error { get; set; }
+        /// <summary>
+        /// Gets or sets the payload.
+        /// </summary>
         public object Payload { get; set; }
 
+        /// <summary>
+        /// Gets or sets the ok.
+        /// </summary>
         public static ApiResponse Ok(object payload = null) => new ApiResponse { Success = true, Payload = payload };
+        /// <summary>
+        /// Gets or sets the fail.
+        /// </summary>
         public static ApiResponse Fail(string error) => new ApiResponse { Success = false, Error = error };
     }
 
@@ -32,11 +47,17 @@ namespace Beep.Skia.Automation
 
         private readonly WorkflowExecutionService _service;
 
+        /// <summary>
+        /// Initializes a new instance of the WorkflowExecutionApi class.
+        /// </summary>
         public WorkflowExecutionApi(WorkflowExecutionService service)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
+        /// <summary>
+        /// Gets or sets the service.
+        /// </summary>
         public WorkflowExecutionService Service => _service;
 
         /// <summary>
@@ -76,6 +97,9 @@ namespace Beep.Skia.Automation
             }
         }
 
+        /// <summary>
+        /// Gets or sets the list workflows.
+        /// </summary>
         public ApiResponse ListWorkflows()
             => ApiResponse.Ok(_service.Workflows
                 .Select(w => new { workflowId = w.Id, name = w.Name, nodes = w.Nodes.Count })
@@ -93,12 +117,18 @@ namespace Beep.Skia.Automation
             return ApiResponse.Ok(DescribeJob(job));
         }
 
+        /// <summary>
+        /// Gets or sets the get job.
+        /// </summary>
         public ApiResponse GetJob(string jobId)
         {
             var job = _service.GetJob(jobId);
             return job == null ? ApiResponse.Fail("Job not found.") : ApiResponse.Ok(DescribeJob(job, includeResult: true));
         }
 
+        /// <summary>
+        /// Gets or sets the list jobs.
+        /// </summary>
         public ApiResponse ListJobs(string state = null, int limit = 50)
         {
             JobState? filter = null;
@@ -112,12 +142,21 @@ namespace Beep.Skia.Automation
             return ApiResponse.Ok(_service.GetJobs(filter, limit).Select(j => DescribeJob(j)).ToList());
         }
 
+        /// <summary>
+        /// Gets or sets the cancel.
+        /// </summary>
         public ApiResponse Cancel(string jobId)
             => _service.Cancel(jobId) ? ApiResponse.Ok(new { jobId, state = nameof(JobState.Cancelled) }) : ApiResponse.Fail("Job cannot be cancelled.");
 
+        /// <summary>
+        /// Gets or sets the pause.
+        /// </summary>
         public ApiResponse Pause(string jobId)
             => _service.Pause(jobId) ? ApiResponse.Ok(new { jobId, state = nameof(JobState.Paused) }) : ApiResponse.Fail("Job cannot be paused.");
 
+        /// <summary>
+        /// Gets or sets the resume.
+        /// </summary>
         public ApiResponse Resume(string jobId)
             => _service.Resume(jobId) ? ApiResponse.Ok(new { jobId, state = nameof(JobState.Running) }) : ApiResponse.Fail("Job cannot be resumed.");
 

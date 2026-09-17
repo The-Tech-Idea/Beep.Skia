@@ -494,6 +494,9 @@ namespace Beep.Skia.Components
     {
         private System.Timers.Timer _timer;
 
+        /// <summary>
+        /// Gets or sets the interval.
+        /// </summary>
         public double Interval
         {
             get => _timer?.Interval ?? 0;
@@ -508,6 +511,9 @@ namespace Beep.Skia.Components
 
         public event EventHandler Elapsed;
 
+        /// <summary>
+        /// Initializes a new instance of the Timer class.
+        /// </summary>
         public Timer()
         {
             _timer = new System.Timers.Timer();
@@ -515,16 +521,25 @@ namespace Beep.Skia.Components
             _timer.AutoReset = false;
         }
 
+        /// <summary>
+        /// Gets or sets the start.
+        /// </summary>
         public void Start()
         {
             _timer?.Start();
         }
 
+        /// <summary>
+        /// Gets or sets the stop.
+        /// </summary>
         public void Stop()
         {
             _timer?.Stop();
         }
 
+        /// <summary>
+        /// Gets or sets the dispose.
+        /// </summary>
         public void Dispose()
         {
             _timer?.Dispose();

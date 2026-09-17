@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class OffPageReferenceNode : FlowchartControl
     {
         private string _referenceId = "";
+        /// <summary>
+        /// Gets or sets the reference id.
+        /// </summary>
         public string ReferenceId
         {
             get => _referenceId;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Flowchart
         }
 
         private string _pageNumber = "";
+        /// <summary>
+        /// Gets or sets the page number.
+        /// </summary>
         public string PageNumber
         {
             get => _pageNumber;
@@ -43,6 +49,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Unique identifier for matching references.
+        /// </summary>
         public OffPageReferenceNode()
         {
             Name = "Flowchart Off-Page Reference";

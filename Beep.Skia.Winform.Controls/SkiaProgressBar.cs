@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaProgressBarComponent _pb;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaProgressBar class.
+        /// </summary>
         public SkiaProgressBar()
         {
             _pb = CreateSkiaComponent<SkiaProgressBarComponent>();

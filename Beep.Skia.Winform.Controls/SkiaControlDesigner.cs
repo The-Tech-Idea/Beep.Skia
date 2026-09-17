@@ -17,6 +17,9 @@ namespace Beep.Skia.Winform.Controls
     // converted to canvas coordinates.
     public class SkiaControlDesigner : ControlDesigner
     {
+        /// <summary>
+        /// Gets or sets the initialize.
+        /// </summary>
         public override void Initialize(IComponent component)
         {
             base.Initialize(component);

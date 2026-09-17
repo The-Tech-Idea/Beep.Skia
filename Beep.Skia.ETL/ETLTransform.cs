@@ -16,6 +16,9 @@ namespace Beep.Skia.ETL
         public enum TransformKind { Select, Filter, Map, Aggregate, Join }
 
         private TransformKind _kind = TransformKind.Select;
+        /// <summary>
+        /// Transform kind
+        /// </summary>
         public TransformKind Kind
         {
             get => _kind;
@@ -29,6 +32,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _expression = string.Empty;
+        /// <summary>
+        /// Filter/Map expression (simple syntax)
+        /// </summary>
         public string Expression
         {
             get => _expression;
@@ -44,6 +50,9 @@ namespace Beep.Skia.ETL
 
         // The resulting schema after transformation
         private string _outputSchemaJson = "[]";
+        /// <summary>
+        /// Output schema (JSON array of ColumnDefinition)
+        /// </summary>
         public string OutputSchema
         {
             get => _outputSchemaJson;
@@ -61,6 +70,9 @@ namespace Beep.Skia.ETL
 
         // Simple configurable hints for inference
         private string _groupByCsv = string.Empty; // comma-separated group-by column names
+        /// <summary>
+        /// Aggregate group-by columns (CSV)
+        /// </summary>
         public string GroupBy
         {
             get => _groupByCsv;
@@ -75,6 +87,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _joinKeyLeft = string.Empty;
+        /// <summary>
+        /// Join key in left input
+        /// </summary>
         public string JoinKeyLeft
         {
             get => _joinKeyLeft;
@@ -88,6 +103,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _joinKeyRight = string.Empty;
+        /// <summary>
+        /// Join key in right input
+        /// </summary>
         public string JoinKeyRight
         {
             get => _joinKeyRight;
@@ -100,6 +118,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// Transform kind
+        /// </summary>
         public ETLTransform()
         {
             Title = "Transform";

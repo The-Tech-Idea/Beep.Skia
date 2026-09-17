@@ -13,6 +13,9 @@ namespace Beep.Skia.UML
     public class UMLDeploymentNode : UMLControl
     {
         private string _nodeName = "Node";
+        /// <summary>
+        /// Gets or sets the node name.
+        /// </summary>
         public string NodeName
         {
             get => _nodeName;
@@ -27,6 +30,9 @@ namespace Beep.Skia.UML
         }
 
         private string _nodeType = "Device";
+        /// <summary>
+        /// Gets or sets the node type.
+        /// </summary>
         public string NodeType
         {
             get => _nodeType;
@@ -40,6 +46,9 @@ namespace Beep.Skia.UML
             }
         }
 
+        /// <summary>
+        /// Node name
+        /// </summary>
         public UMLDeploymentNode()
         {
             Width = 170;
@@ -101,6 +110,9 @@ namespace Beep.Skia.UML
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

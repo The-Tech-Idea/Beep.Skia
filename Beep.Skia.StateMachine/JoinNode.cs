@@ -12,6 +12,9 @@ namespace Beep.Skia.StateMachine
     public class JoinNode : StateMachineControl
     {
         private string _title = "Join";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -26,6 +29,9 @@ namespace Beep.Skia.StateMachine
         }
 
         private int _inPortCount = 2;
+        /// <summary>
+        /// Gets or sets the in port count.
+        /// </summary>
         public new int InPortCount
         {
             get => _inPortCount;
@@ -40,6 +46,9 @@ namespace Beep.Skia.StateMachine
             }
         }
 
+        /// <summary>
+        /// Join label
+        /// </summary>
         public JoinNode()
         {
             Width = 60; Height = 16;
@@ -105,6 +114,9 @@ namespace Beep.Skia.StateMachine
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

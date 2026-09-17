@@ -12,7 +12,13 @@ namespace Beep.Skia.Triggers
     /// </summary>
     public class ScheduleTrigger : TriggerBase
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public override string Name => "Schedule Trigger";
+        /// <summary>
+        /// Gets or sets the trigger type.
+        /// </summary>
         public override TriggerType TriggerType => TriggerType.Scheduled;
 
         /// <summary>Interval between activations.</summary>
@@ -21,6 +27,9 @@ namespace Beep.Skia.Triggers
         private CancellationTokenSource _cts;
         private Task _loop;
 
+        /// <summary>
+        /// Gets or sets the initialize async.
+        /// </summary>
         public override Task<bool> InitializeAsync(Dictionary<string, object> configuration, CancellationToken cancellationToken = default)
         {
             base.InitializeAsync(configuration, cancellationToken);
@@ -29,11 +38,17 @@ namespace Beep.Skia.Triggers
             return Task.FromResult(true);
         }
 
+        /// <summary>
+        /// Gets or sets the validate async.
+        /// </summary>
         public override Task<ValidationResult> ValidateAsync(CancellationToken cancellationToken = default)
             => Task.FromResult(Interval > TimeSpan.Zero
                 ? ValidationResult.Success()
                 : ValidationResult.Failure("Interval must be greater than zero."));
 
+        /// <summary>
+        /// Gets or sets the start async.
+        /// </summary>
         public override Task<bool> StartAsync(CancellationToken cancellationToken = default)
         {
             if (IsActive) return Task.FromResult(true);
@@ -49,6 +64,9 @@ namespace Beep.Skia.Triggers
             return Task.FromResult(true);
         }
 
+        /// <summary>
+        /// Gets or sets the stop async.
+        /// </summary>
         public override async Task<bool> StopAsync(CancellationToken cancellationToken = default)
         {
             if (!IsActive) return true;

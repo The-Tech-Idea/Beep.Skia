@@ -12,6 +12,9 @@ namespace Beep.Skia.PM
         /// The label drawn at the center of the milestone diamond.
         /// </summary>
         private string _label = "Milestone";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -28,6 +31,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Milestone label
+        /// </summary>
         public MilestoneNode()
         {
             Name = "PM Milestone";

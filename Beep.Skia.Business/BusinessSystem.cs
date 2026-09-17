@@ -11,6 +11,9 @@ namespace Beep.Skia.Business
     public class BusinessSystem : BusinessControl
     {
         private string _systemName = "System";
+        /// <summary>
+        /// System name
+        /// </summary>
         public string SystemName
         {
             get => _systemName;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// System name
+        /// </summary>
         public BusinessSystem()
         {
             Width = 100;

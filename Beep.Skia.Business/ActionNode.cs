@@ -13,6 +13,9 @@ namespace Beep.Skia.Business
     {
         private string _actionText = "Action";
         private ActionType _actionType = ActionType.Execute;
+        /// <summary>
+        /// Action text
+        /// </summary>
         public string ActionText
         {
             get => _actionText;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Action type
+        /// </summary>
         public ActionType ActionType
         {
             get => _actionType;
@@ -41,6 +47,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Action text
+        /// </summary>
         public ActionNode()
         {
             Width = 120;

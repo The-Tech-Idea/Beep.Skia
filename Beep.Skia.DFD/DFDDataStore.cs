@@ -8,6 +8,9 @@ namespace Beep.Skia.DFD
     public class DFDDataStore : DFDControl
     {
         private string _label = "Data Store";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -23,6 +26,9 @@ namespace Beep.Skia.DFD
                 }
             }
         }
+        /// <summary>
+        /// Text label shown with the data store.
+        /// </summary>
         public DFDDataStore()
         {
             Name = "Data Store";

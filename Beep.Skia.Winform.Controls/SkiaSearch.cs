@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaSearchComponent _search;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaSearch class.
+        /// </summary>
         public SkiaSearch()
         {
             _search = CreateSkiaComponent<SkiaSearchComponent>();

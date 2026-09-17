@@ -14,6 +14,9 @@ namespace Beep.Skia.Components
     /// </summary>
     public class TimerTriggerNode : AutomationNode
     {
+        /// <summary>
+        /// Initializes a new instance of the TimerTriggerNode class.
+        /// </summary>
         public TimerTriggerNode()
         {
             UpsertNodeProperty("TriggerType", typeof(string), _triggerType.ToString(), "Interval | Cron | OneTime");

@@ -3,8 +3,14 @@ using System;
 
 namespace Beep.Skia.WellLogs
 {
+    /// <summary>
+    /// Gets or sets the well log templates.
+    /// </summary>
     public static class WellLogTemplates
     {
+        /// <summary>
+        /// Gets or sets the create triple combo demo.
+        /// </summary>
         public static WellLogDocument CreateTripleComboDemo()
         {
             var document = new WellLogDocument

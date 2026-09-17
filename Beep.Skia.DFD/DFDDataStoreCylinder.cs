@@ -7,6 +7,9 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDDataStoreCylinder : DFDControl
     {
+        /// <summary>
+        /// Initializes a new instance of the DFDDataStoreCylinder class.
+        /// </summary>
         public DFDDataStoreCylinder()
         {
             Name = "Data Store (Cylinder)";

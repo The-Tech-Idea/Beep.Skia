@@ -22,13 +22,37 @@ namespace Beep.Skia.Automation
     /// <summary>A submitted workflow execution job with its inputs and result.</summary>
     public class ExecutionJob
     {
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
         public string Id { get; } = Guid.NewGuid().ToString("N")[..8];
+        /// <summary>
+        /// Gets or sets the workflow id.
+        /// </summary>
         public string WorkflowId { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the workflow name.
+        /// </summary>
         public string WorkflowName { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the submitted by.
+        /// </summary>
         public string SubmittedBy { get; set; } = "anonymous";
+        /// <summary>
+        /// Gets or sets the submitted at.
+        /// </summary>
         public DateTime SubmittedAt { get; } = DateTime.UtcNow;
+        /// <summary>
+        /// Gets or sets the started at.
+        /// </summary>
         public DateTime? StartedAt { get; set; }
+        /// <summary>
+        /// Gets or sets the completed at.
+        /// </summary>
         public DateTime? CompletedAt { get; set; }
+        /// <summary>
+        /// Gets or sets the state.
+        /// </summary>
         public JobState State { get; internal set; } = JobState.Queued;
 
         /// <summary>Engine execution id once the job starts running.</summary>
@@ -43,16 +67,25 @@ namespace Beep.Skia.Automation
         /// <summary>Engine result once the job has finished.</summary>
         public WorkflowResult Result { get; internal set; }
 
+        /// <summary>
+        /// Gets or sets the duration.
+        /// </summary>
         public TimeSpan? Duration => StartedAt.HasValue && CompletedAt.HasValue
             ? CompletedAt.Value - StartedAt.Value
             : null;
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"{Id} {WorkflowName} [{State}]";
     }
 
     /// <summary>Raised when a job transitions between states.</summary>
     public class JobStateChangedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Initializes a new instance of the JobStateChangedEventArgs class.
+        /// </summary>
         public JobStateChangedEventArgs(ExecutionJob job, JobState oldState, JobState newState)
         {
             Job = job;
@@ -60,8 +93,17 @@ namespace Beep.Skia.Automation
             NewState = newState;
         }
 
+        /// <summary>
+        /// Gets or sets the job.
+        /// </summary>
         public ExecutionJob Job { get; }
+        /// <summary>
+        /// Gets or sets the old state.
+        /// </summary>
         public JobState OldState { get; }
+        /// <summary>
+        /// Gets or sets the new state.
+        /// </summary>
         public JobState NewState { get; }
     }
 
@@ -80,6 +122,9 @@ namespace Beep.Skia.Automation
         private readonly SemaphoreSlim _slots;
         private bool _disposed;
 
+        /// <summary>
+        /// Initializes a new instance of the WorkflowExecutionService class.
+        /// </summary>
         public WorkflowExecutionService(int maxConcurrency = 2, WorkflowEngine engine = null)
         {
             MaxConcurrency = Math.Max(1, maxConcurrency);
@@ -108,9 +153,15 @@ namespace Beep.Skia.Automation
             _workflows[workflow.Id] = workflow;
         }
 
+        /// <summary>
+        /// Gets or sets the remove workflow.
+        /// </summary>
         public bool RemoveWorkflow(string workflowId)
             => !string.IsNullOrWhiteSpace(workflowId) && _workflows.TryRemove(workflowId, out _);
 
+        /// <summary>
+        /// Gets or sets the get workflow.
+        /// </summary>
         public WorkflowDefinition GetWorkflow(string workflowId)
             => workflowId != null && _workflows.TryGetValue(workflowId, out var workflow) ? workflow : null;
 
@@ -191,6 +242,9 @@ namespace Beep.Skia.Automation
             }
         }
 
+        /// <summary>
+        /// Gets or sets the get job.
+        /// </summary>
         public ExecutionJob GetJob(string jobId)
             => jobId != null && _jobs.TryGetValue(jobId, out var job) ? job : null;
 
@@ -270,6 +324,9 @@ namespace Beep.Skia.Automation
             try { JobStateChanged?.Invoke(this, new JobStateChangedEventArgs(job, old, state)); } catch { }
         }
 
+        /// <summary>
+        /// Gets or sets the dispose.
+        /// </summary>
         public void Dispose()
         {
             if (_disposed) return;

@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class SubProcessNode : FlowchartControl
     {
         private string _label = "Sub-Process";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Flowchart
         }
 
         private string _subProcessId = "";
+        /// <summary>
+        /// Gets or sets the sub process id.
+        /// </summary>
         public string SubProcessId
         {
             get => _subProcessId;
@@ -44,6 +50,9 @@ namespace Beep.Skia.Flowchart
         }
 
         private bool _isExpanded = false;
+        /// <summary>
+        /// Gets or sets the is expanded.
+        /// </summary>
         public bool IsExpanded
         {
             get => _isExpanded;
@@ -59,6 +68,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Sub-process name/description.
+        /// </summary>
         public SubProcessNode()
         {
             Name = "Flowchart Sub-Process";

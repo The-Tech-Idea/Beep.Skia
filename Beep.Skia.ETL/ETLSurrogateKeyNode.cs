@@ -11,8 +11,17 @@ namespace Beep.Skia.ETL
         private long _startValue = 1;
         private long _increment = 1;
 
+        /// <summary>
+        /// Gets or sets the key column.
+        /// </summary>
         public string KeyColumn { get => _keyColumn; set { var v = value ?? "SurrogateKey"; if (_keyColumn == v) return; _keyColumn = v; SetProp("KeyColumn", v); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the start value.
+        /// </summary>
         public long StartValue { get => _startValue; set { if (_startValue == value) return; _startValue = value; SetProp("StartValue", value); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the increment.
+        /// </summary>
         public long Increment { get => _increment; set { if (_increment == value) return; _increment = value; SetProp("Increment", value); InvalidateVisual(); } }
 
         private void SetProp(string name, object val, string desc = null)
@@ -21,6 +30,9 @@ namespace Beep.Skia.ETL
             else NodeProperties[name] = new ParameterInfo { ParameterName = name, ParameterType = val.GetType(), DefaultParameterValue = val, ParameterCurrentValue = val, Description = desc ?? name };
         }
 
+        /// <summary>
+        /// Surrogate key column name
+        /// </summary>
         public ETLSurrogateKeyNode()
         {
             Width = 140; Height = 80; Name = "SurrogateKey";

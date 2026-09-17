@@ -14,6 +14,9 @@ namespace Beep.Skia.ETL
     public class ETLLookup : ETLControl
     {
         private CacheMode _cacheMode = CacheMode.Full;
+        /// <summary>
+        /// Cache strategy: None, Partial, Full
+        /// </summary>
         public CacheMode CacheMode
         {
             get => _cacheMode;
@@ -38,6 +41,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _matchColumns = string.Empty;
+        /// <summary>
+        /// Columns to match (CSV: MainCol=RefCol,...)
+        /// </summary>
         public string MatchColumns
         {
             get => _matchColumns;
@@ -62,6 +68,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _returnColumns = string.Empty;
+        /// <summary>
+        /// Columns to return from reference (CSV)
+        /// </summary>
         public string ReturnColumns
         {
             get => _returnColumns;
@@ -86,6 +95,9 @@ namespace Beep.Skia.ETL
         }
 
         private bool _failOnNoMatch = false;
+        /// <summary>
+        /// Fail if lookup finds no match
+        /// </summary>
         public bool FailOnNoMatch
         {
             get => _failOnNoMatch;
@@ -109,6 +121,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _outputSchemaJson = "[]";
+        /// <summary>
+        /// Output schema (JSON array of ColumnDefinition)
+        /// </summary>
         public string OutputSchema
         {
             get => _outputSchemaJson;
@@ -132,6 +147,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// Cache strategy: None, Partial, Full
+        /// </summary>
         public ETLLookup()
         {
             Title = "Lookup";

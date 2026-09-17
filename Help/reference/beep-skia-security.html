@@ -61,7 +61,7 @@
       <tr><td><code>string AssetName</code></td><td>Property</td><td>Gets or sets the asset name.</td></tr>
       <tr><td><code>AssetCategory Category</code></td><td>Property</td><td>Gets or sets the category.</td></tr>
       <tr><td><code>Criticality Criticality</code></td><td>Property</td><td>Gets or sets the criticality.</td></tr>
-      <tr><td><code>AssetNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>AssetNode()</code></td><td>Method</td><td>Asset name</td></tr>
     </tbody>
   </table>
 </section>
@@ -76,7 +76,7 @@
       <tr><td><code>string ControlName</code></td><td>Property</td><td>Gets or sets the control name.</td></tr>
       <tr><td><code>ControlType ControlType</code></td><td>Property</td><td>Gets or sets the control type.</td></tr>
       <tr><td><code>ControlStatus Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
-      <tr><td><code>ControlNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ControlNode()</code></td><td>Method</td><td>Control name</td></tr>
     </tbody>
   </table>
 </section>
@@ -119,7 +119,7 @@
       <tr><td><code>DreadRating Discoverability</code></td><td>Property</td><td>Gets or sets the discoverability.</td></tr>
       <tr><td><code>double Average</code></td><td>Property</td><td>Average rating (1.0 - 3.0).</td></tr>
       <tr><td><code>string RiskLevel</code></td><td>Property</td><td>Risk level derived from the average (Low / Medium / High).</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -131,7 +131,7 @@
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
       <tr><td><code>FindingType Type</code></td><td>Property</td><td>Gets or sets the type.</td></tr>
       <tr><td><code>Confidence Confidence</code></td><td>Property</td><td>Gets or sets the confidence.</td></tr>
-      <tr><td><code>FindingNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>FindingNode()</code></td><td>Method</td><td>Finding title</td></tr>
     </tbody>
   </table>
 </section>
@@ -147,7 +147,7 @@
       <tr><td><code>IncidentStatus Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
       <tr><td><code>DateTime DetectedOn</code></td><td>Property</td><td>Gets or sets the detected on.</td></tr>
       <tr><td><code>Confidence Confidence</code></td><td>Property</td><td>Gets or sets the confidence.</td></tr>
-      <tr><td><code>IncidentNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>IncidentNode()</code></td><td>Method</td><td>Incident ID</td></tr>
     </tbody>
   </table>
 </section>
@@ -168,7 +168,7 @@
       <tr><td><code>float Thickness</code></td><td>Property</td><td>Gets or sets the thickness.</td></tr>
       <tr><td><code>SKColor Color</code></td><td>Property</td><td>Gets or sets the color.</td></tr>
       <tr><td><code>LinkStyle Style</code></td><td>Property</td><td>Gets or sets the style.</td></tr>
-      <tr><td><code>MitigationLink()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>MitigationLink()</code></td><td>Method</td><td>Line thickness</td></tr>
     </tbody>
   </table>
 </section>
@@ -194,7 +194,7 @@
       <tr><td><code>string Id</code></td><td>Property</td><td>Gets or sets the id.</td></tr>
       <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
       <tr><td><code>string Tactic</code></td><td>Property</td><td>Gets or sets the tactic.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -206,7 +206,7 @@
       <tr><td><code>string PolicyName</code></td><td>Property</td><td>Gets or sets the policy name.</td></tr>
       <tr><td><code>string Version</code></td><td>Property</td><td>Gets or sets the version.</td></tr>
       <tr><td><code>PolicyStatus Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
-      <tr><td><code>PolicyNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>PolicyNode()</code></td><td>Method</td><td>Policy name</td></tr>
     </tbody>
   </table>
 </section>
@@ -221,7 +221,7 @@
       <tr><td><code>string AssessmentName</code></td><td>Property</td><td>Gets or sets the assessment name.</td></tr>
       <tr><td><code>double RiskScore</code></td><td>Property</td><td>Gets or sets the risk score.</td></tr>
       <tr><td><code>DateTime AssessedOn</code></td><td>Property</td><td>Gets or sets the assessed on.</td></tr>
-      <tr><td><code>RiskAssessmentNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>RiskAssessmentNode()</code></td><td>Method</td><td>Assessment name</td></tr>
     </tbody>
   </table>
 </section>
@@ -264,7 +264,7 @@
       <tr><td><code>string ThreatName</code></td><td>Property</td><td>Gets or sets the threat name.</td></tr>
       <tr><td><code>Severity Severity</code></td><td>Property</td><td>Gets or sets the severity.</td></tr>
       <tr><td><code>Likelihood Likelihood</code></td><td>Property</td><td>Gets or sets the likelihood.</td></tr>
-      <tr><td><code>ThreatNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ThreatNode()</code></td><td>Method</td><td>Threat name</td></tr>
     </tbody>
   </table>
 </section>
@@ -280,7 +280,7 @@
       <tr><td><code>Severity Severity</code></td><td>Property</td><td>Gets or sets the severity.</td></tr>
       <tr><td><code>double Cvss</code></td><td>Property</td><td>Gets or sets the cvss.</td></tr>
       <tr><td><code>string AffectedAsset</code></td><td>Property</td><td>Gets or sets the affected asset.</td></tr>
-      <tr><td><code>VulnerabilityNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>VulnerabilityNode()</code></td><td>Method</td><td>Vulnerability ID</td></tr>
     </tbody>
   </table>
 </section>

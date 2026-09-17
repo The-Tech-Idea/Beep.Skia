@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaNavComponent _nav;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaNavigationDrawer class.
+        /// </summary>
         public SkiaNavigationDrawer()
         {
             _nav = CreateSkiaComponent<SkiaNavComponent>();

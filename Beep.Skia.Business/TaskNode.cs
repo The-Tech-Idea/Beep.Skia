@@ -12,6 +12,9 @@ namespace Beep.Skia.Business
     public class TaskNode : BusinessControl
     {
         private string _taskDescription = "Task Description";
+        /// <summary>
+        /// Task description
+        /// </summary>
         public string TaskDescription
         {
             get => _taskDescription;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Business
         }
 
         private TaskStatus _taskStatus = TaskStatus.NotStarted;
+        /// <summary>
+        /// Task status
+        /// </summary>
         public TaskStatus TaskStatus
         {
             get => _taskStatus;
@@ -42,6 +48,9 @@ namespace Beep.Skia.Business
         }
 
         private string _assignedTo = string.Empty;
+        /// <summary>
+        /// Assigned owner
+        /// </summary>
         public string AssignedTo
         {
             get => _assignedTo;
@@ -57,6 +66,9 @@ namespace Beep.Skia.Business
         }
 
         private DateTime? _dueDate;
+        /// <summary>
+        /// Due date
+        /// </summary>
         public DateTime? DueDate
         {
             get => _dueDate;
@@ -72,6 +84,9 @@ namespace Beep.Skia.Business
         }
 
         private int _progress = 0; // 0-100
+        /// <summary>
+        /// Percent complete (0-100)
+        /// </summary>
         public int Progress
         {
             get => _progress;
@@ -87,6 +102,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Task description
+        /// </summary>
         public TaskNode()
         {
             Width = 140;

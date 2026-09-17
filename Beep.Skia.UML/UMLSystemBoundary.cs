@@ -13,6 +13,9 @@ namespace Beep.Skia.UML
     public class UMLSystemBoundary : UMLControl
     {
         private string _systemName = "System";
+        /// <summary>
+        /// Gets or sets the system name.
+        /// </summary>
         public string SystemName
         {
             get => _systemName;
@@ -26,6 +29,9 @@ namespace Beep.Skia.UML
             }
         }
 
+        /// <summary>
+        /// System or subsystem name
+        /// </summary>
         public UMLSystemBoundary()
         {
             Width = 300;
@@ -68,6 +74,9 @@ namespace Beep.Skia.UML
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

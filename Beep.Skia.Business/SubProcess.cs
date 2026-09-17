@@ -12,9 +12,15 @@ namespace Beep.Skia.Business
     /// </summary>
     public class SubProcess : BusinessControl
     {
+        /// <summary>
+        /// Gets or sets the child components.
+        /// </summary>
         public List<BusinessControl> ChildComponents { get; set; } = new List<BusinessControl>();
         private bool _isCollapsed = false;
         private string _processName = "Sub Process";
+        /// <summary>
+        /// Collapsed state
+        /// </summary>
         public bool IsCollapsed
         {
             get => _isCollapsed;
@@ -28,6 +34,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Process name
+        /// </summary>
         public string ProcessName
         {
             get => _processName;
@@ -44,8 +53,14 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Gets or sets the child count.
+        /// </summary>
         public int ChildCount => ChildComponents.Count;
 
+        /// <summary>
+        /// Collapsed state
+        /// </summary>
         public SubProcess()
         {
             Width = 160;

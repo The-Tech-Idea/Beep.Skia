@@ -10,6 +10,9 @@ namespace Beep.Skia.ETL
     public class ETLScript : ETLControl
     {
         private string _scriptLanguage = "SQL";
+        /// <summary>
+        /// Gets or sets the script language.
+        /// </summary>
         public string ScriptLanguage
         {
             get => _scriptLanguage;
@@ -25,6 +28,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _script = "";
+        /// <summary>
+        /// Gets or sets the script.
+        /// </summary>
         public string Script
         {
             get => _script;
@@ -39,6 +45,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// Script language (SQL/Python/C#/JavaScript)
+        /// </summary>
         public ETLScript()
         {
             Title = "Script";

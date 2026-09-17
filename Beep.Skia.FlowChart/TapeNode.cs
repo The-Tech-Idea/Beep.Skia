@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class TapeNode : FlowchartControl
     {
         private string _label = "Tape";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Tape storage label.
+        /// </summary>
         public TapeNode()
         {
             Name = "Flowchart Tape";

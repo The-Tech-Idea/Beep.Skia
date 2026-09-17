@@ -8,6 +8,9 @@ namespace Beep.Skia.Model
     /// </summary>
     public class ForeignKeyDefinition
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = string.Empty;
         /// <summary>
         /// Local column names forming the FK (order matters for composites).

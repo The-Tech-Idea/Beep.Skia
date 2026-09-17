@@ -11,11 +11,26 @@ namespace Beep.Skia.ML
         private bool _shuffle = true;
         private int _randomSeed = 42;
 
+        /// <summary>
+        /// Gets or sets the folds.
+        /// </summary>
         public int Folds { get => _folds; set { int v = Math.Max(2, value); if (_folds != v) { _folds = v; UpdateNodeProperty("Folds", _folds); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the strategy.
+        /// </summary>
         public string Strategy { get => _strategy; set { var v = value ?? ""; if (_strategy != v) { _strategy = v; UpdateNodeProperty("Strategy", _strategy); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the shuffle.
+        /// </summary>
         public bool Shuffle { get => _shuffle; set { if (_shuffle != value) { _shuffle = value; UpdateNodeProperty("Shuffle", _shuffle); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the random seed.
+        /// </summary>
         public int RandomSeed { get => _randomSeed; set { if (_randomSeed != value) { _randomSeed = value; UpdateNodeProperty("RandomSeed", _randomSeed); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Number of folds
+        /// </summary>
         public MLCrossValidationNode()
         {
             Width = 150; Height = 80; Name = "Cross Validation";

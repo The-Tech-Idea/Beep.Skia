@@ -14,11 +14,26 @@ namespace Beep.Skia.ECAD
         private double _powerRating = 10.0;
         private double _turnsRatio = 10.0;
 
+        /// <summary>
+        /// Gets or sets the primary voltage.
+        /// </summary>
         public double PrimaryVoltage { get => _primaryVoltage; set { if (Math.Abs(_primaryVoltage - value) > 0.001) { _primaryVoltage = value; UpdateNodeProperty("PrimaryVoltage", _primaryVoltage); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the secondary voltage.
+        /// </summary>
         public double SecondaryVoltage { get => _secondaryVoltage; set { if (Math.Abs(_secondaryVoltage - value) > 0.001) { _secondaryVoltage = value; UpdateNodeProperty("SecondaryVoltage", _secondaryVoltage); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the power rating.
+        /// </summary>
         public double PowerRating { get => _powerRating; set { if (Math.Abs(_powerRating - value) > 0.001) { _powerRating = value; UpdateNodeProperty("PowerRating", _powerRating); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the turns ratio.
+        /// </summary>
         public double TurnsRatio { get => _turnsRatio; set { if (Math.Abs(_turnsRatio - value) > 0.001) { _turnsRatio = value; UpdateNodeProperty("TurnsRatio", _turnsRatio); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Primary voltage (V)
+        /// </summary>
         public ECADTransformerNode()
         {
             Width = 120; Height = 80; Name = "Transformer";

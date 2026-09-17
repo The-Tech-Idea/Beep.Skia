@@ -10,12 +10,24 @@ namespace Beep.Skia.ERD
     public class ERDAttribute : ERDControl
     {
         private string _nameText = "Attribute";
+        /// <summary>
+        /// Gets or sets the name text.
+        /// </summary>
         public string NameText { get => _nameText; set { if (_nameText == value) return; _nameText = value ?? string.Empty; InvalidateVisual(); } }
         private bool _isKey = false;
+        /// <summary>
+        /// Gets or sets the is key.
+        /// </summary>
         public bool IsKey { get => _isKey; set { if (_isKey == value) return; _isKey = value; InvalidateVisual(); } }
         private bool _isMultivalued = false;
+        /// <summary>
+        /// Gets or sets the is multivalued.
+        /// </summary>
         public bool IsMultivalued { get => _isMultivalued; set { if (_isMultivalued == value) return; _isMultivalued = value; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Initializes a new instance of the ERDAttribute class.
+        /// </summary>
         public ERDAttribute()
         {
             Name = "ERD Attribute";

@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class ForkNode : FlowchartControl
     {
         private int _parallelPaths = 2;
+        /// <summary>
+        /// Gets or sets the parallel paths.
+        /// </summary>
         public int ParallelPaths
         {
             get => _parallelPaths;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Number of parallel output paths (2-8).
+        /// </summary>
         public ForkNode()
         {
             Name = "Flowchart Fork";

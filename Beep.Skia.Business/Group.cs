@@ -12,10 +12,16 @@ namespace Beep.Skia.Business
     /// </summary>
     public class Group : BusinessControl
     {
+        /// <summary>
+        /// Gets or sets the grouped components.
+        /// </summary>
         public List<BusinessControl> GroupedComponents { get; set; } = new List<BusinessControl>();
         private string _groupName = "Group";
         private SKColor _groupColor = MaterialColors.Tertiary;
         private GroupType _groupType = GroupType.Process;
+        /// <summary>
+        /// Group name
+        /// </summary>
         public string GroupName
         {
             get => _groupName;
@@ -31,6 +37,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Group color
+        /// </summary>
         public SKColor GroupColor
         {
             get => _groupColor;
@@ -44,6 +53,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Group type
+        /// </summary>
         public GroupType GroupType
         {
             get => _groupType;
@@ -58,6 +70,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Group name
+        /// </summary>
         public Group()
         {
             Width = 200;

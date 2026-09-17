@@ -17,10 +17,25 @@ namespace Beep.Skia.Security
     /// </summary>
     public class DreadScore
     {
+        /// <summary>
+        /// Gets or sets the damage.
+        /// </summary>
         public DreadRating Damage { get; set; } = DreadRating.Medium;
+        /// <summary>
+        /// Gets or sets the reproducibility.
+        /// </summary>
         public DreadRating Reproducibility { get; set; } = DreadRating.Medium;
+        /// <summary>
+        /// Gets or sets the exploitability.
+        /// </summary>
         public DreadRating Exploitability { get; set; } = DreadRating.Medium;
+        /// <summary>
+        /// Gets or sets the affected users.
+        /// </summary>
         public DreadRating AffectedUsers { get; set; } = DreadRating.Medium;
+        /// <summary>
+        /// Gets or sets the discoverability.
+        /// </summary>
         public DreadRating Discoverability { get; set; } = DreadRating.Medium;
 
         /// <summary>Average rating (1.0 - 3.0).</summary>
@@ -30,6 +45,9 @@ namespace Beep.Skia.Security
         /// <summary>Risk level derived from the average (Low / Medium / High).</summary>
         public string RiskLevel => DreadCalculator.RiskLevel(Average);
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString()
             => $"DREAD {Average:0.00} ({RiskLevel}) [D={(int)Damage} R={(int)Reproducibility} E={(int)Exploitability} A={(int)AffectedUsers} D={(int)Discoverability}]";
     }

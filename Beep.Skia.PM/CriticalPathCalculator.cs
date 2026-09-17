@@ -13,18 +13,51 @@ namespace Beep.Skia.PM
     {
         public class TaskSchedule
         {
+            /// <summary>
+            /// Gets or sets the task.
+            /// </summary>
             public TaskNode? Task { get; set; }
+            /// <summary>
+            /// Gets or sets the early start.
+            /// </summary>
             public int EarlyStart { get; set; }
+            /// <summary>
+            /// Gets or sets the early finish.
+            /// </summary>
             public int EarlyFinish { get; set; }
+            /// <summary>
+            /// Gets or sets the late start.
+            /// </summary>
             public int LateStart { get; set; }
+            /// <summary>
+            /// Gets or sets the late finish.
+            /// </summary>
             public int LateFinish { get; set; }
+            /// <summary>
+            /// Gets or sets the total float.
+            /// </summary>
             public int TotalFloat { get; set; }
+            /// <summary>
+            /// Gets or sets the is critical.
+            /// </summary>
             public bool IsCritical => TotalFloat == 0;
+            /// <summary>
+            /// Gets or sets the has values.
+            /// </summary>
             public bool HasValues { get; set; }
         }
 
+        /// <summary>
+        /// Gets or sets the schedules.
+        /// </summary>
         public List<TaskSchedule> Schedules { get; } = new List<TaskSchedule>();
+        /// <summary>
+        /// Gets or sets the project duration.
+        /// </summary>
         public int ProjectDuration { get; private set; }
+        /// <summary>
+        /// Gets or sets the critical path.
+        /// </summary>
         public List<TaskNode> CriticalPath { get; } = new List<TaskNode>();
 
         private List<DependencyNode> _dependencyNodes = new List<DependencyNode>();

@@ -11,20 +11,62 @@ namespace Beep.Skia.ETL
     /// </summary>
     public class ColumnProfile
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the count.
+        /// </summary>
         public int Count { get; set; }
+        /// <summary>
+        /// Gets or sets the null count.
+        /// </summary>
         public int NullCount { get; set; }
+        /// <summary>
+        /// Gets or sets the distinct count.
+        /// </summary>
         public int DistinctCount { get; set; }
+        /// <summary>
+        /// Gets or sets the min.
+        /// </summary>
         public object Min { get; set; }
+        /// <summary>
+        /// Gets or sets the max.
+        /// </summary>
         public object Max { get; set; }
+        /// <summary>
+        /// Gets or sets the average.
+        /// </summary>
         public double? Average { get; set; }
+        /// <summary>
+        /// Gets or sets the sum.
+        /// </summary>
         public double? Sum { get; set; }
+        /// <summary>
+        /// Gets or sets the min length.
+        /// </summary>
         public int? MinLength { get; set; }
+        /// <summary>
+        /// Gets or sets the max length.
+        /// </summary>
         public int? MaxLength { get; set; }
+        /// <summary>
+        /// Gets or sets the sample values.
+        /// </summary>
         public List<object> SampleValues { get; set; } = new List<object>();
+        /// <summary>
+        /// Gets or sets the is numeric.
+        /// </summary>
         public bool IsNumeric { get; set; }
+        /// <summary>
+        /// Gets or sets the is date time.
+        /// </summary>
         public bool IsDateTime { get; set; }
 
+        /// <summary>
+        /// Gets or sets the null percentage.
+        /// </summary>
         public double NullPercentage(int rowCount)
             => rowCount <= 0 ? 0d : Math.Round(NullCount * 100d / rowCount, 2);
     }
@@ -34,7 +76,13 @@ namespace Beep.Skia.ETL
     /// </summary>
     public class DataProfile
     {
+        /// <summary>
+        /// Gets or sets the row count.
+        /// </summary>
         public int RowCount { get; set; }
+        /// <summary>
+        /// Gets or sets the columns.
+        /// </summary>
         public List<ColumnProfile> Columns { get; set; } = new List<ColumnProfile>();
 
         /// <summary>
@@ -137,12 +185,18 @@ namespace Beep.Skia.ETL
             private int? _minLength;
             private int? _maxLength;
 
+            /// <summary>
+            /// Initializes a new instance of the ColumnAccumulator class.
+            /// </summary>
             public ColumnAccumulator(string name, int sampleSize)
             {
                 _name = name;
                 _sampleSize = Math.Max(0, sampleSize);
             }
 
+            /// <summary>
+            /// Gets or sets the add.
+            /// </summary>
             public void Add(object value)
             {
                 if (value == null || value is DBNull)
@@ -204,6 +258,9 @@ namespace Beep.Skia.ETL
                 }
             }
 
+            /// <summary>
+            /// Gets or sets the to profile.
+            /// </summary>
             public ColumnProfile ToProfile()
             {
                 bool isNumeric = _numericCount > 0 && !_sawNonNumeric && !_sawDate;

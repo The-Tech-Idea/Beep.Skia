@@ -7,6 +7,9 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDTrustBoundary : DFDControl
     {
+        /// <summary>
+        /// Initializes a new instance of the DFDTrustBoundary class.
+        /// </summary>
         public DFDTrustBoundary()
         {
             Name = "Trust Boundary";

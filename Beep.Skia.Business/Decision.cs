@@ -12,6 +12,9 @@ namespace Beep.Skia.Business
     public class Decision : BusinessControl
     {
         private string _label = "Decision";
+        /// <summary>
+        /// Display label
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Display label
+        /// </summary>
         public Decision()
         {
             Width = 80;

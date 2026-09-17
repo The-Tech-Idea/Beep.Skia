@@ -15,6 +15,9 @@ namespace Beep.Skia.Business
         private DataType _dataType = DataType.Document;
         private string _dataFormat = string.Empty;
         private bool _isCollection = false;
+        /// <summary>
+        /// Data name
+        /// </summary>
         public string DataName
         {
             get => _dataName;
@@ -30,6 +33,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Data type
+        /// </summary>
         public DataType DataType
         {
             get => _dataType;
@@ -43,6 +49,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Data format
+        /// </summary>
         public string DataFormat
         {
             get => _dataFormat;
@@ -57,6 +66,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Is collection
+        /// </summary>
         public bool IsCollection
         {
             get => _isCollection;
@@ -71,6 +83,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Data name
+        /// </summary>
         public DataObject()
         {
             Width = 100;

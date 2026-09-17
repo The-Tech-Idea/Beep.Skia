@@ -9,6 +9,9 @@ namespace Beep.Skia.Flowchart
     public class PredefinedProcessNode : FlowchartControl
     {
         private string _label = "Predefined Process";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -25,6 +28,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Text shown inside the predefined process rectangle.
+        /// </summary>
         public PredefinedProcessNode()
         {
             Name = "Flowchart Predefined Process";

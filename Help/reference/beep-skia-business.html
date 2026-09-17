@@ -73,9 +73,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string ActionText</code></td><td>Property</td><td>Gets or sets the action text.</td></tr>
-      <tr><td><code>ActionType ActionType</code></td><td>Property</td><td>Gets or sets the action type.</td></tr>
-      <tr><td><code>ActionNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string ActionText</code></td><td>Property</td><td>Action text</td></tr>
+      <tr><td><code>ActionType ActionType</code></td><td>Property</td><td>Action type</td></tr>
+      <tr><td><code>ActionNode()</code></td><td>Method</td><td>Action text</td></tr>
     </tbody>
   </table>
 </section>
@@ -89,11 +89,11 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string AnnotationText</code></td><td>Property</td><td>Gets or sets the annotation text.</td></tr>
-      <tr><td><code>AnnotationType AnnotationType</code></td><td>Property</td><td>Gets or sets the annotation type.</td></tr>
-      <tr><td><code>bool ShowBorder</code></td><td>Property</td><td>Gets or sets the show border.</td></tr>
-      <tr><td><code>bool ShowBackground</code></td><td>Property</td><td>Gets or sets the show background.</td></tr>
-      <tr><td><code>Annotation()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string AnnotationText</code></td><td>Property</td><td>Annotation text</td></tr>
+      <tr><td><code>AnnotationType AnnotationType</code></td><td>Property</td><td>Annotation type</td></tr>
+      <tr><td><code>bool ShowBorder</code></td><td>Property</td><td>Show border</td></tr>
+      <tr><td><code>bool ShowBackground</code></td><td>Property</td><td>Show background</td></tr>
+      <tr><td><code>Annotation()</code></td><td>Method</td><td>Annotation text</td></tr>
     </tbody>
   </table>
 </section>
@@ -155,7 +155,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string LaneName</code></td><td>Property</td><td>Gets or sets the lane name.</td></tr>
-      <tr><td><code>BpmnLaneNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>BpmnLaneNode()</code></td><td>Method</td><td>Lane name</td></tr>
     </tbody>
   </table>
 </section>
@@ -166,7 +166,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string MessageName</code></td><td>Property</td><td>Optional message name (exported as the message flow name).</td></tr>
-      <tr><td><code>BpmnMessageFlow() : base(()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>BpmnMessageFlow() : base(()</code></td><td>Method</td><td>Initializes a new instance of the BpmnMessageFlow class.</td></tr>
     </tbody>
   </table>
 </section>
@@ -177,7 +177,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string PoolName</code></td><td>Property</td><td>Gets or sets the pool name.</td></tr>
-      <tr><td><code>BpmnPoolNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>BpmnPoolNode()</code></td><td>Method</td><td>Pool / participant name</td></tr>
     </tbody>
   </table>
 </section>
@@ -216,8 +216,8 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string SystemName</code></td><td>Property</td><td>Gets or sets the system name.</td></tr>
-      <tr><td><code>BusinessSystem()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string SystemName</code></td><td>Property</td><td>System name</td></tr>
+      <tr><td><code>BusinessSystem()</code></td><td>Method</td><td>System name</td></tr>
     </tbody>
   </table>
 </section>
@@ -229,7 +229,7 @@
     <tbody>
       <tr><td><code>static readonly string[] TaskTypes =</code></td><td>Field</td><td>Supported BPMN task types (mapped to bpmn:*Task elements on export).</td></tr>
       <tr><td><code>string TaskType</code></td><td>Property</td><td>BPMN task type: Task, Service, User, Script, Manual, BusinessRule, Send, or Receive.</td></tr>
-      <tr><td><code>BusinessTask()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>BusinessTask()</code></td><td>Method</td><td>BPMN task type</td></tr>
       <tr><td><code>string Label</code></td><td>Property</td><td>Display label for the task. Synced with Name for convenience.</td></tr>
     </tbody>
   </table>
@@ -243,7 +243,7 @@
       <tr><td><code>string ConditionText</code></td><td>Property</td><td>Gets or sets the condition text.</td></tr>
       <tr><td><code>ConditionType ConditionType</code></td><td>Property</td><td>Gets or sets the condition type.</td></tr>
       <tr><td><code>bool IsValid</code></td><td>Property</td><td>Gets or sets the is valid.</td></tr>
-      <tr><td><code>ConditionBuilder()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ConditionBuilder()</code></td><td>Method</td><td>Initializes a new instance of the ConditionBuilder class.</td></tr>
     </tbody>
   </table>
 </section>
@@ -261,8 +261,8 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>Database()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
+      <tr><td><code>Database()</code></td><td>Method</td><td>Display label</td></tr>
     </tbody>
   </table>
 </section>
@@ -272,11 +272,11 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string DataName</code></td><td>Property</td><td>Gets or sets the data name.</td></tr>
-      <tr><td><code>DataType DataType</code></td><td>Property</td><td>Gets or sets the data type.</td></tr>
-      <tr><td><code>string DataFormat</code></td><td>Property</td><td>Gets or sets the data format.</td></tr>
-      <tr><td><code>bool IsCollection</code></td><td>Property</td><td>Gets or sets the is collection.</td></tr>
-      <tr><td><code>DataObject()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string DataName</code></td><td>Property</td><td>Data name</td></tr>
+      <tr><td><code>DataType DataType</code></td><td>Property</td><td>Data type</td></tr>
+      <tr><td><code>string DataFormat</code></td><td>Property</td><td>Data format</td></tr>
+      <tr><td><code>bool IsCollection</code></td><td>Property</td><td>Is collection</td></tr>
+      <tr><td><code>DataObject()</code></td><td>Method</td><td>Data name</td></tr>
     </tbody>
   </table>
 </section>
@@ -286,8 +286,8 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>DataStore()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
+      <tr><td><code>DataStore()</code></td><td>Method</td><td>Display label</td></tr>
     </tbody>
   </table>
 </section>
@@ -301,8 +301,8 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>Decision()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
+      <tr><td><code>Decision()</code></td><td>Method</td><td>Display label</td></tr>
     </tbody>
   </table>
 </section>
@@ -312,9 +312,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string DepartmentName</code></td><td>Property</td><td>Gets or sets the department name.</td></tr>
-      <tr><td><code>int EmployeeCount</code></td><td>Property</td><td>Gets or sets the employee count.</td></tr>
-      <tr><td><code>Department()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string DepartmentName</code></td><td>Property</td><td>Department name</td></tr>
+      <tr><td><code>int EmployeeCount</code></td><td>Property</td><td>Employees count</td></tr>
+      <tr><td><code>Department()</code></td><td>Method</td><td>Department name</td></tr>
     </tbody>
   </table>
 </section>
@@ -324,8 +324,8 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>Document()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
+      <tr><td><code>Document()</code></td><td>Method</td><td>Display label</td></tr>
     </tbody>
   </table>
 </section>
@@ -335,8 +335,8 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>EndEvent()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
+      <tr><td><code>EndEvent()</code></td><td>Method</td><td>Display label</td></tr>
     </tbody>
   </table>
 </section>
@@ -346,12 +346,12 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string EventName</code></td><td>Property</td><td>Gets or sets the event name.</td></tr>
-      <tr><td><code>EventType EventType</code></td><td>Property</td><td>Gets or sets the event type.</td></tr>
-      <tr><td><code>string TriggerCondition</code></td><td>Property</td><td>Gets or sets the trigger condition.</td></tr>
-      <tr><td><code>bool IsTriggered</code></td><td>Property</td><td>Gets or sets the is triggered.</td></tr>
-      <tr><td><code>DateTime? TriggerTime</code></td><td>Property</td><td>Gets or sets the trigger time.</td></tr>
-      <tr><td><code>EventNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string EventName</code></td><td>Property</td><td>Event name</td></tr>
+      <tr><td><code>EventType EventType</code></td><td>Property</td><td>Event type</td></tr>
+      <tr><td><code>string TriggerCondition</code></td><td>Property</td><td>Trigger condition</td></tr>
+      <tr><td><code>bool IsTriggered</code></td><td>Property</td><td>Triggered state</td></tr>
+      <tr><td><code>DateTime? TriggerTime</code></td><td>Property</td><td>Trigger timestamp (ISO 8601)</td></tr>
+      <tr><td><code>EventNode()</code></td><td>Method</td><td>Event name</td></tr>
     </tbody>
   </table>
 </section>
@@ -369,8 +369,8 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>ExternalData()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
+      <tr><td><code>ExternalData()</code></td><td>Method</td><td>Display label</td></tr>
     </tbody>
   </table>
 </section>
@@ -384,11 +384,11 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>GatewayType GatewayType</code></td><td>Property</td><td>Gets or sets the gateway type.</td></tr>
-      <tr><td><code>Gateway()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
+      <tr><td><code>GatewayType GatewayType</code></td><td>Property</td><td>Gateway type</td></tr>
+      <tr><td><code>Gateway()</code></td><td>Method</td><td>Display label</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -403,10 +403,10 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>List&lt;BusinessControl&gt; GroupedComponents</code></td><td>Property</td><td>Gets or sets the grouped components.</td></tr>
-      <tr><td><code>string GroupName</code></td><td>Property</td><td>Gets or sets the group name.</td></tr>
-      <tr><td><code>SKColor GroupColor</code></td><td>Property</td><td>Gets or sets the group color.</td></tr>
-      <tr><td><code>GroupType GroupType</code></td><td>Property</td><td>Gets or sets the group type.</td></tr>
-      <tr><td><code>Group()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string GroupName</code></td><td>Property</td><td>Group name</td></tr>
+      <tr><td><code>SKColor GroupColor</code></td><td>Property</td><td>Group color</td></tr>
+      <tr><td><code>GroupType GroupType</code></td><td>Property</td><td>Group type</td></tr>
+      <tr><td><code>Group()</code></td><td>Method</td><td>Group name</td></tr>
       <tr><td><code>void AddComponent(BusinessControl component)</code></td><td>Method</td><td>Adds a component to this group.</td></tr>
       <tr><td><code>void RemoveComponent(BusinessControl component)</code></td><td>Method</td><td>Removes a component from this group.</td></tr>
     </tbody>
@@ -422,12 +422,12 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>EventType EventType</code></td><td>Property</td><td>Gets or sets the event type.</td></tr>
-      <tr><td><code>EventPosition EventPosition</code></td><td>Property</td><td>Gets or sets the event position.</td></tr>
-      <tr><td><code>IntermediateEventNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Event label</td></tr>
+      <tr><td><code>EventType EventType</code></td><td>Property</td><td>Event type</td></tr>
+      <tr><td><code>EventPosition EventPosition</code></td><td>Property</td><td>Catch or Throw</td></tr>
+      <tr><td><code>IntermediateEventNode()</code></td><td>Method</td><td>Event label</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -437,9 +437,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string PersonName</code></td><td>Property</td><td>Gets or sets the person name.</td></tr>
-      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
-      <tr><td><code>Person()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string PersonName</code></td><td>Property</td><td>Person name</td></tr>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Job title</td></tr>
+      <tr><td><code>Person()</code></td><td>Method</td><td>Person name</td></tr>
     </tbody>
   </table>
 </section>
@@ -449,8 +449,8 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string RoleName</code></td><td>Property</td><td>Gets or sets the role name.</td></tr>
-      <tr><td><code>Role()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string RoleName</code></td><td>Property</td><td>Role name</td></tr>
+      <tr><td><code>Role()</code></td><td>Method</td><td>Role name</td></tr>
     </tbody>
   </table>
 </section>
@@ -460,10 +460,10 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string RuleSetName</code></td><td>Property</td><td>Gets or sets the rule set name.</td></tr>
-      <tr><td><code>int RuleCount</code></td><td>Property</td><td>Gets or sets the rule count.</td></tr>
-      <tr><td><code>bool IsActive</code></td><td>Property</td><td>Gets or sets the is active.</td></tr>
-      <tr><td><code>RuleEngine()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string RuleSetName</code></td><td>Property</td><td>Rule set name</td></tr>
+      <tr><td><code>int RuleCount</code></td><td>Property</td><td>Number of rules</td></tr>
+      <tr><td><code>bool IsActive</code></td><td>Property</td><td>Active state</td></tr>
+      <tr><td><code>RuleEngine()</code></td><td>Method</td><td>Rule set name</td></tr>
     </tbody>
   </table>
 </section>
@@ -473,10 +473,10 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string FlowLabel</code></td><td>Property</td><td>Gets or sets the flow label.</td></tr>
-      <tr><td><code>FlowDirection Direction</code></td><td>Property</td><td>Gets or sets the direction.</td></tr>
-      <tr><td><code>bool IsActive</code></td><td>Property</td><td>Gets or sets the is active.</td></tr>
-      <tr><td><code>RuleFlow()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string FlowLabel</code></td><td>Property</td><td>Flow label</td></tr>
+      <tr><td><code>FlowDirection Direction</code></td><td>Property</td><td>Flow direction</td></tr>
+      <tr><td><code>bool IsActive</code></td><td>Property</td><td>Active state</td></tr>
+      <tr><td><code>RuleFlow()</code></td><td>Method</td><td>Flow label</td></tr>
     </tbody>
   </table>
 </section>
@@ -486,8 +486,8 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>StartEvent()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
+      <tr><td><code>StartEvent()</code></td><td>Method</td><td>Display label</td></tr>
     </tbody>
   </table>
 </section>
@@ -498,10 +498,10 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>List&lt;BusinessControl&gt; ChildComponents</code></td><td>Property</td><td>Gets or sets the child components.</td></tr>
-      <tr><td><code>bool IsCollapsed</code></td><td>Property</td><td>Gets or sets the is collapsed.</td></tr>
-      <tr><td><code>string ProcessName</code></td><td>Property</td><td>Gets or sets the process name.</td></tr>
+      <tr><td><code>bool IsCollapsed</code></td><td>Property</td><td>Collapsed state</td></tr>
+      <tr><td><code>string ProcessName</code></td><td>Property</td><td>Process name</td></tr>
       <tr><td><code>int ChildCount</code></td><td>Property</td><td>Gets or sets the child count.</td></tr>
-      <tr><td><code>SubProcess()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SubProcess()</code></td><td>Method</td><td>Collapsed state</td></tr>
       <tr><td><code>void AddChild(BusinessControl component)</code></td><td>Method</td><td>Adds a child component to this subprocess.</td></tr>
       <tr><td><code>void RemoveChild(BusinessControl component)</code></td><td>Method</td><td>Removes a child component from this subprocess.</td></tr>
       <tr><td><code>void ToggleCollapsed()</code></td><td>Method</td><td>Toggles the collapsed/expanded state of the subprocess.</td></tr>
@@ -514,12 +514,12 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string TaskDescription</code></td><td>Property</td><td>Gets or sets the task description.</td></tr>
-      <tr><td><code>TaskStatus TaskStatus</code></td><td>Property</td><td>Gets or sets the task status.</td></tr>
-      <tr><td><code>string AssignedTo</code></td><td>Property</td><td>Gets or sets the assigned to.</td></tr>
-      <tr><td><code>DateTime? DueDate</code></td><td>Property</td><td>Gets or sets the due date.</td></tr>
-      <tr><td><code>int Progress</code></td><td>Property</td><td>Gets or sets the progress.</td></tr>
-      <tr><td><code>TaskNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string TaskDescription</code></td><td>Property</td><td>Task description</td></tr>
+      <tr><td><code>TaskStatus TaskStatus</code></td><td>Property</td><td>Task status</td></tr>
+      <tr><td><code>string AssignedTo</code></td><td>Property</td><td>Assigned owner</td></tr>
+      <tr><td><code>DateTime? DueDate</code></td><td>Property</td><td>Due date</td></tr>
+      <tr><td><code>int Progress</code></td><td>Property</td><td>Percent complete (0-100)</td></tr>
+      <tr><td><code>TaskNode()</code></td><td>Method</td><td>Task description</td></tr>
     </tbody>
   </table>
 </section>

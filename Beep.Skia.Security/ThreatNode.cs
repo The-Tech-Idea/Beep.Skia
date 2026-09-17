@@ -14,10 +14,22 @@ namespace Beep.Skia.Security
         private Severity _severity = Severity.Medium;
         private Likelihood _likelihood = Likelihood.Possible;
 
+        /// <summary>
+        /// Gets or sets the threat name.
+        /// </summary>
         public string ThreatName { get => _threatName; set { var v = value ?? string.Empty; if (_threatName != v) { _threatName = v; if (NodeProperties.TryGetValue("ThreatName", out var p)) p.ParameterCurrentValue = _threatName; else NodeProperties["ThreatName"] = new ParameterInfo { ParameterName = "ThreatName", ParameterType = typeof(string), DefaultParameterValue = _threatName, ParameterCurrentValue = _threatName, Description = "Threat name" }; Name = _threatName; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the severity.
+        /// </summary>
         public Severity Severity { get => _severity; set { if (_severity != value) { _severity = value; if (NodeProperties.TryGetValue("Severity", out var p)) p.ParameterCurrentValue = _severity; else NodeProperties["Severity"] = new ParameterInfo { ParameterName = "Severity", ParameterType = typeof(Severity), DefaultParameterValue = _severity, ParameterCurrentValue = _severity, Description = "Severity", Choices = Enum.GetNames(typeof(Severity)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the likelihood.
+        /// </summary>
         public Likelihood Likelihood { get => _likelihood; set { if (_likelihood != value) { _likelihood = value; if (NodeProperties.TryGetValue("Likelihood", out var p)) p.ParameterCurrentValue = _likelihood; else NodeProperties["Likelihood"] = new ParameterInfo { ParameterName = "Likelihood", ParameterType = typeof(Likelihood), DefaultParameterValue = _likelihood, ParameterCurrentValue = _likelihood, Description = "Likelihood", Choices = Enum.GetNames(typeof(Likelihood)) }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Threat name
+        /// </summary>
         public ThreatNode()
         {
             Width = 140; Height = 80;

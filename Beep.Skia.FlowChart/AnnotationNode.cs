@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class AnnotationNode : FlowchartControl
     {
         private string _text = "Annotation";
+        /// <summary>
+        /// Gets or sets the text.
+        /// </summary>
         public string Text
         {
             get => _text;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Flowchart
         }
 
         private bool _showConnector = true;
+        /// <summary>
+        /// Gets or sets the show connector.
+        /// </summary>
         public bool ShowConnector
         {
             get => _showConnector;
@@ -44,6 +50,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Annotation text (supports multi-line).
+        /// </summary>
         public AnnotationNode()
         {
             Name = "Flowchart Annotation";

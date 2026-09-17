@@ -13,13 +13,34 @@ namespace Beep.Skia.ML
         private bool _earlyStopping = true;
         private int _patience = 10;
 
+        /// <summary>
+        /// Gets or sets the epochs.
+        /// </summary>
         public int Epochs { get => _epochs; set { int v = Math.Max(1, value); if (_epochs != v) { _epochs = v; UpdateNodeProperty("Epochs", _epochs); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the batch size.
+        /// </summary>
         public int BatchSize { get => _batchSize; set { int v = Math.Max(1, value); if (_batchSize != v) { _batchSize = v; UpdateNodeProperty("BatchSize", _batchSize); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the learning rate.
+        /// </summary>
         public double LearningRate { get => _learningRate; set { double v = Math.Max(0.0001, value); if (Math.Abs(_learningRate - v) > 0.00001) { _learningRate = v; UpdateNodeProperty("LearningRate", _learningRate); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the loss function.
+        /// </summary>
         public string LossFunction { get => _lossFunction; set { var v = value ?? ""; if (_lossFunction != v) { _lossFunction = v; UpdateNodeProperty("LossFunction", _lossFunction); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the early stopping.
+        /// </summary>
         public bool EarlyStopping { get => _earlyStopping; set { if (_earlyStopping != value) { _earlyStopping = value; UpdateNodeProperty("EarlyStopping", _earlyStopping); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the patience.
+        /// </summary>
         public int Patience { get => _patience; set { int v = Math.Max(1, value); if (_patience != v) { _patience = v; UpdateNodeProperty("Patience", _patience); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Training epochs
+        /// </summary>
         public MLTrainerNode()
         {
             Width = 140; Height = 90; Name = "Trainer";

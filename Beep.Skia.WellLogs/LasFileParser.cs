@@ -13,8 +13,17 @@ namespace Beep.Skia.WellLogs
     /// </summary>
     public class LasFileParser
     {
+        /// <summary>
+        /// Gets or sets the document.
+        /// </summary>
         public WellLogDocument Document { get; private set; }
+        /// <summary>
+        /// Gets or sets the warnings.
+        /// </summary>
         public List<string> Warnings { get; } = new List<string>();
+        /// <summary>
+        /// Gets or sets the has errors.
+        /// </summary>
         public bool HasErrors { get; private set; }
 
         private enum Section { Unknown, Version, Well, Parameter, Curve, Other, Data }

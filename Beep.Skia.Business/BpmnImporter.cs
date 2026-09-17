@@ -11,8 +11,17 @@ namespace Beep.Skia.Business
     /// </summary>
     public class BpmnFlow
     {
+        /// <summary>
+        /// Gets or sets the source.
+        /// </summary>
         public SkiaComponent Source { get; set; }
+        /// <summary>
+        /// Gets or sets the target.
+        /// </summary>
         public SkiaComponent Target { get; set; }
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label { get; set; }
     }
 
@@ -21,9 +30,21 @@ namespace Beep.Skia.Business
     /// </summary>
     public class BpmnImportResult
     {
+        /// <summary>
+        /// Gets or sets the process name.
+        /// </summary>
         public string ProcessName { get; set; }
+        /// <summary>
+        /// Gets or sets the components.
+        /// </summary>
         public List<SkiaComponent> Components { get; } = new List<SkiaComponent>();
+        /// <summary>
+        /// Gets or sets the flows.
+        /// </summary>
         public List<BpmnFlow> Flows { get; } = new List<BpmnFlow>();
+        /// <summary>
+        /// Gets or sets the warnings.
+        /// </summary>
         public List<string> Warnings { get; } = new List<string>();
 
         /// <summary>

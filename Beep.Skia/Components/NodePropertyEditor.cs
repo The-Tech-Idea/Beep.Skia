@@ -14,6 +14,9 @@ namespace Beep.Skia.Components
     public class NodePropertyEditor : SkiaComponent
     {
         // Hide from palette/toolbox
+        /// <summary>
+        /// Gets or sets the show in palette.
+        /// </summary>
         public override bool ShowInPalette { get; set; } = false;
         #region Private Fields
         private AutomationNode _selectedNode;

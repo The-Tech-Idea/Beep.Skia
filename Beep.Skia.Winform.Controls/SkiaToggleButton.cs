@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaToggleButtonComponent _tb;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaToggleButton class.
+        /// </summary>
         public SkiaToggleButton()
         {
             _tb = CreateSkiaComponent<SkiaToggleButtonComponent>();

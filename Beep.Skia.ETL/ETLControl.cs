@@ -12,12 +12,21 @@ namespace Beep.Skia.ETL
     public abstract class ETLControl : MaterialControl
     {
         private string _title = "ETL";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title { get => _title; set { if (_title == value) return; _title = value ?? string.Empty; if (NodeProperties.TryGetValue("Title", out var pi)) pi.ParameterCurrentValue = _title; InvalidateVisual(); } }
 
         private string _subtitle = string.Empty;
+    /// <summary>
+    /// Enable error output port for rejected rows
+    /// </summary>
     public string Subtitle { get => _subtitle; set { if (_subtitle == value) return; _subtitle = value ?? string.Empty; if (NodeProperties.TryGetValue("Subtitle", out var pi)) pi.ParameterCurrentValue = _subtitle; InvalidateVisual(); } }
 
         private bool _hasErrorOutput = false;
+        /// <summary>
+        /// Enable error output port for rejected rows
+        /// </summary>
         public bool HasErrorOutput
         {
             get => _hasErrorOutput;
@@ -42,15 +51,27 @@ namespace Beep.Skia.ETL
 
         // Adopt Material Design tokens for consistent theming
         private SKColor _background = MaterialColors.Surface;
+    /// <summary>
+    /// Gets or sets the background.
+    /// </summary>
     public SKColor Background { get => _background; set { if (_background == value) return; _background = value; if (NodeProperties.TryGetValue("Background", out var pi)) pi.ParameterCurrentValue = _background; InvalidateVisual(); } }
 
         private SKColor _stroke = MaterialColors.Outline;
+    /// <summary>
+    /// Gets or sets the stroke.
+    /// </summary>
     public SKColor Stroke { get => _stroke; set { if (_stroke == value) return; _stroke = value; if (NodeProperties.TryGetValue("Stroke", out var pi)) pi.ParameterCurrentValue = _stroke; InvalidateVisual(); } }
 
         private SKColor _headerColor = MaterialColors.PrimaryContainer;
+    /// <summary>
+    /// Gets or sets the header color.
+    /// </summary>
     public SKColor HeaderColor { get => _headerColor; set { if (_headerColor == value) return; _headerColor = value; if (NodeProperties.TryGetValue("HeaderColor", out var pi)) pi.ParameterCurrentValue = _headerColor; InvalidateVisual(); } }
 
         private SKColor _headerTextColor = MaterialColors.OnPrimaryContainer;
+    /// <summary>
+    /// Header title
+    /// </summary>
     public SKColor HeaderTextColor { get => _headerTextColor; set { if (_headerTextColor == value) return; _headerTextColor = value; if (NodeProperties.TryGetValue("HeaderTextColor", out var pi)) pi.ParameterCurrentValue = _headerTextColor; InvalidateVisual(); } }
 
         // Layout constants
@@ -75,12 +96,18 @@ namespace Beep.Skia.ETL
         }
 
         // Allow runtime adjustment via property editor
+        /// <summary>
+        /// Gets or sets the in port count.
+        /// </summary>
         public int InPortCount
         {
             get => InConnectionPoints?.Count ?? 0;
             set { int v = Math.Max(0, value); EnsurePortCounts(v, OutPortCount); if (NodeProperties.TryGetValue("InPortCount", out var pi)) pi.ParameterCurrentValue = v; InvalidateVisual(); }
         }
 
+        /// <summary>
+        /// Gets or sets the out port count.
+        /// </summary>
         public int OutPortCount
         {
             get => OutConnectionPoints?.Count ?? 0;

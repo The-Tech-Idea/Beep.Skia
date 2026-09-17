@@ -9,8 +9,17 @@ namespace Beep.Skia.Components
 {
     public class PaletteCategory
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = "General";
+        /// <summary>
+        /// Gets or sets the is collapsed.
+        /// </summary>
         public bool IsCollapsed { get; set; } = false;
+        /// <summary>
+        /// Gets or sets the items.
+        /// </summary>
         public List<PaletteItem> Items { get; } = new List<PaletteItem>();
         // Runtime layout cache
         internal SKRect HeaderRect;
@@ -18,11 +27,26 @@ namespace Beep.Skia.Components
 
     public class PaletteItem
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// Gets or sets the component type.
+        /// </summary>
         public string ComponentType { get; set; }
+        /// <summary>
+        /// Gets or sets the category.
+        /// </summary>
         public string Category { get; set; } = "General";
         // Optional preset for connection line multiplicities (used for ERD quick connects)
+        /// <summary>
+        /// Gets or sets the start multiplicity.
+        /// </summary>
         public ERDMultiplicity? StartMultiplicity { get; set; }
+        /// <summary>
+        /// Gets or sets the end multiplicity.
+        /// </summary>
         public ERDMultiplicity? EndMultiplicity { get; set; }
         // Special item if ComponentType == null and either multiplicity set: acts as a preset tool
     }
@@ -30,8 +54,14 @@ namespace Beep.Skia.Components
     public class Palette : SkiaComponent
     {
         // Flat list for backward compatibility (populate Categories from this)
+        /// <summary>
+        /// Gets or sets the items.
+        /// </summary>
         public List<PaletteItem> Items { get; } = new List<PaletteItem>();
         // Grouped categories used for rendering/interaction
+        /// <summary>
+        /// Gets or sets the categories.
+        /// </summary>
         public List<PaletteCategory> Categories { get; } = new List<PaletteCategory>();
 
     public event EventHandler<PaletteItem> ItemActivated;
@@ -67,6 +97,9 @@ namespace Beep.Skia.Components
         private const float CategoryHeaderPaddingX = 8f;
         private const float CategoryChevronSize = 10f;
 
+        /// <summary>
+        /// Initializes a new instance of the Palette class.
+        /// </summary>
         public Palette()
         {
             Width = 160;
@@ -78,18 +111,27 @@ namespace Beep.Skia.Components
             IsStatic = true; // palette should not move with canvas dragging
         }
 
+        /// <summary>
+        /// Gets or sets the auto height.
+        /// </summary>
         public bool AutoHeight
         {
             get => _autoSize;
             set => _autoSize = value;
         }
 
+        /// <summary>
+        /// Gets or sets the auto width.
+        /// </summary>
         public bool AutoWidth
         {
             get => _autoWidth;
             set => _autoWidth = value;
         }
 
+        /// <summary>
+        /// Gets or sets the max height.
+        /// </summary>
         public float? MaxHeight
         {
             get => _maxHeight;
@@ -247,6 +289,9 @@ namespace Beep.Skia.Components
         }
 
         // Public helper to force refresh when external code adds/removes items
+        /// <summary>
+        /// Gets or sets the refresh layout.
+        /// </summary>
         public void RefreshLayout()
         {
             RebuildCategories();
@@ -304,6 +349,9 @@ namespace Beep.Skia.Components
         }
 
         // Convenience add/remove wrappers to auto-size
+        /// <summary>
+        /// Gets or sets the add item.
+        /// </summary>
         public void AddItem(PaletteItem item)
         {
             Items.Add(item);
@@ -320,6 +368,9 @@ namespace Beep.Skia.Components
             UpdateBounds();
         }
 
+        /// <summary>
+        /// Gets or sets the remove item.
+        /// </summary>
         public bool RemoveItem(PaletteItem item)
         {
             var removed = Items.Remove(item);
@@ -411,6 +462,9 @@ namespace Beep.Skia.Components
             _lastThumbRect = thumbRect;
         }
 
+        /// <summary>
+        /// Gets or sets the handle mouse down.
+        /// </summary>
         public override bool HandleMouseDown(SKPoint point, InteractionContext context)
         {
             // Scroll thumb hit-test first
@@ -426,12 +480,18 @@ namespace Beep.Skia.Components
         }
 
         // Palette is a static overlay; ensure hit-testing is performed in screen space
+        /// <summary>
+        /// Gets or sets the contains point.
+        /// </summary>
         public override bool ContainsPoint(SKPoint point)
         {
             var rect = new SKRect(X, Y, X + Width, Y + Height);
             return rect.Contains(point);
         }
 
+        /// <summary>
+        /// Gets or sets the handle mouse move.
+        /// </summary>
         public override bool HandleMouseMove(SKPoint point, InteractionContext context)
         {
             if (_scrollThumbDragging)
@@ -461,6 +521,9 @@ namespace Beep.Skia.Components
             return base.HandleMouseMove(point, context);
         }
 
+        /// <summary>
+        /// Gets or sets the handle mouse up.
+        /// </summary>
         public override bool HandleMouseUp(SKPoint point, InteractionContext context)
         {
             if (_scrollThumbDragging)
@@ -501,6 +564,9 @@ namespace Beep.Skia.Components
             return base.HandleMouseUp(point, context);
         }
 
+        /// <summary>
+        /// Gets or sets the scroll by.
+        /// </summary>
         public void ScrollBy(float deltaPixels)
         {
             _scrollOffset += deltaPixels;

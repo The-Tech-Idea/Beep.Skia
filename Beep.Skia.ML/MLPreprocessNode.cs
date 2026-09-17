@@ -13,10 +13,22 @@ namespace Beep.Skia.ML
         private TransformKind _transform = TransformKind.Normalize;
         private string _parameters = string.Empty;
 
+        /// <summary>
+        /// Gets or sets the step name.
+        /// </summary>
         public string StepName { get => _name; set { var v = value ?? string.Empty; if (_name != v) { _name = v; if (NodeProperties.TryGetValue("StepName", out var p)) p.ParameterCurrentValue = _name; else NodeProperties["StepName"] = new ParameterInfo { ParameterName = "StepName", ParameterType = typeof(string), DefaultParameterValue = _name, ParameterCurrentValue = _name, Description = "Step name" }; Name = _name; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the transform.
+        /// </summary>
         public TransformKind Transform { get => _transform; set { if (_transform != value) { _transform = value; if (NodeProperties.TryGetValue("Transform", out var p)) p.ParameterCurrentValue = _transform; else NodeProperties["Transform"] = new ParameterInfo { ParameterName = "Transform", ParameterType = typeof(TransformKind), DefaultParameterValue = _transform, ParameterCurrentValue = _transform, Description = "Transform kind", Choices = Enum.GetNames(typeof(TransformKind)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the parameters.
+        /// </summary>
         public string Parameters { get => _parameters; set { var v = value ?? string.Empty; if (_parameters != v) { _parameters = v; if (NodeProperties.TryGetValue("Parameters", out var p)) p.ParameterCurrentValue = _parameters; else NodeProperties["Parameters"] = new ParameterInfo { ParameterName = "Parameters", ParameterType = typeof(string), DefaultParameterValue = _parameters, ParameterCurrentValue = _parameters, Description = "Parameters" }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Step name
+        /// </summary>
         public MLPreprocessNode()
         {
             Width = 170; Height = 90;

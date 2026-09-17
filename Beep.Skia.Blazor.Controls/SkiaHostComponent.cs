@@ -23,7 +23,13 @@ namespace Beep.Skia.Blazor.Controls
         [Parameter] public string Height { get; set; } = "600px";
         [Parameter] public string CssClass { get; set; } = "skia-host";
 
+        /// <summary>
+        /// Gets or sets the drawing manager.
+        /// </summary>
         public DrawingManager DrawingManager { get; private set; }
+        /// <summary>
+        /// Gets or sets the design time components.
+        /// </summary>
         public SkiaComponentDescriptorCollection DesignTimeComponents { get; set; } = new();
 
         private readonly Dictionary<Guid, SkiaComponent> _componentRegistry = new();
@@ -85,6 +91,9 @@ namespace Beep.Skia.Blazor.Controls
             InvokeAsync(() => _skiaView?.Invalidate());
         }
 
+        /// <summary>
+        /// Gets or sets the dispose.
+        /// </summary>
         public void Dispose()
         {
             DrawingManager?.ClearComponents();

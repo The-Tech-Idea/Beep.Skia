@@ -10,6 +10,9 @@ namespace Beep.Skia.ETL
     public class ETLUnpivot : ETLControl
     {
         private string _unpivotColumns = "";
+        /// <summary>
+        /// Gets or sets the unpivot columns.
+        /// </summary>
         public string UnpivotColumns
         {
             get => _unpivotColumns;
@@ -25,6 +28,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _attributeColumn = "Attribute";
+        /// <summary>
+        /// Gets or sets the attribute column.
+        /// </summary>
         public string AttributeColumn
         {
             get => _attributeColumn;
@@ -40,6 +46,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _valueColumn = "Value";
+        /// <summary>
+        /// Gets or sets the value column.
+        /// </summary>
         public string ValueColumn
         {
             get => _valueColumn;
@@ -54,6 +63,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// Comma-separated columns to unpivot into rows
+        /// </summary>
         public ETLUnpivot()
         {
             Title = "Unpivot";

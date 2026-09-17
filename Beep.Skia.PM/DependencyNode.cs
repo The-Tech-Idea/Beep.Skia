@@ -10,6 +10,9 @@ namespace Beep.Skia.PM
     public class DependencyNode : PMControl
     {
         private string _dependencyType = "FS";
+        /// <summary>
+        /// Gets or sets the dependency type.
+        /// </summary>
         public string DependencyType
         {
             get => _dependencyType;
@@ -27,6 +30,9 @@ namespace Beep.Skia.PM
         }
 
         private int _lagDays = 0;
+        /// <summary>
+        /// Gets or sets the lag days.
+        /// </summary>
         public int LagDays
         {
             get => _lagDays;
@@ -43,6 +49,9 @@ namespace Beep.Skia.PM
         }
 
         private string _fromTask = "";
+        /// <summary>
+        /// Gets or sets the from task.
+        /// </summary>
         public string FromTask
         {
             get => _fromTask;
@@ -60,6 +69,9 @@ namespace Beep.Skia.PM
         }
 
         private string _toTask = "";
+        /// <summary>
+        /// Gets or sets the to task.
+        /// </summary>
         public string ToTask
         {
             get => _toTask;
@@ -76,6 +88,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Dependency type (FS=Finish-to-Start, SS=Start-to-Start, FF=Finish-to-Finish, SF=Start-to-Finish)
+        /// </summary>
         public DependencyNode()
         {
             Name = "PM Dependency";

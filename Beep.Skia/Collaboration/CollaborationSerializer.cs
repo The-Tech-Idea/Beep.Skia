@@ -12,10 +12,25 @@ namespace Beep.Skia.Collaboration
     /// </summary>
     public class CollaborationSnapshot
     {
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
         public int Version { get; set; } = 1;
+        /// <summary>
+        /// Gets or sets the users.
+        /// </summary>
         public List<UserRecord> Users { get; set; } = new List<UserRecord>();
+        /// <summary>
+        /// Gets or sets the shares.
+        /// </summary>
         public List<DocumentShare> Shares { get; set; } = new List<DocumentShare>();
+        /// <summary>
+        /// Gets or sets the comments.
+        /// </summary>
         public List<DiagramComment> Comments { get; set; } = new List<DiagramComment>();
+        /// <summary>
+        /// Gets or sets the audit.
+        /// </summary>
         public List<AuditEntry> Audit { get; set; } = new List<AuditEntry>();
     }
 
@@ -24,9 +39,21 @@ namespace Beep.Skia.Collaboration
     /// </summary>
     public class UserRecord
     {
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
         public string Id { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the display name.
+        /// </summary>
         public string DisplayName { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the email.
+        /// </summary>
         public string Email { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the color.
+        /// </summary>
         public uint Color { get; set; } = 0xFF1E88E5;
     }
 

@@ -12,12 +12,30 @@ namespace Beep.Skia.ML
         private bool _bidirectional = false;
         private double _dropout = 0.2;
 
+        /// <summary>
+        /// Gets or sets the cell type.
+        /// </summary>
         public string CellType { get => _cellType; set { var v = value ?? ""; if (_cellType != v) { _cellType = v; UpdateNodeProperty("CellType", _cellType); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the layers.
+        /// </summary>
         public int Layers { get => _layers; set { int v = Math.Max(1, value); if (_layers != v) { _layers = v; UpdateNodeProperty("Layers", _layers); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the hidden size.
+        /// </summary>
         public int HiddenSize { get => _hiddenSize; set { int v = Math.Max(1, value); if (_hiddenSize != v) { _hiddenSize = v; UpdateNodeProperty("HiddenSize", _hiddenSize); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the bidirectional.
+        /// </summary>
         public bool Bidirectional { get => _bidirectional; set { if (_bidirectional != value) { _bidirectional = value; UpdateNodeProperty("Bidirectional", _bidirectional); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the dropout.
+        /// </summary>
         public double Dropout { get => _dropout; set { double v = Math.Clamp(value, 0, 0.9); if (Math.Abs(_dropout - v) > 0.001) { _dropout = v; UpdateNodeProperty("Dropout", _dropout); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Cell type
+        /// </summary>
         public MLRNNNode()
         {
             Width = 130; Height = 85; Name = "RNN";

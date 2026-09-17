@@ -10,18 +10,27 @@ namespace Beep.Skia.DFD
         private int _inputs = 2;
         private int _outputs = 2;
 
+        /// <summary>
+        /// Gets or sets the inputs.
+        /// </summary>
         public int Inputs
         {
             get => _inputs;
             set { _inputs = System.Math.Max(0, value); EnsurePortCounts(_inputs, _outputs); InvalidateVisual(); }
         }
 
+        /// <summary>
+        /// Gets or sets the outputs.
+        /// </summary>
         public int Outputs
         {
             get => _outputs;
             set { _outputs = System.Math.Max(0, value); EnsurePortCounts(_inputs, _outputs); InvalidateVisual(); }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the DFDProcessMultiIO class.
+        /// </summary>
         public DFDProcessMultiIO()
         {
             Name = "Process (Multi-IO)";

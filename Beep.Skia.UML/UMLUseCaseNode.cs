@@ -12,6 +12,9 @@ namespace Beep.Skia.UML
     public class UMLUseCaseNode : UMLControl
     {
         private string _useCaseName = "UseCase";
+        /// <summary>
+        /// Gets or sets the use case name.
+        /// </summary>
         public string UseCaseName
         {
             get => _useCaseName;
@@ -26,6 +29,9 @@ namespace Beep.Skia.UML
             }
         }
 
+        /// <summary>
+        /// Use case name
+        /// </summary>
         public UMLUseCaseNode()
         {
             Width = 140;
@@ -56,6 +62,9 @@ namespace Beep.Skia.UML
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

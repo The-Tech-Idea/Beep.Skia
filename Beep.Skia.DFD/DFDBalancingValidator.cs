@@ -12,6 +12,9 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDBalancingValidator
     {
+        /// <summary>
+        /// Gets or sets the issues.
+        /// </summary>
         public List<DFDBalanceIssue> Issues { get; } = new List<DFDBalanceIssue>();
 
         /// <summary>
@@ -117,11 +120,26 @@ namespace Beep.Skia.DFD
 
     public class DFDBalanceIssue
     {
+        /// <summary>
+        /// Gets or sets the message.
+        /// </summary>
         public string Message { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the severity.
+        /// </summary>
         public DFDBalanceSeverity Severity { get; set; } = DFDBalanceSeverity.Warning;
+        /// <summary>
+        /// Gets or sets the fix suggestion.
+        /// </summary>
         public string? FixSuggestion { get; set; }
+        /// <summary>
+        /// Gets or sets the component.
+        /// </summary>
         public SkiaComponent? Component { get; set; }
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"[{Severity}] {Message}";
     }
 

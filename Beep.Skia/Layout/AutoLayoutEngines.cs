@@ -21,12 +21,30 @@ namespace Beep.Skia.Layout
     /// </summary>
     public class HierarchicalLayout : IAutoLayout
     {
+        /// <summary>
+        /// Gets or sets the top to bottom.
+        /// </summary>
         public bool TopToBottom { get; set; } = true;
+        /// <summary>
+        /// Gets or sets the layer spacing.
+        /// </summary>
         public float LayerSpacing { get; set; } = 120f;
+        /// <summary>
+        /// Gets or sets the node spacing.
+        /// </summary>
         public float NodeSpacing { get; set; } = 80f;
+        /// <summary>
+        /// Gets or sets the start x.
+        /// </summary>
         public float StartX { get; set; } = 50f;
+        /// <summary>
+        /// Gets or sets the start y.
+        /// </summary>
         public float StartY { get; set; } = 50f;
 
+        /// <summary>
+        /// Gets or sets the arrange.
+        /// </summary>
         public void Arrange(IReadOnlyList<SkiaComponent> components, IReadOnlyList<IConnectionLine> lines)
         {
             if (components == null || components.Count == 0) return;
@@ -131,11 +149,26 @@ namespace Beep.Skia.Layout
     /// </summary>
     public class RadialLayout : IAutoLayout
     {
+        /// <summary>
+        /// Gets or sets the min radius.
+        /// </summary>
         public float MinRadius { get; set; } = 120f;
+        /// <summary>
+        /// Gets or sets the radius increment.
+        /// </summary>
         public float RadiusIncrement { get; set; } = 100f;
+        /// <summary>
+        /// Gets or sets the start angle.
+        /// </summary>
         public float StartAngle { get; set; } = -90f; // Top center
+        /// <summary>
+        /// Gets or sets the sweep angle.
+        /// </summary>
         public float SweepAngle { get; set; } = 360f;
 
+        /// <summary>
+        /// Gets or sets the arrange.
+        /// </summary>
         public void Arrange(IReadOnlyList<SkiaComponent> components, IReadOnlyList<IConnectionLine> lines)
         {
             if (components == null || components.Count == 0) return;
@@ -204,14 +237,38 @@ namespace Beep.Skia.Layout
     /// </summary>
     public class ForceDirectedLayout : IAutoLayout
     {
+        /// <summary>
+        /// Gets or sets the iterations.
+        /// </summary>
         public int Iterations { get; set; } = 100;
+        /// <summary>
+        /// Gets or sets the repulsion strength.
+        /// </summary>
         public float RepulsionStrength { get; set; } = 5000f;
+        /// <summary>
+        /// Gets or sets the attraction strength.
+        /// </summary>
         public float AttractionStrength { get; set; } = 0.01f;
+        /// <summary>
+        /// Gets or sets the ideal edge length.
+        /// </summary>
         public float IdealEdgeLength { get; set; } = 150f;
+        /// <summary>
+        /// Gets or sets the damping.
+        /// </summary>
         public float Damping { get; set; } = 0.9f;
+        /// <summary>
+        /// Gets or sets the center x.
+        /// </summary>
         public float CenterX { get; set; } = 400f;
+        /// <summary>
+        /// Gets or sets the center y.
+        /// </summary>
         public float CenterY { get; set; } = 300f;
 
+        /// <summary>
+        /// Gets or sets the arrange.
+        /// </summary>
         public void Arrange(IReadOnlyList<SkiaComponent> components, IReadOnlyList<IConnectionLine> lines)
         {
             if (components == null || components.Count == 0) return;
@@ -308,12 +365,30 @@ namespace Beep.Skia.Layout
     /// </summary>
     public class GridAutoLayout : IAutoLayout
     {
+        /// <summary>
+        /// Gets or sets the columns.
+        /// </summary>
         public int Columns { get; set; } = 3;
+        /// <summary>
+        /// Gets or sets the horizontal spacing.
+        /// </summary>
         public float HorizontalSpacing { get; set; } = 40f;
+        /// <summary>
+        /// Gets or sets the vertical spacing.
+        /// </summary>
         public float VerticalSpacing { get; set; } = 60f;
+        /// <summary>
+        /// Gets or sets the start x.
+        /// </summary>
         public float StartX { get; set; } = 50f;
+        /// <summary>
+        /// Gets or sets the start y.
+        /// </summary>
         public float StartY { get; set; } = 50f;
 
+        /// <summary>
+        /// Gets or sets the arrange.
+        /// </summary>
         public void Arrange(IReadOnlyList<SkiaComponent> components, IReadOnlyList<IConnectionLine> lines)
         {
             var compList = components.Where(c => !c.IsStatic).ToList();

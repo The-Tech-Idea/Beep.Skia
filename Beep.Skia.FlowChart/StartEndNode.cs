@@ -9,6 +9,9 @@ namespace Beep.Skia.Flowchart
     public class StartEndNode : FlowchartControl
     {
         private string _label = "Start/End";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -25,6 +28,9 @@ namespace Beep.Skia.Flowchart
             }
         }
         private bool _showTopBottomPorts = false;
+        /// <summary>
+        /// Gets or sets the show top bottom ports.
+        /// </summary>
         public bool ShowTopBottomPorts
         {
             get => _showTopBottomPorts;
@@ -43,6 +49,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Text shown inside the terminator pill.
+        /// </summary>
         public StartEndNode()
         {
             Name = "Flowchart Terminator";

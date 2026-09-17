@@ -9,6 +9,9 @@ namespace Beep.Skia.Flowchart
     public class DataNode : FlowchartControl
     {
         private string _label = "Data";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -25,6 +28,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Text shown inside the cylinder.
+        /// </summary>
         public DataNode()
         {
             Name = "Flowchart Data";

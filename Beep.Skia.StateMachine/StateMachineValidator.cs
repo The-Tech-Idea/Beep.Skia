@@ -15,12 +15,30 @@ namespace Beep.Skia.StateMachine
     /// </summary>
     public class StateMachineIssue
     {
+        /// <summary>
+        /// Gets or sets the message.
+        /// </summary>
         public string Message { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the severity.
+        /// </summary>
         public StateMachineIssueSeverity Severity { get; set; } = StateMachineIssueSeverity.Warning;
+        /// <summary>
+        /// Gets or sets the component.
+        /// </summary>
         public SkiaComponent? Component { get; set; }
+        /// <summary>
+        /// Gets or sets the line.
+        /// </summary>
         public IConnectionLine? Line { get; set; }
+        /// <summary>
+        /// Gets or sets the fix suggestion.
+        /// </summary>
         public string? FixSuggestion { get; set; }
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"[{Severity}] {Message}";
     }
 
@@ -31,6 +49,9 @@ namespace Beep.Skia.StateMachine
     /// </summary>
     public class StateMachineValidator
     {
+        /// <summary>
+        /// Gets or sets the issues.
+        /// </summary>
         public List<StateMachineIssue> Issues { get; } = new List<StateMachineIssue>();
 
         /// <summary>

@@ -16,6 +16,9 @@ namespace Beep.Skia.Business
         private string _triggerCondition = "";
         private bool _isTriggered = false;
         private DateTime? _triggerTime;
+        /// <summary>
+        /// Event name
+        /// </summary>
         public string EventName
         {
             get => _eventName;
@@ -31,6 +34,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Event type
+        /// </summary>
         public EventType EventType
         {
             get => _eventType;
@@ -44,6 +50,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Trigger condition
+        /// </summary>
         public string TriggerCondition
         {
             get => _triggerCondition;
@@ -58,6 +67,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Triggered state
+        /// </summary>
         public bool IsTriggered
         {
             get => _isTriggered;
@@ -71,6 +83,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Trigger timestamp (ISO 8601)
+        /// </summary>
         public DateTime? TriggerTime
         {
             get => _triggerTime;
@@ -86,6 +101,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Event name
+        /// </summary>
         public EventNode()
         {
             Width = 70;

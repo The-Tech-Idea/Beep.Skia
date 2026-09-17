@@ -11,6 +11,9 @@ namespace Beep.Skia.ETL
     /// </summary>
     public class ExpressionException : Exception
     {
+        /// <summary>
+        /// Initializes a new instance of the ExpressionException class.
+        /// </summary>
         public ExpressionException(string message) : base(message) { }
     }
 
@@ -33,6 +36,9 @@ namespace Beep.Skia.ETL
             public TokenType Type;
             public string Text;
             public int Position;
+            /// <summary>
+            /// Gets or sets the to string.
+            /// </summary>
             public override string ToString() => $"{Type}:{Text}";
         }
 
@@ -254,17 +260,26 @@ namespace Beep.Skia.ETL
             private int _index;
             private int _depth;
             private int _nodeCount;
+            /// <summary>
+            /// Initializes a new instance of the Parser class.
+            /// </summary>
             public Parser(List<Token> tokens) { _tokens = tokens; }
 
             private Token Current => _tokens[_index];
             private Token Next() => _tokens[_index++];
 
+            /// <summary>
+            /// Gets or sets the expect end.
+            /// </summary>
             public void ExpectEnd()
             {
                 if (Current.Type != TokenType.End)
                     throw new ExpressionException($"Unexpected token '{Current.Text}' at position {Current.Position}.");
             }
 
+            /// <summary>
+            /// Gets or sets the parse expression.
+            /// </summary>
             public Node ParseExpression() => ParseOr();
 
             private Node ParseOr()

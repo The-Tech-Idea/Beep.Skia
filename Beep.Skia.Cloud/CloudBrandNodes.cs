@@ -90,34 +90,85 @@ namespace Beep.Skia.Cloud
 
     public class AwsEc2Node : CloudBrandNode
     {
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public override string Provider => "AWS";
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
         public override string ServiceName => "EC2";
+        /// <summary>
+        /// Gets or sets the brand color.
+        /// </summary>
         public override SKColor BrandColor => new SKColor(0xFF, 0x99, 0x00);
+        /// <summary>
+        /// Initializes a new instance of the AwsEc2Node class.
+        /// </summary>
         public AwsEc2Node() { Name = "AWS EC2"; SetProp("Provider", "AWS"); SetProp("ServiceName", "EC2"); }
     }
 
     public class AwsS3Node : CloudBrandNode
     {
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public override string Provider => "AWS";
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
         public override string ServiceName => "S3";
+        /// <summary>
+        /// Gets or sets the brand color.
+        /// </summary>
         public override SKColor BrandColor => new SKColor(0x56, 0x9A, 0x31);
+        /// <summary>
+        /// Initializes a new instance of the AwsS3Node class.
+        /// </summary>
         public AwsS3Node() { Name = "AWS S3"; SetProp("Provider", "AWS"); SetProp("ServiceName", "S3"); }
     }
 
     public class AwsLambdaNode : CloudBrandNode
     {
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public override string Provider => "AWS";
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
         public override string ServiceName => "Lambda";
+        /// <summary>
+        /// Gets or sets the brand color.
+        /// </summary>
         public override SKColor BrandColor => new SKColor(0xFF, 0x99, 0x00);
+        /// <summary>
+        /// Gets or sets the icon glyph.
+        /// </summary>
         public override string IconGlyph => "λ";
+        /// <summary>
+        /// Initializes a new instance of the AwsLambdaNode class.
+        /// </summary>
         public AwsLambdaNode() { Name = "AWS Lambda"; SetProp("Provider", "AWS"); SetProp("ServiceName", "Lambda"); }
     }
 
     public class AwsRdsNode : CloudBrandNode
     {
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public override string Provider => "AWS";
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
         public override string ServiceName => "RDS";
+        /// <summary>
+        /// Gets or sets the brand color.
+        /// </summary>
         public override SKColor BrandColor => new SKColor(0x52, 0x7F, 0xFF);
+        /// <summary>
+        /// Initializes a new instance of the AwsRdsNode class.
+        /// </summary>
         public AwsRdsNode() { Name = "AWS RDS"; SetProp("Provider", "AWS"); SetProp("ServiceName", "RDS"); }
     }
 
@@ -125,37 +176,97 @@ namespace Beep.Skia.Cloud
 
     public class AzureVmNode : CloudBrandNode
     {
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public override string Provider => "Azure";
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
         public override string ServiceName => "Virtual Machines";
+        /// <summary>
+        /// Gets or sets the brand color.
+        /// </summary>
         public override SKColor BrandColor => new SKColor(0x00, 0x78, 0xD4);
+        /// <summary>
+        /// Gets or sets the icon glyph.
+        /// </summary>
         public override string IconGlyph => "VM";
+        /// <summary>
+        /// Initializes a new instance of the AzureVmNode class.
+        /// </summary>
         public AzureVmNode() { Name = "Azure VM"; SetProp("Provider", "Azure"); SetProp("ServiceName", "Virtual Machines"); }
     }
 
     public class AzureBlobStorageNode : CloudBrandNode
     {
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public override string Provider => "Azure";
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
         public override string ServiceName => "Blob Storage";
+        /// <summary>
+        /// Gets or sets the brand color.
+        /// </summary>
         public override SKColor BrandColor => new SKColor(0x00, 0x78, 0xD4);
+        /// <summary>
+        /// Gets or sets the icon glyph.
+        /// </summary>
         public override string IconGlyph => "Blob";
+        /// <summary>
+        /// Initializes a new instance of the AzureBlobStorageNode class.
+        /// </summary>
         public AzureBlobStorageNode() { Name = "Azure Blob"; SetProp("Provider", "Azure"); SetProp("ServiceName", "Blob Storage"); }
     }
 
     public class AzureFunctionsNode : CloudBrandNode
     {
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public override string Provider => "Azure";
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
         public override string ServiceName => "Functions";
+        /// <summary>
+        /// Gets or sets the brand color.
+        /// </summary>
         public override SKColor BrandColor => new SKColor(0x00, 0x62, 0xAD);
+        /// <summary>
+        /// Gets or sets the icon glyph.
+        /// </summary>
         public override string IconGlyph => "ƒ";
+        /// <summary>
+        /// Initializes a new instance of the AzureFunctionsNode class.
+        /// </summary>
         public AzureFunctionsNode() { Name = "Azure Functions"; SetProp("Provider", "Azure"); SetProp("ServiceName", "Functions"); }
     }
 
     public class AzureSqlNode : CloudBrandNode
     {
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public override string Provider => "Azure";
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
         public override string ServiceName => "SQL Database";
+        /// <summary>
+        /// Gets or sets the brand color.
+        /// </summary>
         public override SKColor BrandColor => new SKColor(0x00, 0x78, 0xD4);
+        /// <summary>
+        /// Gets or sets the icon glyph.
+        /// </summary>
         public override string IconGlyph => "SQL";
+        /// <summary>
+        /// Initializes a new instance of the AzureSqlNode class.
+        /// </summary>
         public AzureSqlNode() { Name = "Azure SQL"; SetProp("Provider", "Azure"); SetProp("ServiceName", "SQL Database"); }
     }
 
@@ -163,37 +274,97 @@ namespace Beep.Skia.Cloud
 
     public class GcpComputeNode : CloudBrandNode
     {
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public override string Provider => "GCP";
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
         public override string ServiceName => "Compute Engine";
+        /// <summary>
+        /// Gets or sets the brand color.
+        /// </summary>
         public override SKColor BrandColor => new SKColor(0x42, 0x85, 0xF4);
+        /// <summary>
+        /// Gets or sets the icon glyph.
+        /// </summary>
         public override string IconGlyph => "GCE";
+        /// <summary>
+        /// Initializes a new instance of the GcpComputeNode class.
+        /// </summary>
         public GcpComputeNode() { Name = "GCP Compute"; SetProp("Provider", "GCP"); SetProp("ServiceName", "Compute Engine"); }
     }
 
     public class GcpStorageNode : CloudBrandNode
     {
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public override string Provider => "GCP";
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
         public override string ServiceName => "Cloud Storage";
+        /// <summary>
+        /// Gets or sets the brand color.
+        /// </summary>
         public override SKColor BrandColor => new SKColor(0x34, 0xA8, 0x53);
+        /// <summary>
+        /// Gets or sets the icon glyph.
+        /// </summary>
         public override string IconGlyph => "GCS";
+        /// <summary>
+        /// Initializes a new instance of the GcpStorageNode class.
+        /// </summary>
         public GcpStorageNode() { Name = "GCP Storage"; SetProp("Provider", "GCP"); SetProp("ServiceName", "Cloud Storage"); }
     }
 
     public class GcpFunctionsNode : CloudBrandNode
     {
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public override string Provider => "GCP";
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
         public override string ServiceName => "Cloud Functions";
+        /// <summary>
+        /// Gets or sets the brand color.
+        /// </summary>
         public override SKColor BrandColor => new SKColor(0xFB, 0xBC, 0x05);
+        /// <summary>
+        /// Gets or sets the icon glyph.
+        /// </summary>
         public override string IconGlyph => "ƒ";
+        /// <summary>
+        /// Initializes a new instance of the GcpFunctionsNode class.
+        /// </summary>
         public GcpFunctionsNode() { Name = "GCP Functions"; SetProp("Provider", "GCP"); SetProp("ServiceName", "Cloud Functions"); }
     }
 
     public class GcpSqlNode : CloudBrandNode
     {
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public override string Provider => "GCP";
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
         public override string ServiceName => "Cloud SQL";
+        /// <summary>
+        /// Gets or sets the brand color.
+        /// </summary>
         public override SKColor BrandColor => new SKColor(0xEA, 0x43, 0x35);
+        /// <summary>
+        /// Gets or sets the icon glyph.
+        /// </summary>
         public override string IconGlyph => "SQL";
+        /// <summary>
+        /// Initializes a new instance of the GcpSqlNode class.
+        /// </summary>
         public GcpSqlNode() { Name = "GCP SQL"; SetProp("Provider", "GCP"); SetProp("ServiceName", "Cloud SQL"); }
     }
 }

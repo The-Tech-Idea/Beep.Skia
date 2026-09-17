@@ -9,10 +9,19 @@ namespace Beep.Ski.Quantitative
     public class IndicatorNode : QuantControl
     {
         private string _indicator = "SMA";
+        /// <summary>
+        /// Gets or sets the indicator.
+        /// </summary>
         public string Indicator { get => _indicator; set { if (_indicator == value) return; _indicator = value ?? ""; if (NodeProperties.TryGetValue("Indicator", out var pi)) pi.ParameterCurrentValue = _indicator; InvalidateVisual(); } }
         private int _period = 20;
+        /// <summary>
+        /// Gets or sets the period.
+        /// </summary>
         public int Period { get => _period; set { if (_period == value) return; _period = value; if (NodeProperties.TryGetValue("Period", out var pi)) pi.ParameterCurrentValue = _period; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Indicator type (e.g., SMA, EMA)
+        /// </summary>
         public IndicatorNode()
         {
             Name = "Indicator";

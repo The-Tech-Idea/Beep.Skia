@@ -10,6 +10,9 @@ namespace Beep.Skia.Extensions.Marketplace
     /// </summary>
     public sealed class SemanticVersion : IComparable<SemanticVersion>, IEquatable<SemanticVersion>
     {
+        /// <summary>
+        /// Initializes a new instance of the SemanticVersion class.
+        /// </summary>
         public SemanticVersion(int major, int minor = 0, int patch = 0, string prerelease = null)
         {
             Major = major;
@@ -18,13 +21,31 @@ namespace Beep.Skia.Extensions.Marketplace
             Prerelease = string.IsNullOrWhiteSpace(prerelease) ? null : prerelease.Trim();
         }
 
+        /// <summary>
+        /// Gets or sets the major.
+        /// </summary>
         public int Major { get; }
+        /// <summary>
+        /// Gets or sets the minor.
+        /// </summary>
         public int Minor { get; }
+        /// <summary>
+        /// Gets or sets the patch.
+        /// </summary>
         public int Patch { get; }
+        /// <summary>
+        /// Gets or sets the prerelease.
+        /// </summary>
         public string Prerelease { get; }
 
+        /// <summary>
+        /// Gets or sets the is prerelease.
+        /// </summary>
         public bool IsPrerelease => Prerelease != null;
 
+        /// <summary>
+        /// Gets or sets the try parse.
+        /// </summary>
         public static bool TryParse(string text, out SemanticVersion version)
         {
             version = null;
@@ -55,9 +76,15 @@ namespace Beep.Skia.Extensions.Marketplace
             return true;
         }
 
+        /// <summary>
+        /// Gets or sets the parse.
+        /// </summary>
         public static SemanticVersion Parse(string text)
             => TryParse(text, out var version) ? version : throw new FormatException($"'{text}' is not a valid semantic version.");
 
+        /// <summary>
+        /// Gets or sets the compare to.
+        /// </summary>
         public int CompareTo(SemanticVersion other)
         {
             if (other == null) return 1;
@@ -97,13 +124,25 @@ namespace Beep.Skia.Extensions.Marketplace
             return 0;
         }
 
+        /// <summary>
+        /// Gets or sets the equals.
+        /// </summary>
         public bool Equals(SemanticVersion other) => other != null && CompareTo(other) == 0;
 
+        /// <summary>
+        /// Gets or sets the equals.
+        /// </summary>
         public override bool Equals(object obj) => Equals(obj as SemanticVersion);
 
+        /// <summary>
+        /// Gets or sets the get hash code.
+        /// </summary>
         public override int GetHashCode()
             => HashCode.Combine(Major, Minor, Patch, Prerelease ?? string.Empty);
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString()
             => Prerelease == null ? $"{Major}.{Minor}.{Patch}" : $"{Major}.{Minor}.{Patch}-{Prerelease}";
 

@@ -10,12 +10,24 @@ namespace Beep.Skia.ERD
     public class ERDRelationship : ERDControl
     {
         private string _label = "relates";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label { get => _label; set { if (_label == value) return; _label = value ?? string.Empty; InvalidateVisual(); } }
         private string _degree = "1..*";
+        /// <summary>
+        /// Gets or sets the degree.
+        /// </summary>
         public string Degree { get => _degree; set { if (_degree == value) return; _degree = value ?? string.Empty; InvalidateVisual(); } }
         private bool _identifying = false;
+        /// <summary>
+        /// Gets or sets the identifying.
+        /// </summary>
         public bool Identifying { get => _identifying; set { if (_identifying == value) return; _identifying = value; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Whether this is an identifying relationship (child PK includes parent PK)
+        /// </summary>
         public ERDRelationship()
         {
             Name = "ERD Relationship";

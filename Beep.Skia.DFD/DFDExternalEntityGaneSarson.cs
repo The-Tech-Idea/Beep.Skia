@@ -9,6 +9,9 @@ namespace Beep.Skia.DFD
     {
         private const float HeaderHeight = 20f;
 
+        /// <summary>
+        /// Initializes a new instance of the DFDExternalEntityGaneSarson class.
+        /// </summary>
         public DFDExternalEntityGaneSarson()
         {
             Name = "External (Gane & Sarson)";

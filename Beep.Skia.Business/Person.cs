@@ -13,6 +13,9 @@ namespace Beep.Skia.Business
     {
         private string _personName = "Person";
         private string _title = string.Empty;
+        /// <summary>
+        /// Person name
+        /// </summary>
         public string PersonName
         {
             get => _personName;
@@ -28,6 +31,9 @@ namespace Beep.Skia.Business
                 }
             }
         }
+        /// <summary>
+        /// Job title
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -43,6 +49,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Person name
+        /// </summary>
         public Person()
         {
             Width = 80;

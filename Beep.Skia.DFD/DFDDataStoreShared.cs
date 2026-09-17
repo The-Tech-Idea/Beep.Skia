@@ -7,6 +7,9 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDDataStoreShared : DFDControl
     {
+        /// <summary>
+        /// Initializes a new instance of the DFDDataStoreShared class.
+        /// </summary>
         public DFDDataStoreShared()
         {
             Name = "Data Store (Shared)";

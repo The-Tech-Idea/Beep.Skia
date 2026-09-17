@@ -10,6 +10,9 @@ namespace Beep.Skia.PM
     public class DeliverableNode : PMControl
     {
         private string _deliverableName = "Deliverable";
+        /// <summary>
+        /// Gets or sets the deliverable name.
+        /// </summary>
         public string DeliverableName
         {
             get => _deliverableName;
@@ -27,6 +30,9 @@ namespace Beep.Skia.PM
         }
 
         private string _deliveryDate = "";
+        /// <summary>
+        /// Gets or sets the delivery date.
+        /// </summary>
         public string DeliveryDate
         {
             get => _deliveryDate;
@@ -44,6 +50,9 @@ namespace Beep.Skia.PM
         }
 
         private bool _isApproved = false;
+        /// <summary>
+        /// Gets or sets the is approved.
+        /// </summary>
         public bool IsApproved
         {
             get => _isApproved;
@@ -59,6 +68,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Deliverable name/description
+        /// </summary>
         public DeliverableNode()
         {
             Name = "PM Deliverable";

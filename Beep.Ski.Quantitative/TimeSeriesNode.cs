@@ -9,10 +9,19 @@ namespace Beep.Ski.Quantitative
     public class TimeSeriesNode : QuantControl
     {
         private int _length = 1000;
+        /// <summary>
+        /// Gets or sets the length.
+        /// </summary>
         public int Length { get => _length; set { if (_length == value) return; _length = value; if (NodeProperties.TryGetValue("Length", out var pi)) pi.ParameterCurrentValue = _length; InvalidateVisual(); } }
         private string _symbol = "EURUSD";
+        /// <summary>
+        /// Gets or sets the symbol.
+        /// </summary>
         public string Symbol { get => _symbol; set { if (_symbol == value) return; _symbol = value ?? string.Empty; if (NodeProperties.TryGetValue("Symbol", out var pi)) pi.ParameterCurrentValue = _symbol; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Number of data points
+        /// </summary>
         public TimeSeriesNode()
         {
             Name = "Time Series";

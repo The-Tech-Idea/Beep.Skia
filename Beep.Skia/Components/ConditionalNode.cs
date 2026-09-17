@@ -16,6 +16,9 @@ namespace Beep.Skia.Components
     /// </summary>
     public class ConditionalNode : AutomationNode
     {
+        /// <summary>
+        /// Initializes a new instance of the ConditionalNode class.
+        /// </summary>
         public ConditionalNode()
         {
             UpsertNodeProperty("LogicOperator", typeof(string), _logicOperator, "AND | OR");

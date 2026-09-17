@@ -12,13 +12,34 @@ namespace Beep.Skia.ETL
     /// </summary>
     public class NodeRunMetrics
     {
+        /// <summary>
+        /// Gets or sets the node name.
+        /// </summary>
         public string NodeName { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the rows in.
+        /// </summary>
         public int RowsIn { get; set; }
+        /// <summary>
+        /// Gets or sets the rows out.
+        /// </summary>
         public int RowsOut { get; set; }
+        /// <summary>
+        /// Gets or sets the elapsed.
+        /// </summary>
         public TimeSpan Elapsed { get; set; }
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
         public string Status { get; set; } = "Completed";
+        /// <summary>
+        /// Gets or sets the recorded at.
+        /// </summary>
         public DateTime RecordedAt { get; set; } = DateTime.UtcNow;
 
+        /// <summary>
+        /// Gets or sets the rows per second.
+        /// </summary>
         public double RowsPerSecond => Elapsed.TotalSeconds > 0 ? RowsOut / Elapsed.TotalSeconds : 0d;
     }
 
@@ -27,12 +48,27 @@ namespace Beep.Skia.ETL
     /// </summary>
     public class PipelineMetrics
     {
+        /// <summary>
+        /// Gets or sets the nodes.
+        /// </summary>
         public List<NodeRunMetrics> Nodes { get; } = new List<NodeRunMetrics>();
+        /// <summary>
+        /// Gets or sets the started at.
+        /// </summary>
         public DateTime? StartedAt { get; private set; }
+        /// <summary>
+        /// Gets or sets the completed at.
+        /// </summary>
         public DateTime? CompletedAt { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the is running.
+        /// </summary>
         public bool IsRunning => StartedAt.HasValue && !CompletedAt.HasValue;
 
+        /// <summary>
+        /// Gets or sets the total elapsed.
+        /// </summary>
         public TimeSpan TotalElapsed
             => StartedAt.HasValue && CompletedAt.HasValue
                 ? CompletedAt.Value - StartedAt.Value

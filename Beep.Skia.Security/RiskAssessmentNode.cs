@@ -11,10 +11,22 @@ namespace Beep.Skia.Security
         private double _riskScore = 0.5; // 0..1
         private DateTime _assessedOn = DateTime.Today;
 
+        /// <summary>
+        /// Gets or sets the assessment name.
+        /// </summary>
         public string AssessmentName { get => _assessmentName; set { var v = value ?? string.Empty; if (_assessmentName != v) { _assessmentName = v; if (NodeProperties.TryGetValue("AssessmentName", out var p)) p.ParameterCurrentValue = _assessmentName; else NodeProperties["AssessmentName"] = new ParameterInfo { ParameterName = "AssessmentName", ParameterType = typeof(string), DefaultParameterValue = _assessmentName, ParameterCurrentValue = _assessmentName, Description = "Assessment name" }; Name = _assessmentName; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the risk score.
+        /// </summary>
         public double RiskScore { get => _riskScore; set { var v = Math.Max(0, Math.Min(1, value)); if (Math.Abs(_riskScore - v) > double.Epsilon) { _riskScore = v; if (NodeProperties.TryGetValue("RiskScore", out var p)) p.ParameterCurrentValue = _riskScore; else NodeProperties["RiskScore"] = new ParameterInfo { ParameterName = "RiskScore", ParameterType = typeof(double), DefaultParameterValue = _riskScore, ParameterCurrentValue = _riskScore, Description = "Risk score (0..1)" }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the assessed on.
+        /// </summary>
         public DateTime AssessedOn { get => _assessedOn; set { if (_assessedOn != value) { _assessedOn = value; if (NodeProperties.TryGetValue("AssessedOn", out var p)) p.ParameterCurrentValue = _assessedOn; else NodeProperties["AssessedOn"] = new ParameterInfo { ParameterName = "AssessedOn", ParameterType = typeof(DateTime), DefaultParameterValue = _assessedOn, ParameterCurrentValue = _assessedOn, Description = "Assessment date" }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Assessment name
+        /// </summary>
         public RiskAssessmentNode()
         {
             Width = 180; Height = 90;

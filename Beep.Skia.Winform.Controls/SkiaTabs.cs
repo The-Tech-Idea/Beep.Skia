@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaTabsComponent _tabs;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaTabs class.
+        /// </summary>
         public SkiaTabs()
         {
             _tabs = CreateSkiaComponent<SkiaTabsComponent>();

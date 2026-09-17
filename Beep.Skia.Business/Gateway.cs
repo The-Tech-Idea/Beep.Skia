@@ -14,6 +14,9 @@ namespace Beep.Skia.Business
         private string _label = "Gateway";
         private GatewayType _gatewayType = GatewayType.Exclusive;
 
+        /// <summary>
+        /// Display label
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -29,6 +32,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Gateway type
+        /// </summary>
         public GatewayType GatewayType
         {
             get => _gatewayType;
@@ -43,6 +49,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Display label
+        /// </summary>
         public Gateway()
         {
             Width = 70;
@@ -182,6 +191,9 @@ namespace Beep.Skia.Business
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

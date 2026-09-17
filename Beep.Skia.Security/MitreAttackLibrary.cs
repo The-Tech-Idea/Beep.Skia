@@ -8,10 +8,22 @@ namespace Beep.Skia.Security
     /// </summary>
     public class MitreTechnique
     {
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
         public string Id { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the tactic.
+        /// </summary>
         public string Tactic { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"{Id} {Name} ({Tactic})";
     }
 

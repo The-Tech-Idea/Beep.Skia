@@ -12,6 +12,9 @@ namespace Beep.Skia.StateMachine
     public class ForkNode : StateMachineControl
     {
         private string _title = "Fork";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -26,6 +29,9 @@ namespace Beep.Skia.StateMachine
         }
 
         private int _outPortCount = 2;
+        /// <summary>
+        /// Gets or sets the out port count.
+        /// </summary>
         public new int OutPortCount
         {
             get => _outPortCount;
@@ -40,6 +46,9 @@ namespace Beep.Skia.StateMachine
             }
         }
 
+        /// <summary>
+        /// Fork label
+        /// </summary>
         public ForkNode()
         {
             Width = 60; Height = 16;
@@ -105,6 +114,9 @@ namespace Beep.Skia.StateMachine
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

@@ -42,6 +42,9 @@ namespace Beep.Skia.DFD
         }
 
         // Public port count properties for runtime editor changes
+        /// <summary>
+        /// Gets or sets the in port count.
+        /// </summary>
         public int InPortCount
         {
             get => InConnectionPoints?.Count ?? 0;
@@ -55,6 +58,9 @@ namespace Beep.Skia.DFD
             }
         }
 
+        /// <summary>
+        /// Gets or sets the out port count.
+        /// </summary>
         public int OutPortCount
         {
             get => OutConnectionPoints?.Count ?? 0;

@@ -215,23 +215,56 @@ namespace Beep.Skia
     /// </summary>
     public FlowAnimationStyle AnimationStyle { get; set; } = FlowAnimationStyle.Dots;
 
+    /// <summary>
+    /// Gets or sets the label1 placement.
+    /// </summary>
     public LabelPlacement Label1Placement { get; set; } = LabelPlacement.Above;
+    /// <summary>
+    /// Gets or sets the label2 placement.
+    /// </summary>
     public LabelPlacement Label2Placement { get; set; } = LabelPlacement.Above;
+    /// <summary>
+    /// Gets or sets the label3 placement.
+    /// </summary>
     public LabelPlacement Label3Placement { get; set; } = LabelPlacement.Over;
+    /// <summary>
+    /// Gets or sets the data label placement.
+    /// </summary>
     public LabelPlacement DataLabelPlacement { get; set; } = LabelPlacement.Below;
 
+    /// <summary>
+    /// Gets or sets the show status indicator.
+    /// </summary>
     public bool ShowStatusIndicator { get; set; } = false;
+    /// <summary>
+    /// Gets or sets the status.
+    /// </summary>
     public LineStatus Status { get; set; } = LineStatus.None;
+    /// <summary>
+    /// Gets or sets the status color.
+    /// </summary>
     public SKColor StatusColor { get; set; } = SKColors.DimGray;
 
     // ERD multiplicity markers
+    /// <summary>
+    /// Gets or sets the start multiplicity.
+    /// </summary>
     public ERDMultiplicity StartMultiplicity { get; set; } = ERDMultiplicity.Unspecified;
+    /// <summary>
+    /// Gets or sets the end multiplicity.
+    /// </summary>
     public ERDMultiplicity EndMultiplicity { get; set; } = ERDMultiplicity.Unspecified;
 
     // Optional styling for ERD crow's foot markers
     // Spread angle in degrees between the center prong and each outer prong
+    /// <summary>
+    /// Gets or sets the crow foot spread degrees.
+    /// </summary>
     public float CrowFootSpreadDegrees { get; set; } = 18f; // ~PI/10
     // Length scale (multiplier on unit) for the crow's foot prongs
+    /// <summary>
+    /// Gets or sets the crow foot length.
+    /// </summary>
     public float CrowFootLength { get; set; } = 1.0f;
 
         /// <summary>

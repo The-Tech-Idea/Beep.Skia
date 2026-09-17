@@ -73,7 +73,7 @@
     <tbody>
       <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text.</td></tr>
       <tr><td><code>bool ShowConnector</code></td><td>Property</td><td>Gets or sets the show connector.</td></tr>
-      <tr><td><code>AnnotationNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>AnnotationNode()</code></td><td>Method</td><td>Annotation text (supports multi-line).</td></tr>
     </tbody>
   </table>
 </section>
@@ -84,7 +84,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>CardNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>CardNode()</code></td><td>Method</td><td>Card label or identifier.</td></tr>
     </tbody>
   </table>
 </section>
@@ -99,7 +99,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>CollateNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>CollateNode()</code></td><td>Method</td><td>Text shown inside the collate shape.</td></tr>
     </tbody>
   </table>
 </section>
@@ -110,7 +110,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text.</td></tr>
-      <tr><td><code>CommentNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>CommentNode()</code></td><td>Method</td><td>Comment text (multi-line supported).</td></tr>
     </tbody>
   </table>
 </section>
@@ -125,7 +125,7 @@
     <tbody>
       <tr><td><code>string ConnectorId</code></td><td>Property</td><td>Gets or sets the connector id.</td></tr>
       <tr><td><code>ConnectorDirection Direction</code></td><td>Property</td><td>Gets or sets the direction.</td></tr>
-      <tr><td><code>ConnectorNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ConnectorNode()</code></td><td>Method</td><td>Identifier for matching From/To pairs (e.g., 'A', '1', 'Page2').</td></tr>
     </tbody>
   </table>
 </section>
@@ -136,7 +136,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>DataNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DataNode()</code></td><td>Method</td><td>Text shown inside the cylinder.</td></tr>
     </tbody>
   </table>
 </section>
@@ -148,7 +148,7 @@
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>bool ShowTopBottomPorts</code></td><td>Property</td><td>Gets or sets the show top bottom ports.</td></tr>
-      <tr><td><code>DecisionNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DecisionNode()</code></td><td>Method</td><td>Text shown inside the diamond.</td></tr>
     </tbody>
   </table>
 </section>
@@ -160,7 +160,7 @@
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>string Duration</code></td><td>Property</td><td>Gets or sets the duration.</td></tr>
-      <tr><td><code>DelayNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DelayNode()</code></td><td>Method</td><td>Delay description.</td></tr>
     </tbody>
   </table>
 </section>
@@ -171,7 +171,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>DirectAccessNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DirectAccessNode()</code></td><td>Method</td><td>Direct access storage description.</td></tr>
     </tbody>
   </table>
 </section>
@@ -182,7 +182,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>DisplayNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DisplayNode()</code></td><td>Method</td><td>Text shown inside the display symbol.</td></tr>
     </tbody>
   </table>
 </section>
@@ -194,7 +194,7 @@
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>bool OutPortsOnTop</code></td><td>Property</td><td>Gets or sets the out ports on top.</td></tr>
-      <tr><td><code>DocumentNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DocumentNode()</code></td><td>Method</td><td>Text shown inside the document shape.</td></tr>
     </tbody>
   </table>
 </section>
@@ -205,7 +205,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Condition</code></td><td>Property</td><td>Gets or sets the condition.</td></tr>
-      <tr><td><code>DoWhileLoopNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DoWhileLoopNode()</code></td><td>Method</td><td>Boolean condition evaluated after each loop iteration.</td></tr>
     </tbody>
   </table>
 </section>
@@ -216,7 +216,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>ExtractNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ExtractNode()</code></td><td>Method</td><td>Extract operation description.</td></tr>
     </tbody>
   </table>
 </section>
@@ -270,7 +270,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>int ParallelPaths</code></td><td>Property</td><td>Gets or sets the parallel paths.</td></tr>
-      <tr><td><code>ForkNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ForkNode()</code></td><td>Method</td><td>Number of parallel output paths (2-8).</td></tr>
     </tbody>
   </table>
 </section>
@@ -284,7 +284,7 @@
       <tr><td><code>string InitExpression</code></td><td>Property</td><td>Gets or sets the init expression.</td></tr>
       <tr><td><code>string Condition</code></td><td>Property</td><td>Gets or sets the condition.</td></tr>
       <tr><td><code>string Increment</code></td><td>Property</td><td>Gets or sets the increment.</td></tr>
-      <tr><td><code>ForLoopNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ForLoopNode()</code></td><td>Method</td><td>Loop variable name (e.g., 'i', 'item').</td></tr>
     </tbody>
   </table>
 </section>
@@ -295,7 +295,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>InputOutputNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>InputOutputNode()</code></td><td>Method</td><td>Text shown inside the parallelogram.</td></tr>
     </tbody>
   </table>
 </section>
@@ -306,7 +306,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>InternalStorageNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>InternalStorageNode()</code></td><td>Method</td><td>Internal storage description.</td></tr>
     </tbody>
   </table>
 </section>
@@ -317,7 +317,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>int WaitCount</code></td><td>Property</td><td>Gets or sets the wait count.</td></tr>
-      <tr><td><code>JoinNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>JoinNode()</code></td><td>Method</td><td>Number of parallel paths to wait for (2-8).</td></tr>
     </tbody>
   </table>
 </section>
@@ -329,7 +329,7 @@
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>LoopLimitType LimitType</code></td><td>Property</td><td>Gets or sets the limit type.</td></tr>
-      <tr><td><code>LoopLimitNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>LoopLimitNode()</code></td><td>Method</td><td>Loop limit description.</td></tr>
     </tbody>
   </table>
 </section>
@@ -343,7 +343,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>ManualInputNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ManualInputNode()</code></td><td>Method</td><td>Text shown inside the manual input shape.</td></tr>
     </tbody>
   </table>
 </section>
@@ -354,7 +354,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>ManualOperationNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ManualOperationNode()</code></td><td>Method</td><td>Text shown inside the trapezoid.</td></tr>
     </tbody>
   </table>
 </section>
@@ -365,7 +365,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>MergeNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>MergeNode()</code></td><td>Method</td><td>Text shown inside the merge symbol.</td></tr>
     </tbody>
   </table>
 </section>
@@ -376,7 +376,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>MultiDocumentNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>MultiDocumentNode()</code></td><td>Method</td><td>Multi-document label.</td></tr>
     </tbody>
   </table>
 </section>
@@ -388,7 +388,7 @@
     <tbody>
       <tr><td><code>string ReferenceId</code></td><td>Property</td><td>Gets or sets the reference id.</td></tr>
       <tr><td><code>string PageNumber</code></td><td>Property</td><td>Gets or sets the page number.</td></tr>
-      <tr><td><code>OffPageReferenceNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>OffPageReferenceNode()</code></td><td>Method</td><td>Unique identifier for matching references.</td></tr>
     </tbody>
   </table>
 </section>
@@ -399,7 +399,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>OrNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>OrNode()</code></td><td>Method</td><td>Label for the OR gate (optional).</td></tr>
     </tbody>
   </table>
 </section>
@@ -410,7 +410,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>PredefinedProcessNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>PredefinedProcessNode()</code></td><td>Method</td><td>Text shown inside the predefined process rectangle.</td></tr>
     </tbody>
   </table>
 </section>
@@ -421,7 +421,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>PreparationNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>PreparationNode()</code></td><td>Method</td><td>Text shown inside the preparation hexagon.</td></tr>
     </tbody>
   </table>
 </section>
@@ -433,7 +433,7 @@
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>bool ShowTopBottomPorts</code></td><td>Property</td><td>Gets or sets the show top bottom ports.</td></tr>
-      <tr><td><code>ProcessNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ProcessNode()</code></td><td>Method</td><td>Text shown inside the process rectangle.</td></tr>
     </tbody>
   </table>
 </section>
@@ -444,7 +444,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>SequentialAccessNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SequentialAccessNode()</code></td><td>Method</td><td>Sequential access storage description.</td></tr>
     </tbody>
   </table>
 </section>
@@ -480,7 +480,7 @@
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>string SortKey</code></td><td>Property</td><td>Gets or sets the sort key.</td></tr>
-      <tr><td><code>SortNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SortNode()</code></td><td>Method</td><td>Sort operation description.</td></tr>
     </tbody>
   </table>
 </section>
@@ -492,7 +492,7 @@
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>bool ShowTopBottomPorts</code></td><td>Property</td><td>Gets or sets the show top bottom ports.</td></tr>
-      <tr><td><code>StartEndNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>StartEndNode()</code></td><td>Method</td><td>Text shown inside the terminator pill.</td></tr>
     </tbody>
   </table>
 </section>
@@ -503,7 +503,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>StoredDataNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>StoredDataNode()</code></td><td>Method</td><td>Text shown inside the stored data symbol.</td></tr>
     </tbody>
   </table>
 </section>
@@ -516,7 +516,7 @@
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>string SubProcessId</code></td><td>Property</td><td>Gets or sets the sub process id.</td></tr>
       <tr><td><code>bool IsExpanded</code></td><td>Property</td><td>Gets or sets the is expanded.</td></tr>
-      <tr><td><code>SubProcessNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SubProcessNode()</code></td><td>Method</td><td>Sub-process name/description.</td></tr>
     </tbody>
   </table>
 </section>
@@ -527,7 +527,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>SummingJunctionNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SummingJunctionNode()</code></td><td>Method</td><td>Optional label for the summing junction.</td></tr>
     </tbody>
   </table>
 </section>
@@ -538,7 +538,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>TapeNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>TapeNode()</code></td><td>Method</td><td>Tape storage label.</td></tr>
     </tbody>
   </table>
 </section>
@@ -549,7 +549,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Condition</code></td><td>Property</td><td>Gets or sets the condition.</td></tr>
-      <tr><td><code>WhileLoopNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>WhileLoopNode()</code></td><td>Method</td><td>Loop condition expression (e.g., 'count &amp;gt; 0', 'hasMore').</td></tr>
     </tbody>
   </table>
 </section>

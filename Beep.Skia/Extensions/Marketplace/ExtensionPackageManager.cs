@@ -10,26 +10,62 @@ namespace Beep.Skia.Extensions.Marketplace
     /// <summary>An extension installed into the local install root.</summary>
     public class InstalledExtension
     {
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
         public string Id { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
         public string Version { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the install path.
+        /// </summary>
         public string InstallPath { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the installed at.
+        /// </summary>
         public DateTime InstalledAt { get; set; } = DateTime.UtcNow;
+        /// <summary>
+        /// Gets or sets the enabled.
+        /// </summary>
         public bool Enabled { get; set; } = true;
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"{Id} {Version}";
     }
 
     /// <summary>Outcome of an install/update/uninstall operation.</summary>
     public class ExtensionInstallResult
     {
+        /// <summary>
+        /// Gets or sets the success.
+        /// </summary>
         public bool Success { get; set; }
+        /// <summary>
+        /// Gets or sets the error.
+        /// </summary>
         public string Error { get; set; }
+        /// <summary>
+        /// Gets or sets the extension.
+        /// </summary>
         public InstalledExtension Extension { get; set; }
 
+        /// <summary>
+        /// Gets or sets the ok.
+        /// </summary>
         public static ExtensionInstallResult Ok(InstalledExtension extension)
             => new ExtensionInstallResult { Success = true, Extension = extension };
 
+        /// <summary>
+        /// Gets or sets the fail.
+        /// </summary>
         public static ExtensionInstallResult Fail(string error)
             => new ExtensionInstallResult { Success = false, Error = error };
     }
@@ -37,11 +73,26 @@ namespace Beep.Skia.Extensions.Marketplace
     /// <summary>A single line in the package-manager operation log.</summary>
     public class InstallLogEntry
     {
+        /// <summary>
+        /// Gets or sets the timestamp.
+        /// </summary>
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        /// <summary>
+        /// Gets or sets the action.
+        /// </summary>
         public string Action { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the detail.
+        /// </summary>
         public string Detail { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the success.
+        /// </summary>
         public bool Success { get; set; }
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"{Timestamp:HH:mm:ss} {(Success ? "OK " : "ERR")} {Action} {Detail}";
     }
 
@@ -67,6 +118,9 @@ namespace Beep.Skia.Extensions.Marketplace
         /// <summary>Guards the catalog, the operation log, and catalog writes.</summary>
         private readonly object _sync = new object();
 
+        /// <summary>
+        /// Initializes a new instance of the ExtensionPackageManager class.
+        /// </summary>
         public ExtensionPackageManager(string installRoot, IExtensionRegistry registry = null, string hostVersion = "1.0.0")
         {
             if (string.IsNullOrWhiteSpace(installRoot)) throw new ArgumentException("Install root is required.", nameof(installRoot));
@@ -107,9 +161,15 @@ namespace Beep.Skia.Extensions.Marketplace
             get { lock (_sync) { return _log.ToList().AsReadOnly(); } }
         }
 
+        /// <summary>
+        /// Gets or sets the get installed.
+        /// </summary>
         public InstalledExtension GetInstalled(string id)
             => id != null && _installed.TryGetValue(id, out var extension) ? extension : null;
 
+        /// <summary>
+        /// Gets or sets the is installed.
+        /// </summary>
         public bool IsInstalled(string id, string version = null)
         {
             var installed = GetInstalled(id);

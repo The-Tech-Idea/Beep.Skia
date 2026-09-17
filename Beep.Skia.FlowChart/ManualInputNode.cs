@@ -9,6 +9,9 @@ namespace Beep.Skia.Flowchart
     public class ManualInputNode : FlowchartControl
     {
         private string _label = "Manual Input";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -25,6 +28,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Text shown inside the manual input shape.
+        /// </summary>
         public ManualInputNode()
         {
             Name = "Flowchart Manual Input";

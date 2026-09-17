@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaTextBoxComponent _textBox;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaTextBox class.
+        /// </summary>
         public SkiaTextBox()
         {
             _textBox = CreateSkiaComponent<SkiaTextBoxComponent>();

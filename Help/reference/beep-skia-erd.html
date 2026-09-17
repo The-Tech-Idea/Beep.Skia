@@ -48,7 +48,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>DDLExporter(SQLDialect dialect = SQLDialect.ANSI)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DDLExporter(SQLDialect dialect = SQLDialect.ANSI)</code></td><td>Method</td><td>Initializes a new instance of the DDLExporter class.</td></tr>
       <tr><td><code>string ExportEntity(ERDEntity entity)</code></td><td>Method</td><td>Exports a single ERDEntity to a CREATE TABLE statement.</td></tr>
       <tr><td><code>string ExportEntities(IEnumerable&lt;ERDEntity&gt; entities)</code></td><td>Method</td><td>Exports multiple entities to a complete DDL script.</td></tr>
     </tbody>
@@ -60,7 +60,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>DDLImporter(SQLDialect dialect = SQLDialect.ANSI) { _dialect = dialect; }</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DDLImporter(SQLDialect dialect = SQLDialect.ANSI) { _dialect = dialect; }</code></td><td>Method</td><td>Initializes a new instance of the DDLImporter class.</td></tr>
       <tr><td><code>List&lt;TableInfo&gt; Parse(string ddl)</code></td><td>Method</td><td>Parses DDL and returns table definitions.</td></tr>
       <tr><td><code>List&lt;ERDEntity&gt; ImportToEntities(string ddl, SQLDialect dialect)</code></td><td>Method</td><td>Creates ERDEntity instances from a DDL string.</td></tr>
     </tbody>
@@ -75,7 +75,7 @@
       <tr><td><code>string NameText</code></td><td>Property</td><td>Gets or sets the name text.</td></tr>
       <tr><td><code>bool IsKey</code></td><td>Property</td><td>Gets or sets the is key.</td></tr>
       <tr><td><code>bool IsMultivalued</code></td><td>Property</td><td>Gets or sets the is multivalued.</td></tr>
-      <tr><td><code>ERDAttribute()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ERDAttribute()</code></td><td>Method</td><td>Initializes a new instance of the ERDAttribute class.</td></tr>
     </tbody>
   </table>
 </section>
@@ -96,11 +96,11 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string EntityName</code></td><td>Property</td><td>Gets or sets the entity name.</td></tr>
-      <tr><td><code>string RowsText</code></td><td>Property</td><td>Gets or sets the rows text.</td></tr>
+      <tr><td><code>string EntityName</code></td><td>Property</td><td>Entity name/title</td></tr>
+      <tr><td><code>string RowsText</code></td><td>Property</td><td>One row name per line or comma-separated</td></tr>
       <tr><td><code>IReadOnlyList&lt;string&gt; Rows</code></td><td>Property</td><td>Gets or sets the rows.</td></tr>
       <tr><td><code>string RowIdsCsv</code></td><td>Property</td><td>Gets or sets the row ids csv.</td></tr>
-      <tr><td><code>ERDEntity()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ERDEntity()</code></td><td>Method</td><td>Entity name/title</td></tr>
       <tr><td><code>new int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
       <tr><td><code>new int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
       <tr><td><code>string Columns</code></td><td>Property</td><td>Public JSON property exposing columns in a structured form for enterprise editors. On set, updates the internal rows and connection points.</td></tr>
@@ -119,7 +119,7 @@
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>string Degree</code></td><td>Property</td><td>Gets or sets the degree.</td></tr>
       <tr><td><code>bool Identifying</code></td><td>Property</td><td>Gets or sets the identifying.</td></tr>
-      <tr><td><code>ERDRelationship()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ERDRelationship()</code></td><td>Method</td><td>Whether this is an identifying relationship (child PK includes parent PK)</td></tr>
     </tbody>
   </table>
 </section>
@@ -147,7 +147,7 @@
       <tr><td><code>DDLImporter.ConstraintInfo? Constraint</code></td><td>Property</td><td>Gets or sets the constraint.</td></tr>
       <tr><td><code>DDLImporter.TableInfo? Table</code></td><td>Property</td><td>Gets or sets the table.</td></tr>
       <tr><td><code>DDLImporter.TableInfo? PreviousTable</code></td><td>Property</td><td>Gets or sets the previous table.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -161,7 +161,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>SchemaComparisonResult Compare( IEnumerable&lt;DDLImporter.TableInfo&gt; source, IEnumerable&lt;DDLImporter.TableInfo&gt; target)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SchemaComparisonResult Compare( IEnumerable&lt;DDLImporter.TableInfo&gt; source, IEnumerable&lt;DDLImporter.TableInfo&gt; target)</code></td><td>Method</td><td>Gets or sets the compare.</td></tr>
     </tbody>
   </table>
 </section>
@@ -173,7 +173,7 @@
     <tbody>
       <tr><td><code>List&lt;SchemaChange&gt; Changes</code></td><td>Property</td><td>Gets or sets the changes.</td></tr>
       <tr><td><code>bool HasChanges</code></td><td>Property</td><td>Gets or sets the has changes.</td></tr>
-      <tr><td><code>IEnumerable&lt;SchemaChange&gt; OfKind(SchemaChangeKind kind)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>IEnumerable&lt;SchemaChange&gt; OfKind(SchemaChangeKind kind)</code></td><td>Method</td><td>Gets or sets the of kind.</td></tr>
       <tr><td><code>string Summary()</code></td><td>Method</td><td>Human-readable one-line-per-change summary.</td></tr>
     </tbody>
   </table>

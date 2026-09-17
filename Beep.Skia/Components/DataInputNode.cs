@@ -16,6 +16,9 @@ namespace Beep.Skia.Components
     /// </summary>
     public class DataInputNode : AutomationNode
     {
+        /// <summary>
+        /// Initializes a new instance of the DataInputNode class.
+        /// </summary>
         public DataInputNode()
         {
             // Seed typical editable properties into NodeProperties for the property editor

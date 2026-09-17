@@ -12,6 +12,9 @@ namespace Beep.Skia.UML
     public class UMLPackageNode : UMLControl
     {
         private string _packageName = "Package";
+        /// <summary>
+        /// Gets or sets the package name.
+        /// </summary>
         public string PackageName
         {
             get => _packageName;
@@ -28,6 +31,9 @@ namespace Beep.Skia.UML
         private float _tabWidth = 60f;
         private float _tabHeight = 20f;
 
+        /// <summary>
+        /// Package name
+        /// </summary>
         public UMLPackageNode()
         {
             Width = 200;
@@ -80,6 +86,9 @@ namespace Beep.Skia.UML
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

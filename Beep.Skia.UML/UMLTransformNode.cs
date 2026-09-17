@@ -15,12 +15,18 @@ namespace Beep.Skia.UML
         /// Gets or sets the transform operation type (Filter, Sort, Aggregate, etc.).
         /// </summary>
     private string _transformType = "Transform";
+    /// <summary>
+    /// Gets or sets the transform type.
+    /// </summary>
     public string TransformType { get => _transformType; set { if (_transformType == value) return; _transformType = value ?? string.Empty; if (NodeProperties.TryGetValue("TransformType", out var pi)) pi.ParameterCurrentValue = _transformType; InvalidateVisual(); } }
 
         /// <summary>
         /// Gets or sets the transform description or expression.
         /// </summary>
     private string _transformDescription = "";
+    /// <summary>
+    /// Operation type (Filter, Sort, etc.)
+    /// </summary>
     public string TransformDescription { get => _transformDescription; set { if (_transformDescription == value) return; _transformDescription = value ?? string.Empty; if (NodeProperties.TryGetValue("TransformDescription", out var pi)) pi.ParameterCurrentValue = _transformDescription; InvalidateVisual(); } }
 
         /// <summary>

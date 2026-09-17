@@ -12,12 +12,30 @@ namespace Beep.Skia.ML
         private int _dFF = 2048;
         private double _dropout = 0.1;
 
+        /// <summary>
+        /// Gets or sets the attention heads.
+        /// </summary>
         public int AttentionHeads { get => _heads; set { int v = Math.Max(1, value); if (_heads != v) { _heads = v; UpdateNodeProperty("AttentionHeads", _heads); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the layers.
+        /// </summary>
         public int Layers { get => _layers; set { int v = Math.Max(1, value); if (_layers != v) { _layers = v; UpdateNodeProperty("Layers", _layers); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the model dim.
+        /// </summary>
         public int ModelDim { get => _dModel; set { int v = Math.Max(1, value); if (_dModel != v) { _dModel = v; UpdateNodeProperty("ModelDim", _dModel); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the feed forward dim.
+        /// </summary>
         public int FeedForwardDim { get => _dFF; set { int v = Math.Max(1, value); if (_dFF != v) { _dFF = v; UpdateNodeProperty("FeedForwardDim", _dFF); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the dropout.
+        /// </summary>
         public double Dropout { get => _dropout; set { double v = Math.Clamp(value, 0, 0.9); if (Math.Abs(_dropout - v) > 0.001) { _dropout = v; UpdateNodeProperty("Dropout", _dropout); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Attention heads
+        /// </summary>
         public MLTransformerNode()
         {
             Width = 145; Height = 85; Name = "Transformer";

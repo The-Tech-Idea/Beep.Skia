@@ -12,6 +12,9 @@ namespace Beep.Skia.PM
         /// The title drawn above the summary bracket.
         /// </summary>
         private string _title = "Summary";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -28,6 +31,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Summary title
+        /// </summary>
         public SummaryNode()
         {
             Name = "PM Summary";

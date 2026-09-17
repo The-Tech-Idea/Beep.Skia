@@ -9,6 +9,9 @@ namespace Beep.Skia.DFD
     {
         private const float HeaderHeight = 22f;
 
+        /// <summary>
+        /// Initializes a new instance of the DFDProcessGaneSarson class.
+        /// </summary>
         public DFDProcessGaneSarson()
         {
             Name = "Process (Gane & Sarson)";

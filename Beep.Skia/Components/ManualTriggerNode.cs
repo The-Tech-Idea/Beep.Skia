@@ -13,6 +13,9 @@ namespace Beep.Skia.Components
     /// </summary>
     public class ManualTriggerNode : AutomationNode
     {
+        /// <summary>
+        /// Initializes a new instance of the ManualTriggerNode class.
+        /// </summary>
         public ManualTriggerNode()
         {
             UpsertNodeProperty("TriggerText", typeof(string), _triggerText, "Button text");

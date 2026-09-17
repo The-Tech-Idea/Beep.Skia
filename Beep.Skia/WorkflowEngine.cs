@@ -43,6 +43,9 @@ namespace Beep.Skia
             public readonly SemaphoreSlim Gate = new SemaphoreSlim(1, 1);
             public volatile bool Paused;
 
+            /// <summary>
+            /// Gets or sets the pause gate.
+            /// </summary>
             public void PauseGate()
             {
                 Paused = true;
@@ -52,6 +55,9 @@ namespace Beep.Skia
                 }
             }
 
+            /// <summary>
+            /// Gets or sets the resume gate.
+            /// </summary>
             public void ResumeGate()
             {
                 Paused = false;
@@ -61,6 +67,9 @@ namespace Beep.Skia
                 }
             }
 
+            /// <summary>
+            /// Gets or sets the dispose.
+            /// </summary>
             public void Dispose()
             {
                 try { Cts.Dispose(); } catch { }
@@ -68,9 +77,21 @@ namespace Beep.Skia
             }
         }
 
+        /// <summary>
+        /// Gets or sets the engine id.
+        /// </summary>
         public string EngineId { get; } = Guid.NewGuid().ToString("N")[..8];
+        /// <summary>
+        /// Gets or sets the is running.
+        /// </summary>
         public bool IsRunning => _isRunning;
+        /// <summary>
+        /// Gets or sets the loaded workflows.
+        /// </summary>
         public IReadOnlyCollection<WorkflowDefinition> LoadedWorkflows => _workflows.Values.ToList().AsReadOnly();
+        /// <summary>
+        /// Gets or sets the active executions.
+        /// </summary>
         public IReadOnlyCollection<WorkflowExecution> ActiveExecutions => _executions.Values.ToList().AsReadOnly();
 
         public event EventHandler<WorkflowExecutionEventArgs> WorkflowStarted;
@@ -80,6 +101,9 @@ namespace Beep.Skia
         public event EventHandler<WorkflowExecutionEventArgs> WorkflowResumed;
         public event EventHandler<WorkflowExecutionEventArgs> WorkflowCancelled;
 
+        /// <summary>
+        /// Gets or sets the start async.
+        /// </summary>
         public Task StartAsync(CancellationToken cancellationToken = default)
         {
             _isRunning = true;
@@ -87,6 +111,9 @@ namespace Beep.Skia
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Gets or sets the stop async.
+        /// </summary>
         public Task StopAsync(bool graceful = true, CancellationToken cancellationToken = default)
         {
             if (!graceful)
@@ -108,6 +135,9 @@ namespace Beep.Skia
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Gets or sets the load workflow async.
+        /// </summary>
         public Task<bool> LoadWorkflowAsync(WorkflowDefinition workflow, CancellationToken cancellationToken = default)
         {
             if (workflow == null) return Task.FromResult(false);
@@ -115,11 +145,17 @@ namespace Beep.Skia
             return Task.FromResult(true);
         }
 
+        /// <summary>
+        /// Gets or sets the unload workflow async.
+        /// </summary>
         public Task<bool> UnloadWorkflowAsync(string workflowId, CancellationToken cancellationToken = default)
         {
             return Task.FromResult(_workflows.TryRemove(workflowId, out _));
         }
 
+        /// <summary>
+        /// Gets or sets the execute workflow async.
+        /// </summary>
         public Task<WorkflowResult> ExecuteWorkflowAsync(
             string workflowId,
             Dictionary<string, object> inputData = null,
@@ -134,6 +170,9 @@ namespace Beep.Skia
             return ExecuteWorkflowAsync(workflowId, context, cancellationToken);
         }
 
+        /// <summary>
+        /// Gets or sets the execute workflow async.
+        /// </summary>
         public async Task<WorkflowResult> ExecuteWorkflowAsync(
             string workflowId,
             ExecutionContext context,
@@ -332,6 +371,9 @@ namespace Beep.Skia
             return result;
         }
 
+        /// <summary>
+        /// Gets or sets the pause execution async.
+        /// </summary>
         public Task<bool> PauseExecutionAsync(string executionId, CancellationToken cancellationToken = default)
         {
             if (_executions.TryGetValue(executionId, out var exec) && exec.Status == WorkflowStatus.Running)
@@ -350,6 +392,9 @@ namespace Beep.Skia
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Gets or sets the resume execution async.
+        /// </summary>
         public Task<bool> ResumeExecutionAsync(string executionId, CancellationToken cancellationToken = default)
         {
             if (_executions.TryGetValue(executionId, out var exec) && exec.Status == WorkflowStatus.Paused)
@@ -368,6 +413,9 @@ namespace Beep.Skia
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Gets or sets the cancel execution async.
+        /// </summary>
         public Task<bool> CancelExecutionAsync(string executionId, CancellationToken cancellationToken = default)
         {
             if (_executions.TryGetValue(executionId, out var exec))
@@ -388,12 +436,18 @@ namespace Beep.Skia
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Gets or sets the get execution status.
+        /// </summary>
         public WorkflowExecution GetExecutionStatus(string executionId)
         {
             _executions.TryGetValue(executionId, out var exec);
             return exec;
         }
 
+        /// <summary>
+        /// Gets or sets the get execution history async.
+        /// </summary>
         public Task<IEnumerable<WorkflowExecution>> GetExecutionHistoryAsync(
             string workflowId, int limit = 100, CancellationToken cancellationToken = default)
         {
@@ -403,6 +457,9 @@ namespace Beep.Skia
             }
         }
 
+        /// <summary>
+        /// Gets or sets the validate workflow async.
+        /// </summary>
         public async Task<ValidationResult> ValidateWorkflowAsync(WorkflowDefinition workflow, CancellationToken cancellationToken = default)
         {
             if (workflow == null) return ValidationResult.Failure("Workflow is null");
@@ -446,18 +503,30 @@ namespace Beep.Skia
             return new ValidationResult(issues.Count == 0, issues);
         }
 
+        /// <summary>
+        /// Gets or sets the register node type.
+        /// </summary>
         public void RegisterNodeType(string nodeType, Func<IAutomationNode> factory)
         {
             if (!string.IsNullOrEmpty(nodeType) && factory != null)
                 _nodeFactories[nodeType] = factory;
         }
 
+        /// <summary>
+        /// Gets or sets the unregister node type.
+        /// </summary>
         public bool UnregisterNodeType(string nodeType)
             => _nodeFactories.TryRemove(nodeType, out _);
 
+        /// <summary>
+        /// Gets or sets the get registered node types.
+        /// </summary>
         public IEnumerable<string> GetRegisteredNodeTypes()
             => _nodeFactories.Keys;
 
+        /// <summary>
+        /// Gets or sets the register defaults.
+        /// </summary>
         public void RegisterDefaults()
         {
             // Register by concrete type name so workflows produced by DrawingManager.ToWorkflowDefinition resolve.

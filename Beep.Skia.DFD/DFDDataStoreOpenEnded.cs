@@ -7,6 +7,9 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDDataStoreOpenEnded : DFDControl
     {
+        /// <summary>
+        /// Initializes a new instance of the DFDDataStoreOpenEnded class.
+        /// </summary>
         public DFDDataStoreOpenEnded()
         {
             Name = "Data Store (Open)";

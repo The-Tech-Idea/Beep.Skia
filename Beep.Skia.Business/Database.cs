@@ -12,6 +12,9 @@ namespace Beep.Skia.Business
     public class Database : BusinessControl
     {
         private string _label = "Database";
+        /// <summary>
+        /// Display label
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Display label
+        /// </summary>
         public Database()
         {
             Width = 80;

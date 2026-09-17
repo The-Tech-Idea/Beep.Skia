@@ -15,12 +15,30 @@ namespace Beep.Skia.ECAD
         private double _maxCurrent = 0.5;
         private double _powerDissipation = 0.35;
 
+        /// <summary>
+        /// Gets or sets the transistor type.
+        /// </summary>
         public string TransistorType { get => _type; set { var v = value ?? ""; if (_type != v) { _type = v; UpdateNodeProperty("TransistorType", _type); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the package.
+        /// </summary>
         public string Package { get => _package; set { var v = value ?? ""; if (_package != v) { _package = v; UpdateNodeProperty("Package", _package); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the max voltage.
+        /// </summary>
         public double MaxVoltage { get => _maxVoltage; set { if (Math.Abs(_maxVoltage - value) > 0.001) { _maxVoltage = value; UpdateNodeProperty("MaxVoltage", _maxVoltage); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the max current.
+        /// </summary>
         public double MaxCurrent { get => _maxCurrent; set { if (Math.Abs(_maxCurrent - value) > 0.001) { _maxCurrent = value; UpdateNodeProperty("MaxCurrent", _maxCurrent); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the power dissipation.
+        /// </summary>
         public double PowerDissipation { get => _powerDissipation; set { if (Math.Abs(_powerDissipation - value) > 0.001) { _powerDissipation = value; UpdateNodeProperty("PowerDissipation", _powerDissipation); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Transistor type
+        /// </summary>
         public ECADTransistorNode()
         {
             Width = 80; Height = 60; Name = "Transistor";

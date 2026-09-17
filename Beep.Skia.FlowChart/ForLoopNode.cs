@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class ForLoopNode : FlowchartControl
     {
         private string _loopVariable = "i";
+        /// <summary>
+        /// Gets or sets the loop variable.
+        /// </summary>
         public string LoopVariable
         {
             get => _loopVariable;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Flowchart
         }
 
         private string _initExpression = "i = 0";
+        /// <summary>
+        /// Gets or sets the init expression.
+        /// </summary>
         public string InitExpression
         {
             get => _initExpression;
@@ -44,6 +50,9 @@ namespace Beep.Skia.Flowchart
         }
 
         private string _condition = "i < 10";
+        /// <summary>
+        /// Gets or sets the condition.
+        /// </summary>
         public string Condition
         {
             get => _condition;
@@ -61,6 +70,9 @@ namespace Beep.Skia.Flowchart
         }
 
         private string _increment = "i++";
+        /// <summary>
+        /// Gets or sets the increment.
+        /// </summary>
         public string Increment
         {
             get => _increment;
@@ -77,6 +89,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Loop variable name (e.g., 'i', 'item').
+        /// </summary>
         public ForLoopNode()
         {
             Name = "Flowchart For Loop";

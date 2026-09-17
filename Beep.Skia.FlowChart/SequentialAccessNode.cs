@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class SequentialAccessNode : FlowchartControl
     {
         private string _label = "Sequential Access";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Sequential access storage description.
+        /// </summary>
         public SequentialAccessNode()
         {
             Name = "Flowchart Sequential Access";

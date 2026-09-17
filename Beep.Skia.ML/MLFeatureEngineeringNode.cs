@@ -11,11 +11,26 @@ namespace Beep.Skia.ML
         private bool _interactions = true;
         private string _encoding = "Auto";
 
+        /// <summary>
+        /// Gets or sets the operation.
+        /// </summary>
         public string Operation { get => _operation; set { var v = value ?? ""; if (_operation != v) { _operation = v; UpdateNodeProperty("Operation", _operation); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the degree.
+        /// </summary>
         public int Degree { get => _degree; set { int v = Math.Max(1, Math.Min(5, value)); if (_degree != v) { _degree = v; UpdateNodeProperty("Degree", _degree); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the interactions.
+        /// </summary>
         public bool Interactions { get => _interactions; set { if (_interactions != value) { _interactions = value; UpdateNodeProperty("Interactions", _interactions); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the encoding.
+        /// </summary>
         public string Encoding { get => _encoding; set { var v = value ?? ""; if (_encoding != v) { _encoding = v; UpdateNodeProperty("Encoding", _encoding); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Feature operation
+        /// </summary>
         public MLFeatureEngineeringNode()
         {
             Width = 160; Height = 80; Name = "Feature Engineering";

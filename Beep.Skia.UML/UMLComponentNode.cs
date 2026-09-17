@@ -13,6 +13,9 @@ namespace Beep.Skia.UML
     public class UMLComponentNode : UMLControl
     {
         private string _componentName = "Component";
+        /// <summary>
+        /// Gets or sets the component name.
+        /// </summary>
         public string ComponentName
         {
             get => _componentName;
@@ -27,6 +30,9 @@ namespace Beep.Skia.UML
         }
 
         private string _providedInterfaces = string.Empty;
+        /// <summary>
+        /// Gets or sets the provided interfaces.
+        /// </summary>
         public string ProvidedInterfaces
         {
             get => _providedInterfaces;
@@ -41,6 +47,9 @@ namespace Beep.Skia.UML
         }
 
         private string _requiredInterfaces = string.Empty;
+        /// <summary>
+        /// Gets or sets the required interfaces.
+        /// </summary>
         public string RequiredInterfaces
         {
             get => _requiredInterfaces;
@@ -54,6 +63,9 @@ namespace Beep.Skia.UML
             }
         }
 
+        /// <summary>
+        /// Component name
+        /// </summary>
         public UMLComponentNode()
         {
             Width = 170;
@@ -107,6 +119,9 @@ namespace Beep.Skia.UML
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

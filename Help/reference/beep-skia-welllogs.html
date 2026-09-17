@@ -57,6 +57,7 @@
 </section>
 <section class="section" id="type-welllogbrushdefinition">
   <h2>WellLogBrushDefinition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log brush definition.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
@@ -72,13 +73,14 @@
 </section>
 <section class="section" id="type-welllogbrushlibrary">
   <h2>WellLogBrushLibrary <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log brush library.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>static IReadOnlyDictionary&lt;string, WellLogBrushDefinition&gt; Definitions</code></td><td>Property</td><td>Gets or sets the definitions.</td></tr>
-      <tr><td><code>static WellLogBrushDefinition Get(string key)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static SKPaint CreateFillPaint(string key, SKRect bounds, byte alpha = 90)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static void DrawPattern(SKCanvas canvas, SKRect bounds, string key, byte alpha = 96)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static WellLogBrushDefinition Get(string key)</code></td><td>Method</td><td>Gets or sets the get.</td></tr>
+      <tr><td><code>static SKPaint CreateFillPaint(string key, SKRect bounds, byte alpha = 90)</code></td><td>Method</td><td>Gets or sets the create fill paint.</td></tr>
+      <tr><td><code>static void DrawPattern(SKCanvas canvas, SKRect bounds, string key, byte alpha = 96)</code></td><td>Method</td><td>Gets or sets the draw pattern.</td></tr>
     </tbody>
   </table>
 </section>
@@ -90,7 +92,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>WellLogCanvas()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>WellLogCanvas()</code></td><td>Method</td><td>Initializes a new instance of the WellLogCanvas class.</td></tr>
       <tr><td><code>WellLogDocument Document</code></td><td>Property</td><td>Gets or sets the document.</td></tr>
       <tr><td><code>float TrackGap</code></td><td>Property</td><td>Gets or sets the track gap.</td></tr>
       <tr><td><code>float HeaderHeight</code></td><td>Property</td><td>Gets or sets the header height.</td></tr>
@@ -102,6 +104,7 @@
 </section>
 <section class="section" id="type-welllogcurve">
   <h2>WellLogCurve <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log curve.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
@@ -119,6 +122,7 @@
 </section>
 <section class="section" id="type-welllogcurvesample">
   <h2>WellLogCurveSample <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log curve sample.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
@@ -129,6 +133,7 @@
 </section>
 <section class="section" id="type-welllogcurvestyle">
   <h2>WellLogCurveStyle <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log curve style.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
@@ -146,6 +151,7 @@
 </section>
 <section class="section" id="type-welllogdepthaxis">
   <h2>WellLogDepthAxis <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log depth axis.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
@@ -160,6 +166,7 @@
 </section>
 <section class="section" id="type-welllogdocument">
   <h2>WellLogDocument <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log document.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
@@ -177,17 +184,19 @@
 </section>
 <section class="section" id="type-wellloglayoutengine">
   <h2>WellLogLayoutEngine <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log layout engine.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>static IReadOnlyList&lt;WellLogTrackLayout&gt; BuildTrackLayouts(SKRect bounds, WellLogDocument document, float trackGap = 6f, float defaultHeaderHeight = 28f)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static float MapDepthToY(WellLogDepthAxis axis, float depth, SKRect plotBounds)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>static float MapValueToX(WellLogCurve curve, float value, SKRect plotBounds)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static IReadOnlyList&lt;WellLogTrackLayout&gt; BuildTrackLayouts(SKRect bounds, WellLogDocument document, float trackGap = 6f, float defaultHeaderHeight = 28f)</code></td><td>Method</td><td>Gets or sets the build track layouts.</td></tr>
+      <tr><td><code>static float MapDepthToY(WellLogDepthAxis axis, float depth, SKRect plotBounds)</code></td><td>Method</td><td>Gets or sets the map depth to y.</td></tr>
+      <tr><td><code>static float MapValueToX(WellLogCurve curve, float value, SKRect plotBounds)</code></td><td>Method</td><td>Gets or sets the map value to x.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-wellloglithologyinterval">
   <h2>WellLogLithologyInterval <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log lithology interval.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
@@ -200,10 +209,11 @@
 </section>
 <section class="section" id="type-welllogrenderer">
   <h2>WellLogRenderer <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log renderer.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>static void Draw(SKCanvas canvas, SKRect bounds, WellLogDocument document, float trackGap = 6f, float headerHeight = 28f)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static void Draw(SKCanvas canvas, SKRect bounds, WellLogDocument document, float trackGap = 6f, float headerHeight = 28f)</code></td><td>Method</td><td>Gets or sets the draw.</td></tr>
     </tbody>
   </table>
 </section>
@@ -212,15 +222,17 @@
 </section>
 <section class="section" id="type-welllogtemplates">
   <h2>WellLogTemplates <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log templates.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>static WellLogDocument CreateTripleComboDemo()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static WellLogDocument CreateTripleComboDemo()</code></td><td>Method</td><td>Gets or sets the create triple combo demo.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-welllogtrack">
   <h2>WellLogTrack <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log track.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
@@ -241,10 +253,11 @@
 </section>
 <section class="section" id="type-welllogtracklayout">
   <h2>WellLogTrackLayout <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gets or sets the well log track layout.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>WellLogTrackLayout(WellLogTrack track, SKRect trackBounds, SKRect headerBounds, SKRect plotBounds)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>WellLogTrackLayout(WellLogTrack track, SKRect trackBounds, SKRect headerBounds, SKRect plotBounds)</code></td><td>Method</td><td>Initializes a new instance of the WellLogTrackLayout class.</td></tr>
       <tr><td><code>WellLogTrack Track</code></td><td>Property</td><td>Gets or sets the track.</td></tr>
       <tr><td><code>SKRect TrackBounds</code></td><td>Property</td><td>Gets or sets the track bounds.</td></tr>
       <tr><td><code>SKRect HeaderBounds</code></td><td>Property</td><td>Gets or sets the header bounds.</td></tr>

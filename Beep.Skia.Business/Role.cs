@@ -11,6 +11,9 @@ namespace Beep.Skia.Business
     public class Role : BusinessControl
     {
         private string _roleName = "Role";
+        /// <summary>
+        /// Role name
+        /// </summary>
         public string RoleName
         {
             get => _roleName;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Role name
+        /// </summary>
         public Role()
         {
             Width = 100;

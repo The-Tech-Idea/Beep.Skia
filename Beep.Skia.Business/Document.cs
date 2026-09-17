@@ -12,6 +12,9 @@ namespace Beep.Skia.Business
     public class Document : BusinessControl
     {
         private string _label = "Document";
+        /// <summary>
+        /// Display label
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Display label
+        /// </summary>
         public Document()
         {
             Width = 100;

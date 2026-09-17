@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaCascadingMenuComponent _cm;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaCascadingMenu class.
+        /// </summary>
         public SkiaCascadingMenu()
         {
             _cm = CreateSkiaComponent<SkiaCascadingMenuComponent>();

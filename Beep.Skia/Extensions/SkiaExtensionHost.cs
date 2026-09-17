@@ -267,18 +267,30 @@ namespace Beep.Skia.Extensions
             private readonly SkiaExtensionHost _host;
             private readonly LoadedExtension _owner;
 
+            /// <summary>
+            /// Initializes a new instance of the ExtensionContext class.
+            /// </summary>
             public ExtensionContext(SkiaExtensionHost host, LoadedExtension owner)
             {
                 _host = host;
                 _owner = owner;
             }
 
+            /// <summary>
+            /// Gets or sets the register component.
+            /// </summary>
             public void RegisterComponent(Type componentType, string category = null, string displayName = null)
                 => _host.RegisterComponent(_owner, componentType, category, displayName);
 
+            /// <summary>
+            /// Gets or sets the register command.
+            /// </summary>
             public void RegisterCommand(string name, Action<SkiaComponent> command)
                 => _host.RegisterCommand(_owner, name, command);
 
+            /// <summary>
+            /// Gets or sets the log.
+            /// </summary>
             public void Log(string message)
                 => _host.AddLog($"[{_owner.Id}] {message}");
         }

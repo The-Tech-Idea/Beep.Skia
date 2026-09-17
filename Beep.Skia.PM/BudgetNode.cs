@@ -10,6 +10,9 @@ namespace Beep.Skia.PM
     public class BudgetNode : PMControl
     {
         private string _budgetName = "Budget";
+        /// <summary>
+        /// Gets or sets the budget name.
+        /// </summary>
         public string BudgetName
         {
             get => _budgetName;
@@ -27,6 +30,9 @@ namespace Beep.Skia.PM
         }
 
         private decimal _plannedBudget = 0;
+        /// <summary>
+        /// Gets or sets the planned budget.
+        /// </summary>
         public decimal PlannedBudget
         {
             get => _plannedBudget;
@@ -43,6 +49,9 @@ namespace Beep.Skia.PM
         }
 
         private decimal _actualCost = 0;
+        /// <summary>
+        /// Gets or sets the actual cost.
+        /// </summary>
         public decimal ActualCost
         {
             get => _actualCost;
@@ -59,6 +68,9 @@ namespace Beep.Skia.PM
         }
 
         private string _currency = "USD";
+        /// <summary>
+        /// Gets or sets the currency.
+        /// </summary>
         public string Currency
         {
             get => _currency;
@@ -75,6 +87,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Budget category name
+        /// </summary>
         public BudgetNode()
         {
             Name = "PM Budget";

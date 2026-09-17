@@ -13,6 +13,9 @@ namespace Beep.Skia.ETL
     public class ETLScd : ETLControl
     {
         private ScdType _scdType = ScdType.Type1;
+        /// <summary>
+        /// SCD Type: Type1 (overwrite), Type2 (historical)
+        /// </summary>
         public ScdType Type
         {
             get => _scdType;
@@ -37,6 +40,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _businessKeys = string.Empty;
+        /// <summary>
+        /// Business key columns (CSV) for matching existing records
+        /// </summary>
         public string BusinessKeys
         {
             get => _businessKeys;
@@ -61,6 +67,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _changeTrackingColumns = string.Empty;
+        /// <summary>
+        /// Columns to track for changes (CSV)
+        /// </summary>
         public string ChangeTrackingColumns
         {
             get => _changeTrackingColumns;
@@ -85,6 +94,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _effectiveFromColumn = "EffectiveFrom";
+        /// <summary>
+        /// Column name for effective from date (Type 2 only)
+        /// </summary>
         public string EffectiveFromColumn
         {
             get => _effectiveFromColumn;
@@ -109,6 +121,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _effectiveToColumn = "EffectiveTo";
+        /// <summary>
+        /// Column name for effective to date (Type 2 only)
+        /// </summary>
         public string EffectiveToColumn
         {
             get => _effectiveToColumn;
@@ -133,6 +148,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _currentFlagColumn = "IsCurrent";
+        /// <summary>
+        /// Column name for current flag (Type 2 only)
+        /// </summary>
         public string CurrentFlagColumn
         {
             get => _currentFlagColumn;
@@ -157,6 +175,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _tableName = string.Empty;
+        /// <summary>
+        /// Target dimension table name
+        /// </summary>
         public string TableName
         {
             get => _tableName;
@@ -180,6 +201,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// SCD Type: Type1 (overwrite), Type2 (historical)
+        /// </summary>
         public ETLScd()
         {
             Title = "SCD";

@@ -15,12 +15,30 @@ namespace Beep.Skia.ECAD
         private double _outputCurrent = 5.0;
         private double _efficiency = 85.0;
 
+        /// <summary>
+        /// Gets or sets the supply type.
+        /// </summary>
         public string SupplyType { get => _type; set { var v = value ?? ""; if (_type != v) { _type = v; UpdateNodeProperty("SupplyType", _type); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the input voltage.
+        /// </summary>
         public double InputVoltage { get => _inputVoltage; set { if (Math.Abs(_inputVoltage - value) > 0.001) { _inputVoltage = value; UpdateNodeProperty("InputVoltage", _inputVoltage); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the output voltage.
+        /// </summary>
         public double OutputVoltage { get => _outputVoltage; set { if (Math.Abs(_outputVoltage - value) > 0.001) { _outputVoltage = value; UpdateNodeProperty("OutputVoltage", _outputVoltage); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the output current.
+        /// </summary>
         public double OutputCurrent { get => _outputCurrent; set { if (Math.Abs(_outputCurrent - value) > 0.001) { _outputCurrent = value; UpdateNodeProperty("OutputCurrent", _outputCurrent); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the efficiency.
+        /// </summary>
         public double Efficiency { get => _efficiency; set { if (Math.Abs(_efficiency - value) > 0.001) { _efficiency = value; UpdateNodeProperty("Efficiency", _efficiency); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Supply type
+        /// </summary>
         public ECADPowerSupplyNode()
         {
             Width = 130; Height = 70; Name = "Power Supply";

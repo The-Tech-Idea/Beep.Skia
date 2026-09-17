@@ -12,6 +12,9 @@ namespace Beep.Skia.UML
     public class UMLArtifactNode : UMLControl
     {
         private string _artifactName = "Artifact";
+        /// <summary>
+        /// Gets or sets the artifact name.
+        /// </summary>
         public string ArtifactName
         {
             get => _artifactName;
@@ -26,6 +29,9 @@ namespace Beep.Skia.UML
         }
 
         private string _fileName = string.Empty;
+        /// <summary>
+        /// Gets or sets the file name.
+        /// </summary>
         public string FileName
         {
             get => _fileName;
@@ -39,6 +45,9 @@ namespace Beep.Skia.UML
             }
         }
 
+        /// <summary>
+        /// Artifact name
+        /// </summary>
         public UMLArtifactNode()
         {
             Width = 160;
@@ -95,6 +104,9 @@ namespace Beep.Skia.UML
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

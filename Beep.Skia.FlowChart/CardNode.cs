@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class CardNode : FlowchartControl
     {
         private string _label = "Card";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Card label or identifier.
+        /// </summary>
         public CardNode()
         {
             Name = "Flowchart Card";

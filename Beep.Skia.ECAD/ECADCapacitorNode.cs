@@ -11,10 +11,22 @@ namespace Beep.Skia.ECAD
         private string _package = "0603";
         private Orientation _orientation = Orientation.Horizontal;
 
+        /// <summary>
+        /// Gets or sets the component value.
+        /// </summary>
         public string ComponentValue { get => _value; set { var v = value ?? string.Empty; if (_value != v) { _value = v; if (NodeProperties.TryGetValue("ComponentValue", out var p)) p.ParameterCurrentValue = _value; else NodeProperties["ComponentValue"] = new ParameterInfo { ParameterName = "ComponentValue", ParameterType = typeof(string), DefaultParameterValue = _value, ParameterCurrentValue = _value, Description = "Capacitor value" }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the package.
+        /// </summary>
         public string Package { get => _package; set { var v = value ?? string.Empty; if (_package != v) { _package = v; if (NodeProperties.TryGetValue("Package", out var p)) p.ParameterCurrentValue = _package; else NodeProperties["Package"] = new ParameterInfo { ParameterName = "Package", ParameterType = typeof(string), DefaultParameterValue = _package, ParameterCurrentValue = _package, Description = "Package" }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the orientation.
+        /// </summary>
         public Orientation Orientation { get => _orientation; set { if (_orientation != value) { _orientation = value; if (NodeProperties.TryGetValue("Orientation", out var p)) p.ParameterCurrentValue = _orientation; else NodeProperties["Orientation"] = new ParameterInfo { ParameterName = "Orientation", ParameterType = typeof(Orientation), DefaultParameterValue = _orientation, ParameterCurrentValue = _orientation, Description = "Orientation", Choices = Enum.GetNames(typeof(Orientation)) }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Capacitor value
+        /// </summary>
         public ECADCapacitorNode()
         {
             Width = 100; Height = 40; Name = "Capacitor";

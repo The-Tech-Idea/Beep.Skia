@@ -59,65 +59,17 @@
       <tr><td><code>Beep.Skia.Model.IConnectionLine SelectedLine</code></td><td>Property</td><td>Gets or sets the currently selected line for editing.</td></tr>
       <tr><td><code>bool IsDirty</code></td><td>Property</td><td>Gets whether the current properties have unsaved changes.</td></tr>
       <tr><td><code>ComponentPropertyEditor()</code></td><td>Method</td><td>Initializes a new instance of the ComponentPropertyEditor class.</td></tr>
-      <tr><td><code>override bool HandleMouseDown(SKPoint point, InteractionContext context)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override bool HandleMouseMove(SKPoint point, InteractionContext context)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override bool HandleMouseUp(SKPoint point, InteractionContext context)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void HandleKeyChar(char ch)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>void HandleKeyDown(PropertyEditorKey key)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool HandleMouseDown(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Gets or sets the handle mouse down.</td></tr>
+      <tr><td><code>override bool HandleMouseMove(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Gets or sets the handle mouse move.</td></tr>
+      <tr><td><code>override bool HandleMouseUp(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Gets or sets the handle mouse up.</td></tr>
+      <tr><td><code>void HandleKeyChar(char ch)</code></td><td>Method</td><td>Gets or sets the handle key char.</td></tr>
+      <tr><td><code>void HandleKeyDown(PropertyEditorKey key)</code></td><td>Method</td><td>Gets or sets the handle key down.</td></tr>
     </tbody>
   </table>
   <h3 id="type-skiacomponentgrid">SkiaComponentGrid</h3>
   <p>A very lightweight grid-like component rendering rows of ColumnDefinition with inline editing using TextBoxes and Dropdowns.</p>
 </section>
-<section class="section" id="usage">
-  <h2>Using the Editors</h2>
-  <p>Both editors are ordinary components: place them on the canvas (or host them in a panel), point them at a selection, and react to their save/cancel events. Changes are applied through <code>SetPropperties</code>, the same path serialization uses, so values round-trip identically.</p>
-
-  <h3>NodePropertyEditor</h3>
-  <table class="property-table">
-    <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
-    <tbody>
-      <tr><td><code>Node</code></td><td><code>AutomationNode</code></td><td>The node whose <code>NodeProperties</code> are edited.</td></tr>
-      <tr><td><code>PropertiesSaved</code></td><td><code>event</code></td><td>Raised with the edited node after Apply; use it to push undo or persist.</td></tr>
-      <tr><td><code>PropertiesCancelled</code></td><td><code>event</code></td><td>Raised when the edit is discarded.</td></tr>
-      <tr><td><code>ShowInPalette</code></td><td><code>bool</code></td><td>False by default &mdash; the editor is a tool surface, not a palette item.</td></tr>
-    </tbody>
-  </table>
-
-  <h3>ComponentPropertyEditor</h3>
-  <table class="property-table">
-    <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
-    <tbody>
-      <tr><td><code>SelectedComponent</code></td><td><code>SkiaComponent</code></td><td>Gets or sets the component under edit.</td></tr>
-      <tr><td><code>PropertiesSaved</code> / <code>PropertiesCancelled</code></td><td><code>event</code></td><td>Apply and discard notifications, both carrying the component.</td></tr>
-      <tr><td><code>PropertyValueChanged</code></td><td><code>event</code></td><td>Raised as individual values change, for live previews.</td></tr>
-    </tbody>
-  </table>
-
-  <p>The editor also handles connection lines: when a line is selected it exposes line-specific editors (labels, routing mode, arrowheads, ERD multiplicity, data-flow animation), which is why the same control serves the whole editor shell.</p>
-
-  <div class="code-example">
-    <pre><code class="language-csharp">var editor = new ComponentPropertyEditor();
-editor.PropertiesSaved += (s, e) =&gt;
-{
-    // The component already has the new values applied
-    drawingManager.RequestRedraw();
-};
-
-editor.SelectedComponent = drawingManager.SelectionManager.SelectedComponents.FirstOrDefault();</code></pre>
-  </div>
-</section>
-
-<section class="section" id="grid">
-  <h2>SkiaComponentGrid</h2>
-  <p><code>SkiaComponentGrid</code> is the editable table used by the ETL and ERD editors for list-shaped data (columns, mappings, rules). It is constructed with a column model and a change callback, so hosts can embed it without reimplementing table editing:</p>
-  <div class="code-example">
-    <pre><code class="language-csharp">var grid = new SkiaComponentGrid(
-    columns: new List&lt;ColumnDefinition&gt; { new ColumnDefinition { Name = "Source" }, new ColumnDefinition { Name = "Target" } },
-    onChanged: cols =&gt; ApplyMappings(cols),
-    extraTypeChoices: new[] { "string", "number", "date" });</code></pre>
-  </div>
-</section></div></main></div>
+</div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 </body></html>

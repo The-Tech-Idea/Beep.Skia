@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaContextMenuComponent _menu;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaContextMenu class.
+        /// </summary>
         public SkiaContextMenu()
         {
             _menu = CreateSkiaComponent<SkiaContextMenuComponent>();

@@ -33,12 +33,30 @@ namespace Beep.Skia.Components
         /// </summary>
         public class DropdownItem
         {
+            /// <summary>
+            /// Gets or sets the text.
+            /// </summary>
             public string Text { get; set; }
+            /// <summary>
+            /// Gets or sets the value.
+            /// </summary>
             public string Value { get; set; }
+            /// <summary>
+            /// Gets or sets the tag.
+            /// </summary>
             public object Tag { get; set; }
+            /// <summary>
+            /// Gets or sets the icon path.
+            /// </summary>
             public string IconPath { get; set; }
+            /// <summary>
+            /// Gets or sets the icon color.
+            /// </summary>
             public SKColor? IconColor { get; set; }
 
+            /// <summary>
+            /// Initializes a new instance of the DropdownItem class.
+            /// </summary>
             public DropdownItem(string text, string value = null, object tag = null, string iconPath = null, SKColor? iconColor = null)
             {
                 Text = text;
@@ -48,6 +66,9 @@ namespace Beep.Skia.Components
                 IconColor = iconColor;
             }
 
+            /// <summary>
+            /// Gets or sets the to string.
+            /// </summary>
             public override string ToString() => Text;
         }
 

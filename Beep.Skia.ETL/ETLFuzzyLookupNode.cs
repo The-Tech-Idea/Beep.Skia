@@ -15,9 +15,21 @@ namespace Beep.Skia.ETL
         private string _matchColumn = "";
         private string _referenceColumn = "";
 
+        /// <summary>
+        /// Gets or sets the algorithm.
+        /// </summary>
         public FuzzyAlgorithm Algorithm { get => _algorithm; set { if (_algorithm == value) return; _algorithm = value; SetProp("Algorithm", value); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the threshold.
+        /// </summary>
         public double Threshold { get => _threshold; set { var v = Math.Max(0, Math.Min(1, value)); if (Math.Abs(_threshold - v) < 0.001) return; _threshold = v; SetProp("Threshold", v); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the match column.
+        /// </summary>
         public string MatchColumn { get => _matchColumn; set { var v = value ?? ""; if (_matchColumn == v) return; _matchColumn = v; SetProp("MatchColumn", v); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the reference column.
+        /// </summary>
         public string ReferenceColumn { get => _referenceColumn; set { var v = value ?? ""; if (_referenceColumn == v) return; _referenceColumn = v; SetProp("ReferenceColumn", v); InvalidateVisual(); } }
 
         private void SetProp(string name, object val, string desc = null, string[] choices = null)
@@ -26,6 +38,9 @@ namespace Beep.Skia.ETL
             else NodeProperties[name] = new ParameterInfo { ParameterName = name, ParameterType = val.GetType(), DefaultParameterValue = val, ParameterCurrentValue = val, Description = desc ?? name, Choices = choices };
         }
 
+        /// <summary>
+        /// Fuzzy matching algorithm
+        /// </summary>
         public ETLFuzzyLookupNode()
         {
             Width = 140; Height = 80; Name = "FuzzyLookup";

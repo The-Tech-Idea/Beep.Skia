@@ -13,10 +13,22 @@ namespace Beep.Skia.Security
         private string _version = "1.0";
         private PolicyStatus _status = PolicyStatus.Draft;
 
+        /// <summary>
+        /// Gets or sets the policy name.
+        /// </summary>
         public string PolicyName { get => _policyName; set { var v = value ?? string.Empty; if (_policyName != v) { _policyName = v; if (NodeProperties.TryGetValue("PolicyName", out var p)) p.ParameterCurrentValue = _policyName; else NodeProperties["PolicyName"] = new ParameterInfo { ParameterName = "PolicyName", ParameterType = typeof(string), DefaultParameterValue = _policyName, ParameterCurrentValue = _policyName, Description = "Policy name" }; Name = _policyName; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
         public string Version { get => _version; set { var v = value ?? string.Empty; if (_version != v) { _version = v; if (NodeProperties.TryGetValue("Version", out var p)) p.ParameterCurrentValue = _version; else NodeProperties["Version"] = new ParameterInfo { ParameterName = "Version", ParameterType = typeof(string), DefaultParameterValue = _version, ParameterCurrentValue = _version, Description = "Policy version" }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
         public PolicyStatus Status { get => _status; set { if (_status != value) { _status = value; if (NodeProperties.TryGetValue("Status", out var p)) p.ParameterCurrentValue = _status; else NodeProperties["Status"] = new ParameterInfo { ParameterName = "Status", ParameterType = typeof(PolicyStatus), DefaultParameterValue = _status, ParameterCurrentValue = _status, Description = "Policy status", Choices = Enum.GetNames(typeof(PolicyStatus)) }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Policy name
+        /// </summary>
         public PolicyNode()
         {
             Width = 170; Height = 80;

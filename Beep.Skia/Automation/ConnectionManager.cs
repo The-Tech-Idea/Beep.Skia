@@ -10,14 +10,35 @@ namespace Beep.Skia.Automation
     /// </summary>
     public class AutomationConnection
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public string Provider { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the endpoint.
+        /// </summary>
         public string Endpoint { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the database.
+        /// </summary>
         public string Database { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the credential name.
+        /// </summary>
         public string CredentialName { get; set; } = string.Empty;
         public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+        /// <summary>
+        /// Gets or sets the updated at.
+        /// </summary>
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+        /// <summary>
+        /// Gets or sets the clone.
+        /// </summary>
         public AutomationConnection Clone() => new AutomationConnection
         {
             Name = Name,
@@ -41,11 +62,17 @@ namespace Beep.Skia.Automation
         /// <summary>Credential vault used to resolve connection secrets.</summary>
         public CredentialVault Vault { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the ConnectionManager class.
+        /// </summary>
         public ConnectionManager(CredentialVault vault = null)
         {
             Vault = vault ?? new CredentialVault();
         }
 
+        /// <summary>
+        /// Gets or sets the count.
+        /// </summary>
         public int Count => _connections.Count;
 
         /// <summary>Adds or replaces a connection definition.</summary>

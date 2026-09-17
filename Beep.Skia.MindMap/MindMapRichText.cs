@@ -10,10 +10,25 @@ namespace Beep.Skia.MindMap
     /// </summary>
     public class RichTextSpan
     {
+        /// <summary>
+        /// Gets or sets the text.
+        /// </summary>
         public string Text { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the bold.
+        /// </summary>
         public bool Bold { get; set; }
+        /// <summary>
+        /// Gets or sets the italic.
+        /// </summary>
         public bool Italic { get; set; }
+        /// <summary>
+        /// Gets or sets the is bullet.
+        /// </summary>
         public bool IsBullet { get; set; }
+        /// <summary>
+        /// Gets or sets the is line break.
+        /// </summary>
         public bool IsLineBreak { get; set; }
     }
 

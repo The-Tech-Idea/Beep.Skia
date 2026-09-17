@@ -12,6 +12,9 @@ namespace Beep.Skia.UML
     public class UMLActivityNode : UMLControl
     {
         private string _actionName = "Action";
+        /// <summary>
+        /// Gets or sets the action name.
+        /// </summary>
         public string ActionName
         {
             get => _actionName;
@@ -27,6 +30,9 @@ namespace Beep.Skia.UML
         }
 
         private ActivityNodeType _actionType = ActivityNodeType.Action;
+        /// <summary>
+        /// Gets or sets the action type.
+        /// </summary>
         public ActivityNodeType ActionType
         {
             get => _actionType;
@@ -39,6 +45,9 @@ namespace Beep.Skia.UML
             }
         }
 
+        /// <summary>
+        /// Action name
+        /// </summary>
         public UMLActivityNode()
         {
             Width = 160;
@@ -96,6 +105,9 @@ namespace Beep.Skia.UML
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

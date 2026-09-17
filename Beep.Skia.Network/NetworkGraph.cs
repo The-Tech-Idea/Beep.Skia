@@ -9,15 +9,33 @@ namespace Beep.Skia.Network
     public class NetworkGraph : MaterialControl
     {
         private SKColor _background = MaterialDesignColors.Surface;
+    /// <summary>
+    /// Gets or sets the background.
+    /// </summary>
     public SKColor Background { get => _background; set { if (_background == value) return; _background = value; if (NodeProperties.TryGetValue("Background", out var pi)) pi.ParameterCurrentValue = _background; InvalidateVisual(); } }
         private SKColor _gridColor = MaterialDesignColors.SurfaceVariant;
+    /// <summary>
+    /// Gets or sets the grid color.
+    /// </summary>
     public SKColor GridColor { get => _gridColor; set { if (_gridColor == value) return; _gridColor = value; if (NodeProperties.TryGetValue("GridColor", out var pi)) pi.ParameterCurrentValue = _gridColor; InvalidateVisual(); } }
         private float _gridSpacing = 24f;
+    /// <summary>
+    /// Canvas background color
+    /// </summary>
     public float GridSpacing { get => _gridSpacing; set { if (System.Math.Abs(_gridSpacing - value) < 0.0001f) return; _gridSpacing = value; if (NodeProperties.TryGetValue("GridSpacing", out var pi)) pi.ParameterCurrentValue = _gridSpacing; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Gets or sets the nodes.
+        /// </summary>
         public List<NetworkNode> Nodes { get; } = new List<NetworkNode>();
+        /// <summary>
+        /// Gets or sets the links.
+        /// </summary>
         public List<NetworkLink> Links { get; } = new List<NetworkLink>();
 
+        /// <summary>
+        /// Canvas background color
+        /// </summary>
         public NetworkGraph()
         {
             Width = 800;

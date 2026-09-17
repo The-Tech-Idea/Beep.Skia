@@ -11,11 +11,26 @@ namespace Beep.Skia.ML
         private bool _optimize = true;
         private double _confidenceThreshold = 0.5;
 
+        /// <summary>
+        /// Gets or sets the mode.
+        /// </summary>
         public string Mode { get => _mode; set { var v = value ?? ""; if (_mode != v) { _mode = v; UpdateNodeProperty("Mode", _mode); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the batch size.
+        /// </summary>
         public int BatchSize { get => _batchSize; set { int v = Math.Max(1, value); if (_batchSize != v) { _batchSize = v; UpdateNodeProperty("BatchSize", _batchSize); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the optimize.
+        /// </summary>
         public bool Optimize { get => _optimize; set { if (_optimize != value) { _optimize = value; UpdateNodeProperty("Optimize", _optimize); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the confidence threshold.
+        /// </summary>
         public double ConfidenceThreshold { get => _confidenceThreshold; set { double v = Math.Clamp(value, 0, 1); if (Math.Abs(_confidenceThreshold - v) > 0.001) { _confidenceThreshold = v; UpdateNodeProperty("ConfidenceThreshold", _confidenceThreshold); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Inference mode
+        /// </summary>
         public MLInferenceNode()
         {
             Width = 130; Height = 85; Name = "Inference";

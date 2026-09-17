@@ -11,8 +11,14 @@ namespace Beep.Skia.ECAD
     {
         private string _groundType = "Earth";
 
+        /// <summary>
+        /// Gets or sets the ground type.
+        /// </summary>
         public string GroundType { get => _groundType; set { var v = value ?? ""; if (_groundType != v) { _groundType = v; UpdateNodeProperty("GroundType", _groundType); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Ground type
+        /// </summary>
         public ECADGroundNode()
         {
             Width = 50; Height = 40; Name = "Ground";

@@ -11,11 +11,26 @@ namespace Beep.Skia.ML
         private string _metric = "Accuracy";
         private bool _parallelExecution = true;
 
+        /// <summary>
+        /// Gets or sets the method.
+        /// </summary>
         public string Method { get => _method; set { var v = value ?? ""; if (_method != v) { _method = v; UpdateNodeProperty("Method", _method); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the iterations.
+        /// </summary>
         public int Iterations { get => _iterations; set { int v = Math.Max(1, value); if (_iterations != v) { _iterations = v; UpdateNodeProperty("Iterations", _iterations); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the metric.
+        /// </summary>
         public string Metric { get => _metric; set { var v = value ?? ""; if (_metric != v) { _metric = v; UpdateNodeProperty("Metric", _metric); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the parallel execution.
+        /// </summary>
         public bool ParallelExecution { get => _parallelExecution; set { if (_parallelExecution != value) { _parallelExecution = value; UpdateNodeProperty("ParallelExecution", _parallelExecution); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Tuning method
+        /// </summary>
         public MLHyperparameterTuningNode()
         {
             Width = 170; Height = 85; Name = "Hyperparameter Tuning";

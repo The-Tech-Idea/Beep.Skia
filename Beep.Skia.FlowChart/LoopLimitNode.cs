@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class LoopLimitNode : FlowchartControl
     {
         private string _label = "Loop Limit";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Flowchart
         }
 
         private LoopLimitType _limitType = LoopLimitType.Begin;
+        /// <summary>
+        /// Gets or sets the limit type.
+        /// </summary>
         public LoopLimitType LimitType
         {
             get => _limitType;
@@ -48,6 +54,9 @@ namespace Beep.Skia.Flowchart
             End
         }
 
+        /// <summary>
+        /// Loop limit description.
+        /// </summary>
         public LoopLimitNode()
         {
             Name = "Flowchart Loop Limit";

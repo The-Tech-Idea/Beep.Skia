@@ -13,11 +13,20 @@ namespace Beep.Skia.Cloud
     {
         private string _instanceType = "t3.medium";
         private string _os = "Linux";
+        /// <summary>
+        /// Gets or sets the instance type.
+        /// </summary>
         public string InstanceType { get => _instanceType; set { var v = value ?? ""; if (_instanceType == v) return; _instanceType = v; SetProp("InstanceType", v); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the operating system.
+        /// </summary>
         public string OperatingSystem { get => _os; set { var v = value ?? ""; if (_os == v) return; _os = v; SetProp("OperatingSystem", v); InvalidateVisual(); } }
 
         private void SetProp(string n, object v, string? d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
 
+        /// <summary>
+        /// Initializes a new instance of the VirtualMachineNode class.
+        /// </summary>
         public VirtualMachineNode() { Width = 120; Height = 70; Name = "VM"; EnsurePortCounts(1, 1); SetProp("InstanceType", _instanceType); SetProp("OperatingSystem", _os); }
         protected override void DrawCloudContent(SKCanvas canvas, DrawingContext ctx)
         {
@@ -40,8 +49,14 @@ namespace Beep.Skia.Cloud
     public class ObjectStorageNode : CloudControl
     {
         private string _storageClass = "Standard";
+        /// <summary>
+        /// Gets or sets the storage class.
+        /// </summary>
         public string StorageClass { get => _storageClass; set { var v = value ?? ""; if (_storageClass == v) return; _storageClass = v; SetProp("StorageClass", v); InvalidateVisual(); } }
         private void SetProp(string n, object v, string? d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
+        /// <summary>
+        /// Initializes a new instance of the ObjectStorageNode class.
+        /// </summary>
         public ObjectStorageNode() { Width = 120; Height = 70; Name = "Storage"; EnsurePortCounts(1, 1); SetProp("StorageClass", _storageClass); }
         protected override void DrawCloudContent(SKCanvas canvas, DrawingContext ctx)
         {
@@ -63,9 +78,18 @@ namespace Beep.Skia.Cloud
     {
         private string _runtime = "dotnet8";
         private int _timeoutSec = 60;
+        /// <summary>
+        /// Gets or sets the runtime.
+        /// </summary>
         public string Runtime { get => _runtime; set { var v = value ?? ""; if (_runtime == v) return; _runtime = v; SetProp("Runtime", v); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the timeout sec.
+        /// </summary>
         public int TimeoutSec { get => _timeoutSec; set { var v = Math.Max(1, value); if (_timeoutSec == v) return; _timeoutSec = v; SetProp("TimeoutSec", v); InvalidateVisual(); } }
         private void SetProp(string n, object v, string? d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
+        /// <summary>
+        /// Initializes a new instance of the ServerlessFunctionNode class.
+        /// </summary>
         public ServerlessFunctionNode() { Width = 130; Height = 70; Name = "Function"; EnsurePortCounts(1, 1); SetProp("Runtime", _runtime); SetProp("TimeoutSec", _timeoutSec); }
         protected override void DrawCloudContent(SKCanvas canvas, DrawingContext ctx)
         {
@@ -88,9 +112,18 @@ namespace Beep.Skia.Cloud
     {
         private string _engine = "PostgreSQL";
         private string _version = "15";
+        /// <summary>
+        /// Gets or sets the engine.
+        /// </summary>
         public string Engine { get => _engine; set { var v = value ?? ""; if (_engine == v) return; _engine = v; SetProp("Engine", v); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
         public string Version { get => _version; set { var v = value ?? ""; if (_version == v) return; _version = v; SetProp("Version", v); InvalidateVisual(); } }
         private void SetProp(string n, object v, string? d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
+        /// <summary>
+        /// Initializes a new instance of the ManagedDatabaseNode class.
+        /// </summary>
         public ManagedDatabaseNode() { Width = 130; Height = 75; Name = "RDS"; EnsurePortCounts(1, 1); SetProp("Engine", _engine); SetProp("Version", _version); }
         protected override void DrawCloudContent(SKCanvas canvas, DrawingContext ctx)
         {
@@ -118,8 +151,14 @@ namespace Beep.Skia.Cloud
     public class ApiGatewayNode : CloudControl
     {
         private string _stage = "prod";
+        /// <summary>
+        /// Gets or sets the stage.
+        /// </summary>
         public string Stage { get => _stage; set { var v = value ?? ""; if (_stage == v) return; _stage = v; SetProp("Stage", v); InvalidateVisual(); } }
         private void SetProp(string n, object v, string? d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
+        /// <summary>
+        /// Initializes a new instance of the ApiGatewayNode class.
+        /// </summary>
         public ApiGatewayNode() { Width = 130; Height = 65; Name = "API Gateway"; EnsurePortCounts(2, 2); SetProp("Stage", _stage); }
         protected override void DrawCloudContent(SKCanvas canvas, DrawingContext ctx)
         {
@@ -140,8 +179,14 @@ namespace Beep.Skia.Cloud
     public class VirtualNetworkNode : CloudControl
     {
         private string _cidr = "10.0.0.0/16";
+        /// <summary>
+        /// Gets or sets the cidr.
+        /// </summary>
         public string Cidr { get => _cidr; set { var v = value ?? ""; if (_cidr == v) return; _cidr = v; SetProp("Cidr", v); InvalidateVisual(); } }
         private void SetProp(string n, object v, string? d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
+        /// <summary>
+        /// Initializes a new instance of the VirtualNetworkNode class.
+        /// </summary>
         public VirtualNetworkNode() { Width = 240; Height = 160; Name = "VPC"; EnsurePortCounts(0, 0); }
         protected override void DrawCloudContent(SKCanvas canvas, DrawingContext ctx)
         {

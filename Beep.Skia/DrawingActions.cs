@@ -31,17 +31,26 @@ namespace Beep.Skia
         private readonly DrawingManager _manager;
         private readonly SkiaComponent _component;
 
+        /// <summary>
+        /// Initializes a new instance of the AddComponentAction class.
+        /// </summary>
         public AddComponentAction(DrawingManager manager, SkiaComponent component)
         {
             _manager = manager;
             _component = component;
         }
 
+        /// <summary>
+        /// Gets or sets the execute.
+        /// </summary>
         public override void Execute()
         {
             _manager.AddComponent(_component);
         }
 
+        /// <summary>
+        /// Gets or sets the undo.
+        /// </summary>
         public override void Undo()
         {
             _manager.RemoveComponent(_component);
@@ -57,6 +66,9 @@ namespace Beep.Skia
         private readonly SkiaComponent _component;
         private readonly List<IConnectionLine> _lines;
 
+        /// <summary>
+        /// Initializes a new instance of the RemoveComponentAction class.
+        /// </summary>
         public RemoveComponentAction(DrawingManager manager, SkiaComponent component, List<IConnectionLine> lines)
         {
             _manager = manager;
@@ -64,11 +76,17 @@ namespace Beep.Skia
             _lines = lines;
         }
 
+        /// <summary>
+        /// Gets or sets the execute.
+        /// </summary>
         public override void Execute()
         {
             _manager.RemoveComponent(_component);
         }
 
+        /// <summary>
+        /// Gets or sets the undo.
+        /// </summary>
         public override void Undo()
         {
             _manager.AddComponent(_component);
@@ -88,6 +106,9 @@ namespace Beep.Skia
         private readonly List<SkiaComponent> _components;
         private readonly List<IConnectionLine> _lines;
 
+        /// <summary>
+        /// Initializes a new instance of the DeleteComponentsAction class.
+        /// </summary>
         public DeleteComponentsAction(DrawingManager manager, List<SkiaComponent> components, List<IConnectionLine> lines)
         {
             _manager = manager;
@@ -95,6 +116,9 @@ namespace Beep.Skia
             _lines = lines;
         }
 
+        /// <summary>
+        /// Gets or sets the execute.
+        /// </summary>
         public override void Execute()
         {
             foreach (var component in _components.ToList())
@@ -103,6 +127,9 @@ namespace Beep.Skia
             }
         }
 
+        /// <summary>
+        /// Gets or sets the undo.
+        /// </summary>
         public override void Undo()
         {
             foreach (var component in _components)
@@ -125,6 +152,9 @@ namespace Beep.Skia
         private readonly List<SkiaComponent> _components;
         private readonly SKPoint _offset;
 
+        /// <summary>
+        /// Initializes a new instance of the MoveComponentsAction class.
+        /// </summary>
         public MoveComponentsAction(DrawingManager manager, List<SkiaComponent> components, SKPoint offset)
         {
             _manager = manager;
@@ -132,6 +162,9 @@ namespace Beep.Skia
             _offset = offset;
         }
 
+        /// <summary>
+        /// Gets or sets the execute.
+        /// </summary>
         public override void Execute()
         {
             foreach (var component in _components)
@@ -141,6 +174,9 @@ namespace Beep.Skia
             }
         }
 
+        /// <summary>
+        /// Gets or sets the undo.
+        /// </summary>
         public override void Undo()
         {
             foreach (var component in _components)
@@ -161,6 +197,9 @@ namespace Beep.Skia
         private readonly SkiaComponent _component2;
         private readonly IConnectionLine _line;
 
+        /// <summary>
+        /// Initializes a new instance of the ConnectComponentsAction class.
+        /// </summary>
         public ConnectComponentsAction(DrawingManager manager, SkiaComponent component1, SkiaComponent component2, IConnectionLine line)
         {
             _manager = manager;
@@ -169,11 +208,17 @@ namespace Beep.Skia
             _line = line;
         }
 
+        /// <summary>
+        /// Gets or sets the execute.
+        /// </summary>
         public override void Execute()
         {
             _manager.ConnectComponents(_component1, _component2);
         }
 
+        /// <summary>
+        /// Gets or sets the undo.
+        /// </summary>
         public override void Undo()
         {
             _manager.DisconnectComponents(_component1, _component2);
@@ -190,6 +235,9 @@ namespace Beep.Skia
         private readonly SkiaComponent _component2;
         private readonly IConnectionLine _line;
 
+        /// <summary>
+        /// Initializes a new instance of the DisconnectComponentsAction class.
+        /// </summary>
         public DisconnectComponentsAction(DrawingManager manager, SkiaComponent component1, SkiaComponent component2, IConnectionLine line)
         {
             _manager = manager;
@@ -198,11 +246,17 @@ namespace Beep.Skia
             _line = line;
         }
 
+        /// <summary>
+        /// Gets or sets the execute.
+        /// </summary>
         public override void Execute()
         {
             _manager.DisconnectComponents(_component1, _component2);
         }
 
+        /// <summary>
+        /// Gets or sets the undo.
+        /// </summary>
         public override void Undo()
         {
             _manager.ConnectComponents(_component1, _component2);
@@ -218,6 +272,9 @@ namespace Beep.Skia
         private readonly List<SkiaComponent> _components;
         private readonly List<IConnectionLine> _lines;
 
+        /// <summary>
+        /// Initializes a new instance of the PasteComponentsAction class.
+        /// </summary>
         public PasteComponentsAction(DrawingManager manager, List<SkiaComponent> components, List<IConnectionLine> lines = null)
         {
             _manager = manager;
@@ -225,6 +282,9 @@ namespace Beep.Skia
             _lines = lines ?? new List<IConnectionLine>();
         }
 
+        /// <summary>
+        /// Gets or sets the execute.
+        /// </summary>
         public override void Execute()
         {
             foreach (var component in _components)
@@ -237,6 +297,9 @@ namespace Beep.Skia
             }
         }
 
+        /// <summary>
+        /// Gets or sets the undo.
+        /// </summary>
         public override void Undo()
         {
             foreach (var component in _components.ToList())
@@ -256,6 +319,9 @@ namespace Beep.Skia
         private readonly List<SKPoint> _beforePositions;
         private readonly List<SKPoint> _afterPositions;
 
+        /// <summary>
+        /// Initializes a new instance of the AlignComponentsAction class.
+        /// </summary>
         public AlignComponentsAction(DrawingManager manager, List<SkiaComponent> components, List<SKPoint> beforePositions)
         {
             _manager = manager;
@@ -265,6 +331,9 @@ namespace Beep.Skia
             _afterPositions = components?.Select(c => new SKPoint(c.X, c.Y)).ToList() ?? new List<SKPoint>();
         }
 
+        /// <summary>
+        /// Gets or sets the execute.
+        /// </summary>
         public override void Execute()
         {
             for (int i = 0; i < Math.Min(_components.Count, _afterPositions.Count); i++)
@@ -275,6 +344,9 @@ namespace Beep.Skia
             }
         }
 
+        /// <summary>
+        /// Gets or sets the undo.
+        /// </summary>
         public override void Undo()
         {
             for (int i = 0; i < Math.Min(_components.Count, _beforePositions.Count); i++)
@@ -298,6 +370,9 @@ namespace Beep.Skia
         private readonly IConnectionPoint _newStartPoint;
         private readonly IConnectionPoint _newEndPoint;
 
+        /// <summary>
+        /// Initializes a new instance of the MoveLineAction class.
+        /// </summary>
         public MoveLineAction(DrawingManager manager, IConnectionLine line,
             IConnectionPoint oldStartPoint, IConnectionPoint oldEndPoint,
             IConnectionPoint newStartPoint, IConnectionPoint newEndPoint)
@@ -310,11 +385,17 @@ namespace Beep.Skia
             _newEndPoint = newEndPoint;
         }
 
+        /// <summary>
+        /// Gets or sets the execute.
+        /// </summary>
         public override void Execute()
         {
             _manager.MoveConnectionLine(_line, _newStartPoint, _newEndPoint);
         }
 
+        /// <summary>
+        /// Gets or sets the undo.
+        /// </summary>
         public override void Undo()
         {
             _manager.MoveConnectionLine(_line, _oldStartPoint, _oldEndPoint);
@@ -333,6 +414,9 @@ namespace Beep.Skia
         private readonly IConnectionPoint _outputPoint;
         private readonly IConnectionPoint _inputPoint;
 
+        /// <summary>
+        /// Initializes a new instance of the ConnectAutomationNodesAction class.
+        /// </summary>
         public ConnectAutomationNodesAction(DrawingManager manager, Components.AutomationNode node1,
             Components.AutomationNode node2, IConnectionLine line, IConnectionPoint outputPoint, IConnectionPoint inputPoint)
         {
@@ -344,6 +428,9 @@ namespace Beep.Skia
             _inputPoint = inputPoint;
         }
 
+        /// <summary>
+        /// Gets or sets the execute.
+        /// </summary>
         public override void Execute()
         {
             _outputPoint.IsAvailable = false;
@@ -353,6 +440,9 @@ namespace Beep.Skia
             _manager.AddLine(_line);
         }
 
+        /// <summary>
+        /// Gets or sets the undo.
+        /// </summary>
         public override void Undo()
         {
             _outputPoint.IsAvailable = true;

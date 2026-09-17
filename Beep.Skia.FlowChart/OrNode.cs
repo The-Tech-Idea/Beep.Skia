@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class OrNode : FlowchartControl
     {
         private string _label = "OR";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Label for the OR gate (optional).
+        /// </summary>
         public OrNode()
         {
             Name = "Flowchart OR Gate";

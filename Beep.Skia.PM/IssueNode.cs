@@ -10,6 +10,9 @@ namespace Beep.Skia.PM
     public class IssueNode : PMControl
     {
         private string _issueTitle = "Issue";
+        /// <summary>
+        /// Gets or sets the issue title.
+        /// </summary>
         public string IssueTitle
         {
             get => _issueTitle;
@@ -27,6 +30,9 @@ namespace Beep.Skia.PM
         }
 
         private string _priority = "Medium";
+        /// <summary>
+        /// Gets or sets the priority.
+        /// </summary>
         public new string Priority
         {
             get => _priority;
@@ -44,6 +50,9 @@ namespace Beep.Skia.PM
         }
 
         private string _status = "Open";
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
         public string Status
         {
             get => _status;
@@ -61,6 +70,9 @@ namespace Beep.Skia.PM
         }
 
         private string _assignedTo = "";
+        /// <summary>
+        /// Gets or sets the assigned to.
+        /// </summary>
         public string AssignedTo
         {
             get => _assignedTo;
@@ -77,6 +89,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Issue title/description
+        /// </summary>
         public IssueNode()
         {
             Name = "PM Issue";

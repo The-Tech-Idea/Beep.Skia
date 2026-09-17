@@ -14,11 +14,26 @@ namespace Beep.Skia.ECAD
         private double _breakingCapacity = 100.0;
         private string _package = "Axial";
 
+        /// <summary>
+        /// Gets or sets the fuse type.
+        /// </summary>
         public string FuseType { get => _type; set { var v = value ?? ""; if (_type != v) { _type = v; UpdateNodeProperty("FuseType", _type); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the rating.
+        /// </summary>
         public double Rating { get => _rating; set { if (Math.Abs(_rating - value) > 0.001) { _rating = value; UpdateNodeProperty("Rating", _rating); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the breaking capacity.
+        /// </summary>
         public double BreakingCapacity { get => _breakingCapacity; set { if (Math.Abs(_breakingCapacity - value) > 0.001) { _breakingCapacity = value; UpdateNodeProperty("BreakingCapacity", _breakingCapacity); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the package.
+        /// </summary>
         public string Package { get => _package; set { var v = value ?? ""; if (_package != v) { _package = v; UpdateNodeProperty("Package", _package); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Fuse type
+        /// </summary>
         public ECADFuseNode()
         {
             Width = 80; Height = 40; Name = "Fuse";

@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaDatePickerComponent _dp;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaDatePicker class.
+        /// </summary>
         public SkiaDatePicker()
         {
             _dp = CreateSkiaComponent<SkiaDatePickerComponent>();

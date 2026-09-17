@@ -22,10 +22,25 @@ namespace Beep.Skia.Security
 
         public class ThreatResult
         {
+            /// <summary>
+            /// Gets or sets the category.
+            /// </summary>
             public StrideCategory Category { get; set; }
+            /// <summary>
+            /// Gets or sets the asset name.
+            /// </summary>
             public string AssetName { get; set; } = string.Empty;
+            /// <summary>
+            /// Gets or sets the threat.
+            /// </summary>
             public string Threat { get; set; } = string.Empty;
+            /// <summary>
+            /// Gets or sets the mitigation.
+            /// </summary>
             public string Mitigation { get; set; } = string.Empty;
+            /// <summary>
+            /// Gets or sets the severity.
+            /// </summary>
             public string Severity { get; set; } = "Medium";
 
             /// <summary>MITRE ATT&amp;CK techniques mapped to this threat's STRIDE category.</summary>
@@ -34,9 +49,15 @@ namespace Beep.Skia.Security
             /// <summary>DREAD risk score derived from severity/likelihood.</summary>
             public DreadScore Dread { get; set; } = new DreadScore();
 
+            /// <summary>
+            /// Gets or sets the to string.
+            /// </summary>
             public override string ToString() => $"[{Category}] {Threat} ({Severity}, {Dread.RiskLevel})";
         }
 
+        /// <summary>
+        /// Gets or sets the threats.
+        /// </summary>
         public List<ThreatResult> Threats { get; } = new List<ThreatResult>();
 
         /// <summary>

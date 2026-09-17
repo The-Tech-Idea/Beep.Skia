@@ -21,12 +21,21 @@ namespace Beep.Skia.Maui.Controls
         private readonly Dictionary<Guid, SkiaComponent> _componentRegistry = new();
         private SKPoint _lastPanPoint;
 
+        /// <summary>
+        /// Gets or sets the drawing manager.
+        /// </summary>
         public DrawingManager DrawingManager => _drawingManager;
 
         // Design-time descriptors (shared format with other hosts)
         private SkiaComponentDescriptorCollection _designTimeComponents = new();
+        /// <summary>
+        /// Gets or sets the design time components.
+        /// </summary>
         public SkiaComponentDescriptorCollection DesignTimeComponents => _designTimeComponents;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaHostView class.
+        /// </summary>
         public SkiaHostView()
         {
             _drawingManager = new DrawingManager();
@@ -102,6 +111,9 @@ namespace Beep.Skia.Maui.Controls
             _skiaView?.InvalidateSurface();
         }
 
+        /// <summary>
+        /// Gets or sets the create and add component.
+        /// </summary>
         public SkiaComponent CreateAndAddComponent(Type type, float x, float y, float w, float h, string name = null)
         {
             if (type == null || Activator.CreateInstance(type) is not SkiaComponent comp) return null;

@@ -55,7 +55,7 @@
     <tbody>
       <tr><td><code>string Operation</code></td><td>Property</td><td>Gets or sets the operation.</td></tr>
       <tr><td><code>bool SkipNaN</code></td><td>Property</td><td>Gets or sets the skip na n.</td></tr>
-      <tr><td><code>AggregateNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>AggregateNode()</code></td><td>Method</td><td>Aggregation operation</td></tr>
     </tbody>
   </table>
 </section>
@@ -66,7 +66,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>int Period</code></td><td>Property</td><td>Gets or sets the period.</td></tr>
-      <tr><td><code>ATRNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ATRNode()</code></td><td>Method</td><td>ATR period</td></tr>
     </tbody>
   </table>
 </section>
@@ -80,7 +80,7 @@
       <tr><td><code>DateTime EndDate</code></td><td>Property</td><td>Gets or sets the end date.</td></tr>
       <tr><td><code>double InitialCapital</code></td><td>Property</td><td>Gets or sets the initial capital.</td></tr>
       <tr><td><code>double Commission</code></td><td>Property</td><td>Gets or sets the commission.</td></tr>
-      <tr><td><code>BacktestNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>BacktestNode()</code></td><td>Method</td><td>Backtest start date</td></tr>
     </tbody>
   </table>
 </section>
@@ -92,7 +92,7 @@
     <tbody>
       <tr><td><code>int Period</code></td><td>Property</td><td>Gets or sets the period.</td></tr>
       <tr><td><code>double StdDev</code></td><td>Property</td><td>Gets or sets the std dev.</td></tr>
-      <tr><td><code>BollingerBandsNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>BollingerBandsNode()</code></td><td>Method</td><td>Moving average period</td></tr>
     </tbody>
   </table>
 </section>
@@ -110,7 +110,7 @@
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
       <tr><td><code>List&lt;ChartSeries&gt; Series</code></td><td>Property</td><td>Data series rendered by this chart.</td></tr>
       <tr><td><code>string SeriesJson</code></td><td>Property</td><td>JSON projection of Series used for persistence.</td></tr>
-      <tr><td><code>ChartNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ChartNode()</code></td><td>Method</td><td>Chart type</td></tr>
       <tr><td><code>void SetData(params ChartSeries[] series)</code></td><td>Method</td><td>Replaces all series data.</td></tr>
       <tr><td><code>ChartSeries AddSeries(string name, params double[] values)</code></td><td>Method</td><td>Adds a series and returns it.</td></tr>
       <tr><td><code>void ClearData()</code></td><td>Method</td><td>Clears all series data.</td></tr>
@@ -141,7 +141,7 @@
       <tr><td><code>string Method</code></td><td>Property</td><td>Gets or sets the method.</td></tr>
       <tr><td><code>int Window</code></td><td>Property</td><td>Gets or sets the window.</td></tr>
       <tr><td><code>bool Rolling</code></td><td>Property</td><td>Gets or sets the rolling.</td></tr>
-      <tr><td><code>CorrelationNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>CorrelationNode()</code></td><td>Method</td><td>Correlation method</td></tr>
     </tbody>
   </table>
 </section>
@@ -155,7 +155,7 @@
       <tr><td><code>string Symbol</code></td><td>Property</td><td>Gets or sets the symbol.</td></tr>
       <tr><td><code>string Interval</code></td><td>Property</td><td>Gets or sets the interval.</td></tr>
       <tr><td><code>DateTime StartDate</code></td><td>Property</td><td>Gets or sets the start date.</td></tr>
-      <tr><td><code>DataSourceNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DataSourceNode()</code></td><td>Method</td><td>Data provider</td></tr>
     </tbody>
   </table>
 </section>
@@ -168,7 +168,7 @@
       <tr><td><code>string DistributionType</code></td><td>Property</td><td>Gets or sets the distribution type.</td></tr>
       <tr><td><code>int Bins</code></td><td>Property</td><td>Gets or sets the bins.</td></tr>
       <tr><td><code>bool ShowKDE</code></td><td>Property</td><td>Gets or sets the show KDE.</td></tr>
-      <tr><td><code>DistributionNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DistributionNode()</code></td><td>Method</td><td>Distribution type</td></tr>
     </tbody>
   </table>
 </section>
@@ -181,7 +181,7 @@
       <tr><td><code>string Format</code></td><td>Property</td><td>Gets or sets the format.</td></tr>
       <tr><td><code>string FilePath</code></td><td>Property</td><td>Gets or sets the file path.</td></tr>
       <tr><td><code>bool IncludeHeader</code></td><td>Property</td><td>Gets or sets the include header.</td></tr>
-      <tr><td><code>ExportNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ExportNode()</code></td><td>Method</td><td>Export format</td></tr>
     </tbody>
   </table>
 </section>
@@ -194,7 +194,7 @@
       <tr><td><code>string FilterType</code></td><td>Property</td><td>Gets or sets the filter type.</td></tr>
       <tr><td><code>double Threshold</code></td><td>Property</td><td>Gets or sets the threshold.</td></tr>
       <tr><td><code>string Method</code></td><td>Property</td><td>Gets or sets the method.</td></tr>
-      <tr><td><code>FilterNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>FilterNode()</code></td><td>Method</td><td>Filter type</td></tr>
     </tbody>
   </table>
 </section>
@@ -208,7 +208,7 @@
       <tr><td><code>int HorizonDays</code></td><td>Property</td><td>Gets or sets the horizon days.</td></tr>
       <tr><td><code>double ConfidenceLevel</code></td><td>Property</td><td>Gets or sets the confidence level.</td></tr>
       <tr><td><code>bool IncludeSeasonality</code></td><td>Property</td><td>Gets or sets the include seasonality.</td></tr>
-      <tr><td><code>ForecastNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ForecastNode()</code></td><td>Method</td><td>Forecasting model</td></tr>
     </tbody>
   </table>
 </section>
@@ -220,7 +220,7 @@
     <tbody>
       <tr><td><code>string Indicator</code></td><td>Property</td><td>Gets or sets the indicator.</td></tr>
       <tr><td><code>int Period</code></td><td>Property</td><td>Gets or sets the period.</td></tr>
-      <tr><td><code>IndicatorNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>IndicatorNode()</code></td><td>Method</td><td>Indicator type (e.g., SMA, EMA)</td></tr>
     </tbody>
   </table>
 </section>
@@ -233,7 +233,7 @@
       <tr><td><code>int FastPeriod</code></td><td>Property</td><td>Gets or sets the fast period.</td></tr>
       <tr><td><code>int SlowPeriod</code></td><td>Property</td><td>Gets or sets the slow period.</td></tr>
       <tr><td><code>int SignalPeriod</code></td><td>Property</td><td>Gets or sets the signal period.</td></tr>
-      <tr><td><code>MACDNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>MACDNode()</code></td><td>Method</td><td>Fast EMA period</td></tr>
     </tbody>
   </table>
 </section>
@@ -247,7 +247,7 @@
       <tr><td><code>int TimeSteps</code></td><td>Property</td><td>Gets or sets the time steps.</td></tr>
       <tr><td><code>double InitialValue</code></td><td>Property</td><td>Gets or sets the initial value.</td></tr>
       <tr><td><code>int RandomSeed</code></td><td>Property</td><td>Gets or sets the random seed.</td></tr>
-      <tr><td><code>MonteCarloNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>MonteCarloNode()</code></td><td>Method</td><td>Number of simulations</td></tr>
     </tbody>
   </table>
 </section>
@@ -260,7 +260,7 @@
       <tr><td><code>bool IncludeDrawdown</code></td><td>Property</td><td>Gets or sets the include drawdown.</td></tr>
       <tr><td><code>bool IncludeSharpe</code></td><td>Property</td><td>Gets or sets the include sharpe.</td></tr>
       <tr><td><code>double RiskFreeRate</code></td><td>Property</td><td>Gets or sets the risk free rate.</td></tr>
-      <tr><td><code>PerformanceNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>PerformanceNode()</code></td><td>Method</td><td>Calculate max drawdown</td></tr>
     </tbody>
   </table>
 </section>
@@ -273,7 +273,7 @@
       <tr><td><code>string Method</code></td><td>Property</td><td>Gets or sets the method.</td></tr>
       <tr><td><code>double TargetReturn</code></td><td>Property</td><td>Gets or sets the target return.</td></tr>
       <tr><td><code>int NumAssets</code></td><td>Property</td><td>Gets or sets the num assets.</td></tr>
-      <tr><td><code>PortfolioOptimizerNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>PortfolioOptimizerNode()</code></td><td>Method</td><td>Optimization method</td></tr>
     </tbody>
   </table>
 </section>
@@ -290,7 +290,7 @@
       <tr><td><code>string RegressionType</code></td><td>Property</td><td>Gets or sets the regression type.</td></tr>
       <tr><td><code>int Degree</code></td><td>Property</td><td>Gets or sets the degree.</td></tr>
       <tr><td><code>bool IncludeIntercept</code></td><td>Property</td><td>Gets or sets the include intercept.</td></tr>
-      <tr><td><code>RegressionNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>RegressionNode()</code></td><td>Method</td><td>Regression type</td></tr>
     </tbody>
   </table>
 </section>
@@ -304,7 +304,7 @@
       <tr><td><code>double StopLossPercent</code></td><td>Property</td><td>Gets or sets the stop loss percent.</td></tr>
       <tr><td><code>double TakeProfitPercent</code></td><td>Property</td><td>Gets or sets the take profit percent.</td></tr>
       <tr><td><code>string PositionSizing</code></td><td>Property</td><td>Gets or sets the position sizing.</td></tr>
-      <tr><td><code>RiskManagerNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>RiskManagerNode()</code></td><td>Method</td><td>Max risk per trade (fraction)</td></tr>
     </tbody>
   </table>
 </section>
@@ -317,7 +317,7 @@
       <tr><td><code>int Period</code></td><td>Property</td><td>Gets or sets the period.</td></tr>
       <tr><td><code>double Overbought</code></td><td>Property</td><td>Gets or sets the overbought.</td></tr>
       <tr><td><code>double Oversold</code></td><td>Property</td><td>Gets or sets the oversold.</td></tr>
-      <tr><td><code>RSINode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>RSINode()</code></td><td>Method</td><td>RSI period</td></tr>
     </tbody>
   </table>
 </section>
@@ -330,7 +330,7 @@
       <tr><td><code>int KPeriod</code></td><td>Property</td><td>Gets or sets the k period.</td></tr>
       <tr><td><code>int DPeriod</code></td><td>Property</td><td>Gets or sets the d period.</td></tr>
       <tr><td><code>int Smooth</code></td><td>Property</td><td>Gets or sets the smooth.</td></tr>
-      <tr><td><code>StochasticNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>StochasticNode()</code></td><td>Method</td><td>%K period</td></tr>
     </tbody>
   </table>
 </section>
@@ -343,7 +343,7 @@
       <tr><td><code>string StrategyType</code></td><td>Property</td><td>Gets or sets the strategy type.</td></tr>
       <tr><td><code>double Threshold</code></td><td>Property</td><td>Gets or sets the threshold.</td></tr>
       <tr><td><code>bool LongOnly</code></td><td>Property</td><td>Gets or sets the long only.</td></tr>
-      <tr><td><code>StrategyNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>StrategyNode()</code></td><td>Method</td><td>Strategy type</td></tr>
     </tbody>
   </table>
 </section>
@@ -355,7 +355,7 @@
     <tbody>
       <tr><td><code>int Length</code></td><td>Property</td><td>Gets or sets the length.</td></tr>
       <tr><td><code>string Symbol</code></td><td>Property</td><td>Gets or sets the symbol.</td></tr>
-      <tr><td><code>TimeSeriesNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>TimeSeriesNode()</code></td><td>Method</td><td>Number of data points</td></tr>
     </tbody>
   </table>
 </section>
@@ -368,7 +368,7 @@
       <tr><td><code>string Operation</code></td><td>Property</td><td>Gets or sets the operation.</td></tr>
       <tr><td><code>bool Percentage</code></td><td>Property</td><td>Gets or sets the percentage.</td></tr>
       <tr><td><code>int Lag</code></td><td>Property</td><td>Gets or sets the lag.</td></tr>
-      <tr><td><code>TransformNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>TransformNode()</code></td><td>Method</td><td>Transformation type</td></tr>
     </tbody>
   </table>
 </section>
@@ -381,7 +381,7 @@
       <tr><td><code>double ConfidenceLevel</code></td><td>Property</td><td>Gets or sets the confidence level.</td></tr>
       <tr><td><code>string Method</code></td><td>Property</td><td>Gets or sets the method.</td></tr>
       <tr><td><code>int WindowSize</code></td><td>Property</td><td>Gets or sets the window size.</td></tr>
-      <tr><td><code>VaRNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>VaRNode()</code></td><td>Method</td><td>Confidence level (e.g., 0.95)</td></tr>
     </tbody>
   </table>
 </section>

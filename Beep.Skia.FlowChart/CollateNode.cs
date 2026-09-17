@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class CollateNode : FlowchartControl
     {
         private string _label = "Collate";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Text shown inside the collate shape.
+        /// </summary>
         public CollateNode()
         {
             Name = "Flowchart Collate";

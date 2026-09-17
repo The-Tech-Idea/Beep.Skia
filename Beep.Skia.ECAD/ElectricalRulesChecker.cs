@@ -12,6 +12,9 @@ namespace Beep.Skia.ECAD
     /// </summary>
     public class ElectricalRulesChecker
     {
+        /// <summary>
+        /// Gets or sets the violations.
+        /// </summary>
         public List<ElectricalRuleViolation> Violations { get; } = new List<ElectricalRuleViolation>();
 
         /// <summary>
@@ -231,14 +234,38 @@ namespace Beep.Skia.ECAD
     /// </summary>
     public class ElectricalRuleViolation
     {
+        /// <summary>
+        /// Gets or sets the message.
+        /// </summary>
         public string Message { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the severity.
+        /// </summary>
         public ElectricalViolationSeverity Severity { get; set; } = ElectricalViolationSeverity.Warning;
+        /// <summary>
+        /// Gets or sets the category.
+        /// </summary>
         public string Category { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the fix suggestion.
+        /// </summary>
         public string? FixSuggestion { get; set; }
+        /// <summary>
+        /// Gets or sets the component.
+        /// </summary>
         public SkiaComponent? Component { get; set; }
+        /// <summary>
+        /// Gets or sets the port.
+        /// </summary>
         public IConnectionPoint? Port { get; set; }
+        /// <summary>
+        /// Gets or sets the line.
+        /// </summary>
         public IConnectionLine? Line { get; set; }
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"[{Severity}] {Category}: {Message}";
     }
 

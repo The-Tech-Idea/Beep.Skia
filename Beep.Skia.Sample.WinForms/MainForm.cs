@@ -183,7 +183,7 @@ namespace Beep.Skia.Sample.WinForms
             return btn;
         }
 
-        private static string ResolveHelpRoot()
+        private static string? ResolveHelpRoot()
         {
             var dir = new System.IO.DirectoryInfo(AppContext.BaseDirectory);
             for (int i = 0; i < 8 && dir != null; i++, dir = dir.Parent)

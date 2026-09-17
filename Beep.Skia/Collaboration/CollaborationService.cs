@@ -130,14 +130,26 @@ namespace Beep.Skia.Collaboration
             }
         }
 
+        /// <summary>
+        /// Gets or sets the can view.
+        /// </summary>
         public bool CanView(string documentId, string userId) => GetRole(documentId, userId) != null;
 
+        /// <summary>
+        /// Gets or sets the can comment.
+        /// </summary>
         public bool CanComment(string documentId, string userId)
             => GetRole(documentId, userId) >= CollaborationRole.Commenter;
 
+        /// <summary>
+        /// Gets or sets the can edit.
+        /// </summary>
         public bool CanEdit(string documentId, string userId)
             => GetRole(documentId, userId) >= CollaborationRole.Editor;
 
+        /// <summary>
+        /// Gets or sets the can administer.
+        /// </summary>
         public bool CanAdminister(string documentId, string userId)
             => GetRole(documentId, userId) == CollaborationRole.Admin;
 

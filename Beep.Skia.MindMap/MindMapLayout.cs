@@ -26,6 +26,9 @@ namespace Beep.Skia.MindMap
         /// <summary>Vertical gap used when parking unconnected components.</summary>
         public float UnconnectedSpacing { get; set; } = 90f;
 
+        /// <summary>
+        /// Gets or sets the arrange.
+        /// </summary>
         public void Arrange(IReadOnlyList<SkiaComponent> components, IReadOnlyList<IConnectionLine> lines)
         {
             if (components == null) return;

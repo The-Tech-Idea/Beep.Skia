@@ -14,11 +14,26 @@ namespace Beep.Skia.Cloud
         private string _version = "latest";
         private string _region = "us-east";
 
+        /// <summary>
+        /// Gets or sets the database name.
+        /// </summary>
         public string DatabaseName { get => _name; set { var v = value ?? string.Empty; if (_name != v) { _name = v; if (NodeProperties.TryGetValue("DatabaseName", out var p)) p.ParameterCurrentValue = _name; else NodeProperties["DatabaseName"] = new ParameterInfo { ParameterName = "DatabaseName", ParameterType = typeof(string), DefaultParameterValue = _name, ParameterCurrentValue = _name, Description = "Database name" }; Name = _name; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the engine.
+        /// </summary>
         public DbEngine Engine { get => _engine; set { if (_engine != value) { _engine = value; if (NodeProperties.TryGetValue("Engine", out var p)) p.ParameterCurrentValue = _engine; else NodeProperties["Engine"] = new ParameterInfo { ParameterName = "Engine", ParameterType = typeof(DbEngine), DefaultParameterValue = _engine, ParameterCurrentValue = _engine, Description = "Engine", Choices = Enum.GetNames(typeof(DbEngine)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
         public string Version { get => _version; set { var v = value ?? string.Empty; if (_version != v) { _version = v; if (NodeProperties.TryGetValue("Version", out var p)) p.ParameterCurrentValue = _version; else NodeProperties["Version"] = new ParameterInfo { ParameterName = "Version", ParameterType = typeof(string), DefaultParameterValue = _version, ParameterCurrentValue = _version, Description = "Version" }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the region.
+        /// </summary>
         public string Region { get => _region; set { var v = value ?? string.Empty; if (_region != v) { _region = v; if (NodeProperties.TryGetValue("Region", out var p)) p.ParameterCurrentValue = _region; else NodeProperties["Region"] = new ParameterInfo { ParameterName = "Region", ParameterType = typeof(string), DefaultParameterValue = _region, ParameterCurrentValue = _region, Description = "Region" }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Database name
+        /// </summary>
         public CloudDatabaseNode()
         {
             Width = 170; Height = 90;

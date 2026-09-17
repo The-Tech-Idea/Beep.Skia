@@ -12,6 +12,9 @@ namespace Beep.Skia.Business
     public class BpmnLaneNode : BusinessControl
     {
         private string _laneName = "Lane";
+        /// <summary>
+        /// Gets or sets the lane name.
+        /// </summary>
         public string LaneName
         {
             get => _laneName;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Lane name
+        /// </summary>
         public BpmnLaneNode()
         {
             Width = 400;

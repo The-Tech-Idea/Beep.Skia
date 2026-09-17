@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaPanelComponent _panel;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaPanel class.
+        /// </summary>
         public SkiaPanel()
         {
             _panel = CreateSkiaComponent<SkiaPanelComponent>();

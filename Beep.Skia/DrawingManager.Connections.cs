@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Text.Json;
 namespace Beep.Skia
 {
+    /// <summary>
+    /// Gets or sets the drawing manager.
+    /// </summary>
     public partial class DrawingManager
     {
         // If set, the next created ConnectionLine will have these ERD multiplicities applied,

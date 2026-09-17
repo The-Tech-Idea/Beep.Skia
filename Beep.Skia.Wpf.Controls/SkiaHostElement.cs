@@ -25,24 +25,39 @@ namespace Beep.Skia.Wpf.Controls
         private ComponentPropertyEditor _propertyEditor;
         private readonly Dictionary<Guid, SkiaComponent> _componentRegistry = new();
 
+        /// <summary>
+        /// Gets or sets the center on drop.
+        /// </summary>
         [Category("Behavior"), DefaultValue(false)]
         [Description("Center the component on the drop point.")]
         public bool CenterOnDrop { get; set; } = false;
 
+        /// <summary>
+        /// Gets or sets the allow component dragging.
+        /// </summary>
         [Category("Behavior"), DefaultValue(true)]
         [Description("Allow picking up and moving existing components.")]
         public bool AllowComponentDragging { get; set; } = true;
 
+        /// <summary>
+        /// Gets or sets the drawing manager.
+        /// </summary>
         public DrawingManager DrawingManager => _drawingManager;
 
         // Design-time component descriptors (shared format with WinForms host)
         private SkiaComponentDescriptorCollection _designTimeComponents = new();
+        /// <summary>
+        /// Gets or sets the design time components.
+        /// </summary>
         public SkiaComponentDescriptorCollection DesignTimeComponents
         {
             get => _designTimeComponents;
             set { _designTimeComponents = value ?? new SkiaComponentDescriptorCollection(); }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaHostElement class.
+        /// </summary>
         public SkiaHostElement()
         {
             Loaded += OnLoaded;
@@ -208,6 +223,9 @@ namespace Beep.Skia.Wpf.Controls
         }
 
         // Component creation (public API)
+        /// <summary>
+        /// Gets or sets the create and add component.
+        /// </summary>
         public SkiaComponent CreateAndAddComponent(Type type, float x, float y, float w, float h, string name = null)
         {
             if (type == null) return null;

@@ -13,17 +13,32 @@ namespace Beep.Ski.Quantitative
     public class DataSourceNode : QuantControl
     {
         private string _provider = "Yahoo";
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
         public string Provider { get => _provider; set { if (_provider == value) return; _provider = value ?? ""; if (NodeProperties.TryGetValue("Provider", out var pi)) pi.ParameterCurrentValue = _provider; InvalidateVisual(); } }
         
         private string _symbol = "SPY";
+        /// <summary>
+        /// Gets or sets the symbol.
+        /// </summary>
         public string Symbol { get => _symbol; set { if (_symbol == value) return; _symbol = value ?? ""; if (NodeProperties.TryGetValue("Symbol", out var pi)) pi.ParameterCurrentValue = _symbol; InvalidateVisual(); } }
         
         private string _interval = "1D";
+        /// <summary>
+        /// Gets or sets the interval.
+        /// </summary>
         public string Interval { get => _interval; set { if (_interval == value) return; _interval = value ?? ""; if (NodeProperties.TryGetValue("Interval", out var pi)) pi.ParameterCurrentValue = _interval; InvalidateVisual(); } }
         
         private DateTime _startDate = DateTime.Now.AddYears(-2);
+        /// <summary>
+        /// Gets or sets the start date.
+        /// </summary>
         public DateTime StartDate { get => _startDate; set { if (_startDate == value) return; _startDate = value; if (NodeProperties.TryGetValue("StartDate", out var pi)) pi.ParameterCurrentValue = _startDate; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Data provider
+        /// </summary>
         public DataSourceNode()
         {
             Name = "Data Source";
@@ -43,14 +58,26 @@ namespace Beep.Ski.Quantitative
     public class TransformNode : QuantControl
     {
         private string _operation = "Returns";
+        /// <summary>
+        /// Gets or sets the operation.
+        /// </summary>
         public string Operation { get => _operation; set { if (_operation == value) return; _operation = value ?? ""; if (NodeProperties.TryGetValue("Operation", out var pi)) pi.ParameterCurrentValue = _operation; InvalidateVisual(); } }
         
         private bool _percentage = true;
+        /// <summary>
+        /// Gets or sets the percentage.
+        /// </summary>
         public bool Percentage { get => _percentage; set { if (_percentage == value) return; _percentage = value; if (NodeProperties.TryGetValue("Percentage", out var pi)) pi.ParameterCurrentValue = _percentage; InvalidateVisual(); } }
         
         private int _lag = 1;
+        /// <summary>
+        /// Gets or sets the lag.
+        /// </summary>
         public int Lag { get => _lag; set { if (_lag == value) return; _lag = value; if (NodeProperties.TryGetValue("Lag", out var pi)) pi.ParameterCurrentValue = _lag; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Transformation type
+        /// </summary>
         public TransformNode()
         {
             Name = "Transform";
@@ -69,14 +96,26 @@ namespace Beep.Ski.Quantitative
     public class FilterNode : QuantControl
     {
         private string _filterType = "Outlier";
+        /// <summary>
+        /// Gets or sets the filter type.
+        /// </summary>
         public string FilterType { get => _filterType; set { if (_filterType == value) return; _filterType = value ?? ""; if (NodeProperties.TryGetValue("FilterType", out var pi)) pi.ParameterCurrentValue = _filterType; InvalidateVisual(); } }
         
         private double _threshold = 3.0;
+        /// <summary>
+        /// Gets or sets the threshold.
+        /// </summary>
         public double Threshold { get => _threshold; set { if (Math.Abs(_threshold - value) < 0.0001) return; _threshold = value; if (NodeProperties.TryGetValue("Threshold", out var pi)) pi.ParameterCurrentValue = _threshold; InvalidateVisual(); } }
         
         private string _method = "ZScore";
+        /// <summary>
+        /// Gets or sets the method.
+        /// </summary>
         public string Method { get => _method; set { if (_method == value) return; _method = value ?? ""; if (NodeProperties.TryGetValue("Method", out var pi)) pi.ParameterCurrentValue = _method; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Filter type
+        /// </summary>
         public FilterNode()
         {
             Name = "Filter";
@@ -95,11 +134,20 @@ namespace Beep.Ski.Quantitative
     public class AggregateNode : QuantControl
     {
         private string _operation = "Mean";
+        /// <summary>
+        /// Gets or sets the operation.
+        /// </summary>
         public string Operation { get => _operation; set { if (_operation == value) return; _operation = value ?? ""; if (NodeProperties.TryGetValue("Operation", out var pi)) pi.ParameterCurrentValue = _operation; InvalidateVisual(); } }
         
         private bool _skipNaN = true;
+        /// <summary>
+        /// Gets or sets the skip na n.
+        /// </summary>
         public bool SkipNaN { get => _skipNaN; set { if (_skipNaN == value) return; _skipNaN = value; if (NodeProperties.TryGetValue("SkipNaN", out var pi)) pi.ParameterCurrentValue = _skipNaN; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Aggregation operation
+        /// </summary>
         public AggregateNode()
         {
             Name = "Aggregate";
@@ -117,21 +165,39 @@ namespace Beep.Ski.Quantitative
     public class ChartNode : QuantControl
     {
         private string _chartType = "Line";
+        /// <summary>
+        /// Gets or sets the chart type.
+        /// </summary>
         public string ChartType { get => _chartType; set { if (_chartType == value) return; _chartType = value ?? ""; if (NodeProperties.TryGetValue("ChartType", out var pi)) pi.ParameterCurrentValue = _chartType; InvalidateVisual(); } }
 
         private bool _showGrid = true;
+        /// <summary>
+        /// Gets or sets the show grid.
+        /// </summary>
         public bool ShowGrid { get => _showGrid; set { if (_showGrid == value) return; _showGrid = value; if (NodeProperties.TryGetValue("ShowGrid", out var pi)) pi.ParameterCurrentValue = _showGrid; InvalidateVisual(); } }
 
         private bool _showLegend = true;
+        /// <summary>
+        /// Gets or sets the show legend.
+        /// </summary>
         public bool ShowLegend { get => _showLegend; set { if (_showLegend == value) return; _showLegend = value; if (NodeProperties.TryGetValue("ShowLegend", out var pi)) pi.ParameterCurrentValue = _showLegend; InvalidateVisual(); } }
 
         private int _maxPoints = 1000;
+        /// <summary>
+        /// Gets or sets the max points.
+        /// </summary>
         public int MaxPoints { get => _maxPoints; set { if (_maxPoints == value) return; _maxPoints = Math.Max(1, value); if (NodeProperties.TryGetValue("MaxPoints", out var pi)) pi.ParameterCurrentValue = _maxPoints; InvalidateVisual(); } }
 
         private bool _showAxes = true;
+        /// <summary>
+        /// Gets or sets the show axes.
+        /// </summary>
         public bool ShowAxes { get => _showAxes; set { if (_showAxes == value) return; _showAxes = value; if (NodeProperties.TryGetValue("ShowAxes", out var pi)) pi.ParameterCurrentValue = _showAxes; InvalidateVisual(); } }
 
         private string _title = string.Empty;
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title { get => _title; set { var v = value ?? ""; if (_title == v) return; _title = v; if (NodeProperties.TryGetValue("Title", out var pi)) pi.ParameterCurrentValue = _title; InvalidateVisual(); } }
 
         /// <summary>Data series rendered by this chart.</summary>
@@ -160,6 +226,9 @@ namespace Beep.Ski.Quantitative
             }
         }
 
+        /// <summary>
+        /// Chart type
+        /// </summary>
         public ChartNode()
         {
             Name = "Chart";
@@ -469,14 +538,26 @@ namespace Beep.Ski.Quantitative
     public class ExportNode : QuantControl
     {
         private string _format = "CSV";
+        /// <summary>
+        /// Gets or sets the format.
+        /// </summary>
         public string Format { get => _format; set { if (_format == value) return; _format = value ?? ""; if (NodeProperties.TryGetValue("Format", out var pi)) pi.ParameterCurrentValue = _format; InvalidateVisual(); } }
         
         private string _filePath = "output.csv";
+        /// <summary>
+        /// Gets or sets the file path.
+        /// </summary>
         public string FilePath { get => _filePath; set { if (_filePath == value) return; _filePath = value ?? ""; if (NodeProperties.TryGetValue("FilePath", out var pi)) pi.ParameterCurrentValue = _filePath; InvalidateVisual(); } }
         
         private bool _includeHeader = true;
+        /// <summary>
+        /// Gets or sets the include header.
+        /// </summary>
         public bool IncludeHeader { get => _includeHeader; set { if (_includeHeader == value) return; _includeHeader = value; if (NodeProperties.TryGetValue("IncludeHeader", out var pi)) pi.ParameterCurrentValue = _includeHeader; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Export format
+        /// </summary>
         public ExportNode()
         {
             Name = "Export";

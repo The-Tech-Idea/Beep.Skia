@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class DoWhileLoopNode : FlowchartControl
     {
         private string _condition = "condition";
+        /// <summary>
+        /// Gets or sets the condition.
+        /// </summary>
         public string Condition
         {
             get => _condition;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Boolean condition evaluated after each loop iteration.
+        /// </summary>
         public DoWhileLoopNode()
         {
             Name = "Flowchart Do-While Loop";

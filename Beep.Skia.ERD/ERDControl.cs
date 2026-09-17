@@ -25,12 +25,18 @@ namespace Beep.Skia.ERD
         }
 
         // Allow editor-driven adjustments to port counts
+        /// <summary>
+        /// Gets or sets the in port count.
+        /// </summary>
         public int InPortCount
         {
             get => InConnectionPoints?.Count ?? 0;
             set { int v = Math.Max(0, value); EnsurePortCounts(v, OutPortCount); InvalidateVisual(); }
         }
 
+        /// <summary>
+        /// Gets or sets the out port count.
+        /// </summary>
         public int OutPortCount
         {
             get => OutConnectionPoints?.Count ?? 0;

@@ -55,13 +55,31 @@ namespace Beep.Skia.Extensions
     /// </summary>
     public sealed class ExtensionComponentDescriptor
     {
+        /// <summary>
+        /// Gets or sets the extension id.
+        /// </summary>
         public string ExtensionId { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the component type.
+        /// </summary>
         public Type ComponentType { get; set; }
+        /// <summary>
+        /// Gets or sets the category.
+        /// </summary>
         public string Category { get; set; } = "Extensions";
+        /// <summary>
+        /// Gets or sets the display name.
+        /// </summary>
         public string DisplayName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the assembly qualified name.
+        /// </summary>
         public string AssemblyQualifiedName => ComponentType?.AssemblyQualifiedName;
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"{DisplayName ?? ComponentType?.Name} ({ExtensionId})";
     }
 
@@ -70,16 +88,43 @@ namespace Beep.Skia.Extensions
     /// </summary>
     public sealed class LoadedExtension
     {
+        /// <summary>
+        /// Gets or sets the extension.
+        /// </summary>
         public ISkiaExtension Extension { get; set; }
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
         public string Id { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
         public string Version { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
         public string Description { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the component types.
+        /// </summary>
         public List<Type> ComponentTypes { get; } = new List<Type>();
+        /// <summary>
+        /// Gets or sets the errors.
+        /// </summary>
         public List<string> Errors { get; } = new List<string>();
 
+        /// <summary>
+        /// Gets or sets the success.
+        /// </summary>
         public bool Success => Errors.Count == 0;
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"{Name} {Version} ({(Success ? "ok" : "failed")})";
     }
 
@@ -88,11 +133,17 @@ namespace Beep.Skia.Extensions
     /// </summary>
     public sealed class ExtensionLoadedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Initializes a new instance of the ExtensionLoadedEventArgs class.
+        /// </summary>
         public ExtensionLoadedEventArgs(LoadedExtension extension)
         {
             Extension = extension;
         }
 
+        /// <summary>
+        /// Gets or sets the extension.
+        /// </summary>
         public LoadedExtension Extension { get; }
     }
 }

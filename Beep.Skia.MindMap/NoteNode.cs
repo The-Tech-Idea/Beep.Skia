@@ -8,6 +8,9 @@ namespace Beep.Skia.MindMap
     public class NoteNode : MindMapControl
     {
         private string _title = "Note";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -22,6 +25,9 @@ namespace Beep.Skia.MindMap
         }
 
         private string? _notes;
+        /// <summary>
+        /// Gets or sets the notes.
+        /// </summary>
         public string? Notes
         {
             get => _notes;
@@ -35,6 +41,9 @@ namespace Beep.Skia.MindMap
             }
         }
 
+        /// <summary>
+        /// Note title
+        /// </summary>
         public NoteNode()
         {
             Width = 160; Height = 80;

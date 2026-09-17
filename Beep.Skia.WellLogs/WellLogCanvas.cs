@@ -12,6 +12,9 @@ namespace Beep.Skia.WellLogs
         private float _headerHeight = 28f;
         private SKColor _surfaceColor = new SKColor(253, 253, 253);
 
+        /// <summary>
+        /// Initializes a new instance of the WellLogCanvas class.
+        /// </summary>
         public WellLogCanvas()
         {
             Name = "Well Log Canvas";
@@ -21,6 +24,9 @@ namespace Beep.Skia.WellLogs
             SeedNodeProperties();
         }
 
+        /// <summary>
+        /// Gets or sets the document.
+        /// </summary>
         public WellLogDocument Document
         {
             get => _document;
@@ -33,6 +39,9 @@ namespace Beep.Skia.WellLogs
             }
         }
 
+        /// <summary>
+        /// Gets or sets the track gap.
+        /// </summary>
         public float TrackGap
         {
             get => _trackGap;
@@ -49,6 +58,9 @@ namespace Beep.Skia.WellLogs
             }
         }
 
+        /// <summary>
+        /// Gets or sets the header height.
+        /// </summary>
         public float HeaderHeight
         {
             get => _headerHeight;
@@ -65,6 +77,9 @@ namespace Beep.Skia.WellLogs
             }
         }
 
+        /// <summary>
+        /// Gets or sets the surface color.
+        /// </summary>
         public SKColor SurfaceColor
         {
             get => _surfaceColor;
@@ -81,6 +96,9 @@ namespace Beep.Skia.WellLogs
             }
         }
 
+        /// <summary>
+        /// Gets or sets the primary standard.
+        /// </summary>
         public string PrimaryStandard
         {
             get => Document.PrimaryStandard.ToString();

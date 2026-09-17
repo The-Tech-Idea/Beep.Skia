@@ -8,6 +8,9 @@ namespace Beep.Skia.DFD
     public class DFDExternalEntity : DFDControl
     {
         private string _label = "External";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -23,6 +26,9 @@ namespace Beep.Skia.DFD
                 }
             }
         }
+        /// <summary>
+        /// Text label shown with the external entity.
+        /// </summary>
         public DFDExternalEntity()
         {
             Name = "External";

@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class JoinNode : FlowchartControl
     {
         private int _waitCount = 2;
+        /// <summary>
+        /// Gets or sets the wait count.
+        /// </summary>
         public int WaitCount
         {
             get => _waitCount;
@@ -27,6 +30,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Number of parallel paths to wait for (2-8).
+        /// </summary>
         public JoinNode()
         {
             Name = "Flowchart Join";

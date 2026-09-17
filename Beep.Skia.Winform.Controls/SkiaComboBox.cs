@@ -13,6 +13,9 @@ namespace Beep.Skia.Winform.Controls
         // Minimal wrapper: only construct the Skia Dropdown component on the host.
         private SkiaComboBoxComponent _comboBox;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaComboBox class.
+        /// </summary>
         public SkiaComboBox()
         {
             _comboBox = CreateSkiaComponent<SkiaComboBoxComponent>();

@@ -16,13 +16,34 @@ namespace Beep.Skia.ECAD
         private double _maxCurrent = 1.0;
         private double _efficiency = 60.0;
 
+        /// <summary>
+        /// Gets or sets the regulator type.
+        /// </summary>
         public string RegulatorType { get => _type; set { var v = value ?? ""; if (_type != v) { _type = v; UpdateNodeProperty("RegulatorType", _type); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the model.
+        /// </summary>
         public string Model { get => _model; set { var v = value ?? ""; if (_model != v) { _model = v; UpdateNodeProperty("Model", _model); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the input voltage.
+        /// </summary>
         public double InputVoltage { get => _inputVoltage; set { if (Math.Abs(_inputVoltage - value) > 0.001) { _inputVoltage = value; UpdateNodeProperty("InputVoltage", _inputVoltage); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the output voltage.
+        /// </summary>
         public double OutputVoltage { get => _outputVoltage; set { if (Math.Abs(_outputVoltage - value) > 0.001) { _outputVoltage = value; UpdateNodeProperty("OutputVoltage", _outputVoltage); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the max current.
+        /// </summary>
         public double MaxCurrent { get => _maxCurrent; set { if (Math.Abs(_maxCurrent - value) > 0.001) { _maxCurrent = value; UpdateNodeProperty("MaxCurrent", _maxCurrent); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the efficiency.
+        /// </summary>
         public double Efficiency { get => _efficiency; set { if (Math.Abs(_efficiency - value) > 0.001) { _efficiency = value; UpdateNodeProperty("Efficiency", _efficiency); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Regulator type
+        /// </summary>
         public ECADVoltageRegulatorNode()
         {
             Width = 120; Height = 60; Name = "Voltage Regulator";

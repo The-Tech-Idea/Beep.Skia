@@ -10,14 +10,26 @@ namespace Beep.Ski.Quantitative
     public class StrategyNode : QuantControl
     {
         private string _strategyType = "Crossover";
+        /// <summary>
+        /// Gets or sets the strategy type.
+        /// </summary>
         public string StrategyType { get => _strategyType; set { if (_strategyType == value) return; _strategyType = value ?? ""; if (NodeProperties.TryGetValue("StrategyType", out var pi)) pi.ParameterCurrentValue = _strategyType; InvalidateVisual(); } }
         
         private double _threshold = 0.0;
+        /// <summary>
+        /// Gets or sets the threshold.
+        /// </summary>
         public double Threshold { get => _threshold; set { if (Math.Abs(_threshold - value) < 0.0001) return; _threshold = value; if (NodeProperties.TryGetValue("Threshold", out var pi)) pi.ParameterCurrentValue = _threshold; InvalidateVisual(); } }
         
         private bool _longOnly = false;
+        /// <summary>
+        /// Gets or sets the long only.
+        /// </summary>
         public bool LongOnly { get => _longOnly; set { if (_longOnly == value) return; _longOnly = value; if (NodeProperties.TryGetValue("LongOnly", out var pi)) pi.ParameterCurrentValue = _longOnly; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Strategy type
+        /// </summary>
         public StrategyNode()
         {
             Name = "Strategy";
@@ -35,17 +47,32 @@ namespace Beep.Ski.Quantitative
     public class BacktestNode : QuantControl
     {
         private DateTime _startDate = DateTime.Now.AddYears(-1);
+        /// <summary>
+        /// Gets or sets the start date.
+        /// </summary>
         public DateTime StartDate { get => _startDate; set { if (_startDate == value) return; _startDate = value; if (NodeProperties.TryGetValue("StartDate", out var pi)) pi.ParameterCurrentValue = _startDate; InvalidateVisual(); } }
         
         private DateTime _endDate = DateTime.Now;
+        /// <summary>
+        /// Gets or sets the end date.
+        /// </summary>
         public DateTime EndDate { get => _endDate; set { if (_endDate == value) return; _endDate = value; if (NodeProperties.TryGetValue("EndDate", out var pi)) pi.ParameterCurrentValue = _endDate; InvalidateVisual(); } }
         
         private double _initialCapital = 10000.0;
+        /// <summary>
+        /// Gets or sets the initial capital.
+        /// </summary>
         public double InitialCapital { get => _initialCapital; set { if (Math.Abs(_initialCapital - value) < 0.01) return; _initialCapital = value; if (NodeProperties.TryGetValue("InitialCapital", out var pi)) pi.ParameterCurrentValue = _initialCapital; InvalidateVisual(); } }
         
         private double _commission = 0.001;
+        /// <summary>
+        /// Gets or sets the commission.
+        /// </summary>
         public double Commission { get => _commission; set { if (Math.Abs(_commission - value) < 0.0001) return; _commission = value; if (NodeProperties.TryGetValue("Commission", out var pi)) pi.ParameterCurrentValue = _commission; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Backtest start date
+        /// </summary>
         public BacktestNode()
         {
             Name = "Backtest";
@@ -65,14 +92,26 @@ namespace Beep.Ski.Quantitative
     public class PortfolioOptimizerNode : QuantControl
     {
         private string _method = "Sharpe";
+        /// <summary>
+        /// Gets or sets the method.
+        /// </summary>
         public string Method { get => _method; set { if (_method == value) return; _method = value ?? ""; if (NodeProperties.TryGetValue("Method", out var pi)) pi.ParameterCurrentValue = _method; InvalidateVisual(); } }
         
         private double _targetReturn = 0.15;
+        /// <summary>
+        /// Gets or sets the target return.
+        /// </summary>
         public double TargetReturn { get => _targetReturn; set { if (Math.Abs(_targetReturn - value) < 0.0001) return; _targetReturn = value; if (NodeProperties.TryGetValue("TargetReturn", out var pi)) pi.ParameterCurrentValue = _targetReturn; InvalidateVisual(); } }
         
         private int _numAssets = 5;
+        /// <summary>
+        /// Gets or sets the num assets.
+        /// </summary>
         public int NumAssets { get => _numAssets; set { if (_numAssets == value) return; _numAssets = value; if (NodeProperties.TryGetValue("NumAssets", out var pi)) pi.ParameterCurrentValue = _numAssets; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Optimization method
+        /// </summary>
         public PortfolioOptimizerNode()
         {
             Name = "Portfolio Optimizer";
@@ -91,17 +130,32 @@ namespace Beep.Ski.Quantitative
     public class RiskManagerNode : QuantControl
     {
         private double _maxRiskPerTrade = 0.02;
+        /// <summary>
+        /// Gets or sets the max risk per trade.
+        /// </summary>
         public double MaxRiskPerTrade { get => _maxRiskPerTrade; set { if (Math.Abs(_maxRiskPerTrade - value) < 0.0001) return; _maxRiskPerTrade = value; if (NodeProperties.TryGetValue("MaxRiskPerTrade", out var pi)) pi.ParameterCurrentValue = _maxRiskPerTrade; InvalidateVisual(); } }
         
         private double _stopLossPercent = 0.05;
+        /// <summary>
+        /// Gets or sets the stop loss percent.
+        /// </summary>
         public double StopLossPercent { get => _stopLossPercent; set { if (Math.Abs(_stopLossPercent - value) < 0.0001) return; _stopLossPercent = value; if (NodeProperties.TryGetValue("StopLossPercent", out var pi)) pi.ParameterCurrentValue = _stopLossPercent; InvalidateVisual(); } }
         
         private double _takeProfitPercent = 0.10;
+        /// <summary>
+        /// Gets or sets the take profit percent.
+        /// </summary>
         public double TakeProfitPercent { get => _takeProfitPercent; set { if (Math.Abs(_takeProfitPercent - value) < 0.0001) return; _takeProfitPercent = value; if (NodeProperties.TryGetValue("TakeProfitPercent", out var pi)) pi.ParameterCurrentValue = _takeProfitPercent; InvalidateVisual(); } }
         
         private string _positionSizing = "FixedRisk";
+        /// <summary>
+        /// Gets or sets the position sizing.
+        /// </summary>
         public string PositionSizing { get => _positionSizing; set { if (_positionSizing == value) return; _positionSizing = value ?? ""; if (NodeProperties.TryGetValue("PositionSizing", out var pi)) pi.ParameterCurrentValue = _positionSizing; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Max risk per trade (fraction)
+        /// </summary>
         public RiskManagerNode()
         {
             Name = "Risk Manager";
@@ -121,14 +175,26 @@ namespace Beep.Ski.Quantitative
     public class PerformanceNode : QuantControl
     {
         private bool _includeDrawdown = true;
+        /// <summary>
+        /// Gets or sets the include drawdown.
+        /// </summary>
         public bool IncludeDrawdown { get => _includeDrawdown; set { if (_includeDrawdown == value) return; _includeDrawdown = value; if (NodeProperties.TryGetValue("IncludeDrawdown", out var pi)) pi.ParameterCurrentValue = _includeDrawdown; InvalidateVisual(); } }
         
         private bool _includeSharpe = true;
+        /// <summary>
+        /// Gets or sets the include sharpe.
+        /// </summary>
         public bool IncludeSharpe { get => _includeSharpe; set { if (_includeSharpe == value) return; _includeSharpe = value; if (NodeProperties.TryGetValue("IncludeSharpe", out var pi)) pi.ParameterCurrentValue = _includeSharpe; InvalidateVisual(); } }
         
         private double _riskFreeRate = 0.02;
+        /// <summary>
+        /// Gets or sets the risk free rate.
+        /// </summary>
         public double RiskFreeRate { get => _riskFreeRate; set { if (Math.Abs(_riskFreeRate - value) < 0.0001) return; _riskFreeRate = value; if (NodeProperties.TryGetValue("RiskFreeRate", out var pi)) pi.ParameterCurrentValue = _riskFreeRate; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Calculate max drawdown
+        /// </summary>
         public PerformanceNode()
         {
             Name = "Performance";

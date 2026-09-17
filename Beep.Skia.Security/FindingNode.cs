@@ -13,10 +13,22 @@ namespace Beep.Skia.Security
         private FindingType _type = FindingType.Misconfiguration;
         private Confidence _confidence = Confidence.Medium;
 
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title { get => _title; set { var v = value ?? string.Empty; if (_title != v) { _title = v; if (NodeProperties.TryGetValue("Title", out var p)) p.ParameterCurrentValue = _title; else NodeProperties["Title"] = new ParameterInfo { ParameterName = "Title", ParameterType = typeof(string), DefaultParameterValue = _title, ParameterCurrentValue = _title, Description = "Finding title" }; Name = _title; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the type.
+        /// </summary>
         public FindingType Type { get => _type; set { if (_type != value) { _type = value; if (NodeProperties.TryGetValue("Type", out var p)) p.ParameterCurrentValue = _type; else NodeProperties["Type"] = new ParameterInfo { ParameterName = "Type", ParameterType = typeof(FindingType), DefaultParameterValue = _type, ParameterCurrentValue = _type, Description = "Finding type", Choices = Enum.GetNames(typeof(FindingType)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the confidence.
+        /// </summary>
         public Confidence Confidence { get => _confidence; set { if (_confidence != value) { _confidence = value; if (NodeProperties.TryGetValue("Confidence", out var p)) p.ParameterCurrentValue = _confidence; else NodeProperties["Confidence"] = new ParameterInfo { ParameterName = "Confidence", ParameterType = typeof(Confidence), DefaultParameterValue = _confidence, ParameterCurrentValue = _confidence, Description = "Detection confidence", Choices = Enum.GetNames(typeof(Confidence)) }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Finding title
+        /// </summary>
         public FindingNode()
         {
             Width = 160; Height = 80;

@@ -15,12 +15,33 @@ namespace Beep.Skia.Extensions.Marketplace
     {
         public const string FileName = "manifest.json";
 
+        /// <summary>
+        /// Gets or sets the schema version.
+        /// </summary>
         public int SchemaVersion { get; set; } = 1;
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
         public string Id { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
         public string Version { get; set; } = "1.0.0";
+        /// <summary>
+        /// Gets or sets the author.
+        /// </summary>
         public string Author { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
         public string Description { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the tags.
+        /// </summary>
         public List<string> Tags { get; set; } = new List<string>();
 
         /// <summary>Minimum host version required (semantic version).</summary>
@@ -29,6 +50,9 @@ namespace Beep.Skia.Extensions.Marketplace
         /// <summary>Extension ids this package depends on.</summary>
         public List<string> Dependencies { get; set; } = new List<string>();
 
+        /// <summary>
+        /// Gets or sets the published at.
+        /// </summary>
         public DateTime PublishedAt { get; set; } = DateTime.UtcNow;
 
         /// <summary>Validates required fields. Returns null when valid, otherwise the error.</summary>
@@ -47,15 +71,39 @@ namespace Beep.Skia.Extensions.Marketplace
     /// <summary>An extension package: manifest plus its source archive.</summary>
     public class ExtensionPackage
     {
+        /// <summary>
+        /// Gets or sets the manifest.
+        /// </summary>
         public ExtensionManifest Manifest { get; set; } = new ExtensionManifest();
+        /// <summary>
+        /// Gets or sets the package path.
+        /// </summary>
         public string PackagePath { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the size bytes.
+        /// </summary>
         public long SizeBytes { get; set; }
+        /// <summary>
+        /// Gets or sets the sha256.
+        /// </summary>
         public string Sha256 { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
         public string Id => Manifest?.Id ?? string.Empty;
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name => Manifest?.Name ?? string.Empty;
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
         public string Version => Manifest?.Version ?? string.Empty;
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"{Id} {Version}";
     }
 
@@ -110,6 +158,9 @@ namespace Beep.Skia.Extensions.Marketplace
             };
         }
 
+        /// <summary>
+        /// Gets or sets the compute sha256.
+        /// </summary>
         public static string ComputeSha256(string filePath)
         {
             using var stream = File.OpenRead(filePath);

@@ -7,6 +7,9 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDProcessGroupBoundary : DFDControl
     {
+        /// <summary>
+        /// Initializes a new instance of the DFDProcessGroupBoundary class.
+        /// </summary>
         public DFDProcessGroupBoundary()
         {
             Name = "Process Group Boundary";

@@ -13,12 +13,30 @@ namespace Beep.Skia.PM
     /// </summary>
     public class GanttRow
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the start day.
+        /// </summary>
         public int StartDay { get; set; } = 1;
+        /// <summary>
+        /// Gets or sets the finish day.
+        /// </summary>
         public int FinishDay { get; set; } = 1;
+        /// <summary>
+        /// Gets or sets the percent complete.
+        /// </summary>
         public float PercentComplete { get; set; }
+        /// <summary>
+        /// Gets or sets the is critical.
+        /// </summary>
         public bool IsCritical { get; set; }
 
+        /// <summary>
+        /// Gets or sets the duration days.
+        /// </summary>
         public int DurationDays => Math.Max(1, FinishDay - StartDay + 1);
     }
 
@@ -33,19 +51,46 @@ namespace Beep.Skia.PM
         private float _dayWidth = 22f;
         private float _labelWidth = 160f;
 
+        /// <summary>
+        /// Gets or sets the row height.
+        /// </summary>
         public float RowHeight { get => _rowHeight; set { _rowHeight = Math.Max(16f, value); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the header height.
+        /// </summary>
         public float HeaderHeight { get => _headerHeight; set { _headerHeight = Math.Max(20f, value); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the day width.
+        /// </summary>
         public float DayWidth { get => _dayWidth; set { _dayWidth = Math.Max(6f, value); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the label width.
+        /// </summary>
         public float LabelWidth { get => _labelWidth; set { _labelWidth = Math.Max(60f, value); InvalidateVisual(); } }
 
         /// <summary>Highlight rows on the critical path in a distinct color.</summary>
         public bool ShowCriticalPath { get; set; } = true;
 
+        /// <summary>
+        /// Gets or sets the bar color.
+        /// </summary>
         public SKColor BarColor { get; set; } = new SKColor(0x42, 0xA5, 0xF5);
+        /// <summary>
+        /// Gets or sets the critical bar color.
+        /// </summary>
         public SKColor CriticalBarColor { get; set; } = new SKColor(0xE5, 0x39, 0x35);
+        /// <summary>
+        /// Gets or sets the progress color.
+        /// </summary>
         public SKColor ProgressColor { get; set; } = new SKColor(0x1E, 0x88, 0xE5);
+        /// <summary>
+        /// Gets or sets the grid color.
+        /// </summary>
         public SKColor GridColor { get; set; } = new SKColor(0xE0, 0xE0, 0xE0);
 
+        /// <summary>
+        /// Gets or sets the rows.
+        /// </summary>
         public List<GanttRow> Rows { get; } = new List<GanttRow>();
 
         /// <summary>
@@ -72,6 +117,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Height of each task row
+        /// </summary>
         public GanttTimelineNode()
         {
             Width = 720;

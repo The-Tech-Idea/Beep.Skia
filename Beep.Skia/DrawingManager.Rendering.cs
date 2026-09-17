@@ -2,6 +2,9 @@ using SkiaSharp;
 using Beep.Skia.Model;
 namespace Beep.Skia
 {
+    /// <summary>
+    /// Gets or sets the drawing manager.
+    /// </summary>
     public partial class DrawingManager
     {
         /// <summary>

@@ -11,7 +11,13 @@ namespace Beep.Skia.Network
     public class PageRankResult
     {
         public Dictionary<NetworkNode, double> Ranks { get; } = new Dictionary<NetworkNode, double>();
+        /// <summary>
+        /// Gets or sets the iterations.
+        /// </summary>
         public int Iterations { get; set; }
+        /// <summary>
+        /// Gets or sets the converged.
+        /// </summary>
         public bool Converged { get; set; }
 
         /// <summary>

@@ -15,21 +15,45 @@ namespace Beep.Skia.Triggers
     {
         private bool _disposed;
 
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
         public string Id { get; } = Guid.NewGuid().ToString("N")[..8];
         public abstract string Name { get; }
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
         public virtual string Description => Name;
         public abstract TriggerType TriggerType { get; }
 
+        /// <summary>
+        /// Gets or sets the is active.
+        /// </summary>
         public bool IsActive { get; protected set; }
+        /// <summary>
+        /// Gets or sets the is enabled.
+        /// </summary>
         public bool IsEnabled { get; set; } = true;
         public Dictionary<string, object> Configuration { get; set; } = new Dictionary<string, object>();
+        /// <summary>
+        /// Gets or sets the workflow id.
+        /// </summary>
         public string WorkflowId { get; set; }
+        /// <summary>
+        /// Gets or sets the last activated.
+        /// </summary>
         public DateTime? LastActivated { get; private set; }
+        /// <summary>
+        /// Gets or sets the activation count.
+        /// </summary>
         public long ActivationCount { get; private set; }
 
         public event EventHandler<TriggerEventArgs> Triggered;
         public event EventHandler<TriggerErrorEventArgs> ErrorOccurred;
 
+        /// <summary>
+        /// Gets or sets the initialize async.
+        /// </summary>
         public virtual Task<bool> InitializeAsync(Dictionary<string, object> configuration, CancellationToken cancellationToken = default)
         {
             if (configuration != null) Configuration = configuration;
@@ -40,9 +64,15 @@ namespace Beep.Skia.Triggers
 
         public abstract Task<bool> StopAsync(CancellationToken cancellationToken = default);
 
+        /// <summary>
+        /// Gets or sets the validate async.
+        /// </summary>
         public virtual Task<ValidationResult> ValidateAsync(CancellationToken cancellationToken = default)
             => Task.FromResult(ValidationResult.Success());
 
+        /// <summary>
+        /// Gets or sets the test async.
+        /// </summary>
         public virtual Task<bool> TestAsync(CancellationToken cancellationToken = default)
             => Task.FromResult(true);
 
@@ -60,6 +90,9 @@ namespace Beep.Skia.Triggers
 
         public virtual Dictionary<string, object> GetConfigurationSchema() => new Dictionary<string, object>();
 
+        /// <summary>
+        /// Gets or sets the activate async.
+        /// </summary>
         public virtual Task ActivateAsync(Dictionary<string, object> testData = null, CancellationToken cancellationToken = default)
         {
             RaiseTriggered(testData);

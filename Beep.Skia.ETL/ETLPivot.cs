@@ -10,6 +10,9 @@ namespace Beep.Skia.ETL
     public class ETLPivot : ETLControl
     {
         private string _pivotColumn = "";
+        /// <summary>
+        /// Gets or sets the pivot column.
+        /// </summary>
         public string PivotColumn
         {
             get => _pivotColumn;
@@ -25,6 +28,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _groupByColumns = "";
+        /// <summary>
+        /// Gets or sets the group by columns.
+        /// </summary>
         public string GroupByColumns
         {
             get => _groupByColumns;
@@ -40,6 +46,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _valueColumn = "";
+        /// <summary>
+        /// Gets or sets the value column.
+        /// </summary>
         public string ValueColumn
         {
             get => _valueColumn;
@@ -55,6 +64,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _aggregateFunction = "SUM";
+        /// <summary>
+        /// Gets or sets the aggregate function.
+        /// </summary>
         public string AggregateFunction
         {
             get => _aggregateFunction;
@@ -69,6 +81,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// Column whose values become new column headers
+        /// </summary>
         public ETLPivot()
         {
             Title = "Pivot";

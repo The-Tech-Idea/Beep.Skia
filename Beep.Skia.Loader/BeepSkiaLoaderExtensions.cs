@@ -21,9 +21,18 @@ namespace AppExtensionsLoader
     {
         private bool _disposed;
 
+        /// <summary>
+        /// Gets or sets the current domain.
+        /// </summary>
         public AppDomain CurrentDomain { get; set; }
 
+        /// <summary>
+        /// Gets or sets the loader.
+        /// </summary>
         public IAssemblyHandler Loader { get; set; }
+        /// <summary>
+        /// Initializes a new instance of the BeepSkiaLoaderExtensions class.
+        /// </summary>
         public BeepSkiaLoaderExtensions(IAssemblyHandler ploader)
         {
             Loader = ploader;
@@ -50,6 +59,9 @@ namespace AppExtensionsLoader
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Gets or sets the load all assembly.
+        /// </summary>
         public IErrorsInfo LoadAllAssembly()
         {
             ErrorsInfo er = new ErrorsInfo();
@@ -251,6 +263,9 @@ namespace AppExtensionsLoader
             return null;
 
         }
+        /// <summary>
+        /// Gets or sets the scan.
+        /// </summary>
         public IErrorsInfo Scan()
         {
             ErrorsInfo er = new ErrorsInfo();
@@ -270,6 +285,9 @@ namespace AppExtensionsLoader
             return er;
         }
 
+        /// <summary>
+        /// Gets or sets the scan.
+        /// </summary>
         public IErrorsInfo Scan(assemblies_rep assembly)
         {
 
@@ -290,6 +308,9 @@ namespace AppExtensionsLoader
             return er;
         }
 
+        /// <summary>
+        /// Gets or sets the scan.
+        /// </summary>
         public IErrorsInfo Scan(Assembly assembly)
         {
 

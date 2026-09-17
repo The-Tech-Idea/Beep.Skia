@@ -13,6 +13,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private DesignerActionListCollection _actionLists;
 
+        /// <summary>
+        /// Gets or sets the action lists.
+        /// </summary>
         public override DesignerActionListCollection ActionLists
         {
             get
@@ -28,6 +31,9 @@ namespace Beep.Skia.Winform.Controls
             }
         }
 
+        /// <summary>
+        /// Gets or sets the host control.
+        /// </summary>
         public SkiaHostControl HostControl => (SkiaHostControl)Component;
     }
 
@@ -38,6 +44,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private readonly SkiaHostControlDesigner _designer;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaHostControlActionList class.
+        /// </summary>
         public SkiaHostControlActionList(SkiaHostControlDesigner designer)
             : base(designer.Component)
         {
@@ -46,6 +55,9 @@ namespace Beep.Skia.Winform.Controls
 
         private SkiaHostControl Host => _designer.HostControl;
 
+        /// <summary>
+        /// Gets or sets the show grid.
+        /// </summary>
         public bool ShowGrid
         {
             get => Host.DrawingManager?.ShowGrid ?? true;
@@ -56,6 +68,9 @@ namespace Beep.Skia.Winform.Controls
             }
         }
 
+        /// <summary>
+        /// Gets or sets the snap to grid.
+        /// </summary>
         public bool SnapToGrid
         {
             get => Host.DrawingManager?.SnapToGrid ?? true;
@@ -66,6 +81,9 @@ namespace Beep.Skia.Winform.Controls
             }
         }
 
+        /// <summary>
+        /// Gets or sets the clear all components.
+        /// </summary>
         public void ClearAllComponents()
         {
             var host = Host;
@@ -92,6 +110,9 @@ namespace Beep.Skia.Winform.Controls
             }
         }
 
+        /// <summary>
+        /// Gets or sets the reset zoom.
+        /// </summary>
         public void ResetZoom()
         {
             var mgr = Host?.DrawingManager;
@@ -102,6 +123,9 @@ namespace Beep.Skia.Winform.Controls
             }
         }
 
+        /// <summary>
+        /// Gets or sets the arrange diagram.
+        /// </summary>
         public void ArrangeDiagram()
         {
             var mgr = Host?.DrawingManager;
@@ -116,6 +140,9 @@ namespace Beep.Skia.Winform.Controls
             }
         }
 
+        /// <summary>
+        /// Gets or sets the get sorted action items.
+        /// </summary>
         public override DesignerActionItemCollection GetSortedActionItems()
         {
             var items = new DesignerActionItemCollection();

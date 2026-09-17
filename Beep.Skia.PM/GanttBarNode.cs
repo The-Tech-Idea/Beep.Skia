@@ -10,6 +10,9 @@ namespace Beep.Skia.PM
     public class GanttBarNode : PMControl
     {
         private string _taskName = "Task";
+        /// <summary>
+        /// Gets or sets the task name.
+        /// </summary>
         public string TaskName
         {
             get => _taskName;
@@ -27,6 +30,9 @@ namespace Beep.Skia.PM
         }
 
         private string _startDate = "";
+        /// <summary>
+        /// Gets or sets the start date.
+        /// </summary>
         public string StartDate
         {
             get => _startDate;
@@ -44,6 +50,9 @@ namespace Beep.Skia.PM
         }
 
         private string _endDate = "";
+        /// <summary>
+        /// Gets or sets the end date.
+        /// </summary>
         public string EndDate
         {
             get => _endDate;
@@ -61,6 +70,9 @@ namespace Beep.Skia.PM
         }
 
         private int _percentComplete = 0;
+        /// <summary>
+        /// Gets or sets the percent complete.
+        /// </summary>
         public int PercentComplete
         {
             get => _percentComplete;
@@ -77,6 +89,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Task name
+        /// </summary>
         public GanttBarNode()
         {
             Name = "PM Gantt Bar";

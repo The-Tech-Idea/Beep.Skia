@@ -9,6 +9,9 @@ namespace Beep.Skia.Flowchart
     public class DelayNode : FlowchartControl
     {
         private string _label = "Delay";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
         }
 
         private string _duration = "";
+        /// <summary>
+        /// Gets or sets the duration.
+        /// </summary>
         public string Duration
         {
             get => _duration;
@@ -42,6 +48,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Delay description.
+        /// </summary>
         public DelayNode()
         {
             Name = "Flowchart Delay";

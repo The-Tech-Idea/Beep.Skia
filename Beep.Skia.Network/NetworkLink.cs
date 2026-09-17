@@ -8,10 +8,19 @@ namespace Beep.Skia.Network
     // Simple visual link; not using IConnectionLine yet for simplicity
     public class NetworkLink : MaterialControl
     {
+        /// <summary>
+        /// Gets or sets the start.
+        /// </summary>
         public SKPoint Start { get; set; }
+        /// <summary>
+        /// Gets or sets the end.
+        /// </summary>
         public SKPoint End { get; set; }
 
         private SKColor _color = MaterialDesignColors.Outline;
+        /// <summary>
+        /// Link color
+        /// </summary>
         public SKColor Color
         {
             get => _color;
@@ -27,6 +36,9 @@ namespace Beep.Skia.Network
         }
 
         private float _thickness = 2f;
+        /// <summary>
+        /// Stroke width
+        /// </summary>
         public float Thickness
         {
             get => _thickness;
@@ -42,10 +54,19 @@ namespace Beep.Skia.Network
         }
 
         // Additional properties for advanced network functionality
+        /// <summary>
+        /// Gets or sets the source node.
+        /// </summary>
         public NetworkNode SourceNode { get; set; }
+        /// <summary>
+        /// Gets or sets the target node.
+        /// </summary>
         public NetworkNode TargetNode { get; set; }
 
         private double _weight = 1.0;
+        /// <summary>
+        /// Link weight
+        /// </summary>
         public double Weight
         {
             get => _weight;
@@ -61,6 +82,9 @@ namespace Beep.Skia.Network
         }
 
         private string _linkType = "Default";
+        /// <summary>
+        /// Link classification/type
+        /// </summary>
         public string LinkType
         {
             get => _linkType;
@@ -76,6 +100,9 @@ namespace Beep.Skia.Network
         }
 
         private float _arrowSize = 10f;
+        /// <summary>
+        /// Arrow head size for directed links
+        /// </summary>
         public float ArrowSize
         {
             get => _arrowSize;
@@ -91,6 +118,9 @@ namespace Beep.Skia.Network
         }
 
         private bool _isHighlighted = false;
+        /// <summary>
+        /// Highlight state
+        /// </summary>
         public bool IsHighlighted
         {
             get => _isHighlighted;
@@ -107,6 +137,9 @@ namespace Beep.Skia.Network
 
         // Optional label drawn near the midpoint of the curve
         private string _label = string.Empty;
+        /// <summary>
+        /// Link label
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -123,6 +156,9 @@ namespace Beep.Skia.Network
         }
 
         private SKColor _labelColor = MaterialDesignColors.OnSurfaceVariant;
+        /// <summary>
+        /// Label color
+        /// </summary>
         public SKColor LabelColor
         {
             get => _labelColor;
@@ -138,6 +174,9 @@ namespace Beep.Skia.Network
         }
 
         private float _labelTextSize = 10f;
+        /// <summary>
+        /// Label text size
+        /// </summary>
         public float LabelTextSize
         {
             get => _labelTextSize;
@@ -154,6 +193,9 @@ namespace Beep.Skia.Network
 
         // Curve shaping factor (0..1); default ~0.33 for pleasing curve
         private float _curvature = 0.33f;
+        /// <summary>
+        /// Curve shaping factor (0..1)
+        /// </summary>
         public float Curvature
         {
             get => _curvature;
@@ -171,6 +213,9 @@ namespace Beep.Skia.Network
 
         // Draw arrowheads on both ends when Directed
         private bool _bidirectional = false;
+        /// <summary>
+        /// Arrowheads at both ends (Directed only)
+        /// </summary>
         public bool Bidirectional
         {
             get => _bidirectional;
@@ -185,6 +230,9 @@ namespace Beep.Skia.Network
             }
         }
 
+        /// <summary>
+        /// Link color
+        /// </summary>
         public NetworkLink()
         {
             Width = 0; Height = 0; // not used; draws by absolute coords

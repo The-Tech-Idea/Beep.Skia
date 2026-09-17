@@ -11,14 +11,26 @@ namespace Beep.Ski.Quantitative
     public class MACDNode : QuantControl
     {
         private int _fastPeriod = 12;
+        /// <summary>
+        /// Gets or sets the fast period.
+        /// </summary>
         public int FastPeriod { get => _fastPeriod; set { if (_fastPeriod == value) return; _fastPeriod = value; if (NodeProperties.TryGetValue("FastPeriod", out var pi)) pi.ParameterCurrentValue = _fastPeriod; InvalidateVisual(); } }
         
         private int _slowPeriod = 26;
+        /// <summary>
+        /// Gets or sets the slow period.
+        /// </summary>
         public int SlowPeriod { get => _slowPeriod; set { if (_slowPeriod == value) return; _slowPeriod = value; if (NodeProperties.TryGetValue("SlowPeriod", out var pi)) pi.ParameterCurrentValue = _slowPeriod; InvalidateVisual(); } }
         
         private int _signalPeriod = 9;
+        /// <summary>
+        /// Gets or sets the signal period.
+        /// </summary>
         public int SignalPeriod { get => _signalPeriod; set { if (_signalPeriod == value) return; _signalPeriod = value; if (NodeProperties.TryGetValue("SignalPeriod", out var pi)) pi.ParameterCurrentValue = _signalPeriod; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Fast EMA period
+        /// </summary>
         public MACDNode()
         {
             Name = "MACD";
@@ -36,11 +48,20 @@ namespace Beep.Ski.Quantitative
     public class BollingerBandsNode : QuantControl
     {
         private int _period = 20;
+        /// <summary>
+        /// Gets or sets the period.
+        /// </summary>
         public int Period { get => _period; set { if (_period == value) return; _period = value; if (NodeProperties.TryGetValue("Period", out var pi)) pi.ParameterCurrentValue = _period; InvalidateVisual(); } }
         
         private double _stdDev = 2.0;
+        /// <summary>
+        /// Gets or sets the std dev.
+        /// </summary>
         public double StdDev { get => _stdDev; set { if (Math.Abs(_stdDev - value) < 0.0001) return; _stdDev = value; if (NodeProperties.TryGetValue("StdDev", out var pi)) pi.ParameterCurrentValue = _stdDev; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Moving average period
+        /// </summary>
         public BollingerBandsNode()
         {
             Name = "Bollinger Bands";
@@ -57,14 +78,26 @@ namespace Beep.Ski.Quantitative
     public class RSINode : QuantControl
     {
         private int _period = 14;
+        /// <summary>
+        /// Gets or sets the period.
+        /// </summary>
         public int Period { get => _period; set { if (_period == value) return; _period = value; if (NodeProperties.TryGetValue("Period", out var pi)) pi.ParameterCurrentValue = _period; InvalidateVisual(); } }
         
         private double _overbought = 70.0;
+        /// <summary>
+        /// Gets or sets the overbought.
+        /// </summary>
         public double Overbought { get => _overbought; set { if (Math.Abs(_overbought - value) < 0.0001) return; _overbought = value; if (NodeProperties.TryGetValue("Overbought", out var pi)) pi.ParameterCurrentValue = _overbought; InvalidateVisual(); } }
         
         private double _oversold = 30.0;
+        /// <summary>
+        /// Gets or sets the oversold.
+        /// </summary>
         public double Oversold { get => _oversold; set { if (Math.Abs(_oversold - value) < 0.0001) return; _oversold = value; if (NodeProperties.TryGetValue("Oversold", out var pi)) pi.ParameterCurrentValue = _oversold; InvalidateVisual(); } }
 
+        /// <summary>
+        /// RSI period
+        /// </summary>
         public RSINode()
         {
             Name = "RSI";
@@ -82,14 +115,26 @@ namespace Beep.Ski.Quantitative
     public class StochasticNode : QuantControl
     {
         private int _kPeriod = 14;
+        /// <summary>
+        /// Gets or sets the k period.
+        /// </summary>
         public int KPeriod { get => _kPeriod; set { if (_kPeriod == value) return; _kPeriod = value; if (NodeProperties.TryGetValue("KPeriod", out var pi)) pi.ParameterCurrentValue = _kPeriod; InvalidateVisual(); } }
         
         private int _dPeriod = 3;
+        /// <summary>
+        /// Gets or sets the d period.
+        /// </summary>
         public int DPeriod { get => _dPeriod; set { if (_dPeriod == value) return; _dPeriod = value; if (NodeProperties.TryGetValue("DPeriod", out var pi)) pi.ParameterCurrentValue = _dPeriod; InvalidateVisual(); } }
         
         private int _smooth = 3;
+        /// <summary>
+        /// Gets or sets the smooth.
+        /// </summary>
         public int Smooth { get => _smooth; set { if (_smooth == value) return; _smooth = value; if (NodeProperties.TryGetValue("Smooth", out var pi)) pi.ParameterCurrentValue = _smooth; InvalidateVisual(); } }
 
+        /// <summary>
+        /// %K period
+        /// </summary>
         public StochasticNode()
         {
             Name = "Stochastic";
@@ -107,8 +152,14 @@ namespace Beep.Ski.Quantitative
     public class ATRNode : QuantControl
     {
         private int _period = 14;
+        /// <summary>
+        /// Gets or sets the period.
+        /// </summary>
         public int Period { get => _period; set { if (_period == value) return; _period = value; if (NodeProperties.TryGetValue("Period", out var pi)) pi.ParameterCurrentValue = _period; InvalidateVisual(); } }
 
+        /// <summary>
+        /// ATR period
+        /// </summary>
         public ATRNode()
         {
             Name = "ATR";

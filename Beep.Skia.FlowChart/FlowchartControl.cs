@@ -124,6 +124,9 @@ namespace Beep.Skia.Flowchart
         }
 
         // Public port count properties so editors can adjust counts at runtime
+        /// <summary>
+        /// Gets or sets the in port count.
+        /// </summary>
         public int InPortCount
         {
             get => InConnectionPoints?.Count ?? 0;
@@ -140,6 +143,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Gets or sets the out port count.
+        /// </summary>
         public int OutPortCount
         {
             get => OutConnectionPoints?.Count ?? 0;

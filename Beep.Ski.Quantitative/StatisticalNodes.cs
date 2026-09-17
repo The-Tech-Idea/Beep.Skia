@@ -10,14 +10,26 @@ namespace Beep.Ski.Quantitative
     public class DistributionNode : QuantControl
     {
         private string _distributionType = "Normal";
+        /// <summary>
+        /// Gets or sets the distribution type.
+        /// </summary>
         public string DistributionType { get => _distributionType; set { if (_distributionType == value) return; _distributionType = value ?? ""; if (NodeProperties.TryGetValue("DistributionType", out var pi)) pi.ParameterCurrentValue = _distributionType; InvalidateVisual(); } }
         
         private int _bins = 50;
+        /// <summary>
+        /// Gets or sets the bins.
+        /// </summary>
         public int Bins { get => _bins; set { if (_bins == value) return; _bins = value; if (NodeProperties.TryGetValue("Bins", out var pi)) pi.ParameterCurrentValue = _bins; InvalidateVisual(); } }
         
         private bool _showKDE = true;
+        /// <summary>
+        /// Gets or sets the show KDE.
+        /// </summary>
         public bool ShowKDE { get => _showKDE; set { if (_showKDE == value) return; _showKDE = value; if (NodeProperties.TryGetValue("ShowKDE", out var pi)) pi.ParameterCurrentValue = _showKDE; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Distribution type
+        /// </summary>
         public DistributionNode()
         {
             Name = "Distribution";
@@ -36,14 +48,26 @@ namespace Beep.Ski.Quantitative
     public class CorrelationNode : QuantControl
     {
         private string _method = "Pearson";
+        /// <summary>
+        /// Gets or sets the method.
+        /// </summary>
         public string Method { get => _method; set { if (_method == value) return; _method = value ?? ""; if (NodeProperties.TryGetValue("Method", out var pi)) pi.ParameterCurrentValue = _method; InvalidateVisual(); } }
         
         private int _window = 252;
+        /// <summary>
+        /// Gets or sets the window.
+        /// </summary>
         public int Window { get => _window; set { if (_window == value) return; _window = value; if (NodeProperties.TryGetValue("Window", out var pi)) pi.ParameterCurrentValue = _window; InvalidateVisual(); } }
         
         private bool _rolling = false;
+        /// <summary>
+        /// Gets or sets the rolling.
+        /// </summary>
         public bool Rolling { get => _rolling; set { if (_rolling == value) return; _rolling = value; if (NodeProperties.TryGetValue("Rolling", out var pi)) pi.ParameterCurrentValue = _rolling; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Correlation method
+        /// </summary>
         public CorrelationNode()
         {
             Name = "Correlation";
@@ -62,14 +86,26 @@ namespace Beep.Ski.Quantitative
     public class RegressionNode : QuantControl
     {
         private string _regressionType = "Linear";
+        /// <summary>
+        /// Gets or sets the regression type.
+        /// </summary>
         public string RegressionType { get => _regressionType; set { if (_regressionType == value) return; _regressionType = value ?? ""; if (NodeProperties.TryGetValue("RegressionType", out var pi)) pi.ParameterCurrentValue = _regressionType; InvalidateVisual(); } }
         
         private int _degree = 1;
+        /// <summary>
+        /// Gets or sets the degree.
+        /// </summary>
         public int Degree { get => _degree; set { if (_degree == value) return; _degree = value; if (NodeProperties.TryGetValue("Degree", out var pi)) pi.ParameterCurrentValue = _degree; InvalidateVisual(); } }
         
         private bool _includeIntercept = true;
+        /// <summary>
+        /// Gets or sets the include intercept.
+        /// </summary>
         public bool IncludeIntercept { get => _includeIntercept; set { if (_includeIntercept == value) return; _includeIntercept = value; if (NodeProperties.TryGetValue("IncludeIntercept", out var pi)) pi.ParameterCurrentValue = _includeIntercept; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Regression type
+        /// </summary>
         public RegressionNode()
         {
             Name = "Regression";
@@ -88,17 +124,32 @@ namespace Beep.Ski.Quantitative
     public class ForecastNode : QuantControl
     {
         private string _model = "ARIMA";
+        /// <summary>
+        /// Gets or sets the model.
+        /// </summary>
         public string Model { get => _model; set { if (_model == value) return; _model = value ?? ""; if (NodeProperties.TryGetValue("Model", out var pi)) pi.ParameterCurrentValue = _model; InvalidateVisual(); } }
         
         private int _horizonDays = 30;
+        /// <summary>
+        /// Gets or sets the horizon days.
+        /// </summary>
         public int HorizonDays { get => _horizonDays; set { if (_horizonDays == value) return; _horizonDays = value; if (NodeProperties.TryGetValue("HorizonDays", out var pi)) pi.ParameterCurrentValue = _horizonDays; InvalidateVisual(); } }
         
         private double _confidenceLevel = 0.95;
+        /// <summary>
+        /// Gets or sets the confidence level.
+        /// </summary>
         public double ConfidenceLevel { get => _confidenceLevel; set { if (Math.Abs(_confidenceLevel - value) < 0.0001) return; _confidenceLevel = value; if (NodeProperties.TryGetValue("ConfidenceLevel", out var pi)) pi.ParameterCurrentValue = _confidenceLevel; InvalidateVisual(); } }
         
         private bool _includeSeasonality = true;
+        /// <summary>
+        /// Gets or sets the include seasonality.
+        /// </summary>
         public bool IncludeSeasonality { get => _includeSeasonality; set { if (_includeSeasonality == value) return; _includeSeasonality = value; if (NodeProperties.TryGetValue("IncludeSeasonality", out var pi)) pi.ParameterCurrentValue = _includeSeasonality; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Forecasting model
+        /// </summary>
         public ForecastNode()
         {
             Name = "Forecast";
@@ -118,17 +169,32 @@ namespace Beep.Ski.Quantitative
     public class MonteCarloNode : QuantControl
     {
         private int _numSimulations = 10000;
+        /// <summary>
+        /// Gets or sets the num simulations.
+        /// </summary>
         public int NumSimulations { get => _numSimulations; set { if (_numSimulations == value) return; _numSimulations = value; if (NodeProperties.TryGetValue("NumSimulations", out var pi)) pi.ParameterCurrentValue = _numSimulations; InvalidateVisual(); } }
         
         private int _timeSteps = 252;
+        /// <summary>
+        /// Gets or sets the time steps.
+        /// </summary>
         public int TimeSteps { get => _timeSteps; set { if (_timeSteps == value) return; _timeSteps = value; if (NodeProperties.TryGetValue("TimeSteps", out var pi)) pi.ParameterCurrentValue = _timeSteps; InvalidateVisual(); } }
         
         private double _initialValue = 100.0;
+        /// <summary>
+        /// Gets or sets the initial value.
+        /// </summary>
         public double InitialValue { get => _initialValue; set { if (Math.Abs(_initialValue - value) < 0.01) return; _initialValue = value; if (NodeProperties.TryGetValue("InitialValue", out var pi)) pi.ParameterCurrentValue = _initialValue; InvalidateVisual(); } }
         
         private int _randomSeed = 42;
+        /// <summary>
+        /// Gets or sets the random seed.
+        /// </summary>
         public int RandomSeed { get => _randomSeed; set { if (_randomSeed == value) return; _randomSeed = value; if (NodeProperties.TryGetValue("RandomSeed", out var pi)) pi.ParameterCurrentValue = _randomSeed; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Number of simulations
+        /// </summary>
         public MonteCarloNode()
         {
             Name = "Monte Carlo";
@@ -148,14 +214,26 @@ namespace Beep.Ski.Quantitative
     public class VaRNode : QuantControl
     {
         private double _confidenceLevel = 0.95;
+        /// <summary>
+        /// Gets or sets the confidence level.
+        /// </summary>
         public double ConfidenceLevel { get => _confidenceLevel; set { if (Math.Abs(_confidenceLevel - value) < 0.0001) return; _confidenceLevel = value; if (NodeProperties.TryGetValue("ConfidenceLevel", out var pi)) pi.ParameterCurrentValue = _confidenceLevel; InvalidateVisual(); } }
         
         private string _method = "Historical";
+        /// <summary>
+        /// Gets or sets the method.
+        /// </summary>
         public string Method { get => _method; set { if (_method == value) return; _method = value ?? ""; if (NodeProperties.TryGetValue("Method", out var pi)) pi.ParameterCurrentValue = _method; InvalidateVisual(); } }
         
         private int _windowSize = 252;
+        /// <summary>
+        /// Gets or sets the window size.
+        /// </summary>
         public int WindowSize { get => _windowSize; set { if (_windowSize == value) return; _windowSize = value; if (NodeProperties.TryGetValue("WindowSize", out var pi)) pi.ParameterCurrentValue = _windowSize; InvalidateVisual(); } }
 
+        /// <summary>
+        /// Confidence level (e.g., 0.95)
+        /// </summary>
         public VaRNode()
         {
             Name = "VaR";

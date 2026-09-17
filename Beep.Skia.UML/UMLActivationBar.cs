@@ -13,6 +13,9 @@ namespace Beep.Skia.UML
     public class UMLActivationBar : UMLControl
     {
         private string _label = string.Empty;
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.UML
             }
         }
 
+        /// <summary>
+        /// Optional activation label
+        /// </summary>
         public UMLActivationBar()
         {
             Width = 12;
@@ -62,6 +68,9 @@ namespace Beep.Skia.UML
             return props;
         }
 
+        /// <summary>
+        /// Gets or sets the set propperties.
+        /// </summary>
         public override void SetPropperties(IDictionary<string, object> properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)
         {
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);

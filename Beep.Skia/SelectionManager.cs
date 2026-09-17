@@ -19,7 +19,13 @@ namespace Beep.Skia
         /// Gets the currently selected components.
         /// </summary>
     public IReadOnlyList<SkiaComponent> SelectedComponents => _selectedComponents;
+    /// <summary>
+    /// Gets or sets the selected lines.
+    /// </summary>
     public IReadOnlyList<IConnectionLine> SelectedLines => _selectedLines;
+    /// <summary>
+    /// Gets or sets the selected connection points.
+    /// </summary>
     public IReadOnlyList<IConnectionPoint> SelectedConnectionPoints => _selectedConnectionPoints;
 
         /// <summary>

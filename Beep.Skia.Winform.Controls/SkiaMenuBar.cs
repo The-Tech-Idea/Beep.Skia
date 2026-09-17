@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaMenuBarComponent _mb;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaMenuBar class.
+        /// </summary>
         public SkiaMenuBar()
         {
             _mb = CreateSkiaComponent<SkiaMenuBarComponent>();

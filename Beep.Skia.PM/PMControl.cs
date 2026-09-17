@@ -41,6 +41,9 @@ namespace Beep.Skia.PM
             };
         }
 
+        /// <summary>
+        /// Gets or sets the in port count.
+        /// </summary>
         public int InPortCount
         {
             get => InConnectionPoints?.Count ?? 0;
@@ -54,6 +57,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Gets or sets the out port count.
+        /// </summary>
         public int OutPortCount
         {
             get => OutConnectionPoints?.Count ?? 0;

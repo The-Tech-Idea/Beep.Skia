@@ -50,6 +50,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// BPMN task type
+        /// </summary>
         public BusinessTask()
         {
             Width = 120;

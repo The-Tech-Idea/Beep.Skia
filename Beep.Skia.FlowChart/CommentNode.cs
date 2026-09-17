@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class CommentNode : FlowchartControl
     {
         private string _text = "Comment";
+        /// <summary>
+        /// Gets or sets the text.
+        /// </summary>
         public string Text
         {
             get => _text;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Comment text (multi-line supported).
+        /// </summary>
         public CommentNode()
         {
             Name = "Flowchart Comment";

@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaSegmentedButtonsComponent _sb;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaSegmentedButtons class.
+        /// </summary>
         public SkiaSegmentedButtons()
         {
             _sb = CreateSkiaComponent<SkiaSegmentedButtonsComponent>();

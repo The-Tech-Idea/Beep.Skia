@@ -33,12 +33,18 @@ namespace Beep.Skia.Extensions.Marketplace
         private readonly string _root;
         private readonly List<ExtensionPackage> _packages = new List<ExtensionPackage>();
 
+        /// <summary>
+        /// Initializes a new instance of the LocalExtensionRegistry class.
+        /// </summary>
         public LocalExtensionRegistry(string root, bool scanOnCreate = true)
         {
             _root = root ?? throw new ArgumentNullException(nameof(root));
             if (scanOnCreate) Refresh();
         }
 
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name => "local";
 
         /// <summary>Folder containing the .beepkg files.</summary>
@@ -75,6 +81,9 @@ namespace Beep.Skia.Extensions.Marketplace
             }
         }
 
+        /// <summary>
+        /// Gets or sets the search.
+        /// </summary>
         public IReadOnlyList<ExtensionPackage> Search(string query = null, string tag = null, int max = 50)
         {
             IEnumerable<ExtensionPackage> results = _packages;
@@ -103,6 +112,9 @@ namespace Beep.Skia.Extensions.Marketplace
                 .AsReadOnly();
         }
 
+        /// <summary>
+        /// Gets or sets the get package.
+        /// </summary>
         public ExtensionPackage GetPackage(string id, string version = null)
         {
             if (string.IsNullOrWhiteSpace(id)) return null;
@@ -117,6 +129,9 @@ namespace Beep.Skia.Extensions.Marketplace
             return matches.OrderByDescending(p => Parse(p.Version)).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Gets or sets the try download.
+        /// </summary>
         public bool TryDownload(ExtensionPackage package, string targetPath, out string error)
         {
             error = null;

@@ -15,11 +15,26 @@ namespace Beep.Skia.ML
         private ModelType _type = ModelType.Classifier;
         private string _hyperParams = "";
 
+        /// <summary>
+        /// Gets or sets the model name.
+        /// </summary>
         public string ModelName { get => _modelName; set { var v = value ?? string.Empty; if (_modelName != v) { _modelName = v; if (NodeProperties.TryGetValue("ModelName", out var p)) p.ParameterCurrentValue = _modelName; else NodeProperties["ModelName"] = new ParameterInfo { ParameterName = "ModelName", ParameterType = typeof(string), DefaultParameterValue = _modelName, ParameterCurrentValue = _modelName, Description = "Model name" }; Name = _modelName; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the framework.
+        /// </summary>
         public MLFramework Framework { get => _framework; set { if (_framework != value) { _framework = value; if (NodeProperties.TryGetValue("Framework", out var p)) p.ParameterCurrentValue = _framework; else NodeProperties["Framework"] = new ParameterInfo { ParameterName = "Framework", ParameterType = typeof(MLFramework), DefaultParameterValue = _framework, ParameterCurrentValue = _framework, Description = "Framework", Choices = Enum.GetNames(typeof(MLFramework)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the model type.
+        /// </summary>
         public ModelType ModelType { get => _type; set { if (_type != value) { _type = value; if (NodeProperties.TryGetValue("ModelType", out var p)) p.ParameterCurrentValue = _type; else NodeProperties["ModelType"] = new ParameterInfo { ParameterName = "ModelType", ParameterType = typeof(ModelType), DefaultParameterValue = _type, ParameterCurrentValue = _type, Description = "Model type", Choices = Enum.GetNames(typeof(ModelType)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the hyper parameters.
+        /// </summary>
         public string HyperParameters { get => _hyperParams; set { var v = value ?? string.Empty; if (_hyperParams != v) { _hyperParams = v; if (NodeProperties.TryGetValue("HyperParameters", out var p)) p.ParameterCurrentValue = _hyperParams; else NodeProperties["HyperParameters"] = new ParameterInfo { ParameterName = "HyperParameters", ParameterType = typeof(string), DefaultParameterValue = _hyperParams, ParameterCurrentValue = _hyperParams, Description = "Hyper parameters" }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Model name
+        /// </summary>
         public MLModelNode()
         {
             Width = 140; Height = 90;

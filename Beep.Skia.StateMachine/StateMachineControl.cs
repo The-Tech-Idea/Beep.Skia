@@ -13,6 +13,9 @@ namespace Beep.Skia.StateMachine
         protected const float PortRadius = 4f;
 
         private SKColor _backgroundColor = MaterialColors.Surface;
+        /// <summary>
+        /// Gets or sets the background color.
+        /// </summary>
         public SKColor BackgroundColor
         {
             get => _backgroundColor;
@@ -29,6 +32,9 @@ namespace Beep.Skia.StateMachine
         }
 
         private SKColor _borderColor = MaterialColors.Outline;
+        /// <summary>
+        /// Gets or sets the border color.
+        /// </summary>
         public SKColor BorderColor
         {
             get => _borderColor;
@@ -45,6 +51,9 @@ namespace Beep.Skia.StateMachine
         }
 
         private float _borderThickness = 2.0f;
+        /// <summary>
+        /// Gets or sets the border thickness.
+        /// </summary>
         public float BorderThickness
         {
             get => _borderThickness;
@@ -118,6 +127,9 @@ namespace Beep.Skia.StateMachine
             };
         }
 
+        /// <summary>
+        /// Gets or sets the in port count.
+        /// </summary>
         public int InPortCount
         {
             get => InConnectionPoints.Count;
@@ -130,6 +142,9 @@ namespace Beep.Skia.StateMachine
             }
         }
 
+        /// <summary>
+        /// Gets or sets the out port count.
+        /// </summary>
         public int OutPortCount
         {
             get => OutConnectionPoints.Count;

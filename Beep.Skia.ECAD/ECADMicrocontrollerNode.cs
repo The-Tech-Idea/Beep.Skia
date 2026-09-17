@@ -16,13 +16,34 @@ namespace Beep.Skia.ECAD
         private int _flashMemory = 32;
         private int _sramMemory = 2;
 
+        /// <summary>
+        /// Gets or sets the model.
+        /// </summary>
         public string Model { get => _model; set { var v = value ?? ""; if (_model != v) { _model = v; UpdateNodeProperty("Model", _model); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the package.
+        /// </summary>
         public string Package { get => _package; set { var v = value ?? ""; if (_package != v) { _package = v; UpdateNodeProperty("Package", _package); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the IO pins.
+        /// </summary>
         public int IOPins { get => _iopins; set { if (_iopins != value) { _iopins = value; UpdateNodeProperty("IOPins", _iopins); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the clock speed.
+        /// </summary>
         public double ClockSpeed { get => _clockSpeed; set { if (Math.Abs(_clockSpeed - value) > 0.001) { _clockSpeed = value; UpdateNodeProperty("ClockSpeed", _clockSpeed); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the flash memory.
+        /// </summary>
         public int FlashMemory { get => _flashMemory; set { if (_flashMemory != value) { _flashMemory = value; UpdateNodeProperty("FlashMemory", _flashMemory); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the SRAM memory.
+        /// </summary>
         public int SRAMMemory { get => _sramMemory; set { if (_sramMemory != value) { _sramMemory = value; UpdateNodeProperty("SRAMMemory", _sramMemory); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// MCU model
+        /// </summary>
         public ECADMicrocontrollerNode()
         {
             Width = 120; Height = 100; Name = "MCU";

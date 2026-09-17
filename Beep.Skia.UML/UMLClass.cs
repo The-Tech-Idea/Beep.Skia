@@ -38,6 +38,9 @@ namespace Beep.Skia.UML
         public List<string> Attributes { get; set; } = new List<string>();
 
         // Editor-friendly comma/newline separated attributes string (one per line recommended)
+        /// <summary>
+        /// Gets or sets the attributes text.
+        /// </summary>
         public string AttributesText
         {
             get => string.Join("\n", Attributes ?? Enumerable.Empty<string>());
@@ -61,6 +64,9 @@ namespace Beep.Skia.UML
         public List<string> Operations { get; set; } = new List<string>();
 
         // Editor-friendly operations string
+        /// <summary>
+        /// Gets or sets the operations text.
+        /// </summary>
         public string OperationsText
         {
             get => string.Join("\n", Operations ?? Enumerable.Empty<string>());
@@ -82,6 +88,9 @@ namespace Beep.Skia.UML
         /// Gets or sets whether this is an abstract class.
         /// </summary>
         private bool _isAbstract;
+        /// <summary>
+        /// Gets or sets the is abstract.
+        /// </summary>
         public bool IsAbstract
         {
             get => _isAbstract;

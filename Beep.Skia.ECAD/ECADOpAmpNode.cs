@@ -15,12 +15,30 @@ namespace Beep.Skia.ECAD
         private double _supplyVoltage = 15.0;
         private double _slewRate = 0.5;
 
+        /// <summary>
+        /// Gets or sets the model.
+        /// </summary>
         public string Model { get => _model; set { var v = value ?? ""; if (_model != v) { _model = v; UpdateNodeProperty("Model", _model); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the package.
+        /// </summary>
         public string Package { get => _package; set { var v = value ?? ""; if (_package != v) { _package = v; UpdateNodeProperty("Package", _package); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the gain bandwidth.
+        /// </summary>
         public double GainBandwidth { get => _gainBandwidth; set { if (Math.Abs(_gainBandwidth - value) > 0.001) { _gainBandwidth = value; UpdateNodeProperty("GainBandwidth", _gainBandwidth); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the supply voltage.
+        /// </summary>
         public double SupplyVoltage { get => _supplyVoltage; set { if (Math.Abs(_supplyVoltage - value) > 0.001) { _supplyVoltage = value; UpdateNodeProperty("SupplyVoltage", _supplyVoltage); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the slew rate.
+        /// </summary>
         public double SlewRate { get => _slewRate; set { if (Math.Abs(_slewRate - value) > 0.001) { _slewRate = value; UpdateNodeProperty("SlewRate", _slewRate); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Op-amp model
+        /// </summary>
         public ECADOpAmpNode()
         {
             Width = 100; Height = 80; Name = "Op-Amp";

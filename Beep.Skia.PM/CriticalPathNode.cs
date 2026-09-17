@@ -10,6 +10,9 @@ namespace Beep.Skia.PM
     public class CriticalPathNode : PMControl
     {
         private string _taskName = "Critical Task";
+        /// <summary>
+        /// Gets or sets the task name.
+        /// </summary>
         public string TaskName
         {
             get => _taskName;
@@ -27,6 +30,9 @@ namespace Beep.Skia.PM
         }
 
         private float _slack = 0f;
+        /// <summary>
+        /// Gets or sets the slack.
+        /// </summary>
         public float Slack
         {
             get => _slack;
@@ -43,6 +49,9 @@ namespace Beep.Skia.PM
         }
 
         private int _duration = 1;
+        /// <summary>
+        /// Gets or sets the duration.
+        /// </summary>
         public int Duration
         {
             get => _duration;
@@ -59,6 +68,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Task name
+        /// </summary>
         public CriticalPathNode()
         {
             Name = "PM Critical Path";

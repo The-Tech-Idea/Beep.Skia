@@ -17,6 +17,9 @@ namespace Beep.Skia.ETL
         public enum SourceKind { Database, File, Api, Queue, Stream }
 
         private SourceKind _kind = SourceKind.Database;
+        /// <summary>
+        /// Source kind
+        /// </summary>
         public SourceKind Kind
         {
             get => _kind;
@@ -29,6 +32,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _connectionString = string.Empty;
+        /// <summary>
+        /// Source connection (masked)
+        /// </summary>
         public string ConnectionString
         {
             get => _connectionString;
@@ -36,6 +42,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _path = string.Empty;
+        /// <summary>
+        /// Table/File/Endpoint path
+        /// </summary>
         public string Path
         {
             get => _path;

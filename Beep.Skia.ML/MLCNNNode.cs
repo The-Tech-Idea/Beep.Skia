@@ -12,12 +12,30 @@ namespace Beep.Skia.ML
         private string _pooling = "MaxPool";
         private bool _batchNorm = true;
 
+        /// <summary>
+        /// Gets or sets the conv layers.
+        /// </summary>
         public int ConvLayers { get => _convLayers; set { int v = Math.Max(1, value); if (_convLayers != v) { _convLayers = v; UpdateNodeProperty("ConvLayers", _convLayers); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the filters.
+        /// </summary>
         public string Filters { get => _filters; set { var v = value ?? ""; if (_filters != v) { _filters = v; UpdateNodeProperty("Filters", _filters); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the kernel size.
+        /// </summary>
         public string KernelSize { get => _kernelSize; set { var v = value ?? ""; if (_kernelSize != v) { _kernelSize = v; UpdateNodeProperty("KernelSize", _kernelSize); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the pooling.
+        /// </summary>
         public string Pooling { get => _pooling; set { var v = value ?? ""; if (_pooling != v) { _pooling = v; UpdateNodeProperty("Pooling", _pooling); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the batch normalization.
+        /// </summary>
         public bool BatchNormalization { get => _batchNorm; set { if (_batchNorm != value) { _batchNorm = value; UpdateNodeProperty("BatchNormalization", _batchNorm); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Conv layers
+        /// </summary>
         public MLCNNNode()
         {
             Width = 140; Height = 85; Name = "CNN";

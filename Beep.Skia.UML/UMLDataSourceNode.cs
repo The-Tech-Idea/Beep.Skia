@@ -15,12 +15,18 @@ namespace Beep.Skia.UML
         /// Gets or sets the data source type (Database, API, File, etc.).
         /// </summary>
     private string _dataSourceType = "Database";
+    /// <summary>
+    /// Gets or sets the data source type.
+    /// </summary>
     public string DataSourceType { get => _dataSourceType; set { if (_dataSourceType == value) return; _dataSourceType = value ?? string.Empty; if (NodeProperties.TryGetValue("DataSourceType", out var pi)) pi.ParameterCurrentValue = _dataSourceType; InvalidateVisual(); } }
 
         /// <summary>
         /// Gets or sets the data source name or endpoint.
         /// </summary>
     private string _dataSourceName = "";
+    /// <summary>
+    /// Type of data source (e.g., Database, API)
+    /// </summary>
     public string DataSourceName { get => _dataSourceName; set { if (_dataSourceName == value) return; _dataSourceName = value ?? string.Empty; if (NodeProperties.TryGetValue("DataSourceName", out var pi)) pi.ParameterCurrentValue = _dataSourceName; InvalidateVisual(); } }
 
         /// <summary>

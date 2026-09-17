@@ -377,6 +377,9 @@ namespace Beep.Skia
         private static float SanitizeCoordinate(float value)
             => float.IsNaN(value) || float.IsInfinity(value) ? 0f : value;
 
+        /// <summary>
+        /// Gets or sets the to dto.
+        /// </summary>
         public Beep.Skia.Serialization.DiagramDto ToDto()
         {
             var dto = new Beep.Skia.Serialization.DiagramDto

@@ -9,6 +9,9 @@ namespace Beep.Skia.Flowchart
     public class DirectAccessNode : FlowchartControl
     {
         private string _label = "Direct Access";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -25,6 +28,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Direct access storage description.
+        /// </summary>
         public DirectAccessNode()
         {
             Name = "Flowchart Direct Access Storage";

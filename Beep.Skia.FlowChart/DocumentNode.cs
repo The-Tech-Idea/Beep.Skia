@@ -9,6 +9,9 @@ namespace Beep.Skia.Flowchart
     public class DocumentNode : FlowchartControl
     {
         private string _label = "Document";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
         }
         // Optionally place outgoing ports along the top straight edge (avoids curved bottom)
         private bool _outPortsOnTop = false;
+        /// <summary>
+        /// Gets or sets the out ports on top.
+        /// </summary>
         public bool OutPortsOnTop
         {
             get => _outPortsOnTop;
@@ -44,6 +50,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Text shown inside the document shape.
+        /// </summary>
         public DocumentNode()
         {
             Name = "Flowchart Document";

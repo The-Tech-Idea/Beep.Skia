@@ -13,6 +13,9 @@ namespace Beep.Skia.ETL
     public class ETLDerivedColumn : ETLControl
     {
         private string _derivedColumnsJson = "[]";
+        /// <summary>
+        /// Derived columns (JSON array of DerivedColumnDefinition)
+        /// </summary>
         public string DerivedColumns
         {
             get => _derivedColumnsJson;
@@ -37,6 +40,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _outputSchemaJson = "[]";
+        /// <summary>
+        /// Output schema (JSON array of ColumnDefinition)
+        /// </summary>
         public string OutputSchema
         {
             get => _outputSchemaJson;
@@ -60,6 +66,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// Derived columns (JSON array of DerivedColumnDefinition)
+        /// </summary>
         public ETLDerivedColumn()
         {
             Title = "Derived Column";

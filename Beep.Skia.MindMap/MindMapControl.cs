@@ -17,6 +17,9 @@ namespace Beep.Skia.MindMap
         /// Default background color for Mind Map nodes.
         /// </summary>
         private SKColor _backgroundColor = MaterialColors.Surface;
+        /// <summary>
+        /// Gets or sets the background color.
+        /// </summary>
         public SKColor BackgroundColor
         {
             get => _backgroundColor;
@@ -36,6 +39,9 @@ namespace Beep.Skia.MindMap
         /// Default border color for Mind Map nodes.
         /// </summary>
         private SKColor _borderColor = MaterialColors.Outline;
+        /// <summary>
+        /// Gets or sets the border color.
+        /// </summary>
         public SKColor BorderColor
         {
             get => _borderColor;
@@ -55,6 +61,9 @@ namespace Beep.Skia.MindMap
         /// Border thickness.
         /// </summary>
         private float _borderThickness = 2.0f;
+        /// <summary>
+        /// Gets or sets the border thickness.
+        /// </summary>
         public float BorderThickness
         {
             get => _borderThickness;
@@ -197,6 +206,9 @@ namespace Beep.Skia.MindMap
             }
         }
 
+        /// <summary>
+        /// Gets or sets the out port count.
+        /// </summary>
         public int OutPortCount
         {
             get => OutConnectionPoints.Count;

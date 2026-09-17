@@ -81,7 +81,7 @@
       <tr><td><code>List&lt;object&gt; SampleValues</code></td><td>Property</td><td>Gets or sets the sample values.</td></tr>
       <tr><td><code>bool IsNumeric</code></td><td>Property</td><td>Gets or sets the is numeric.</td></tr>
       <tr><td><code>bool IsDateTime</code></td><td>Property</td><td>Gets or sets the is date time.</td></tr>
-      <tr><td><code>double NullPercentage(int rowCount)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>double NullPercentage(int rowCount)</code></td><td>Method</td><td>Gets or sets the null percentage.</td></tr>
     </tbody>
   </table>
 </section>
@@ -138,7 +138,7 @@
       <tr><td><code>CdcMethod Method</code></td><td>Property</td><td>Gets or sets the method.</td></tr>
       <tr><td><code>string TrackingColumn</code></td><td>Property</td><td>Gets or sets the tracking column.</td></tr>
       <tr><td><code>string ChangeIndicator</code></td><td>Property</td><td>Gets or sets the change indicator.</td></tr>
-      <tr><td><code>ETLCdcNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ETLCdcNode()</code></td><td>Method</td><td>CDC detection method</td></tr>
     </tbody>
   </table>
 </section>
@@ -148,9 +148,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string Conditions</code></td><td>Property</td><td>Gets or sets the conditions.</td></tr>
-      <tr><td><code>bool HasDefaultOutput</code></td><td>Property</td><td>Gets or sets the has default output.</td></tr>
-      <tr><td><code>ETLConditionalSplit()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string Conditions</code></td><td>Property</td><td>Split conditions (JSON array of SplitCondition)</td></tr>
+      <tr><td><code>bool HasDefaultOutput</code></td><td>Property</td><td>Include default output for unmatched rows</td></tr>
+      <tr><td><code>ETLConditionalSplit()</code></td><td>Method</td><td>Split conditions (JSON array of SplitCondition)</td></tr>
     </tbody>
   </table>
 </section>
@@ -161,7 +161,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
-      <tr><td><code>bool HasErrorOutput</code></td><td>Property</td><td>Gets or sets the has error output.</td></tr>
+      <tr><td><code>bool HasErrorOutput</code></td><td>Property</td><td>Enable error output port for rejected rows</td></tr>
       <tr><td><code>int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
       <tr><td><code>int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
     </tbody>
@@ -173,9 +173,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string DerivedColumns</code></td><td>Property</td><td>Gets or sets the derived columns.</td></tr>
-      <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Gets or sets the output schema.</td></tr>
-      <tr><td><code>ETLDerivedColumn()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string DerivedColumns</code></td><td>Property</td><td>Derived columns (JSON array of DerivedColumnDefinition)</td></tr>
+      <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Output schema (JSON array of ColumnDefinition)</td></tr>
+      <tr><td><code>ETLDerivedColumn()</code></td><td>Method</td><td>Derived columns (JSON array of DerivedColumnDefinition)</td></tr>
     </tbody>
   </table>
 </section>
@@ -208,7 +208,7 @@
       <tr><td><code>double Threshold</code></td><td>Property</td><td>Gets or sets the threshold.</td></tr>
       <tr><td><code>string MatchColumn</code></td><td>Property</td><td>Gets or sets the match column.</td></tr>
       <tr><td><code>string ReferenceColumn</code></td><td>Property</td><td>Gets or sets the reference column.</td></tr>
-      <tr><td><code>ETLFuzzyLookupNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ETLFuzzyLookupNode()</code></td><td>Method</td><td>Fuzzy matching algorithm</td></tr>
     </tbody>
   </table>
 </section>
@@ -228,12 +228,12 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>CacheMode CacheMode</code></td><td>Property</td><td>Gets or sets the cache mode.</td></tr>
-      <tr><td><code>string MatchColumns</code></td><td>Property</td><td>Gets or sets the match columns.</td></tr>
-      <tr><td><code>string ReturnColumns</code></td><td>Property</td><td>Gets or sets the return columns.</td></tr>
-      <tr><td><code>bool FailOnNoMatch</code></td><td>Property</td><td>Gets or sets the fail on no match.</td></tr>
-      <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Gets or sets the output schema.</td></tr>
-      <tr><td><code>ETLLookup()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>CacheMode CacheMode</code></td><td>Property</td><td>Cache strategy: None, Partial, Full</td></tr>
+      <tr><td><code>string MatchColumns</code></td><td>Property</td><td>Columns to match (CSV: MainCol=RefCol,...)</td></tr>
+      <tr><td><code>string ReturnColumns</code></td><td>Property</td><td>Columns to return from reference (CSV)</td></tr>
+      <tr><td><code>bool FailOnNoMatch</code></td><td>Property</td><td>Fail if lookup finds no match</td></tr>
+      <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Output schema (JSON array of ColumnDefinition)</td></tr>
+      <tr><td><code>ETLLookup()</code></td><td>Method</td><td>Cache strategy: None, Partial, Full</td></tr>
     </tbody>
   </table>
 </section>
@@ -245,7 +245,7 @@
     <tbody>
       <tr><td><code>int InputCount</code></td><td>Property</td><td>Gets or sets the input count.</td></tr>
       <tr><td><code>bool RemoveDuplicates</code></td><td>Property</td><td>Gets or sets the remove duplicates.</td></tr>
-      <tr><td><code>ETLMerge()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ETLMerge()</code></td><td>Method</td><td>Number of input streams to merge (2-8)</td></tr>
     </tbody>
   </table>
 </section>
@@ -256,7 +256,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>int OutputCount</code></td><td>Property</td><td>Gets or sets the output count.</td></tr>
-      <tr><td><code>ETLMulticast()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ETLMulticast()</code></td><td>Method</td><td>Number of output copies (2-8)</td></tr>
     </tbody>
   </table>
 </section>
@@ -270,7 +270,7 @@
       <tr><td><code>string GroupByColumns</code></td><td>Property</td><td>Gets or sets the group by columns.</td></tr>
       <tr><td><code>string ValueColumn</code></td><td>Property</td><td>Gets or sets the value column.</td></tr>
       <tr><td><code>string AggregateFunction</code></td><td>Property</td><td>Gets or sets the aggregate function.</td></tr>
-      <tr><td><code>ETLPivot()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ETLPivot()</code></td><td>Method</td><td>Column whose values become new column headers</td></tr>
     </tbody>
   </table>
 </section>
@@ -282,7 +282,7 @@
     <tbody>
       <tr><td><code>bool AddCountColumn</code></td><td>Property</td><td>Gets or sets the add count column.</td></tr>
       <tr><td><code>string CountColumnName</code></td><td>Property</td><td>Gets or sets the count column name.</td></tr>
-      <tr><td><code>ETLRowCount()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ETLRowCount()</code></td><td>Method</td><td>Add row number column to output</td></tr>
     </tbody>
   </table>
 </section>
@@ -292,14 +292,14 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>ScdType Type</code></td><td>Property</td><td>Gets or sets the type.</td></tr>
-      <tr><td><code>string BusinessKeys</code></td><td>Property</td><td>Gets or sets the business keys.</td></tr>
-      <tr><td><code>string ChangeTrackingColumns</code></td><td>Property</td><td>Gets or sets the change tracking columns.</td></tr>
-      <tr><td><code>string EffectiveFromColumn</code></td><td>Property</td><td>Gets or sets the effective from column.</td></tr>
-      <tr><td><code>string EffectiveToColumn</code></td><td>Property</td><td>Gets or sets the effective to column.</td></tr>
-      <tr><td><code>string CurrentFlagColumn</code></td><td>Property</td><td>Gets or sets the current flag column.</td></tr>
-      <tr><td><code>string TableName</code></td><td>Property</td><td>Gets or sets the table name.</td></tr>
-      <tr><td><code>ETLScd()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ScdType Type</code></td><td>Property</td><td>SCD Type: Type1 (overwrite), Type2 (historical)</td></tr>
+      <tr><td><code>string BusinessKeys</code></td><td>Property</td><td>Business key columns (CSV) for matching existing records</td></tr>
+      <tr><td><code>string ChangeTrackingColumns</code></td><td>Property</td><td>Columns to track for changes (CSV)</td></tr>
+      <tr><td><code>string EffectiveFromColumn</code></td><td>Property</td><td>Column name for effective from date (Type 2 only)</td></tr>
+      <tr><td><code>string EffectiveToColumn</code></td><td>Property</td><td>Column name for effective to date (Type 2 only)</td></tr>
+      <tr><td><code>string CurrentFlagColumn</code></td><td>Property</td><td>Column name for current flag (Type 2 only)</td></tr>
+      <tr><td><code>string TableName</code></td><td>Property</td><td>Target dimension table name</td></tr>
+      <tr><td><code>ETLScd()</code></td><td>Method</td><td>SCD Type: Type1 (overwrite), Type2 (historical)</td></tr>
     </tbody>
   </table>
 </section>
@@ -311,7 +311,7 @@
     <tbody>
       <tr><td><code>string ScriptLanguage</code></td><td>Property</td><td>Gets or sets the script language.</td></tr>
       <tr><td><code>string Script</code></td><td>Property</td><td>Gets or sets the script.</td></tr>
-      <tr><td><code>ETLScript()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ETLScript()</code></td><td>Method</td><td>Script language (SQL/Python/C#/JavaScript)</td></tr>
     </tbody>
   </table>
 </section>
@@ -324,7 +324,7 @@
       <tr><td><code>string SortColumns</code></td><td>Property</td><td>Gets or sets the sort columns.</td></tr>
       <tr><td><code>string SortDirections</code></td><td>Property</td><td>Gets or sets the sort directions.</td></tr>
       <tr><td><code>bool RemoveDuplicates</code></td><td>Property</td><td>Gets or sets the remove duplicates.</td></tr>
-      <tr><td><code>ETLSort()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ETLSort()</code></td><td>Method</td><td>Comma-separated column names to sort by</td></tr>
     </tbody>
   </table>
 </section>
@@ -334,9 +334,9 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>SourceKind Kind</code></td><td>Property</td><td>Gets or sets the kind.</td></tr>
-      <tr><td><code>string ConnectionString</code></td><td>Property</td><td>Gets or sets the connection string.</td></tr>
-      <tr><td><code>string Path</code></td><td>Property</td><td>Gets or sets the path.</td></tr>
+      <tr><td><code>SourceKind Kind</code></td><td>Property</td><td>Source kind</td></tr>
+      <tr><td><code>string ConnectionString</code></td><td>Property</td><td>Source connection (masked)</td></tr>
+      <tr><td><code>string Path</code></td><td>Property</td><td>Table/File/Endpoint path</td></tr>
       <tr><td><code>ETLSource()</code></td><td>Method</td><td>Initializes a new instance of the ETLSource class.</td></tr>
     </tbody>
   </table>
@@ -349,7 +349,7 @@
       <tr><td><code>string KeyColumn</code></td><td>Property</td><td>Gets or sets the key column.</td></tr>
       <tr><td><code>long StartValue</code></td><td>Property</td><td>Gets or sets the start value.</td></tr>
       <tr><td><code>long Increment</code></td><td>Property</td><td>Gets or sets the increment.</td></tr>
-      <tr><td><code>ETLSurrogateKeyNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ETLSurrogateKeyNode()</code></td><td>Method</td><td>Surrogate key column name</td></tr>
     </tbody>
   </table>
 </section>
@@ -359,14 +359,14 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>string ConnectionString</code></td><td>Property</td><td>Gets or sets the connection string.</td></tr>
-      <tr><td><code>DestinationKind Destination</code></td><td>Property</td><td>Gets or sets the destination.</td></tr>
-      <tr><td><code>string TableName</code></td><td>Property</td><td>Gets or sets the table name.</td></tr>
-      <tr><td><code>WriteMode Mode</code></td><td>Property</td><td>Gets or sets the mode.</td></tr>
-      <tr><td><code>bool PreCreateTable</code></td><td>Property</td><td>Gets or sets the pre create table.</td></tr>
-      <tr><td><code>string ExpectedSchema</code></td><td>Property</td><td>Gets or sets the expected schema.</td></tr>
-      <tr><td><code>string DataQualityRules</code></td><td>Property</td><td>Gets or sets the data quality rules.</td></tr>
-      <tr><td><code>ETLTarget()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string ConnectionString</code></td><td>Property</td><td>Destination connection string (masked in UI)</td></tr>
+      <tr><td><code>DestinationKind Destination</code></td><td>Property</td><td>Destination kind</td></tr>
+      <tr><td><code>string TableName</code></td><td>Property</td><td>Target table or object name</td></tr>
+      <tr><td><code>WriteMode Mode</code></td><td>Property</td><td>Append/Overwrite/Upsert</td></tr>
+      <tr><td><code>bool PreCreateTable</code></td><td>Property</td><td>Auto-create table from expected schema</td></tr>
+      <tr><td><code>string ExpectedSchema</code></td><td>Property</td><td>Expected schema (JSON array of ColumnDefinition)</td></tr>
+      <tr><td><code>string DataQualityRules</code></td><td>Property</td><td>Data quality validation rules (JSON array of DataQualityRule)</td></tr>
+      <tr><td><code>ETLTarget()</code></td><td>Method</td><td>Destination connection (masked)</td></tr>
     </tbody>
   </table>
 </section>
@@ -376,13 +376,13 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>TransformKind Kind</code></td><td>Property</td><td>Gets or sets the kind.</td></tr>
-      <tr><td><code>string Expression</code></td><td>Property</td><td>Gets or sets the expression.</td></tr>
-      <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Gets or sets the output schema.</td></tr>
-      <tr><td><code>string GroupBy</code></td><td>Property</td><td>Gets or sets the group by.</td></tr>
-      <tr><td><code>string JoinKeyLeft</code></td><td>Property</td><td>Gets or sets the join key left.</td></tr>
-      <tr><td><code>string JoinKeyRight</code></td><td>Property</td><td>Gets or sets the join key right.</td></tr>
-      <tr><td><code>ETLTransform()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>TransformKind Kind</code></td><td>Property</td><td>Transform kind</td></tr>
+      <tr><td><code>string Expression</code></td><td>Property</td><td>Filter/Map expression (simple syntax)</td></tr>
+      <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Output schema (JSON array of ColumnDefinition)</td></tr>
+      <tr><td><code>string GroupBy</code></td><td>Property</td><td>Aggregate group-by columns (CSV)</td></tr>
+      <tr><td><code>string JoinKeyLeft</code></td><td>Property</td><td>Join key in left input</td></tr>
+      <tr><td><code>string JoinKeyRight</code></td><td>Property</td><td>Join key in right input</td></tr>
+      <tr><td><code>ETLTransform()</code></td><td>Method</td><td>Transform kind</td></tr>
       <tr><td><code>void InferOutputSchemaFromUpstreams(Func&lt;int, string&gt; getInputSchemaJson)</code></td><td>Method</td><td>Helper used by external orchestrators or editor buttons to infer OutputSchema from upstream schemas for Aggregate and Join kinds. This is a lightweight heuristic.</td></tr>
     </tbody>
   </table>
@@ -396,7 +396,7 @@
       <tr><td><code>string UnpivotColumns</code></td><td>Property</td><td>Gets or sets the unpivot columns.</td></tr>
       <tr><td><code>string AttributeColumn</code></td><td>Property</td><td>Gets or sets the attribute column.</td></tr>
       <tr><td><code>string ValueColumn</code></td><td>Property</td><td>Gets or sets the value column.</td></tr>
-      <tr><td><code>ETLUnpivot()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ETLUnpivot()</code></td><td>Method</td><td>Comma-separated columns to unpivot into rows</td></tr>
     </tbody>
   </table>
 </section>
@@ -419,7 +419,7 @@
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>ExpressionException(string message) : base(message) { }</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ExpressionException(string message) : base(message) { }</code></td><td>Method</td><td>Initializes a new instance of the ExpressionException class.</td></tr>
     </tbody>
   </table>
 </section>

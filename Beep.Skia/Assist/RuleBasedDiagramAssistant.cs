@@ -13,8 +13,14 @@ namespace Beep.Skia.Assist
     /// </summary>
     public class RuleBasedDiagramAssistant : IDiagramAssistant
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name => "rule-based";
 
+        /// <summary>
+        /// Gets or sets the generate.
+        /// </summary>
         public DiagramSuggestion Generate(DiagramRequest request)
         {
             if (request == null || string.IsNullOrWhiteSpace(request.Prompt))

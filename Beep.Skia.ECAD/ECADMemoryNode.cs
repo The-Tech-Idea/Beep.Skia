@@ -15,12 +15,30 @@ namespace Beep.Skia.ECAD
         private string _interface = "I2C";
         private double _accessTime = 5.0;
 
+        /// <summary>
+        /// Gets or sets the memory type.
+        /// </summary>
         public string MemoryType { get => _memoryType; set { var v = value ?? ""; if (_memoryType != v) { _memoryType = v; UpdateNodeProperty("MemoryType", _memoryType); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the model.
+        /// </summary>
         public string Model { get => _model; set { var v = value ?? ""; if (_model != v) { _model = v; UpdateNodeProperty("Model", _model); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the capacity.
+        /// </summary>
         public int Capacity { get => _capacity; set { if (_capacity != value) { _capacity = value; UpdateNodeProperty("Capacity", _capacity); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the interface.
+        /// </summary>
         public string Interface { get => _interface; set { var v = value ?? ""; if (_interface != v) { _interface = v; UpdateNodeProperty("Interface", _interface); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the access time.
+        /// </summary>
         public double AccessTime { get => _accessTime; set { if (Math.Abs(_accessTime - value) > 0.001) { _accessTime = value; UpdateNodeProperty("AccessTime", _accessTime); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Memory type
+        /// </summary>
         public ECADMemoryNode()
         {
             Width = 100; Height = 70; Name = "Memory";

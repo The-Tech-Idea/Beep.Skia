@@ -10,6 +10,9 @@ namespace Beep.Skia.PM
     public class PhaseNode : PMControl
     {
         private string _phaseName = "Phase";
+        /// <summary>
+        /// Gets or sets the phase name.
+        /// </summary>
         public string PhaseName
         {
             get => _phaseName;
@@ -27,6 +30,9 @@ namespace Beep.Skia.PM
         }
 
         private string _startDate = "";
+        /// <summary>
+        /// Gets or sets the start date.
+        /// </summary>
         public string StartDate
         {
             get => _startDate;
@@ -44,6 +50,9 @@ namespace Beep.Skia.PM
         }
 
         private string _endDate = "";
+        /// <summary>
+        /// Gets or sets the end date.
+        /// </summary>
         public string EndDate
         {
             get => _endDate;
@@ -61,6 +70,9 @@ namespace Beep.Skia.PM
         }
 
         private string _status = "Not Started";
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
         public string Status
         {
             get => _status;
@@ -77,6 +89,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Phase name
+        /// </summary>
         public PhaseNode()
         {
             Name = "PM Phase";

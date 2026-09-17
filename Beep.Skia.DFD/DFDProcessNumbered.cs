@@ -7,8 +7,14 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDProcessNumbered : DFDControl
     {
+        /// <summary>
+        /// Gets or sets the process id.
+        /// </summary>
         public string ProcessId { get; set; } = "1";
 
+        /// <summary>
+        /// Initializes a new instance of the DFDProcessNumbered class.
+        /// </summary>
         public DFDProcessNumbered()
         {
             Name = "Process (Numbered)";

@@ -38,6 +38,9 @@ namespace Beep.Skia.Components
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Gets or sets the data source name.
+        /// </summary>
         public string DataSourceName
         {
             get => _dataSourceName;

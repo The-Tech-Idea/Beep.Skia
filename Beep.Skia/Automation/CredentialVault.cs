@@ -27,13 +27,31 @@ namespace Beep.Skia.Automation
     /// </summary>
     public class CredentialEntry
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the type.
+        /// </summary>
         public CredentialType Type { get; set; } = CredentialType.ApiKey;
+        /// <summary>
+        /// Gets or sets the username.
+        /// </summary>
         public string Username { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the secret.
+        /// </summary>
         public string Secret { get; set; } = string.Empty;
         public Dictionary<string, string> Metadata { get; set; } = new Dictionary<string, string>();
+        /// <summary>
+        /// Gets or sets the updated at.
+        /// </summary>
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+        /// <summary>
+        /// Gets or sets the clone.
+        /// </summary>
         public CredentialEntry Clone() => new CredentialEntry
         {
             Name = Name,
@@ -303,18 +321,42 @@ namespace Beep.Skia.Automation
 
         private sealed class ExportDocument
         {
+            /// <summary>
+            /// Gets or sets the version.
+            /// </summary>
             public string Version { get; set; }
+            /// <summary>
+            /// Gets or sets the salt.
+            /// </summary>
             public string Salt { get; set; }
+            /// <summary>
+            /// Gets or sets the entries.
+            /// </summary>
             public List<ExportEntry> Entries { get; set; }
         }
 
         private sealed class ExportEntry
         {
+            /// <summary>
+            /// Gets or sets the name.
+            /// </summary>
             public string Name { get; set; }
+            /// <summary>
+            /// Gets or sets the type.
+            /// </summary>
             public CredentialType Type { get; set; }
+            /// <summary>
+            /// Gets or sets the username.
+            /// </summary>
             public string Username { get; set; }
+            /// <summary>
+            /// Gets or sets the encrypted secret.
+            /// </summary>
             public string EncryptedSecret { get; set; }
             public Dictionary<string, string> Metadata { get; set; }
+            /// <summary>
+            /// Gets or sets the updated at.
+            /// </summary>
             public DateTime UpdatedAt { get; set; }
         }
     }

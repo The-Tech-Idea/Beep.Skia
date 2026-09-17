@@ -9,11 +9,17 @@ namespace Beep.Skia.Model
     /// </summary>
     public class SchemaDiff
     {
+        /// <summary>
+        /// Gets or sets the missing columns.
+        /// </summary>
         public List<string> MissingColumns { get; } = new();
         public List<(string Name, string ExpectedType, string ActualType)> TypeDifferences { get; } = new();
         public List<(string Name, bool ExpectedNullable, bool ActualNullable)> NullabilityDifferences { get; } = new();
         public List<(string Name, string ExpectedDefault, string ActualDefault)> DefaultDifferences { get; } = new();
 
+        /// <summary>
+        /// Gets or sets the has differences.
+        /// </summary>
         public bool HasDifferences()
         {
             return MissingColumns.Count > 0 || TypeDifferences.Count > 0 ||
@@ -21,8 +27,14 @@ namespace Beep.Skia.Model
         }
     }
 
+    /// <summary>
+    /// Gets or sets the schema diff util.
+    /// </summary>
     public static class SchemaDiffUtil
     {
+        /// <summary>
+        /// Gets or sets the compute.
+        /// </summary>
         public static SchemaDiff Compute(IEnumerable<ColumnDefinition> expected, IEnumerable<ColumnDefinition> actual)
         {
             var diff = new SchemaDiff();

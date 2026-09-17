@@ -29,11 +29,26 @@ namespace Beep.Skia.Components
         /// </summary>
         public class ComponentCategory
         {
+            /// <summary>
+            /// Gets or sets the name.
+            /// </summary>
             public string Name { get; set; }
+            /// <summary>
+            /// Gets or sets the icon.
+            /// </summary>
             public string Icon { get; set; }
+            /// <summary>
+            /// Gets or sets the components.
+            /// </summary>
             public ObservableCollection<ComponentItem> Components { get; set; } = new ObservableCollection<ComponentItem>();
+            /// <summary>
+            /// Gets or sets the is expanded.
+            /// </summary>
             public bool IsExpanded { get; set; } = true;
 
+            /// <summary>
+            /// Initializes a new instance of the ComponentCategory class.
+            /// </summary>
             public ComponentCategory(string name, string icon = null)
             {
                 Name = name;
@@ -46,19 +61,43 @@ namespace Beep.Skia.Components
         /// </summary>
         public class ComponentItem
         {
+            /// <summary>
+            /// Gets or sets the class definition.
+            /// </summary>
             public AssemblyClassDefinition ClassDefinition { get; set; }
+            /// <summary>
+            /// Gets or sets the method.
+            /// </summary>
             public MethodsClass Method { get; set; }
+            /// <summary>
+            /// Gets or sets the is class.
+            /// </summary>
             public bool IsClass => Method == null;
+            /// <summary>
+            /// Gets or sets the is method.
+            /// </summary>
             public bool IsMethod => Method != null;
+            /// <summary>
+            /// Gets or sets the is expanded.
+            /// </summary>
             public bool IsExpanded { get; set; } = false;
+            /// <summary>
+            /// Gets or sets the child items.
+            /// </summary>
             public ObservableCollection<ComponentItem> ChildItems { get; set; } = new ObservableCollection<ComponentItem>();
 
+            /// <summary>
+            /// Initializes a new instance of the ComponentItem class.
+            /// </summary>
             public ComponentItem(AssemblyClassDefinition classDef, MethodsClass method = null)
             {
                 ClassDefinition = classDef;
                 Method = method;
             }
 
+            /// <summary>
+            /// Gets or sets the display name.
+            /// </summary>
             public string DisplayName
             {
                 get

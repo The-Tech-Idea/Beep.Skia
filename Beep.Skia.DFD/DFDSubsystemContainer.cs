@@ -7,9 +7,15 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDSubsystemContainer : DFDControl
     {
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title { get; set; } = "Subsystem";
         private const float TitleBarHeight = 24f;
 
+        /// <summary>
+        /// Initializes a new instance of the DFDSubsystemContainer class.
+        /// </summary>
         public DFDSubsystemContainer()
         {
             Name = "Subsystem Container";

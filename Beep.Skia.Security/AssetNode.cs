@@ -14,10 +14,22 @@ namespace Beep.Skia.Security
         private AssetCategory _category = AssetCategory.Application;
         private Criticality _criticality = Criticality.Medium;
 
+        /// <summary>
+        /// Gets or sets the asset name.
+        /// </summary>
         public string AssetName { get => _assetName; set { var v = value ?? string.Empty; if (_assetName != v) { _assetName = v; if (NodeProperties.TryGetValue("AssetName", out var p)) p.ParameterCurrentValue = _assetName; else NodeProperties["AssetName"] = new ParameterInfo { ParameterName = "AssetName", ParameterType = typeof(string), DefaultParameterValue = _assetName, ParameterCurrentValue = _assetName, Description = "Asset name" }; Name = _assetName; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the category.
+        /// </summary>
         public AssetCategory Category { get => _category; set { if (_category != value) { _category = value; if (NodeProperties.TryGetValue("Category", out var p)) p.ParameterCurrentValue = _category; else NodeProperties["Category"] = new ParameterInfo { ParameterName = "Category", ParameterType = typeof(AssetCategory), DefaultParameterValue = _category, ParameterCurrentValue = _category, Description = "Asset category", Choices = Enum.GetNames(typeof(AssetCategory)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the criticality.
+        /// </summary>
         public Criticality Criticality { get => _criticality; set { if (_criticality != value) { _criticality = value; if (NodeProperties.TryGetValue("Criticality", out var p)) p.ParameterCurrentValue = _criticality; else NodeProperties["Criticality"] = new ParameterInfo { ParameterName = "Criticality", ParameterType = typeof(Criticality), DefaultParameterValue = _criticality, ParameterCurrentValue = _criticality, Description = "Criticality", Choices = Enum.GetNames(typeof(Criticality)) }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Asset name
+        /// </summary>
         public AssetNode()
         {
             Width = 140; Height = 80;

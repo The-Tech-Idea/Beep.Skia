@@ -8,46 +8,127 @@ namespace Beep.Skia
     /// </summary>
     public class SkiaTheme
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = "Default";
 
         // Primary
+        /// <summary>
+        /// Gets or sets the primary.
+        /// </summary>
         public SKColor Primary { get; set; } = new SKColor(0x67, 0x50, 0xA4);
+        /// <summary>
+        /// Gets or sets the on primary.
+        /// </summary>
         public SKColor OnPrimary { get; set; } = SKColors.White;
+        /// <summary>
+        /// Gets or sets the primary container.
+        /// </summary>
         public SKColor PrimaryContainer { get; set; } = new SKColor(0xE9, 0xDD, 0xFF);
+        /// <summary>
+        /// Gets or sets the on primary container.
+        /// </summary>
         public SKColor OnPrimaryContainer { get; set; } = new SKColor(0x21, 0x00, 0x51);
 
         // Secondary
+        /// <summary>
+        /// Gets or sets the secondary.
+        /// </summary>
         public SKColor Secondary { get; set; } = new SKColor(0x62, 0x5B, 0x71);
+        /// <summary>
+        /// Gets or sets the on secondary.
+        /// </summary>
         public SKColor OnSecondary { get; set; } = SKColors.White;
+        /// <summary>
+        /// Gets or sets the secondary container.
+        /// </summary>
         public SKColor SecondaryContainer { get; set; } = new SKColor(0xE8, 0xDE, 0xF8);
+        /// <summary>
+        /// Gets or sets the on secondary container.
+        /// </summary>
         public SKColor OnSecondaryContainer { get; set; } = new SKColor(0x1D, 0x19, 0x23);
 
         // Tertiary
+        /// <summary>
+        /// Gets or sets the tertiary.
+        /// </summary>
         public SKColor Tertiary { get; set; } = new SKColor(0x7D, 0x52, 0x60);
+        /// <summary>
+        /// Gets or sets the on tertiary.
+        /// </summary>
         public SKColor OnTertiary { get; set; } = SKColors.White;
+        /// <summary>
+        /// Gets or sets the tertiary container.
+        /// </summary>
         public SKColor TertiaryContainer { get; set; } = new SKColor(0xFF, 0xD8, 0xE4);
+        /// <summary>
+        /// Gets or sets the on tertiary container.
+        /// </summary>
         public SKColor OnTertiaryContainer { get; set; } = new SKColor(0x31, 0x10, 0x1D);
 
         // Error
+        /// <summary>
+        /// Gets or sets the error.
+        /// </summary>
         public SKColor Error { get; set; } = new SKColor(0xBA, 0x1A, 0x1A);
+        /// <summary>
+        /// Gets or sets the on error.
+        /// </summary>
         public SKColor OnError { get; set; } = SKColors.White;
+        /// <summary>
+        /// Gets or sets the error container.
+        /// </summary>
         public SKColor ErrorContainer { get; set; } = new SKColor(0xFF, 0xDA, 0xD6);
+        /// <summary>
+        /// Gets or sets the on error container.
+        /// </summary>
         public SKColor OnErrorContainer { get; set; } = new SKColor(0x41, 0x00, 0x0D);
 
         // Surface
+        /// <summary>
+        /// Gets or sets the surface.
+        /// </summary>
         public SKColor Surface { get; set; } = new SKColor(0xFF, 0xFB, 0xFE);
+        /// <summary>
+        /// Gets or sets the on surface.
+        /// </summary>
         public SKColor OnSurface { get; set; } = new SKColor(0x1C, 0x1B, 0x1F);
+        /// <summary>
+        /// Gets or sets the surface variant.
+        /// </summary>
         public SKColor SurfaceVariant { get; set; } = new SKColor(0xE7, 0xE0, 0xEC);
+        /// <summary>
+        /// Gets or sets the on surface variant.
+        /// </summary>
         public SKColor OnSurfaceVariant { get; set; } = new SKColor(0x49, 0x45, 0x4F);
+        /// <summary>
+        /// Gets or sets the surface container.
+        /// </summary>
         public SKColor SurfaceContainer { get; set; } = new SKColor(0xF3, 0xED, 0xF4);
+        /// <summary>
+        /// Gets or sets the surface container high.
+        /// </summary>
         public SKColor SurfaceContainerHigh { get; set; } = new SKColor(0xF3, 0xED, 0xF4);
 
         // Outline
+        /// <summary>
+        /// Gets or sets the outline.
+        /// </summary>
         public SKColor Outline { get; set; } = new SKColor(0x79, 0x75, 0x7E);
+        /// <summary>
+        /// Gets or sets the outline variant.
+        /// </summary>
         public SKColor OutlineVariant { get; set; } = new SKColor(0xCA, 0xC4, 0xD0);
 
         // Canvas background color
+        /// <summary>
+        /// Gets or sets the canvas background.
+        /// </summary>
         public SKColor CanvasBackground { get; set; } = SKColors.White;
+        /// <summary>
+        /// Gets or sets the grid color.
+        /// </summary>
         public SKColor GridColor { get; set; } = new SKColor(0xE0, 0xE0, 0xE0);
 
         /// <summary>
@@ -144,6 +225,9 @@ namespace Beep.Skia
             GridColor = new SKColor(0x38, 0x3A, 0x46)
         };
 
+        /// <summary>
+        /// Gets or sets the clone.
+        /// </summary>
         public SkiaTheme Clone()
         {
             return (SkiaTheme)MemberwiseClone();

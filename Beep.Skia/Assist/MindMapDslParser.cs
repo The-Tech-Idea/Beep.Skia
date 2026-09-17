@@ -7,17 +7,41 @@ namespace Beep.Skia.Assist
     /// <summary>A parsed mind-map node with radial layout geometry.</summary>
     public class MindMapDslNode
     {
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the depth.
+        /// </summary>
         public int Depth { get; set; }
+        /// <summary>
+        /// Gets or sets the children.
+        /// </summary>
         public List<MindMapDslNode> Children { get; } = new List<MindMapDslNode>();
+        /// <summary>
+        /// Gets or sets the x.
+        /// </summary>
         public float X { get; set; }
+        /// <summary>
+        /// Gets or sets the y.
+        /// </summary>
         public float Y { get; set; }
+        /// <summary>
+        /// Gets or sets the width.
+        /// </summary>
         public float Width { get; set; }
+        /// <summary>
+        /// Gets or sets the height.
+        /// </summary>
         public float Height { get; set; }
 
         /// <summary>Type keyword: central (depth 0), topic (depth 1), subtopic (depth 2+).</summary>
         public string TypeKeyword => Depth == 0 ? "central" : Depth == 1 ? "topic" : "subtopic";
 
+        /// <summary>
+        /// Gets or sets the to string.
+        /// </summary>
         public override string ToString() => $"{new string(' ', Depth * 2)}{Title}";
     }
 

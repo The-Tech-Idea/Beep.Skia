@@ -11,6 +11,9 @@ namespace Beep.Skia.StateMachine
     public class FinalStateNode : StateMachineControl
     {
         private string _title = "Final";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -24,6 +27,9 @@ namespace Beep.Skia.StateMachine
             }
         }
 
+        /// <summary>
+        /// Label
+        /// </summary>
         public FinalStateNode()
         {
             Width = 46; Height = 46;

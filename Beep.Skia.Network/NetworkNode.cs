@@ -9,25 +9,55 @@ namespace Beep.Skia.Network
     public class NetworkNode : MaterialControl
     {
         private SKColor _fillColor = MaterialDesignColors.Surface;
+        /// <summary>
+        /// Gets or sets the fill color.
+        /// </summary>
         public SKColor FillColor { get => _fillColor; set { if (_fillColor == value) return; _fillColor = value; if (NodeProperties.TryGetValue("FillColor", out var pi)) pi.ParameterCurrentValue = _fillColor; InvalidateVisual(); } }
         private SKColor _strokeColor = MaterialDesignColors.Outline;
+        /// <summary>
+        /// Gets or sets the stroke color.
+        /// </summary>
         public SKColor StrokeColor { get => _strokeColor; set { if (_strokeColor == value) return; _strokeColor = value; if (NodeProperties.TryGetValue("StrokeColor", out var pi)) pi.ParameterCurrentValue = _strokeColor; InvalidateVisual(); } }
         private float _strokeWidth = 1.5f;
+        /// <summary>
+        /// Gets or sets the stroke width.
+        /// </summary>
         public float StrokeWidth { get => _strokeWidth; set { if (System.Math.Abs(_strokeWidth - value) < 0.0001f) return; _strokeWidth = value; if (NodeProperties.TryGetValue("StrokeWidth", out var pi)) pi.ParameterCurrentValue = _strokeWidth; InvalidateVisual(); } }
         private float _cornerRadius = 6f;
+        /// <summary>
+        /// Gets or sets the corner radius.
+        /// </summary>
         public float CornerRadius { get => _cornerRadius; set { if (System.Math.Abs(_cornerRadius - value) < 0.0001f) return; _cornerRadius = value; if (NodeProperties.TryGetValue("CornerRadius", out var pi)) pi.ParameterCurrentValue = _cornerRadius; InvalidateVisual(); } }
 
         // Additional properties for advanced network functionality
         private string _nodeType = "Default";
+        /// <summary>
+        /// Gets or sets the node type.
+        /// </summary>
         public string NodeType { get => _nodeType; set { if (_nodeType == value) return; _nodeType = value ?? string.Empty; if (NodeProperties.TryGetValue("NodeType", out var pi)) pi.ParameterCurrentValue = _nodeType; InvalidateVisual(); } }
         private bool _isHighlighted = false;
+        /// <summary>
+        /// Gets or sets the is highlighted.
+        /// </summary>
         public bool IsHighlighted { get => _isHighlighted; set { if (_isHighlighted == value) return; _isHighlighted = value; if (NodeProperties.TryGetValue("IsHighlighted", out var pi)) pi.ParameterCurrentValue = _isHighlighted; InvalidateVisual(); } }
         private float _scale = 1.0f;
+        /// <summary>
+        /// Gets or sets the scale.
+        /// </summary>
         public float Scale { get => _scale; set { if (System.Math.Abs(_scale - value) < 0.0001f) return; _scale = value; if (NodeProperties.TryGetValue("Scale", out var pi)) pi.ParameterCurrentValue = _scale; MarkPortsDirty(); InvalidateVisual(); } }
         private SKColor _centralityColor = SKColors.Transparent;
+        /// <summary>
+        /// Gets or sets the centrality color.
+        /// </summary>
         public SKColor CentralityColor { get => _centralityColor; set { if (_centralityColor == value) return; _centralityColor = value; if (NodeProperties.TryGetValue("CentralityColor", out var pi)) pi.ParameterCurrentValue = _centralityColor; InvalidateVisual(); } }
         private SKColor _communityColor = SKColors.Transparent;
+        /// <summary>
+        /// Gets or sets the community color.
+        /// </summary>
         public SKColor CommunityColor { get => _communityColor; set { if (_communityColor == value) return; _communityColor = value; if (NodeProperties.TryGetValue("CommunityColor", out var pi)) pi.ParameterCurrentValue = _communityColor; InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the community id.
+        /// </summary>
         public int CommunityId { get; set; } = 0;
 
         // Ports configuration
@@ -36,6 +66,9 @@ namespace Beep.Skia.Network
     private int _inputPortCount = 1;
     private int _outputPortCount = 1;
 
+        /// <summary>
+        /// Gets or sets the input port count.
+        /// </summary>
         public int InputPortCount
         {
             get => _inputPortCount;
@@ -52,6 +85,9 @@ namespace Beep.Skia.Network
             }
         }
 
+        /// <summary>
+        /// Gets or sets the output port count.
+        /// </summary>
         public int OutputPortCount
         {
             get => _outputPortCount;
@@ -68,6 +104,9 @@ namespace Beep.Skia.Network
             }
         }
 
+        /// <summary>
+        /// Node fill color
+        /// </summary>
         public NetworkNode()
         {
             Width = 100;

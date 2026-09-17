@@ -17,10 +17,19 @@ namespace Beep.Ski.Quantitative
         protected const float Padding = 8f;
 
     private SKColor _fill = new SKColor(0xE0, 0xF7, 0xFA); // cyan 50
+    /// <summary>
+    /// Gets or sets the fill.
+    /// </summary>
     public SKColor Fill { get => _fill; set { if (_fill == value) return; _fill = value; if (NodeProperties.TryGetValue("Fill", out var pi)) pi.ParameterCurrentValue = _fill; InvalidateVisual(); } }
     private SKColor _stroke = new SKColor(0x00, 0x96, 0x88); // teal 600
+    /// <summary>
+    /// Gets or sets the stroke.
+    /// </summary>
     public SKColor Stroke { get => _stroke; set { if (_stroke == value) return; _stroke = value; if (NodeProperties.TryGetValue("Stroke", out var pi)) pi.ParameterCurrentValue = _stroke; InvalidateVisual(); } }
     private float _strokeWidth = 1.5f;
+    /// <summary>
+    /// Background fill color
+    /// </summary>
     public float StrokeWidth { get => _strokeWidth; set { if (Math.Abs(_strokeWidth - value) < 0.0001f) return; _strokeWidth = value; if (NodeProperties.TryGetValue("StrokeWidth", out var pi)) pi.ParameterCurrentValue = _strokeWidth; InvalidateVisual(); } }
 
         protected QuantControl()

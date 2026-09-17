@@ -16,6 +16,9 @@ namespace Beep.Skia.ETL
         public enum WriteMode { Append, Overwrite, Upsert }
 
         private string _connectionString = string.Empty;
+        /// <summary>
+        /// Destination connection string (masked in UI)
+        /// </summary>
         public string ConnectionString
         {
             get => _connectionString;
@@ -30,6 +33,9 @@ namespace Beep.Skia.ETL
         }
 
         private DestinationKind _destination = DestinationKind.Table;
+        /// <summary>
+        /// Destination kind
+        /// </summary>
         public DestinationKind Destination
         {
             get => _destination;
@@ -43,6 +49,9 @@ namespace Beep.Skia.ETL
         }
 
         private string _tableName = string.Empty;
+        /// <summary>
+        /// Target table or object name
+        /// </summary>
         public string TableName
         {
             get => _tableName;
@@ -57,6 +66,9 @@ namespace Beep.Skia.ETL
         }
 
         private WriteMode _writeMode = WriteMode.Append;
+        /// <summary>
+        /// Append/Overwrite/Upsert
+        /// </summary>
         public WriteMode Mode
         {
             get => _writeMode;
@@ -70,6 +82,9 @@ namespace Beep.Skia.ETL
         }
 
         private bool _preCreateTable = true;
+        /// <summary>
+        /// Auto-create table from expected schema
+        /// </summary>
         public bool PreCreateTable
         {
             get => _preCreateTable;
@@ -84,6 +99,9 @@ namespace Beep.Skia.ETL
 
         // JSON array of ColumnDefinition for the target schema we expect
         private string _expectedSchemaJson = "[]";
+        /// <summary>
+        /// Expected schema (JSON array of ColumnDefinition)
+        /// </summary>
         public string ExpectedSchema
         {
             get => _expectedSchemaJson;
@@ -100,6 +118,9 @@ namespace Beep.Skia.ETL
         private List<ColumnDefinition> _expected = new();
 
         private string _dataQualityRulesJson = "[]";
+        /// <summary>
+        /// Data quality validation rules (JSON array of DataQualityRule)
+        /// </summary>
         public string DataQualityRules
         {
             get => _dataQualityRulesJson;
@@ -123,6 +144,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// Destination connection (masked)
+        /// </summary>
         public ETLTarget()
         {
             Title = "Target";

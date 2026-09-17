@@ -12,6 +12,9 @@ namespace Beep.Skia.Winform.Controls
     {
         private SkiaSvgComponent _svg;
 
+        /// <summary>
+        /// Initializes a new instance of the SkiaSvgImage class.
+        /// </summary>
         public SkiaSvgImage()
         {
             _svg = CreateSkiaComponent<SkiaSvgComponent>();

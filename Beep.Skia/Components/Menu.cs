@@ -19,11 +19,17 @@ namespace Beep.Skia.Components
 
         public enum MenuPosition { TopLeft, TopRight, BottomLeft, BottomRight, Center }
 
+        /// <summary>
+        /// Gets or sets the items.
+        /// </summary>
         public IList<MenuItem> Items => _items;
         public event EventHandler<MenuItem> ItemClicked;
         public event EventHandler Opened;
         public event EventHandler Closed;
 
+        /// <summary>
+        /// Gets or sets the selected item.
+        /// </summary>
         public MenuItem SelectedItem
         {
             get => _selected;
@@ -37,21 +43,54 @@ namespace Beep.Skia.Components
             }
         }
 
+        /// <summary>
+        /// Gets or sets the menu width.
+        /// </summary>
         public float MenuWidth { get => _menuWidth; set { if (Math.Abs(_menuWidth - value) > 0.1f) { _menuWidth = value; RecalcSize(); } } }
+        /// <summary>
+        /// Gets or sets the position.
+        /// </summary>
         public MenuPosition Position { get => _position; set { if (_position != value) { _position = value; UpdatePosition(); } } }
+        /// <summary>
+        /// Gets or sets the anchor point.
+        /// </summary>
         public SKPoint AnchorPoint { get => _anchorPoint; set { _anchorPoint = value; UpdatePosition(); } }
+        /// <summary>
+        /// Gets or sets the visible.
+        /// </summary>
         public bool Visible { get => _visible; set { if (_visible == value) return; _visible = value; if (_visible) Opened?.Invoke(this, EventArgs.Empty); else Closed?.Invoke(this, EventArgs.Empty); InvalidateVisual(); } }
 
+        /// <summary>
+        /// Initializes a new instance of the Menu class.
+        /// </summary>
         public Menu() { Visible = false; RecalcSize(); }
 
         private void RecalcSize() { Width = _menuWidth; Height = _items.Count * _itemHeight; }
+        /// <summary>
+        /// Gets or sets the add item.
+        /// </summary>
         public void AddItem(MenuItem item) { if (item == null || _items.Contains(item)) return; _items.Add(item); item.ParentMenu = this; RecalcSize(); InvalidateVisual(); }
+        /// <summary>
+        /// Gets or sets the remove item.
+        /// </summary>
         public void RemoveItem(MenuItem item) { if (item == null) return; if (_items.Remove(item)) { if (_selected == item) _selected = null; item.ParentMenu = null; RecalcSize(); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the clear items.
+        /// </summary>
         public void ClearItems() { foreach (var i in _items) i.ParentMenu = null; _items.Clear(); _selected = null; RecalcSize(); InvalidateVisual(); }
+        /// <summary>
+        /// Gets or sets the show.
+        /// </summary>
         public void Show(SKPoint anchor) { AnchorPoint = anchor; Visible = true; }
+        /// <summary>
+        /// Gets or sets the hide.
+        /// </summary>
         public void Hide() { Visible = false; }
 
     // Backwards-compatibility method for legacy MenuItem setters expecting ParentMenu?.Invalidate()
+    /// <summary>
+    /// Gets or sets the invalidate.
+    /// </summary>
     public void Invalidate() => InvalidateVisual();
 
         private void UpdatePosition()
@@ -92,6 +131,9 @@ namespace Beep.Skia.Components
             }
         }
 
+        /// <summary>
+        /// Gets or sets the contains point.
+        /// </summary>
         public override bool ContainsPoint(SKPoint point) => Visible && point.X >= X && point.X <= X + Width && point.Y >= Y && point.Y <= Y + Height;
         protected override bool OnMouseDown(SKPoint point, InteractionContext context)
         {

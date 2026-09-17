@@ -13,6 +13,9 @@ namespace Beep.Skia.Cloud
     {
         protected const float PortRadius = 4f;
 
+        /// <summary>
+        /// Background color
+        /// </summary>
         public SKColor BackgroundColor
         {
             get => _backgroundColor; set
@@ -27,6 +30,9 @@ namespace Beep.Skia.Cloud
         }
         private SKColor _backgroundColor = MaterialColors.Surface;
 
+        /// <summary>
+        /// Border color
+        /// </summary>
         public SKColor BorderColor
         {
             get => _borderColor; set
@@ -41,6 +47,9 @@ namespace Beep.Skia.Cloud
         }
         private SKColor _borderColor = MaterialColors.Outline;
 
+        /// <summary>
+        /// Border thickness
+        /// </summary>
         public float BorderThickness
         {
             get => _borderThickness; set
@@ -55,6 +64,9 @@ namespace Beep.Skia.Cloud
         }
         private float _borderThickness = 2f;
 
+        /// <summary>
+        /// Number of inputs
+        /// </summary>
         public int InPortCount
         {
             get => InConnectionPoints.Count; set
@@ -69,6 +81,9 @@ namespace Beep.Skia.Cloud
             }
         }
 
+        /// <summary>
+        /// Number of outputs
+        /// </summary>
         public int OutPortCount
         {
             get => OutConnectionPoints.Count; set

@@ -13,13 +13,34 @@ namespace Beep.Skia.ML
         private double _dropout = 0.2;
         private string _optimizer = "Adam";
 
+        /// <summary>
+        /// Gets or sets the architecture.
+        /// </summary>
         public string Architecture { get => _architecture; set { var v = value ?? ""; if (_architecture != v) { _architecture = v; UpdateNodeProperty("Architecture", _architecture); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the layers.
+        /// </summary>
         public int Layers { get => _layers; set { int v = Math.Max(1, value); if (_layers != v) { _layers = v; UpdateNodeProperty("Layers", _layers); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the layer sizes.
+        /// </summary>
         public string LayerSizes { get => _layerSizes; set { var v = value ?? ""; if (_layerSizes != v) { _layerSizes = v; UpdateNodeProperty("LayerSizes", _layerSizes); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the activation.
+        /// </summary>
         public string Activation { get => _activation; set { var v = value ?? ""; if (_activation != v) { _activation = v; UpdateNodeProperty("Activation", _activation); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the dropout.
+        /// </summary>
         public double Dropout { get => _dropout; set { double v = Math.Clamp(value, 0, 0.9); if (Math.Abs(_dropout - v) > 0.001) { _dropout = v; UpdateNodeProperty("Dropout", _dropout); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the optimizer.
+        /// </summary>
         public string Optimizer { get => _optimizer; set { var v = value ?? ""; if (_optimizer != v) { _optimizer = v; UpdateNodeProperty("Optimizer", _optimizer); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Architecture
+        /// </summary>
         public MLNeuralNetworkNode()
         {
             Width = 150; Height = 90; Name = "Neural Network";

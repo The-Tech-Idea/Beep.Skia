@@ -10,6 +10,9 @@ namespace Beep.Skia.ETL
     public class ETLMulticast : ETLControl
     {
         private int _outputCount = 2;
+        /// <summary>
+        /// Gets or sets the output count.
+        /// </summary>
         public int OutputCount
         {
             get => _outputCount;
@@ -25,6 +28,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// Number of output copies (2-8)
+        /// </summary>
         public ETLMulticast()
         {
             Title = "Multicast";

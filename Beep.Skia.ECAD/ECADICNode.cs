@@ -11,10 +11,22 @@ namespace Beep.Skia.ECAD
         private string _footprint = "QFN-32";
         private int _pinCount = 16;
 
+        /// <summary>
+        /// Gets or sets the reference.
+        /// </summary>
         public string Reference { get => _reference; set { var v = value ?? string.Empty; if (_reference != v) { _reference = v; if (NodeProperties.TryGetValue("Reference", out var p)) p.ParameterCurrentValue = _reference; else NodeProperties["Reference"] = new ParameterInfo { ParameterName = "Reference", ParameterType = typeof(string), DefaultParameterValue = _reference, ParameterCurrentValue = _reference, Description = "Component reference" }; Name = _reference; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the footprint.
+        /// </summary>
         public string Footprint { get => _footprint; set { var v = value ?? string.Empty; if (_footprint != v) { _footprint = v; if (NodeProperties.TryGetValue("Footprint", out var p)) p.ParameterCurrentValue = _footprint; else NodeProperties["Footprint"] = new ParameterInfo { ParameterName = "Footprint", ParameterType = typeof(string), DefaultParameterValue = _footprint, ParameterCurrentValue = _footprint, Description = "Footprint" }; InvalidateVisual(); MarkPortsDirty(); } } }
+        /// <summary>
+        /// Gets or sets the pin count.
+        /// </summary>
         public int PinCount { get => _pinCount; set { var v = Math.Max(1, value); if (_pinCount != v) { _pinCount = v; if (NodeProperties.TryGetValue("PinCount", out var p)) p.ParameterCurrentValue = _pinCount; else NodeProperties["PinCount"] = new ParameterInfo { ParameterName = "PinCount", ParameterType = typeof(int), DefaultParameterValue = _pinCount, ParameterCurrentValue = _pinCount, Description = "Pin count" }; InvalidateVisual(); MarkPortsDirty(); } } }
 
+        /// <summary>
+        /// Component reference
+        /// </summary>
         public ECADICNode()
         {
             Width = 140; Height = 100;

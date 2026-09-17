@@ -11,11 +11,26 @@ namespace Beep.Skia.ML
         private int _maxWorkers = 4;
         private string _outputFormat = "JSON";
 
+        /// <summary>
+        /// Gets or sets the batch size.
+        /// </summary>
         public int BatchSize { get => _batchSize; set { int v = Math.Max(1, value); if (_batchSize != v) { _batchSize = v; UpdateNodeProperty("BatchSize", _batchSize); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the parallel.
+        /// </summary>
         public bool Parallel { get => _parallel; set { if (_parallel != value) { _parallel = value; UpdateNodeProperty("Parallel", _parallel); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the max workers.
+        /// </summary>
         public int MaxWorkers { get => _maxWorkers; set { int v = Math.Max(1, Math.Min(16, value)); if (_maxWorkers != v) { _maxWorkers = v; UpdateNodeProperty("MaxWorkers", _maxWorkers); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the output format.
+        /// </summary>
         public string OutputFormat { get => _outputFormat; set { var v = value ?? ""; if (_outputFormat != v) { _outputFormat = v; UpdateNodeProperty("OutputFormat", _outputFormat); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Batch size
+        /// </summary>
         public MLBatchPredictionNode()
         {
             Width = 145; Height = 85; Name = "Batch Prediction";

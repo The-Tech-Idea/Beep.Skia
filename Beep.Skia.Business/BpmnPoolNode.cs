@@ -12,6 +12,9 @@ namespace Beep.Skia.Business
     public class BpmnPoolNode : BusinessControl
     {
         private string _poolName = "Pool";
+        /// <summary>
+        /// Gets or sets the pool name.
+        /// </summary>
         public string PoolName
         {
             get => _poolName;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Business
             }
         }
 
+        /// <summary>
+        /// Pool / participant name
+        /// </summary>
         public BpmnPoolNode()
         {
             Width = 460;

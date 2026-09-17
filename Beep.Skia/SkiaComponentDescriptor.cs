@@ -10,14 +10,29 @@ namespace Beep.Skia
     /// </summary>
     public class SkiaComponentDescriptor
     {
+        /// <summary>
+        /// Initializes a new instance of the SkiaComponentDescriptor class.
+        /// </summary>
         public SkiaComponentDescriptor() { }
 
         /// <summary>Assembly-qualified type name of the component (e.g. "Beep.Skia.Components.Button, Beep.Skia").</summary>
         public string ComponentType { get; set; }
 
+        /// <summary>
+        /// Gets or sets the x.
+        /// </summary>
         public float X { get; set; }
+        /// <summary>
+        /// Gets or sets the y.
+        /// </summary>
         public float Y { get; set; }
+        /// <summary>
+        /// Gets or sets the width.
+        /// </summary>
         public float Width { get; set; }
+        /// <summary>
+        /// Gets or sets the height.
+        /// </summary>
         public float Height { get; set; }
 
         /// <summary>Optional name for later lookup.</summary>
@@ -32,6 +47,9 @@ namespace Beep.Skia
     [Serializable]
     public class SkiaComponentDescriptorCollection : Collection<SkiaComponentDescriptor>
     {
+        /// <summary>
+        /// Initializes a new instance of the SkiaComponentDescriptorCollection class.
+        /// </summary>
         public SkiaComponentDescriptorCollection() { }
     }
 }

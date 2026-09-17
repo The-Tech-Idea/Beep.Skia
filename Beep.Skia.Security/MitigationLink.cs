@@ -14,10 +14,22 @@ namespace Beep.Skia.Security
         private SKColor _color = new SKColor(0, 122, 204);
         private LinkStyle _style = LinkStyle.Solid;
 
+        /// <summary>
+        /// Gets or sets the thickness.
+        /// </summary>
         public float Thickness { get => _thickness; set { var v = Math.Max(0.5f, Math.Min(10f, value)); if (Math.Abs(_thickness - v) > float.Epsilon) { _thickness = v; if (NodeProperties.TryGetValue("Thickness", out var p)) p.ParameterCurrentValue = _thickness; else NodeProperties["Thickness"] = new ParameterInfo { ParameterName = "Thickness", ParameterType = typeof(float), DefaultParameterValue = _thickness, ParameterCurrentValue = _thickness, Description = "Line thickness" }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the color.
+        /// </summary>
         public SKColor Color { get => _color; set { if (_color != value) { _color = value; if (NodeProperties.TryGetValue("Color", out var p)) p.ParameterCurrentValue = _color; else NodeProperties["Color"] = new ParameterInfo { ParameterName = "Color", ParameterType = typeof(SKColor), DefaultParameterValue = _color, ParameterCurrentValue = _color, Description = "Line color" }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the style.
+        /// </summary>
         public LinkStyle Style { get => _style; set { if (_style != value) { _style = value; if (NodeProperties.TryGetValue("Style", out var p)) p.ParameterCurrentValue = _style; else NodeProperties["Style"] = new ParameterInfo { ParameterName = "Style", ParameterType = typeof(LinkStyle), DefaultParameterValue = _style, ParameterCurrentValue = _style, Description = "Link style", Choices = Enum.GetNames(typeof(LinkStyle)) }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Line thickness
+        /// </summary>
         public MitigationLink()
         {
             Width = 100; Height = 30; // nominal

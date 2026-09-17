@@ -12,8 +12,17 @@ namespace Beep.Skia.ETL
         private string _trackingColumn = "ModifiedAt";
         private string _changeIndicator = "__CDC_Operation";
 
+        /// <summary>
+        /// Gets or sets the method.
+        /// </summary>
         public CdcMethod Method { get => _method; set { if (_method == value) return; _method = value; SetProp("Method", value, "CDC detection method", System.Enum.GetNames(typeof(CdcMethod))); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the tracking column.
+        /// </summary>
         public string TrackingColumn { get => _trackingColumn; set { var v = value ?? "ModifiedAt"; if (_trackingColumn == v) return; _trackingColumn = v; SetProp("TrackingColumn", v); InvalidateVisual(); } }
+        /// <summary>
+        /// Gets or sets the change indicator.
+        /// </summary>
         public string ChangeIndicator { get => _changeIndicator; set { var v = value ?? "__CDC_Operation"; if (_changeIndicator == v) return; _changeIndicator = v; SetProp("ChangeIndicator", v); InvalidateVisual(); } }
 
         private void SetProp(string name, object val, string desc = null, string[] choices = null)
@@ -22,6 +31,9 @@ namespace Beep.Skia.ETL
             else NodeProperties[name] = new Model.ParameterInfo { ParameterName = name, ParameterType = val.GetType(), DefaultParameterValue = val, ParameterCurrentValue = val, Description = desc ?? name, Choices = choices };
         }
 
+        /// <summary>
+        /// CDC detection method
+        /// </summary>
         public ETLCdcNode()
         {
             Width = 130; Height = 90; Name = "CDC";

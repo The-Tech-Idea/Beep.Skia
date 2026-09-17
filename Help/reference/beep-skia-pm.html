@@ -48,7 +48,7 @@
       <tr><td><code>decimal PlannedBudget</code></td><td>Property</td><td>Gets or sets the planned budget.</td></tr>
       <tr><td><code>decimal ActualCost</code></td><td>Property</td><td>Gets or sets the actual cost.</td></tr>
       <tr><td><code>string Currency</code></td><td>Property</td><td>Gets or sets the currency.</td></tr>
-      <tr><td><code>BudgetNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>BudgetNode()</code></td><td>Method</td><td>Budget category name</td></tr>
     </tbody>
   </table>
 </section>
@@ -74,7 +74,7 @@
       <tr><td><code>string TaskName</code></td><td>Property</td><td>Gets or sets the task name.</td></tr>
       <tr><td><code>float Slack</code></td><td>Property</td><td>Gets or sets the slack.</td></tr>
       <tr><td><code>int Duration</code></td><td>Property</td><td>Gets or sets the duration.</td></tr>
-      <tr><td><code>CriticalPathNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>CriticalPathNode()</code></td><td>Method</td><td>Task name</td></tr>
     </tbody>
   </table>
 </section>
@@ -87,7 +87,7 @@
       <tr><td><code>string DeliverableName</code></td><td>Property</td><td>Gets or sets the deliverable name.</td></tr>
       <tr><td><code>string DeliveryDate</code></td><td>Property</td><td>Gets or sets the delivery date.</td></tr>
       <tr><td><code>bool IsApproved</code></td><td>Property</td><td>Gets or sets the is approved.</td></tr>
-      <tr><td><code>DeliverableNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DeliverableNode()</code></td><td>Method</td><td>Deliverable name/description</td></tr>
     </tbody>
   </table>
 </section>
@@ -101,7 +101,7 @@
       <tr><td><code>int LagDays</code></td><td>Property</td><td>Gets or sets the lag days.</td></tr>
       <tr><td><code>string FromTask</code></td><td>Property</td><td>Gets or sets the from task.</td></tr>
       <tr><td><code>string ToTask</code></td><td>Property</td><td>Gets or sets the to task.</td></tr>
-      <tr><td><code>DependencyNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>DependencyNode()</code></td><td>Method</td><td>Dependency type (FS=Finish-to-Start, SS=Start-to-Start, FF=Finish-to-Finish, SF=Start-to-Finish)</td></tr>
     </tbody>
   </table>
 </section>
@@ -115,7 +115,7 @@
       <tr><td><code>string StartDate</code></td><td>Property</td><td>Gets or sets the start date.</td></tr>
       <tr><td><code>string EndDate</code></td><td>Property</td><td>Gets or sets the end date.</td></tr>
       <tr><td><code>int PercentComplete</code></td><td>Property</td><td>Gets or sets the percent complete.</td></tr>
-      <tr><td><code>GanttBarNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>GanttBarNode()</code></td><td>Method</td><td>Task name</td></tr>
     </tbody>
   </table>
 </section>
@@ -151,7 +151,7 @@
       <tr><td><code>SKColor GridColor</code></td><td>Property</td><td>Gets or sets the grid color.</td></tr>
       <tr><td><code>List&lt;GanttRow&gt; Rows</code></td><td>Property</td><td>Gets or sets the rows.</td></tr>
       <tr><td><code>string RowsJson</code></td><td>Property</td><td>JSON projection of Rows used for persistence.</td></tr>
-      <tr><td><code>GanttTimelineNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>GanttTimelineNode()</code></td><td>Method</td><td>Height of each task row</td></tr>
       <tr><td><code>void SetSchedule(IEnumerable&lt;TaskNode&gt; tasks, CriticalPathCalculator? schedule = null)</code></td><td>Method</td><td>Populates the timeline from tasks, optionally using a computed schedule for dates/criticality. Without a schedule, tasks are laid out sequentially.</td></tr>
     </tbody>
   </table>
@@ -166,7 +166,7 @@
       <tr><td><code>new string Priority</code></td><td>Property</td><td>Gets or sets the priority.</td></tr>
       <tr><td><code>string Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
       <tr><td><code>string AssignedTo</code></td><td>Property</td><td>Gets or sets the assigned to.</td></tr>
-      <tr><td><code>IssueNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>IssueNode()</code></td><td>Method</td><td>Issue title/description</td></tr>
     </tbody>
   </table>
 </section>
@@ -177,7 +177,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>MilestoneNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>MilestoneNode()</code></td><td>Method</td><td>Milestone label</td></tr>
     </tbody>
   </table>
 </section>
@@ -191,7 +191,7 @@
       <tr><td><code>string StartDate</code></td><td>Property</td><td>Gets or sets the start date.</td></tr>
       <tr><td><code>string EndDate</code></td><td>Property</td><td>Gets or sets the end date.</td></tr>
       <tr><td><code>string Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
-      <tr><td><code>PhaseNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>PhaseNode()</code></td><td>Method</td><td>Phase name</td></tr>
     </tbody>
   </table>
 </section>
@@ -216,7 +216,7 @@
       <tr><td><code>string ResourceType</code></td><td>Property</td><td>Gets or sets the resource type.</td></tr>
       <tr><td><code>int AllocationPercent</code></td><td>Property</td><td>Gets or sets the allocation percent.</td></tr>
       <tr><td><code>decimal CostPerHour</code></td><td>Property</td><td>Gets or sets the cost per hour.</td></tr>
-      <tr><td><code>ResourceNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ResourceNode()</code></td><td>Method</td><td>Resource name or identifier</td></tr>
     </tbody>
   </table>
 </section>
@@ -230,7 +230,7 @@
       <tr><td><code>string Probability</code></td><td>Property</td><td>Gets or sets the probability.</td></tr>
       <tr><td><code>string Impact</code></td><td>Property</td><td>Gets or sets the impact.</td></tr>
       <tr><td><code>string MitigationPlan</code></td><td>Property</td><td>Gets or sets the mitigation plan.</td></tr>
-      <tr><td><code>RiskNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>RiskNode()</code></td><td>Method</td><td>Risk description</td></tr>
     </tbody>
   </table>
 </section>
@@ -241,7 +241,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
-      <tr><td><code>SummaryNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SummaryNode()</code></td><td>Method</td><td>Summary title</td></tr>
     </tbody>
   </table>
 </section>
@@ -254,7 +254,7 @@
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
       <tr><td><code>int PercentComplete</code></td><td>Property</td><td>Gets or sets the percent complete.</td></tr>
       <tr><td><code>int DurationDays</code></td><td>Property</td><td>Gets or sets the duration days.</td></tr>
-      <tr><td><code>TaskNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>TaskNode()</code></td><td>Method</td><td>Task title</td></tr>
     </tbody>
   </table>
 </section>

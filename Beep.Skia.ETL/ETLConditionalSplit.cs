@@ -13,6 +13,9 @@ namespace Beep.Skia.ETL
     public class ETLConditionalSplit : ETLControl
     {
         private string _conditionsJson = "[]";
+        /// <summary>
+        /// Split conditions (JSON array of SplitCondition)
+        /// </summary>
         public string Conditions
         {
             get => _conditionsJson;
@@ -39,6 +42,9 @@ namespace Beep.Skia.ETL
         }
 
         private bool _hasDefaultOutput = true;
+        /// <summary>
+        /// Include default output for unmatched rows
+        /// </summary>
         public bool HasDefaultOutput
         {
             get => _hasDefaultOutput;
@@ -62,6 +68,9 @@ namespace Beep.Skia.ETL
             }
         }
 
+        /// <summary>
+        /// Split conditions (JSON array of SplitCondition)
+        /// </summary>
         public ETLConditionalSplit()
         {
             Title = "Conditional Split";

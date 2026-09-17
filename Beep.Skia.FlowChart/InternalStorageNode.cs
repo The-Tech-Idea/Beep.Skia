@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class InternalStorageNode : FlowchartControl
     {
         private string _label = "Internal Storage";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Internal storage description.
+        /// </summary>
         public InternalStorageNode()
         {
             Name = "Flowchart Internal Storage";

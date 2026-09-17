@@ -15,12 +15,30 @@ namespace Beep.Skia.ECAD
         private double _chargeRate = 1.0;
         private int _cells = 1;
 
+        /// <summary>
+        /// Gets or sets the battery type.
+        /// </summary>
         public string BatteryType { get => _type; set { var v = value ?? ""; if (_type != v) { _type = v; UpdateNodeProperty("BatteryType", _type); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the voltage.
+        /// </summary>
         public double Voltage { get => _voltage; set { if (Math.Abs(_voltage - value) > 0.001) { _voltage = value; UpdateNodeProperty("Voltage", _voltage); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the capacity.
+        /// </summary>
         public double Capacity { get => _capacity; set { if (Math.Abs(_capacity - value) > 0.001) { _capacity = value; UpdateNodeProperty("Capacity", _capacity); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the charge rate.
+        /// </summary>
         public double ChargeRate { get => _chargeRate; set { if (Math.Abs(_chargeRate - value) > 0.001) { _chargeRate = value; UpdateNodeProperty("ChargeRate", _chargeRate); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the cells.
+        /// </summary>
         public int Cells { get => _cells; set { int v = Math.Max(1, value); if (_cells != v) { _cells = v; UpdateNodeProperty("Cells", _cells); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Battery chemistry
+        /// </summary>
         public ECADBatteryNode()
         {
             Width = 90; Height = 60; Name = "Battery";

@@ -13,9 +13,21 @@ namespace Beep.Skia.ML
     /// </summary>
     public class MLPipelineNode
     {
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
         public string Id { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the type.
+        /// </summary>
         public string Type { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the order.
+        /// </summary>
         public int Order { get; set; }
         public Dictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
     }
@@ -25,8 +37,17 @@ namespace Beep.Skia.ML
     /// </summary>
     public class MLPipelineEdge
     {
+        /// <summary>
+        /// Gets or sets the from.
+        /// </summary>
         public string From { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the to.
+        /// </summary>
         public string To { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string? Label { get; set; }
     }
 
@@ -36,10 +57,25 @@ namespace Beep.Skia.ML
     /// </summary>
     public class MLPipelineDefinition
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
         public string Name { get; set; } = "Pipeline";
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
         public string Version { get; set; } = "1.0";
+        /// <summary>
+        /// Gets or sets the created at.
+        /// </summary>
         public string CreatedAt { get; set; } = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
+        /// <summary>
+        /// Gets or sets the nodes.
+        /// </summary>
         public List<MLPipelineNode> Nodes { get; set; } = new List<MLPipelineNode>();
+        /// <summary>
+        /// Gets or sets the edges.
+        /// </summary>
         public List<MLPipelineEdge> Edges { get; set; } = new List<MLPipelineEdge>();
     }
 

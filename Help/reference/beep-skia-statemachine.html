@@ -40,9 +40,9 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
-      <tr><td><code>ChoiceNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ChoiceNode()</code></td><td>Method</td><td>Optional condition label</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -55,10 +55,10 @@
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
       <tr><td><code>float TitleBarHeight</code></td><td>Property</td><td>Gets or sets the title bar height.</td></tr>
       <tr><td><code>int RegionCount</code></td><td>Property</td><td>Number of orthogonal regions inside the composite state (1-4). Regions are separated by dashed dividers in the content area.</td></tr>
-      <tr><td><code>CompositeStateNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>CompositeStateNode()</code></td><td>Method</td><td>Composite state name</td></tr>
       <tr><td><code>SKRect GetContentArea()</code></td><td>Method</td><td>Gets the inner content area for child components (below the title bar).</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -69,7 +69,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
-      <tr><td><code>FinalStateNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>FinalStateNode()</code></td><td>Method</td><td>Label</td></tr>
     </tbody>
   </table>
 </section>
@@ -81,9 +81,9 @@
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
       <tr><td><code>new int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
-      <tr><td><code>ForkNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>ForkNode()</code></td><td>Method</td><td>Fork label</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -95,9 +95,9 @@
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
       <tr><td><code>bool IsDeep</code></td><td>Property</td><td>Gets or sets the is deep.</td></tr>
-      <tr><td><code>HistoryNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>HistoryNode()</code></td><td>Method</td><td>Deep history (H*) or shallow history (H)</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -108,7 +108,7 @@
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
-      <tr><td><code>InitialStateNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>InitialStateNode()</code></td><td>Method</td><td>Label</td></tr>
     </tbody>
   </table>
 </section>
@@ -120,9 +120,9 @@
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
       <tr><td><code>new int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
-      <tr><td><code>JoinNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>JoinNode()</code></td><td>Method</td><td>Join label</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
-      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
@@ -151,7 +151,7 @@
       <tr><td><code>SkiaComponent? Component</code></td><td>Property</td><td>Gets or sets the component.</td></tr>
       <tr><td><code>IConnectionLine? Line</code></td><td>Property</td><td>Gets or sets the line.</td></tr>
       <tr><td><code>string? FixSuggestion</code></td><td>Property</td><td>Gets or sets the fix suggestion.</td></tr>
-      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Gets or sets the to string.</td></tr>
     </tbody>
   </table>
 </section>
@@ -183,7 +183,7 @@
       <tr><td><code>string EntryAction</code></td><td>Property</td><td>Activity executed when the state is entered (UML entry action).</td></tr>
       <tr><td><code>string ExitAction</code></td><td>Property</td><td>Activity executed when the state is exited (UML exit action).</td></tr>
       <tr><td><code>string DoActivity</code></td><td>Property</td><td>Activity executed while the state is active (UML do activity).</td></tr>
-      <tr><td><code>StateNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>StateNode()</code></td><td>Method</td><td>State title</td></tr>
     </tbody>
   </table>
 </section>

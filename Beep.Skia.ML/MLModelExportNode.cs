@@ -11,11 +11,26 @@ namespace Beep.Skia.ML
         private bool _compression = false;
         private bool _includeMetadata = true;
 
+        /// <summary>
+        /// Gets or sets the format.
+        /// </summary>
         public string Format { get => _format; set { var v = value ?? ""; if (_format != v) { _format = v; UpdateNodeProperty("Format", _format); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the output path.
+        /// </summary>
         public string OutputPath { get => _outputPath; set { var v = value ?? ""; if (_outputPath != v) { _outputPath = v; UpdateNodeProperty("OutputPath", _outputPath); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the compression.
+        /// </summary>
         public bool Compression { get => _compression; set { if (_compression != value) { _compression = value; UpdateNodeProperty("Compression", _compression); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the include metadata.
+        /// </summary>
         public bool IncludeMetadata { get => _includeMetadata; set { if (_includeMetadata != value) { _includeMetadata = value; UpdateNodeProperty("IncludeMetadata", _includeMetadata); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Export format
+        /// </summary>
         public MLModelExportNode()
         {
             Width = 140; Height = 80; Name = "Model Export";

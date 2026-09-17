@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class WhileLoopNode : FlowchartControl
     {
         private string _condition = "condition";
+        /// <summary>
+        /// Gets or sets the condition.
+        /// </summary>
         public string Condition
         {
             get => _condition;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Loop condition expression (e.g., 'count &gt; 0', 'hasMore').
+        /// </summary>
         public WhileLoopNode()
         {
             Name = "Flowchart While Loop";

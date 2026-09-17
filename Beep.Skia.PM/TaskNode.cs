@@ -13,6 +13,9 @@ namespace Beep.Skia.PM
         /// The title displayed inside the task card.
         /// </summary>
         private string _title = "Task";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -29,6 +32,9 @@ namespace Beep.Skia.PM
             }
         }
         private int _percentComplete;
+        /// <summary>
+        /// Gets or sets the percent complete.
+        /// </summary>
         public int PercentComplete
         {
             get => _percentComplete;
@@ -46,6 +52,9 @@ namespace Beep.Skia.PM
         }
 
         private int _durationDays = 1;
+        /// <summary>
+        /// Gets or sets the duration days.
+        /// </summary>
         public int DurationDays
         {
             get => _durationDays;
@@ -62,6 +71,9 @@ namespace Beep.Skia.PM
             }
         }
 
+        /// <summary>
+        /// Task title
+        /// </summary>
         public TaskNode()
         {
             Name = "PM Task";

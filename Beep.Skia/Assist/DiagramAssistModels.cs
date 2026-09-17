@@ -24,6 +24,9 @@ namespace Beep.Skia.Assist
     /// </summary>
     public class DiagramSuggestion
     {
+        /// <summary>
+        /// Gets or sets the success.
+        /// </summary>
         public bool Success { get; set; }
 
         /// <summary>Generated diagram, loadable via DrawingManager.LoadFromDto.</summary>
@@ -38,6 +41,9 @@ namespace Beep.Skia.Assist
         /// <summary>Name of the assistant that produced this suggestion.</summary>
         public string Provider { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Gets or sets the failed.
+        /// </summary>
         public static DiagramSuggestion Failed(string provider, string reason)
         {
             var suggestion = new DiagramSuggestion { Success = false, Provider = provider };
@@ -67,11 +73,17 @@ namespace Beep.Skia.Assist
     {
         private readonly List<IDiagramAssistant> _assistants = new List<IDiagramAssistant>();
 
+        /// <summary>
+        /// Initializes a new instance of the DiagramAssistantRegistry class.
+        /// </summary>
         public DiagramAssistantRegistry(bool includeDefaultAssistant = true)
         {
             if (includeDefaultAssistant) _assistants.Add(new RuleBasedDiagramAssistant());
         }
 
+        /// <summary>
+        /// Gets or sets the assistants.
+        /// </summary>
         public IReadOnlyList<IDiagramAssistant> Assistants => _assistants.AsReadOnly();
 
         /// <summary>Adds an assistant at the given priority (0 = first to be tried).</summary>

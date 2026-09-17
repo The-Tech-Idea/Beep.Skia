@@ -9,7 +9,13 @@ namespace Beep.Skia.DFD
     /// </summary>
     public class DFDLevelFrame
     {
+        /// <summary>
+        /// Gets or sets the process name.
+        /// </summary>
         public string ProcessName { get; set; } = "Level 0";
+        /// <summary>
+        /// Gets or sets the diagram.
+        /// </summary>
         public DiagramDto? Diagram { get; set; }
     }
 

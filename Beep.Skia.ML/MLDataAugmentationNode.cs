@@ -12,12 +12,30 @@ namespace Beep.Skia.ML
         private bool _randomRotation = true;
         private bool _randomCrop = false;
 
+        /// <summary>
+        /// Gets or sets the augmentation type.
+        /// </summary>
         public string AugmentationType { get => _augmentationType; set { var v = value ?? ""; if (_augmentationType != v) { _augmentationType = v; UpdateNodeProperty("AugmentationType", _augmentationType); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the intensity.
+        /// </summary>
         public double Intensity { get => _intensity; set { double v = Math.Clamp(value, 0, 1); if (Math.Abs(_intensity - v) > 0.001) { _intensity = v; UpdateNodeProperty("Intensity", _intensity); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the random flip.
+        /// </summary>
         public bool RandomFlip { get => _randomFlip; set { if (_randomFlip != value) { _randomFlip = value; UpdateNodeProperty("RandomFlip", _randomFlip); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the random rotation.
+        /// </summary>
         public bool RandomRotation { get => _randomRotation; set { if (_randomRotation != value) { _randomRotation = value; UpdateNodeProperty("RandomRotation", _randomRotation); InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the random crop.
+        /// </summary>
         public bool RandomCrop { get => _randomCrop; set { if (_randomCrop != value) { _randomCrop = value; UpdateNodeProperty("RandomCrop", _randomCrop); InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Augmentation type
+        /// </summary>
         public MLDataAugmentationNode()
         {
             Width = 155; Height = 85; Name = "Data Augmentation";

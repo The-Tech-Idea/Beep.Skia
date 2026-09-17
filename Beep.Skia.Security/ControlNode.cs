@@ -14,10 +14,22 @@ namespace Beep.Skia.Security
         private ControlType _controlType = ControlType.Preventive;
         private ControlStatus _status = ControlStatus.Planned;
 
+        /// <summary>
+        /// Gets or sets the control name.
+        /// </summary>
         public string ControlName { get => _controlName; set { var v = value ?? string.Empty; if (_controlName != v) { _controlName = v; if (NodeProperties.TryGetValue("ControlName", out var p)) p.ParameterCurrentValue = _controlName; else NodeProperties["ControlName"] = new ParameterInfo { ParameterName = "ControlName", ParameterType = typeof(string), DefaultParameterValue = _controlName, ParameterCurrentValue = _controlName, Description = "Control name" }; Name = _controlName; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the control type.
+        /// </summary>
         public ControlType ControlType { get => _controlType; set { if (_controlType != value) { _controlType = value; if (NodeProperties.TryGetValue("ControlType", out var p)) p.ParameterCurrentValue = _controlType; else NodeProperties["ControlType"] = new ParameterInfo { ParameterName = "ControlType", ParameterType = typeof(ControlType), DefaultParameterValue = _controlType, ParameterCurrentValue = _controlType, Description = "Control type", Choices = Enum.GetNames(typeof(ControlType)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
         public ControlStatus Status { get => _status; set { if (_status != value) { _status = value; if (NodeProperties.TryGetValue("Status", out var p)) p.ParameterCurrentValue = _status; else NodeProperties["Status"] = new ParameterInfo { ParameterName = "Status", ParameterType = typeof(ControlStatus), DefaultParameterValue = _status, ParameterCurrentValue = _status, Description = "Implementation status", Choices = Enum.GetNames(typeof(ControlStatus)) }; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Control name
+        /// </summary>
         public ControlNode()
         {
             Width = 160; Height = 70;

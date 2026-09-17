@@ -10,6 +10,9 @@ namespace Beep.Skia.Flowchart
     public class PreparationNode : FlowchartControl
     {
         private string _label = "Preparation";
+        /// <summary>
+        /// Gets or sets the label.
+        /// </summary>
         public string Label
         {
             get => _label;
@@ -26,6 +29,9 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>
+        /// Text shown inside the preparation hexagon.
+        /// </summary>
         public PreparationNode()
         {
             Name = "Flowchart Preparation";

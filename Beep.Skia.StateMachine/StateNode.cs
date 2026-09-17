@@ -12,6 +12,9 @@ namespace Beep.Skia.StateMachine
     public class StateNode : StateMachineControl
     {
         private string _title = "State";
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -76,6 +79,9 @@ namespace Beep.Skia.StateMachine
             }
         }
 
+        /// <summary>
+        /// State title
+        /// </summary>
         public StateNode()
         {
             Width = 140; Height = 64;

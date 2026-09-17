@@ -14,11 +14,26 @@ namespace Beep.Skia.ECAD
         private SKPoint _start;
         private SKPoint _end;
 
+        /// <summary>
+        /// Gets or sets the width px.
+        /// </summary>
         public float WidthPx { get => _width; set { var v = Math.Max(0.1f, Math.Min(10f, value)); if (Math.Abs(_width - v) > float.Epsilon) { _width = v; if (NodeProperties.TryGetValue("WidthPx", out var p)) p.ParameterCurrentValue = _width; else NodeProperties["WidthPx"] = new ParameterInfo { ParameterName = "WidthPx", ParameterType = typeof(float), DefaultParameterValue = _width, ParameterCurrentValue = _width, Description = "Trace width (px)" }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the layer.
+        /// </summary>
         public Layer Layer { get => _layer; set { if (_layer != value) { _layer = value; if (NodeProperties.TryGetValue("Layer", out var p)) p.ParameterCurrentValue = _layer; else NodeProperties["Layer"] = new ParameterInfo { ParameterName = "Layer", ParameterType = typeof(Layer), DefaultParameterValue = _layer, ParameterCurrentValue = _layer, Description = "Layer", Choices = Enum.GetNames(typeof(Layer)) }; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the start.
+        /// </summary>
         public SKPoint Start { get => _start; set { if (_start != value) { _start = value; InvalidateVisual(); } } }
+        /// <summary>
+        /// Gets or sets the end.
+        /// </summary>
         public SKPoint End { get => _end; set { if (_end != value) { _end = value; InvalidateVisual(); } } }
 
+        /// <summary>
+        /// Trace width (px)
+        /// </summary>
         public ECADTraceNode()
         {
             Width = 100; Height = 30;
