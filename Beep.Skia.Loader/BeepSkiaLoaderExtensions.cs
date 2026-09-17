@@ -1,4 +1,4 @@
-﻿using Beep.Skia;
+using Beep.Skia;
 using System.Reflection;
 using TheTechIdea.Beep.Addin;
 using TheTechIdea.Beep.ConfigUtil;
@@ -10,8 +10,17 @@ using TheTechIdea.Beep.Vis.Modules;
 using Beep.Skia.Model;
 namespace AppExtensionsLoader
 {
-    public class BeepSkiaLoaderExtensions : ILoaderExtention
+    /// <summary>
+    /// BeepDM loader extension that discovers Skia components in loaded assemblies.
+    ///
+    /// The extension subscribes to the process-wide <see cref="AppDomain.AssemblyResolve"/> event,
+    /// so it must be disposed when the host is done with it; otherwise the instance stays alive
+    /// and its resolution logic runs for every assembly load in the process.
+    /// </summary>
+    public class BeepSkiaLoaderExtensions : ILoaderExtention, IDisposable
     {
+        private bool _disposed;
+
         public AppDomain CurrentDomain { get; set; }
 
         public IAssemblyHandler Loader { get; set; }
@@ -25,18 +34,49 @@ namespace AppExtensionsLoader
             CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
         }
 
+        /// <summary>Unsubscribes from the process-wide assembly-resolve event. Safe to call twice.</summary>
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+
+            try
+            {
+                if (CurrentDomain != null)
+                    CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+            }
+            catch { }
+
+            GC.SuppressFinalize(this);
+        }
+
         public IErrorsInfo LoadAllAssembly()
         {
             ErrorsInfo er = new ErrorsInfo();
 
-            List<assemblies_rep> ls = Loader.Assemblies.Where(p => p.FileTypes == FolderFileTypes.ProjectClass).ToList();
+            if (Loader == null)
+            {
+                er.Flag = Errors.Failed;
+                er.Message = "No assembly loader was supplied; nothing to scan.";
+                return er;
+            }
+
+            var assemblies = Loader.Assemblies;
+            if (assemblies == null)
+            {
+                er.Flag = Errors.Failed;
+                er.Message = "The assembly loader has no assembly list.";
+                return er;
+            }
+
+            List<assemblies_rep> ls = assemblies.Where(p => p.FileTypes == FolderFileTypes.ProjectClass).ToList();
             foreach (var item in ls)
             {
                 try
                 {
-                    ScanAssembly(item.DllLib);
+                    if (item?.DllLib != null) ScanAssembly(item.DllLib);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
 
@@ -63,7 +103,7 @@ namespace AppExtensionsLoader
                 {
                     t = asm.GetTypes();
                 }
-                catch (Exception ex2)
+                catch (Exception)
                 {
                     //DMEEditor.AddLogMessage("Failed", $"Could not get types for {asm.GetName().ToString()}", DateTime.Now, -1, asm.GetName().ToString(), Errors.Failed);
                     try
@@ -71,7 +111,7 @@ namespace AppExtensionsLoader
                         //DMEEditor.AddLogMessage("Try", $"Trying to get exported types for {asm.GetName().ToString()}", DateTime.Now, -1, asm.GetName().ToString(), Errors.Ok);
                         t = asm.GetExportedTypes();
                     }
-                    catch (Exception ex3)
+                    catch (Exception)
                     {
                         t = null;
                         //DMEEditor.AddLogMessage("Failed", $"Could not get types for {asm.GetName().ToString()}", DateTime.Now, -1, asm.GetName().ToString(), Errors.Failed);
@@ -100,8 +140,10 @@ namespace AppExtensionsLoader
                        
                         if (type.ImplementedInterfaces.Contains(typeof(SkiaComponent)))
                         {
-
-                            Loader.ConfigEditor.AppComponents.Add(Loader.GetAssemblyClassDefinition(type, "SkiaComponent"));
+                            // Without a loader there is no configuration editor to register with.
+                            var configEditor = Loader?.ConfigEditor;
+                            if (configEditor?.AppComponents != null)
+                                configEditor.AppComponents.Add(Loader.GetAssemblyClassDefinition(type, "SkiaComponent"));
                         }
                        
 
@@ -119,7 +161,7 @@ namespace AppExtensionsLoader
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //DMEEditor.AddLogMessage("Failed", $"Could not get Any types for {asm.GetName().ToString()}" , DateTime.Now, -1, asm.GetName().ToString(), Errors.Failed);
             };
@@ -131,9 +173,28 @@ namespace AppExtensionsLoader
         #endregion "Class Extractors"
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
+            // This handler runs for every unresolved assembly in the process, so it must never throw.
+            try
+            {
+                return ResolveAssembly(args);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private Assembly ResolveAssembly(ResolveEventArgs args)
+        {
+            if (args == null || string.IsNullOrWhiteSpace(args.Name)) return null;
+
             // Ignore missing resources
             if (args.Name.Contains(".resources"))
                 return null;
+
+            // Without a loader (or its configuration) there is nothing to resolve from.
+            if (Loader == null) return null;
+
             string filename = args.Name.Split(',')[0] + ".dll".ToLower();
             string filenamewo = args.Name.Split(',')[0];
             // check for assemblies already loaded
@@ -141,7 +202,7 @@ namespace AppExtensionsLoader
             Assembly assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName.StartsWith(filenamewo));
             if (assembly == null)
             {
-                assemblies_rep s = Loader.Assemblies.FirstOrDefault(a => a.DllLib.FullName.StartsWith(filenamewo));
+                assemblies_rep s = Loader.Assemblies?.FirstOrDefault(a => a.DllLib != null && a.DllLib.FullName.StartsWith(filenamewo));
                 if (s != null)
                 {
                     assembly = s.DllLib;
@@ -150,7 +211,11 @@ namespace AppExtensionsLoader
             }
             if (assembly != null)
                 return assembly;
-            foreach (var moduleDir in Loader.ConfigEditor.Config.Folders.Where(c => c.FolderFilesType == FolderFileTypes.OtherDLL))
+
+            var folders = Loader.ConfigEditor?.Config?.Folders;
+            if (folders == null) return null;
+
+            foreach (var moduleDir in folders.Where(c => c.FolderFilesType == FolderFileTypes.OtherDLL))
             {
                 var di = new DirectoryInfo(moduleDir.FolderPath);
                 var module = di.GetFiles().FirstOrDefault(i => i.Name == filename);
@@ -191,9 +256,9 @@ namespace AppExtensionsLoader
             ErrorsInfo er = new ErrorsInfo();
             try
             {
-
-                LoadAllAssembly();
-                er.Flag = Errors.Ok;
+                var result = LoadAllAssembly();
+                er.Flag = result?.Flag ?? Errors.Failed;
+                er.Message = result?.Message;
             }
             catch (Exception ex)
             {

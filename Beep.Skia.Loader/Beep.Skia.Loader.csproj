@@ -1,17 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>Latest</LangVersion>
+    <Description>BeepDM plugin-loader integration that discovers Skia components in loaded assemblies</Description>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>Latest</LangVersion>
+    <Description>BeepDM plugin-loader integration that discovers Skia components in loaded assemblies</Description>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>The Tech Idea</Authors>
 		<Company>The Tech Idea</Company>
 		<Copyright>2022</Copyright>
-		<PackageProjectUrl>https://github.com/The-Tech-Idea/</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/The-Tech-Idea/Beep.Skia</PackageProjectUrl>
 		<PackageIcon>SimpleODM.png</PackageIcon>
-		<RepositoryUrl>https://github.com/The-Tech-Idea/</RepositoryUrl>
+		<RepositoryUrl>https://github.com/The-Tech-Idea/Beep.Skia</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 	<ItemGroup>
@@ -28,8 +30,11 @@
 	</Target>
   <ItemGroup>
     <PackageReference Include="SkiaSharp" Version="4.150.1" />
-    <PackageReference Include="TheTechIdea.Beep.AssemblyLoader" Version="2.0.10" />
+    <PackageReference Include="TheTechIdea.Beep.AssemblyLoader" Version="2.0.24" />
     <PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="3.1.1" />
+    <!-- Transitive NuGet client packages arrive at 7.3.0 via the assembly loader; pin the patched release (GHSA-g4vj-cjjj-v7hg). -->
+    <PackageReference Include="NuGet.Packaging" Version="7.3.1" />
+    <PackageReference Include="NuGet.Protocol" Version="7.3.1" />
   </ItemGroup>
 
   <ItemGroup>
