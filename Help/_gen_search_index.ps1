@@ -3,7 +3,7 @@
 $ErrorActionPreference = 'Stop'
 $utf8 = [System.Text.UTF8Encoding]::new($false)
 $help = $PSScriptRoot
-$files = Get-ChildItem -Recurse $help -File -Filter *.html | Where-Object { $_.Name -ne 'index.html' } | Sort-Object FullName
+$files = Get-ChildItem -Recurse $help -File -Filter *.html | Where-Object { $_.Name -ne 'index.html' -and $_.FullName -notmatch '\\reference\\.+\\' } | Sort-Object FullName
 
 $entries = New-Object System.Collections.Generic.List[string]
 

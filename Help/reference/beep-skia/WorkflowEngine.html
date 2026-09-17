@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkflowEngine | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>WorkflowEngine</span></nav>
+<div class="page-header"><h1>WorkflowEngine <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>Basic implementation of IWorkflowEngine that executes automation node graphs. Traverses nodes in dependency order (topological sort via connection lines), calling each IAutomationNode's InitializeAsync/ValidateAsync/ExecuteAsync in sequence.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>WorkflowEngine()</code></td><td>Method</td><td>Initializes a new instance of the WorkflowEngine class.</td></tr>
+    <tr><td><code>string EngineId</code></td><td>Property</td><td>Gets or sets the engine id.</td></tr>
+    <tr><td><code>bool IsRunning</code></td><td>Property</td><td>Gets or sets the is running.</td></tr>
+    <tr><td><code>IReadOnlyCollection&lt;WorkflowDefinition&gt; LoadedWorkflows</code></td><td>Property</td><td>Gets or sets the loaded workflows.</td></tr>
+    <tr><td><code>IReadOnlyCollection&lt;WorkflowExecution&gt; ActiveExecutions</code></td><td>Property</td><td>Gets or sets the active executions.</td></tr>
+    <tr><td><code>event EventHandler&lt;WorkflowExecutionEventArgs&gt; WorkflowStarted</code></td><td>Event</td><td>Raised when workflow started changes.</td></tr>
+    <tr><td><code>event EventHandler&lt;WorkflowExecutionEventArgs&gt; WorkflowCompleted</code></td><td>Event</td><td>Raised when workflow completed changes.</td></tr>
+    <tr><td><code>event EventHandler&lt;WorkflowExecutionEventArgs&gt; WorkflowFailed</code></td><td>Event</td><td>Raised when workflow failed changes.</td></tr>
+    <tr><td><code>event EventHandler&lt;WorkflowExecutionEventArgs&gt; WorkflowPaused</code></td><td>Event</td><td>Raised when workflow paused changes.</td></tr>
+    <tr><td><code>event EventHandler&lt;WorkflowExecutionEventArgs&gt; WorkflowResumed</code></td><td>Event</td><td>Raised when workflow resumed changes.</td></tr>
+    <tr><td><code>event EventHandler&lt;WorkflowExecutionEventArgs&gt; WorkflowCancelled</code></td><td>Event</td><td>Raised when workflow cancelled changes.</td></tr>
+    <tr><td><code>Task StartAsync(CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the start async.</td></tr>
+    <tr><td><code>Task StopAsync(bool graceful = true, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the stop async.</td></tr>
+    <tr><td><code>Task&lt;bool&gt; LoadWorkflowAsync(WorkflowDefinition workflow, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the load workflow async.</td></tr>
+    <tr><td><code>Task&lt;bool&gt; UnloadWorkflowAsync(string workflowId, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the unload workflow async.</td></tr>
+    <tr><td><code>Task&lt;WorkflowResult&gt; ExecuteWorkflowAsync( string workflowId, Dictionary&lt;string, object&gt; inputData = null, ExecutionPriority priority = ExecutionPriority.Normal, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the execute workflow async.</td></tr>
+    <tr><td><code>async Task&lt;WorkflowResult&gt; ExecuteWorkflowAsync( string workflowId, ExecutionContext context, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the execute workflow async.</td></tr>
+    <tr><td><code>Task&lt;bool&gt; PauseExecutionAsync(string executionId, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the pause execution async.</td></tr>
+    <tr><td><code>Task&lt;bool&gt; ResumeExecutionAsync(string executionId, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the resume execution async.</td></tr>
+    <tr><td><code>Task&lt;bool&gt; CancelExecutionAsync(string executionId, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the cancel execution async.</td></tr>
+    <tr><td><code>WorkflowExecution GetExecutionStatus(string executionId)</code></td><td>Method</td><td>Gets or sets the get execution status.</td></tr>
+    <tr><td><code>Task&lt;IEnumerable&lt;WorkflowExecution&gt;&gt; GetExecutionHistoryAsync( string workflowId, int limit = 100, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the get execution history async.</td></tr>
+    <tr><td><code>async Task&lt;ValidationResult&gt; ValidateWorkflowAsync(WorkflowDefinition workflow, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Gets or sets the validate workflow async.</td></tr>
+    <tr><td><code>void RegisterNodeType(string nodeType, Func&lt;IAutomationNode&gt; factory)</code></td><td>Method</td><td>Gets or sets the register node type.</td></tr>
+    <tr><td><code>bool UnregisterNodeType(string nodeType)</code></td><td>Method</td><td>Gets or sets the unregister node type.</td></tr>
+    <tr><td><code>IEnumerable&lt;string&gt; GetRegisteredNodeTypes()</code></td><td>Method</td><td>Gets or sets the get registered node types.</td></tr>
+    <tr><td><code>void RegisterDefaults()</code></td><td>Method</td><td>Gets or sets the register defaults.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

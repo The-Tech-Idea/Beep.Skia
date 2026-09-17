@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkbox | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>Checkbox</span></nav>
+<div class="page-header"><h1>Checkbox <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>A Material Design 3.0 Checkbox component that allows users to select one or more items from a list, or turn an item on or off.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>CheckState CheckState</code></td><td>Property</td><td>Gets or sets the current check state of the checkbox.</td></tr>
+    <tr><td><code>new bool IsEnabled</code></td><td>Property</td><td>Gets or sets whether the checkbox is enabled.</td></tr>
+    <tr><td><code>bool IsChecked</code></td><td>Property</td><td>Gets or sets whether the checkbox is checked (convenience property).</td></tr>
+    <tr><td><code>bool IsIndeterminate</code></td><td>Property</td><td>Gets or sets whether the checkbox is indeterminate.</td></tr>
+    <tr><td><code>event EventHandler&lt;EventArgs&gt; CheckStateChanged</code></td><td>Event</td><td>Occurs when the check state of the checkbox changes.</td></tr>
+    <tr><td><code>Checkbox()</code></td><td>Method</td><td>Initializes a new instance of the Checkbox class.</td></tr>
+    <tr><td><code>Checkbox(CheckState initialState) : this()</code></td><td>Method</td><td>Initializes a new instance of the Checkbox class with the specified initial state. The initial check state of the checkbox.</td></tr>
+    <tr><td><code>Checkbox(bool isChecked) : this()</code></td><td>Method</td><td>Initializes a new instance of the Checkbox class with the specified initial checked state. Whether the checkbox should be initially checked.</td></tr>
+    <tr><td><code>void ToggleState()</code></td><td>Method</td><td>Toggles the checkbox between checked and unchecked states.</td></tr>
+    <tr><td><code>void NextState()</code></td><td>Method</td><td>Sets the checkbox to the next state in the cycle.</td></tr>
+    <tr><td><code>void PreviousState()</code></td><td>Method</td><td>Sets the checkbox to the previous state in the cycle.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

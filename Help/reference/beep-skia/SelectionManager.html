@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SelectionManager | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>SelectionManager</span></nav>
+<div class="page-header"><h1>SelectionManager <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>Helper class for managing component selection in the drawing manager.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>event EventHandler SelectionChanged</code></td><td>Event</td><td>Occurs when the selection changes.</td></tr>
+    <tr><td><code>SelectionManager(DrawingManager drawingManager)</code></td><td>Method</td><td>Initializes a new instance of the SelectionManager class. The drawing manager that owns this selection manager.</td></tr>
+    <tr><td><code>void SelectComponent(SkiaComponent component, bool addToSelection = false)</code></td><td>Method</td><td>Selects a component. The component to select. Whether to add to existing selection.</td></tr>
+    <tr><td><code>void ClearSelection()</code></td><td>Method</td><td>Clears the current selection.</td></tr>
+    <tr><td><code>void SelectComponentsInRect(SKRect selectionRect, IEnumerable&lt;SkiaComponent&gt; components, bool addToSelection = false)</code></td><td>Method</td><td>Selects all components within the specified rectangle. The selection rectangle. The components to test against. Whether to add to existing selection.</td></tr>
+    <tr><td><code>void RemoveFromSelection(SkiaComponent component)</code></td><td>Method</td><td>Removes a component from the selection. The component to remove.</td></tr>
+    <tr><td><code>void SelectLine(IConnectionLine line, bool addToSelection = false)</code></td><td>Method</td><td>Selects a connection line.</td></tr>
+    <tr><td><code>void RemoveFromSelection(IConnectionLine line)</code></td><td>Method</td><td>Removes a connection line from the selection.</td></tr>
+    <tr><td><code>void SelectConnectionPoint(IConnectionPoint point, bool addToSelection = false)</code></td><td>Method</td><td>Selects a connection point.</td></tr>
+    <tr><td><code>void RemoveFromSelection(IConnectionPoint point)</code></td><td>Method</td><td>Removes a connection point from the selection.</td></tr>
+    <tr><td><code>bool IsSelected(SkiaComponent component)</code></td><td>Method</td><td>Gets a value indicating whether a component is selected. The component to test. true if the component is selected; otherwise, false.</td></tr>
+    <tr><td><code>bool IsSelected(IConnectionLine line)</code></td><td>Method</td><td>Checks if a line is currently selected.</td></tr>
+    <tr><td><code>bool IsSelected(IConnectionPoint point)</code></td><td>Method</td><td>Checks if a connection point is currently selected.</td></tr>
+    <tr><td><code>void AddToSelection(SkiaComponent component)</code></td><td>Method</td><td>Adds a component to the current selection without clearing existing selection. The component to add.</td></tr>
+    <tr><td><code>void SelectAll()</code></td><td>Method</td><td>Selects all non-static components in the diagram.</td></tr>
+    <tr><td><code>SkiaComponent SelectNext(bool forward = true)</code></td><td>Method</td><td>Moves selection to the next (or previous) component in reading order (top-to-bottom, then left-to-right), wrapping around. Returns the newly selected component.</td></tr>
+    <tr><td><code>SKRect GetSelectionBounds()</code></td><td>Method</td><td>Gets the bounds of all selected components combined. The combined bounds rectangle.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

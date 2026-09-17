@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ParameterInfo | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-model.html">Beep.Skia.Model</a><span>&rsaquo;</span> <span>ParameterInfo</span></nav>
+<div class="page-header"><h1>ParameterInfo <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia.Model &mdash; class</p></div>
+<p>Describes a configurable parameter for a component/node, including type and values.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>string ParameterName</code></td><td>Property</td><td>Logical parameter name (unique within the owning component's Parameters dictionary key).</td></tr>
+    <tr><td><code>Type ParameterType</code></td><td>Property</td><td>CLR type of the parameter (e.g., typeof(string), typeof(int), typeof(bool), enum types, etc.). If null, the editor will infer type based on the current/default value runtime type.</td></tr>
+    <tr><td><code>object DefaultParameterValue</code></td><td>Property</td><td>Default value used when no current value has been set.</td></tr>
+    <tr><td><code>object ParameterCurrentValue</code></td><td>Property</td><td>The current value (user-edited) for this parameter.</td></tr>
+    <tr><td><code>string Description</code></td><td>Property</td><td>Optional description/help for UI.</td></tr>
+    <tr><td><code>string[] Choices</code></td><td>Property</td><td>Optional list of allowed string choices for this parameter. When provided, the editor will render a dropdown even if ParameterType is string.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-model.html">All types in Beep.Skia.Model</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

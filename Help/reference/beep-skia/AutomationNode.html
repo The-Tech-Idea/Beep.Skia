@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutomationNode | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>AutomationNode</span></nav>
+<div class="page-header"><h1>AutomationNode <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>Base class for automation nodes that provides both visual representation and automation execution capabilities. Combines SkiaComponent visual behavior with IAutomationNode automation interface.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>new string Id</code></td><td>Property</td><td>Gets the unique identifier for this automation node.</td></tr>
+    <tr><td><code>new string Name</code></td><td>Property</td><td>Gets the display name of this automation node.</td></tr>
+    <tr><td><code>abstract string Description</code></td><td>Property</td><td>Gets the description of what this automation node does.</td></tr>
+    <tr><td><code>abstract NodeType NodeType</code></td><td>Property</td><td>Gets the type of this automation node.</td></tr>
+    <tr><td><code>NodeStatus Status</code></td><td>Property</td><td>Gets the current status of this automation node.</td></tr>
+    <tr><td><code>void SetExecutionStatus(NodeStatus status)</code></td><td>Method</td><td>Sets the execution status from a host (used for live workflow run visualization). The node status to display.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; Configuration</code></td><td>Property</td><td>Gets or sets the configuration parameters for this node.</td></tr>
+    <tr><td><code>IList&lt;IConnectionPoint&gt; InputConnections</code></td><td>Property</td><td>Gets the input connection points for this automation node. Backed by the component's canvas connection points so serialization and the drawing manager see exactly the ports the automation runtime uses.</td></tr>
+    <tr><td><code>IList&lt;IConnectionPoint&gt; OutputConnections</code></td><td>Property</td><td>Gets the output connection points for this automation node. Backed by the component's canvas connection points so serialization and the drawing manager see exactly the ports the automation runtime uses.</td></tr>
+    <tr><td><code>new bool IsEnabled</code></td><td>Property</td><td>Gets a value indicating whether this node is currently enabled for execution.</td></tr>
+    <tr><td><code>event EventHandler&lt;NodeExecutionEventArgs&gt; StatusChanged</code></td><td>Event</td><td>Event raised when the node's execution status changes.</td></tr>
+    <tr><td><code>event EventHandler&lt;NodeErrorEventArgs&gt; ErrorOccurred</code></td><td>Event</td><td>Event raised when the node encounters an error during execution.</td></tr>
+    <tr><td><code>abstract Task&lt;bool&gt; InitializeAsync(Dictionary&lt;string, object&gt; configuration, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Initializes the automation node with the specified configuration. The configuration parameters for the node. Token to cancel the initialization. A task representing the initialization operation.</td></tr>
+    <tr><td><code>abstract Task&lt;ValidationResult&gt; ValidateAsync(Model.ExecutionContext inputData, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Validates the current configuration and input data for this node. The input data to validate. Token to cancel the validation. A task containing the validation result.</td></tr>
+    <tr><td><code>abstract Task&lt;NodeResult&gt; ExecuteAsync(Model.ExecutionContext context, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Executes the automation node's logic with the provided execution context. The execution context containing input data and workflow state. Token to cancel the execution. A task containing the execution result.</td></tr>
+    <tr><td><code>abstract Dictionary&lt;string, object&gt; GetInputSchema()</code></td><td>Method</td><td>Gets the schema defining the input parameters this node expects. A dictionary describing the input schema.</td></tr>
+    <tr><td><code>abstract Dictionary&lt;string, object&gt; GetOutputSchema()</code></td><td>Method</td><td>Gets the schema defining the output parameters this node produces. A dictionary describing the output schema.</td></tr>
+    <tr><td><code>virtual Task ResetAsync()</code></td><td>Method</td><td>Resets the node to its initial state, clearing any cached data or temporary state.</td></tr>
+    <tr><td><code>virtual void ApplyNodeProperties()</code></td><td>Method</td><td>Applies values from NodeProperties back to this node's public settable properties (by name) and updates Configuration. Name matching is case-insensitive.</td></tr>
+    <tr><td><code>void DrawNode(SKCanvas canvas, DrawingContext context)</code></td><td>Method</td><td>Public method to draw the node (used by WorkflowCanvas). The canvas to draw on. The drawing context.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

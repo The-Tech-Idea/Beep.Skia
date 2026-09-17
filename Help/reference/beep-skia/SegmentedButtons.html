@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SegmentedButtons | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>SegmentedButtons</span></nav>
+<div class="page-header"><h1>SegmentedButtons <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>A Material Design 3.0 Segmented Buttons component that allows users to select one or more options from a set.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>SegmentedButtonSelectionMode SelectionMode</code></td><td>Property</td><td>Gets or sets the selection mode for the segmented buttons.</td></tr>
+    <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of the segmented buttons container.</td></tr>
+    <tr><td><code>SKColor SelectedBackgroundColor</code></td><td>Property</td><td>Gets or sets the background color for selected segments.</td></tr>
+    <tr><td><code>SKColor DividerColor</code></td><td>Property</td><td>Gets or sets the color of the dividers between segments.</td></tr>
+    <tr><td><code>SKColor SelectedTextColor</code></td><td>Property</td><td>Gets or sets the text color for selected segments.</td></tr>
+    <tr><td><code>SKColor UnselectedTextColor</code></td><td>Property</td><td>Gets or sets the text color for unselected segments.</td></tr>
+    <tr><td><code>float CornerRadius</code></td><td>Property</td><td>Gets or sets the corner radius of the segmented buttons container.</td></tr>
+    <tr><td><code>float DividerWidth</code></td><td>Property</td><td>Gets or sets the width of the dividers between segments.</td></tr>
+    <tr><td><code>float SegmentHeight</code></td><td>Property</td><td>Gets or sets the height of each segment.</td></tr>
+    <tr><td><code>bool ShowDividers</code></td><td>Property</td><td>Gets or sets whether to show dividers between segments.</td></tr>
+    <tr><td><code>IReadOnlyList&lt;SegmentedButtonItem&gt; Items</code></td><td>Property</td><td>Gets the collection of segments in the segmented buttons control.</td></tr>
+    <tr><td><code>IEnumerable&lt;int&gt; SelectedIndices</code></td><td>Property</td><td>Gets the indices of currently selected segments.</td></tr>
+    <tr><td><code>event EventHandler&lt;SelectionChangedEventArgs&gt; SelectionChanged</code></td><td>Event</td><td>Occurs when the selection changes.</td></tr>
+    <tr><td><code>SegmentedButtons()</code></td><td>Method</td><td>Initializes a new instance of the SegmentedButtons class.</td></tr>
+    <tr><td><code>SegmentedButtonItem AddSegment(string text, string icon = null)</code></td><td>Method</td><td>Adds a new segment to the segmented buttons control. The text to display on the segment. The icon for the segment (optional). The created SegmentedButtonItem.</td></tr>
+    <tr><td><code>bool RemoveSegment(SegmentedButtonItem item)</code></td><td>Method</td><td>Removes a segment from the segmented buttons control. The segment to remove. True if the segment was removed successfully.</td></tr>
+    <tr><td><code>bool RemoveSegmentAt(int index)</code></td><td>Method</td><td>Removes a segment at the specified index. The index of the segment to remove. True if the segment was removed successfully.</td></tr>
+    <tr><td><code>void ClearSegments()</code></td><td>Method</td><td>Clears all segments from the segmented buttons control.</td></tr>
+    <tr><td><code>void SelectSegment(int index)</code></td><td>Method</td><td>Selects a segment at the specified index. The index of the segment to select.</td></tr>
+    <tr><td><code>void DeselectSegment(int index)</code></td><td>Method</td><td>Deselects a segment at the specified index. The index of the segment to deselect.</td></tr>
+    <tr><td><code>void ToggleSegment(int index)</code></td><td>Method</td><td>Toggles the selection state of a segment at the specified index. The index of the segment to toggle.</td></tr>
+    <tr><td><code>static SegmentedButtons Create(params string[] segments)</code></td><td>Method</td><td>Creates a new SegmentedButtons instance with the specified segments. The text for each segment. A new SegmentedButtons instance.</td></tr>
+    <tr><td><code>static SegmentedButtons CreateSingleSelect(params string[] segments)</code></td><td>Method</td><td>Creates a new SegmentedButtons instance with single selection mode. The text for each segment. A new SegmentedButtons instance.</td></tr>
+    <tr><td><code>static SegmentedButtons CreateMultiSelect(params string[] segments)</code></td><td>Method</td><td>Creates a new SegmentedButtons instance with multiple selection mode. The text for each segment. A new SegmentedButtons instance.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

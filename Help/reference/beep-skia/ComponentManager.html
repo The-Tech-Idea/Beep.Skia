@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ComponentManager | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>ComponentManager</span></nav>
+<div class="page-header"><h1>ComponentManager <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>Manages the lifecycle, rendering, and interaction of Skia components. This is the central coordinator for the Skia component framework.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>SKCanvas Canvas</code></td><td>Property</td><td>Gets or sets the Skia canvas used for rendering.</td></tr>
+    <tr><td><code>DrawingContext DrawingContext</code></td><td>Property</td><td>Gets the current drawing context.</td></tr>
+    <tr><td><code>InteractionContext InteractionContext</code></td><td>Property</td><td>Gets the current interaction context.</td></tr>
+    <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of the canvas.</td></tr>
+    <tr><td><code>bool AutoClearCanvas</code></td><td>Property</td><td>Gets or sets a value indicating whether the component manager should automatically clear the canvas before rendering.</td></tr>
+    <tr><td><code>event EventHandler CanvasChanged</code></td><td>Event</td><td>Occurs when the canvas is changed.</td></tr>
+    <tr><td><code>event EventHandler Rendering</code></td><td>Event</td><td>Occurs before rendering begins.</td></tr>
+    <tr><td><code>event EventHandler Rendered</code></td><td>Event</td><td>Occurs after rendering is complete.</td></tr>
+    <tr><td><code>event EventHandler&lt;ComponentEventArgs&gt; ComponentAdded</code></td><td>Event</td><td>Occurs when a component is added to the manager.</td></tr>
+    <tr><td><code>event EventHandler&lt;ComponentEventArgs&gt; ComponentRemoved</code></td><td>Event</td><td>Occurs when a component is removed from the manager.</td></tr>
+    <tr><td><code>ComponentManager()</code></td><td>Method</td><td>Initializes a new instance of the ComponentManager class.</td></tr>
+    <tr><td><code>ComponentManager(SKCanvas canvas) : this()</code></td><td>Method</td><td>Initializes a new instance of the ComponentManager class with the specified canvas. The Skia canvas to use for rendering.</td></tr>
+    <tr><td><code>void AddComponent(SkiaComponent component)</code></td><td>Method</td><td>Adds a component to the manager. The component to add.</td></tr>
+    <tr><td><code>void RemoveComponent(SkiaComponent component)</code></td><td>Method</td><td>Removes a component from the manager. The component to remove.</td></tr>
+    <tr><td><code>IReadOnlyCollection&lt;SkiaComponent&gt; GetComponents()</code></td><td>Method</td><td>Gets all components managed by this manager. A read-only collection of components.</td></tr>
+    <tr><td><code>SkiaComponent FindComponent(string name)</code></td><td>Method</td><td>Finds a component by name. The name of the component to find. The component with the specified name, or null if not found.</td></tr>
+    <tr><td><code>IEnumerable&lt;T&gt; FindComponents&lt;T&gt;() where T : SkiaComponent</code></td><td>Method</td><td>Finds components of the specified type. The type of components to find. A collection of components of the specified type.</td></tr>
+    <tr><td><code>void Update()</code></td><td>Method</td><td>Updates all managed components.</td></tr>
+    <tr><td><code>void Render()</code></td><td>Method</td><td>Renders all managed components to the canvas.</td></tr>
+    <tr><td><code>bool HandleMouseDown(SKPoint point, int button = 0, int modifiers = 0)</code></td><td>Method</td><td>Handles mouse down events. The mouse position. The mouse button that was pressed. Modifier keys that were pressed. true if the event was handled; otherwise, false.</td></tr>
+    <tr><td><code>bool HandleMouseMove(SKPoint point, int modifiers = 0)</code></td><td>Method</td><td>Handles mouse move events. The mouse position. Modifier keys that were pressed. true if the event was handled; otherwise, false.</td></tr>
+    <tr><td><code>bool HandleMouseUp(SKPoint point, int button = 0, int modifiers = 0)</code></td><td>Method</td><td>Handles mouse up events. The mouse position. The mouse button that was released. Modifier keys that were pressed. true if the event was handled; otherwise, false.</td></tr>
+    <tr><td><code>void Dispose()</code></td><td>Method</td><td>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

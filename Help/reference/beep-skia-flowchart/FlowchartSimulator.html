@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowchartSimulator | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-flowchart.html">Flowchart family</a><span>&rsaquo;</span> <span>FlowchartSimulator</span></nav>
+<div class="page-header"><h1>FlowchartSimulator <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Flowchart family &mdash; class</p></div>
+<p>Step-through execution of a flowchart. The simulator walks connection lines in port order; when a node has multiple outgoing edges (decisions, loops, forks) the optional BranchSelector chooses the branch (defaults to the first edge).</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>SkiaComponent? CurrentNode</code></td><td>Property</td><td>Gets the node the simulation is currently on.</td></tr>
+    <tr><td><code>bool IsFinished</code></td><td>Property</td><td>Gets a value indicating whether the simulation reached a terminal node.</td></tr>
+    <tr><td><code>int StepCount</code></td><td>Property</td><td>Gets the number of steps executed since the last reset.</td></tr>
+    <tr><td><code>List&lt;string&gt; Trace</code></td><td>Property</td><td>Gets the execution trace (node labels in visit order).</td></tr>
+    <tr><td><code>Func&lt;SkiaComponent, IReadOnlyList&lt;SimulationEdge&gt;, SimulationEdge?&gt;? BranchSelector</code></td><td>Property</td><td>Optional branch selector for nodes with multiple outgoing edges. Return null to fall back to the first edge.</td></tr>
+    <tr><td><code>event EventHandler&lt;SimulationStepEventArgs&gt;? Stepped</code></td><td>Event</td><td>Raised after each step.</td></tr>
+    <tr><td><code>void Reset(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Resets the simulation to the entry node of the given diagram.</td></tr>
+    <tr><td><code>bool Step()</code></td><td>Method</td><td>Advances the simulation by one node. Returns false when already finished.</td></tr>
+    <tr><td><code>bool Run(int maxSteps = 1000)</code></td><td>Method</td><td>Runs until finished or the step cap is reached. True when the simulation finished naturally; false when capped.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-flowchart.html">All types in Flowchart family</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

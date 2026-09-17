@@ -60,10 +60,10 @@
   <li><a href="#type-writemode"><code>WriteMode</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
 </ul>
 <section class="section" id="type-cdcmethod">
-  <h2>CdcMethod <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-etl/CdcMethod.html">CdcMethod</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
 </section>
 <section class="section" id="type-columnprofile">
-  <h2>ColumnProfile <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ColumnProfile.html">ColumnProfile</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Statistical profile of a single column.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -86,7 +86,7 @@
   </table>
 </section>
 <section class="section" id="type-datapreviewformatter">
-  <h2>DataPreviewFormatter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/DataPreviewFormatter.html">DataPreviewFormatter</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Formats rows (dictionaries) as an aligned plain-text table for data previews.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -96,7 +96,7 @@
   </table>
 </section>
 <section class="section" id="type-dataprofile">
-  <h2>DataProfile <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/DataProfile.html">DataProfile</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Profile of a dataset: row count and per-column statistics.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -108,7 +108,7 @@
   </table>
 </section>
 <section class="section" id="type-dataprofiler">
-  <h2>DataProfiler <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/DataProfiler.html">DataProfiler</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Computes column-level statistics (counts, nulls, distinct, min/max, average, string lengths) over a set of rows represented as dictionaries.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -118,10 +118,10 @@
   </table>
 </section>
 <section class="section" id="type-destinationkind">
-  <h2>DestinationKind <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-etl/DestinationKind.html">DestinationKind</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
 </section>
 <section class="section" id="type-etlaggregate">
-  <h2>ETLAggregate <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLAggregate.html">ETLAggregate</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Aggregate component that represents data aggregation operations in ETL workflows. Displays as an octagon shape indicating data summarization/grouping.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -131,31 +131,31 @@
   </table>
 </section>
 <section class="section" id="type-etlcdcnode">
-  <h2>ETLCdcNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLCdcNode.html">ETLCdcNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>CdcMethod Method</code></td><td>Property</td><td>Gets or sets the method.</td></tr>
       <tr><td><code>string TrackingColumn</code></td><td>Property</td><td>Gets or sets the tracking column.</td></tr>
       <tr><td><code>string ChangeIndicator</code></td><td>Property</td><td>Gets or sets the change indicator.</td></tr>
-      <tr><td><code>ETLCdcNode()</code></td><td>Method</td><td>CDC detection method</td></tr>
+      <tr><td><code>ETLCdcNode()</code></td><td>Method</td><td>Initializes a new instance of the ETLCdcNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etlconditionalsplit">
-  <h2>ETLConditionalSplit <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLConditionalSplit.html">ETLConditionalSplit</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Conditional Split component that routes rows to multiple outputs based on conditions. Displays as a diamond with multiple output ports. Evaluates conditions in order; first match wins. Unmatched rows go to default output.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Conditions</code></td><td>Property</td><td>Split conditions (JSON array of SplitCondition)</td></tr>
       <tr><td><code>bool HasDefaultOutput</code></td><td>Property</td><td>Include default output for unmatched rows</td></tr>
-      <tr><td><code>ETLConditionalSplit()</code></td><td>Method</td><td>Split conditions (JSON array of SplitCondition)</td></tr>
+      <tr><td><code>ETLConditionalSplit()</code></td><td>Method</td><td>Initializes a new instance of the ETLConditionalSplit class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etlcontrol">
-  <h2>ETLControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLControl.html">ETLControl</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Base visual for ETL nodes: rounded rectangle with a header/title and optional subtitle. Provides helpers to create and maintain input/output connection points along the left/right edges.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -168,19 +168,19 @@
   </table>
 </section>
 <section class="section" id="type-etlderivedcolumn">
-  <h2>ETLDerivedColumn <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLDerivedColumn.html">ETLDerivedColumn</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Derived Column component for adding calculated columns to the data flow. Displays as a rectangle with expression builder support. Supports multiple derived columns with expressions using built-in function library.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string DerivedColumns</code></td><td>Property</td><td>Derived columns (JSON array of DerivedColumnDefinition)</td></tr>
       <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Output schema (JSON array of ColumnDefinition)</td></tr>
-      <tr><td><code>ETLDerivedColumn()</code></td><td>Method</td><td>Derived columns (JSON array of DerivedColumnDefinition)</td></tr>
+      <tr><td><code>ETLDerivedColumn()</code></td><td>Method</td><td>Initializes a new instance of the ETLDerivedColumn class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etldestination">
-  <h2>ETLDestination <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLDestination.html">ETLDestination</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Destination component that represents data destinations in ETL workflows. Displays as a funnel shape indicating data output/storage.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -190,7 +190,7 @@
   </table>
 </section>
 <section class="section" id="type-etlfilter">
-  <h2>ETLFilter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLFilter.html">ETLFilter</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Filter component that represents data filtering operations in ETL workflows. Displays as a diamond shape indicating conditional data filtering.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -200,7 +200,7 @@
   </table>
 </section>
 <section class="section" id="type-etlfuzzylookupnode">
-  <h2>ETLFuzzyLookupNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLFuzzyLookupNode.html">ETLFuzzyLookupNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
@@ -208,12 +208,12 @@
       <tr><td><code>double Threshold</code></td><td>Property</td><td>Gets or sets the threshold.</td></tr>
       <tr><td><code>string MatchColumn</code></td><td>Property</td><td>Gets or sets the match column.</td></tr>
       <tr><td><code>string ReferenceColumn</code></td><td>Property</td><td>Gets or sets the reference column.</td></tr>
-      <tr><td><code>ETLFuzzyLookupNode()</code></td><td>Method</td><td>Fuzzy matching algorithm</td></tr>
+      <tr><td><code>ETLFuzzyLookupNode()</code></td><td>Method</td><td>Initializes a new instance of the ETLFuzzyLookupNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etljoin">
-  <h2>ETLJoin <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLJoin.html">ETLJoin</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Join component that represents data joining operations in ETL workflows. Displays as a triangle shape indicating data merging/combining.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -223,7 +223,7 @@
   </table>
 </section>
 <section class="section" id="type-etllookup">
-  <h2>ETLLookup <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLLookup.html">ETLLookup</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Lookup component that enriches data by joining with reference data. Displays as a cylinder with two inputs (main data + reference data). Supports caching strategies for performance optimization.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -233,35 +233,35 @@
       <tr><td><code>string ReturnColumns</code></td><td>Property</td><td>Columns to return from reference (CSV)</td></tr>
       <tr><td><code>bool FailOnNoMatch</code></td><td>Property</td><td>Fail if lookup finds no match</td></tr>
       <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Output schema (JSON array of ColumnDefinition)</td></tr>
-      <tr><td><code>ETLLookup()</code></td><td>Method</td><td>Cache strategy: None, Partial, Full</td></tr>
+      <tr><td><code>ETLLookup()</code></td><td>Method</td><td>Initializes a new instance of the ETLLookup class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etlmerge">
-  <h2>ETLMerge <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLMerge.html">ETLMerge</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Merge node: combines multiple input streams into one output (UNION ALL). Different from Join - simply concatenates rows from multiple sources.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>int InputCount</code></td><td>Property</td><td>Gets or sets the input count.</td></tr>
       <tr><td><code>bool RemoveDuplicates</code></td><td>Property</td><td>Gets or sets the remove duplicates.</td></tr>
-      <tr><td><code>ETLMerge()</code></td><td>Method</td><td>Number of input streams to merge (2-8)</td></tr>
+      <tr><td><code>ETLMerge()</code></td><td>Method</td><td>Initializes a new instance of the ETLMerge class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etlmulticast">
-  <h2>ETLMulticast <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLMulticast.html">ETLMulticast</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Multicast node: sends identical copy of data to multiple outputs. Used for parallel processing or feeding multiple destinations.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>int OutputCount</code></td><td>Property</td><td>Gets or sets the output count.</td></tr>
-      <tr><td><code>ETLMulticast()</code></td><td>Method</td><td>Number of output copies (2-8)</td></tr>
+      <tr><td><code>ETLMulticast()</code></td><td>Method</td><td>Initializes a new instance of the ETLMulticast class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etlpivot">
-  <h2>ETLPivot <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLPivot.html">ETLPivot</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Pivot node: rotates data from rows to columns (crosstab transformation). Converts row-based data into column-based aggregated view.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -270,24 +270,24 @@
       <tr><td><code>string GroupByColumns</code></td><td>Property</td><td>Gets or sets the group by columns.</td></tr>
       <tr><td><code>string ValueColumn</code></td><td>Property</td><td>Gets or sets the value column.</td></tr>
       <tr><td><code>string AggregateFunction</code></td><td>Property</td><td>Gets or sets the aggregate function.</td></tr>
-      <tr><td><code>ETLPivot()</code></td><td>Method</td><td>Column whose values become new column headers</td></tr>
+      <tr><td><code>ETLPivot()</code></td><td>Method</td><td>Initializes a new instance of the ETLPivot class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etlrowcount">
-  <h2>ETLRowCount <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLRowCount.html">ETLRowCount</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Row Count node: counts rows passing through and optionally adds count column. Useful for auditing and debugging pipeline data flow.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>bool AddCountColumn</code></td><td>Property</td><td>Gets or sets the add count column.</td></tr>
       <tr><td><code>string CountColumnName</code></td><td>Property</td><td>Gets or sets the count column name.</td></tr>
-      <tr><td><code>ETLRowCount()</code></td><td>Method</td><td>Add row number column to output</td></tr>
+      <tr><td><code>ETLRowCount()</code></td><td>Method</td><td>Initializes a new instance of the ETLRowCount class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etlscd">
-  <h2>ETLScd <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLScd.html">ETLScd</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL SCD (Slowly Changing Dimension) component for managing dimension updates. Displays as a special cylinder with historical tracking icon. Supports Type 1 (overwrite) and Type 2 (historical with effective dates).</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -299,24 +299,24 @@
       <tr><td><code>string EffectiveToColumn</code></td><td>Property</td><td>Column name for effective to date (Type 2 only)</td></tr>
       <tr><td><code>string CurrentFlagColumn</code></td><td>Property</td><td>Column name for current flag (Type 2 only)</td></tr>
       <tr><td><code>string TableName</code></td><td>Property</td><td>Target dimension table name</td></tr>
-      <tr><td><code>ETLScd()</code></td><td>Method</td><td>SCD Type: Type1 (overwrite), Type2 (historical)</td></tr>
+      <tr><td><code>ETLScd()</code></td><td>Method</td><td>Initializes a new instance of the ETLScd class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etlscript">
-  <h2>ETLScript <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLScript.html">ETLScript</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Script node: executes custom transformation script (SQL, Python, C#, etc). Allows arbitrary transformations beyond built-in operations.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string ScriptLanguage</code></td><td>Property</td><td>Gets or sets the script language.</td></tr>
       <tr><td><code>string Script</code></td><td>Property</td><td>Gets or sets the script.</td></tr>
-      <tr><td><code>ETLScript()</code></td><td>Method</td><td>Script language (SQL/Python/C#/JavaScript)</td></tr>
+      <tr><td><code>ETLScript()</code></td><td>Method</td><td>Initializes a new instance of the ETLScript class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etlsort">
-  <h2>ETLSort <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLSort.html">ETLSort</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Sort node: orders rows by specified columns and direction.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -324,12 +324,12 @@
       <tr><td><code>string SortColumns</code></td><td>Property</td><td>Gets or sets the sort columns.</td></tr>
       <tr><td><code>string SortDirections</code></td><td>Property</td><td>Gets or sets the sort directions.</td></tr>
       <tr><td><code>bool RemoveDuplicates</code></td><td>Property</td><td>Gets or sets the remove duplicates.</td></tr>
-      <tr><td><code>ETLSort()</code></td><td>Method</td><td>Comma-separated column names to sort by</td></tr>
+      <tr><td><code>ETLSort()</code></td><td>Method</td><td>Initializes a new instance of the ETLSort class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etlsource">
-  <h2>ETLSource <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLSource.html">ETLSource</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Source component that represents data sources in ETL workflows. Displays as a cylinder shape indicating data storage/retrieval.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -342,19 +342,19 @@
   </table>
 </section>
 <section class="section" id="type-etlsurrogatekeynode">
-  <h2>ETLSurrogateKeyNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLSurrogateKeyNode.html">ETLSurrogateKeyNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string KeyColumn</code></td><td>Property</td><td>Gets or sets the key column.</td></tr>
       <tr><td><code>long StartValue</code></td><td>Property</td><td>Gets or sets the start value.</td></tr>
       <tr><td><code>long Increment</code></td><td>Property</td><td>Gets or sets the increment.</td></tr>
-      <tr><td><code>ETLSurrogateKeyNode()</code></td><td>Method</td><td>Surrogate key column name</td></tr>
+      <tr><td><code>ETLSurrogateKeyNode()</code></td><td>Method</td><td>Initializes a new instance of the ETLSurrogateKeyNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etltarget">
-  <h2>ETLTarget <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLTarget.html">ETLTarget</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Target (Sink) node representing a destination like a table, file, or topic. Accepts one input, validates incoming schema vs ExpectedSchema, and shows warnings on mismatch.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -366,12 +366,12 @@
       <tr><td><code>bool PreCreateTable</code></td><td>Property</td><td>Auto-create table from expected schema</td></tr>
       <tr><td><code>string ExpectedSchema</code></td><td>Property</td><td>Expected schema (JSON array of ColumnDefinition)</td></tr>
       <tr><td><code>string DataQualityRules</code></td><td>Property</td><td>Data quality validation rules (JSON array of DataQualityRule)</td></tr>
-      <tr><td><code>ETLTarget()</code></td><td>Method</td><td>Destination connection (masked)</td></tr>
+      <tr><td><code>ETLTarget()</code></td><td>Method</td><td>Initializes a new instance of the ETLTarget class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etltransform">
-  <h2>ETLTransform <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLTransform.html">ETLTransform</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Transform node with basic operations: Select/Project, Filter, Map/Compute. Exposes OutputSchema (JSON of ColumnDefinition) for downstream nodes and lines.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -382,13 +382,13 @@
       <tr><td><code>string GroupBy</code></td><td>Property</td><td>Aggregate group-by columns (CSV)</td></tr>
       <tr><td><code>string JoinKeyLeft</code></td><td>Property</td><td>Join key in left input</td></tr>
       <tr><td><code>string JoinKeyRight</code></td><td>Property</td><td>Join key in right input</td></tr>
-      <tr><td><code>ETLTransform()</code></td><td>Method</td><td>Transform kind</td></tr>
+      <tr><td><code>ETLTransform()</code></td><td>Method</td><td>Initializes a new instance of the ETLTransform class.</td></tr>
       <tr><td><code>void InferOutputSchemaFromUpstreams(Func&lt;int, string&gt; getInputSchemaJson)</code></td><td>Method</td><td>Helper used by external orchestrators or editor buttons to infer OutputSchema from upstream schemas for Aggregate and Join kinds. This is a lightweight heuristic.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-etlunpivot">
-  <h2>ETLUnpivot <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ETLUnpivot.html">ETLUnpivot</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ETL Unpivot node: rotates data from columns to rows (denormalization). Converts column-based data into row-based normalized format.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -396,12 +396,12 @@
       <tr><td><code>string UnpivotColumns</code></td><td>Property</td><td>Gets or sets the unpivot columns.</td></tr>
       <tr><td><code>string AttributeColumn</code></td><td>Property</td><td>Gets or sets the attribute column.</td></tr>
       <tr><td><code>string ValueColumn</code></td><td>Property</td><td>Gets or sets the value column.</td></tr>
-      <tr><td><code>ETLUnpivot()</code></td><td>Method</td><td>Comma-separated columns to unpivot into rows</td></tr>
+      <tr><td><code>ETLUnpivot()</code></td><td>Method</td><td>Initializes a new instance of the ETLUnpivot class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-expressionengine">
-  <h2>ExpressionEngine <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ExpressionEngine.html">ExpressionEngine</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Small SQL-like expression engine for ETL derived columns, conditional splits, filters, and custom data-quality rules. Supports: literals (number/string/TRUE/FALSE/NULL), column references ([Column], "Column", `Column`, or bare identifiers), arithmetic (+ - * / %), comparisons (= == != &amp;lt;&amp;gt; &amp;lt; &amp;lt;= &amp;gt; &amp;gt;=), logical operators (AND OR NOT), IS NULL / IS NOT NULL, LIKE, and a built-in function library. Unknown columns evaluate to null.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -414,7 +414,7 @@
   </table>
 </section>
 <section class="section" id="type-expressionexception">
-  <h2>ExpressionException <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/ExpressionException.html">ExpressionException</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Raised when an expression cannot be parsed or evaluated.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -424,7 +424,7 @@
   </table>
 </section>
 <section class="section" id="type-flattenoptions">
-  <h2>FlattenOptions <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/FlattenOptions.html">FlattenOptions</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Options controlling flattening behavior.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -436,10 +436,10 @@
   </table>
 </section>
 <section class="section" id="type-fuzzyalgorithm">
-  <h2>FuzzyAlgorithm <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-etl/FuzzyAlgorithm.html">FuzzyAlgorithm</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
 </section>
 <section class="section" id="type-noderunmetrics">
-  <h2>NodeRunMetrics <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/NodeRunMetrics.html">NodeRunMetrics</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Runtime metrics for a single pipeline node.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -455,7 +455,7 @@
   </table>
 </section>
 <section class="section" id="type-pipelinemetrics">
-  <h2>PipelineMetrics <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/PipelineMetrics.html">PipelineMetrics</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Collects per-node runtime metrics for an ETL pipeline run.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -475,10 +475,10 @@
   </table>
 </section>
 <section class="section" id="type-sourcekind">
-  <h2>SourceKind <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-etl/SourceKind.html">SourceKind</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
 </section>
 <section class="section" id="type-structureddataflattener">
-  <h2>StructuredDataFlattener <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-etl/StructuredDataFlattener.html">StructuredDataFlattener</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Flattens structured JSON/XML into tabular rows (dictionaries) for ETL processing, and infers a tabular schema from flattened rows. Nested objects become dot-separated columns (address.city); arrays are preserved as JSON text so no data is lost; XML attributes become "@name" columns.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -490,10 +490,10 @@
   </table>
 </section>
 <section class="section" id="type-transformkind">
-  <h2>TransformKind <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-etl/TransformKind.html">TransformKind</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
 </section>
 <section class="section" id="type-writemode">
-  <h2>WriteMode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-etl/WriteMode.html">WriteMode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
 </section>
 </div></main></div>
 </body></html>

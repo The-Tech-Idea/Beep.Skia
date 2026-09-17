@@ -68,23 +68,23 @@
   <li><a href="#type-taskstatus"><code>TaskStatus</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
 </ul>
 <section class="section" id="type-actionnode">
-  <h2>ActionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/ActionNode.html">ActionNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents an action node in a business rule diagram. Displayed as a lightning bolt in a rounded rectangle.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string ActionText</code></td><td>Property</td><td>Action text</td></tr>
       <tr><td><code>ActionType ActionType</code></td><td>Property</td><td>Action type</td></tr>
-      <tr><td><code>ActionNode()</code></td><td>Method</td><td>Action text</td></tr>
+      <tr><td><code>ActionNode()</code></td><td>Method</td><td>Initializes a new instance of the ActionNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-actiontype">
-  <h2>ActionType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/ActionType.html">ActionType</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the type of action.</p>
 </section>
 <section class="section" id="type-annotation">
-  <h2>Annotation <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/Annotation.html">Annotation</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a text annotation for documenting processes. Displayed as a text box with optional border and background.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -93,16 +93,16 @@
       <tr><td><code>AnnotationType AnnotationType</code></td><td>Property</td><td>Annotation type</td></tr>
       <tr><td><code>bool ShowBorder</code></td><td>Property</td><td>Show border</td></tr>
       <tr><td><code>bool ShowBackground</code></td><td>Property</td><td>Show background</td></tr>
-      <tr><td><code>Annotation()</code></td><td>Method</td><td>Annotation text</td></tr>
+      <tr><td><code>Annotation()</code></td><td>Method</td><td>Initializes a new instance of the Annotation class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-annotationtype">
-  <h2>AnnotationType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/AnnotationType.html">AnnotationType</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the type of annotation.</p>
 </section>
 <section class="section" id="type-bpmnexporter">
-  <h2>BpmnExporter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/BpmnExporter.html">BpmnExporter</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Exports a Business Process diagram as BPMN 2.0 XML (semantic model + BPMN DI). Without pools, a single bpmn:process is emitted (sequence flows only). With BpmnPoolNode pools, a bpmn:collaboration is emitted with one participant + process per pool; nodes are assigned to pools by geometric containment; BpmnMessageFlow lines (or lines crossing pools) become bpmn:messageFlow. BpmnLaneNode lanes become bpmn:laneSet/bpmn:lane with flowNodeRefs.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -112,7 +112,7 @@
   </table>
 </section>
 <section class="section" id="type-bpmnflow">
-  <h2>BpmnFlow <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/BpmnFlow.html">BpmnFlow</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>A flow parsed from BPMN XML, ready to be connected in a drawing manager.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -124,7 +124,7 @@
   </table>
 </section>
 <section class="section" id="type-bpmnimporter">
-  <h2>BpmnImporter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/BpmnImporter.html">BpmnImporter</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Imports BPMN 2.0 XML into Business diagram components. Namespace-agnostic (matches by local element name) and reads BPMN DI bounds when present.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -135,7 +135,7 @@
   </table>
 </section>
 <section class="section" id="type-bpmnimportresult">
-  <h2>BpmnImportResult <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/BpmnImportResult.html">BpmnImportResult</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Result of parsing BPMN XML.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -149,18 +149,18 @@
   </table>
 </section>
 <section class="section" id="type-bpmnlanenode">
-  <h2>BpmnLaneNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/BpmnLaneNode.html">BpmnLaneNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>BPMN Lane container (a subdivision of a pool). Drawn as a rectangle with a header band at the top. Nodes whose center lies inside the lane belong to it.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string LaneName</code></td><td>Property</td><td>Gets or sets the lane name.</td></tr>
-      <tr><td><code>BpmnLaneNode()</code></td><td>Method</td><td>Lane name</td></tr>
+      <tr><td><code>BpmnLaneNode()</code></td><td>Method</td><td>Initializes a new instance of the BpmnLaneNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-bpmnmessageflow">
-  <h2>BpmnMessageFlow <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/BpmnMessageFlow.html">BpmnMessageFlow</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>BPMN message flow — a dashed connection between participants/pools (exported as bpmn:messageFlow inside a collaboration).</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -171,22 +171,22 @@
   </table>
 </section>
 <section class="section" id="type-bpmnpoolnode">
-  <h2>BpmnPoolNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/BpmnPoolNode.html">BpmnPoolNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>BPMN Pool (participant) container. Drawn as a rounded rectangle with a vertical title bar on the left. Nodes whose center lies inside the pool belong to it.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string PoolName</code></td><td>Property</td><td>Gets or sets the pool name.</td></tr>
-      <tr><td><code>BpmnPoolNode()</code></td><td>Method</td><td>Pool / participant name</td></tr>
+      <tr><td><code>BpmnPoolNode()</code></td><td>Method</td><td>Initializes a new instance of the BpmnPoolNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-businesscomponenttype">
-  <h2>BusinessComponentType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/BusinessComponentType.html">BusinessComponentType</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the type of business component.</p>
 </section>
 <section class="section" id="type-businesscontrol">
-  <h2>BusinessControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/BusinessControl.html">BusinessControl</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Base control for business graph components (flowcharts, organizational charts, business processes). Provides common functionality for business diagram elements with support for custom shapes.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -203,39 +203,39 @@
   </table>
 </section>
 <section class="section" id="type-businesspriority">
-  <h2>BusinessPriority <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/BusinessPriority.html">BusinessPriority</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the priority level of a business component.</p>
 </section>
 <section class="section" id="type-businessstatus">
-  <h2>BusinessStatus <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/BusinessStatus.html">BusinessStatus</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the status of a business component.</p>
 </section>
 <section class="section" id="type-businesssystem">
-  <h2>BusinessSystem <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/BusinessSystem.html">BusinessSystem</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a system in a business process diagram. Displayed as a server/system shape.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string SystemName</code></td><td>Property</td><td>System name</td></tr>
-      <tr><td><code>BusinessSystem()</code></td><td>Method</td><td>System name</td></tr>
+      <tr><td><code>BusinessSystem()</code></td><td>Method</td><td>Initializes a new instance of the BusinessSystem class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-businesstask">
-  <h2>BusinessTask <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/BusinessTask.html">BusinessTask</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a task in a business process diagram. Displayed as a rounded rectangle.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>static readonly string[] TaskTypes =</code></td><td>Field</td><td>Supported BPMN task types (mapped to bpmn:*Task elements on export).</td></tr>
       <tr><td><code>string TaskType</code></td><td>Property</td><td>BPMN task type: Task, Service, User, Script, Manual, BusinessRule, Send, or Receive.</td></tr>
-      <tr><td><code>BusinessTask()</code></td><td>Method</td><td>BPMN task type</td></tr>
+      <tr><td><code>BusinessTask()</code></td><td>Method</td><td>Initializes a new instance of the BusinessTask class.</td></tr>
       <tr><td><code>string Label</code></td><td>Property</td><td>Display label for the task. Synced with Name for convenience.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-conditionbuilder">
-  <h2>ConditionBuilder <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/ConditionBuilder.html">ConditionBuilder</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a condition builder in a business rule diagram. Displayed as a question mark in a rounded rectangle.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -248,26 +248,26 @@
   </table>
 </section>
 <section class="section" id="type-conditiontype">
-  <h2>ConditionType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/ConditionType.html">ConditionType</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the type of condition.</p>
 </section>
 <section class="section" id="type-connectiontype">
-  <h2>ConnectionType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/ConnectionType.html">ConnectionType</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the type of connection or flow between workflow elements.</p>
 </section>
 <section class="section" id="type-database">
-  <h2>Database <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/Database.html">Database</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a database in a business process diagram. Displayed as a cylinder shape.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
-      <tr><td><code>Database()</code></td><td>Method</td><td>Display label</td></tr>
+      <tr><td><code>Database()</code></td><td>Method</td><td>Initializes a new instance of the Database class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-dataobject">
-  <h2>DataObject <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/DataObject.html">DataObject</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a data object that flows through the process. Displayed as a rectangle with a data icon and type indicator.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -276,72 +276,72 @@
       <tr><td><code>DataType DataType</code></td><td>Property</td><td>Data type</td></tr>
       <tr><td><code>string DataFormat</code></td><td>Property</td><td>Data format</td></tr>
       <tr><td><code>bool IsCollection</code></td><td>Property</td><td>Is collection</td></tr>
-      <tr><td><code>DataObject()</code></td><td>Method</td><td>Data name</td></tr>
+      <tr><td><code>DataObject()</code></td><td>Method</td><td>Initializes a new instance of the DataObject class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-datastore">
-  <h2>DataStore <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/DataStore.html">DataStore</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a data store in a business process diagram. Displayed as an open box.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
-      <tr><td><code>DataStore()</code></td><td>Method</td><td>Display label</td></tr>
+      <tr><td><code>DataStore()</code></td><td>Method</td><td>Initializes a new instance of the DataStore class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-datatype">
-  <h2>DataType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/DataType.html">DataType</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the type of data object.</p>
 </section>
 <section class="section" id="type-decision">
-  <h2>Decision <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/Decision.html">Decision</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a decision point in a business process diagram. Displayed as a diamond shape.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
-      <tr><td><code>Decision()</code></td><td>Method</td><td>Display label</td></tr>
+      <tr><td><code>Decision()</code></td><td>Method</td><td>Initializes a new instance of the Decision class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-department">
-  <h2>Department <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/Department.html">Department</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a department in an organizational chart. Displayed as a rounded rectangle with department styling.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string DepartmentName</code></td><td>Property</td><td>Department name</td></tr>
       <tr><td><code>int EmployeeCount</code></td><td>Property</td><td>Employees count</td></tr>
-      <tr><td><code>Department()</code></td><td>Method</td><td>Department name</td></tr>
+      <tr><td><code>Department()</code></td><td>Method</td><td>Initializes a new instance of the Department class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-document">
-  <h2>Document <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/Document.html">Document</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a document in a business process diagram. Displayed as a rectangle with a folded corner.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
-      <tr><td><code>Document()</code></td><td>Method</td><td>Display label</td></tr>
+      <tr><td><code>Document()</code></td><td>Method</td><td>Initializes a new instance of the Document class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-endevent">
-  <h2>EndEvent <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/EndEvent.html">EndEvent</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents an end event in a business process diagram. Displayed as a thick-bordered circle.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
-      <tr><td><code>EndEvent()</code></td><td>Method</td><td>Display label</td></tr>
+      <tr><td><code>EndEvent()</code></td><td>Method</td><td>Initializes a new instance of the EndEvent class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-eventnode">
-  <h2>EventNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/EventNode.html">EventNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a workflow event node that can trigger or respond to events. Displayed as a circle with event-specific icons and timing information.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -351,53 +351,53 @@
       <tr><td><code>string TriggerCondition</code></td><td>Property</td><td>Trigger condition</td></tr>
       <tr><td><code>bool IsTriggered</code></td><td>Property</td><td>Triggered state</td></tr>
       <tr><td><code>DateTime? TriggerTime</code></td><td>Property</td><td>Trigger timestamp (ISO 8601)</td></tr>
-      <tr><td><code>EventNode()</code></td><td>Method</td><td>Event name</td></tr>
+      <tr><td><code>EventNode()</code></td><td>Method</td><td>Initializes a new instance of the EventNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-eventposition">
-  <h2>EventPosition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/EventPosition.html">EventPosition</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the type of event position (start, intermediate, end).</p>
 </section>
 <section class="section" id="type-eventtype">
-  <h2>EventType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/EventType.html">EventType</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the type of event.</p>
 </section>
 <section class="section" id="type-externaldata">
-  <h2>ExternalData <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/ExternalData.html">ExternalData</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents external data in a business process diagram. Displayed as a parallelogram.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
-      <tr><td><code>ExternalData()</code></td><td>Method</td><td>Display label</td></tr>
+      <tr><td><code>ExternalData()</code></td><td>Method</td><td>Initializes a new instance of the ExternalData class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-flowdirection">
-  <h2>FlowDirection <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/FlowDirection.html">FlowDirection</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the direction of rule flow.</p>
 </section>
 <section class="section" id="type-gateway">
-  <h2>Gateway <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/Gateway.html">Gateway</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a BPMN 2.0 gateway with configurable type. Exclusive (XOR) = blank diamond with X; Inclusive (OR) = diamond with circle; Parallel (AND) = diamond with +.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
       <tr><td><code>GatewayType GatewayType</code></td><td>Property</td><td>Gateway type</td></tr>
-      <tr><td><code>Gateway()</code></td><td>Method</td><td>Display label</td></tr>
+      <tr><td><code>Gateway()</code></td><td>Method</td><td>Initializes a new instance of the Gateway class.</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
       <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-gatewaytype">
-  <h2>GatewayType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/GatewayType.html">GatewayType</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the type of gateway.</p>
 </section>
 <section class="section" id="type-group">
-  <h2>Group <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/Group.html">Group</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a group of related process elements. Displayed as a dashed border rectangle that can contain multiple components.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -406,18 +406,18 @@
       <tr><td><code>string GroupName</code></td><td>Property</td><td>Group name</td></tr>
       <tr><td><code>SKColor GroupColor</code></td><td>Property</td><td>Group color</td></tr>
       <tr><td><code>GroupType GroupType</code></td><td>Property</td><td>Group type</td></tr>
-      <tr><td><code>Group()</code></td><td>Method</td><td>Group name</td></tr>
+      <tr><td><code>Group()</code></td><td>Method</td><td>Initializes a new instance of the Group class.</td></tr>
       <tr><td><code>void AddComponent(BusinessControl component)</code></td><td>Method</td><td>Adds a component to this group.</td></tr>
       <tr><td><code>void RemoveComponent(BusinessControl component)</code></td><td>Method</td><td>Removes a component from this group.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-grouptype">
-  <h2>GroupType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/GroupType.html">GroupType</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the type of group.</p>
 </section>
 <section class="section" id="type-intermediateeventnode">
-  <h2>IntermediateEventNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/IntermediateEventNode.html">IntermediateEventNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>BPMN 2.0 Intermediate Event node. Rendered as a double-ring circle with event type icon inside the inner ring. Supports Catch (incoming flow triggers event) and Throw (event triggers outgoing flow) semantics.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -425,37 +425,37 @@
       <tr><td><code>string Label</code></td><td>Property</td><td>Event label</td></tr>
       <tr><td><code>EventType EventType</code></td><td>Property</td><td>Event type</td></tr>
       <tr><td><code>EventPosition EventPosition</code></td><td>Property</td><td>Catch or Throw</td></tr>
-      <tr><td><code>IntermediateEventNode()</code></td><td>Method</td><td>Event label</td></tr>
+      <tr><td><code>IntermediateEventNode()</code></td><td>Method</td><td>Initializes a new instance of the IntermediateEventNode class.</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
       <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-person">
-  <h2>Person <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/Person.html">Person</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a person in an organizational chart. Displayed as a circle with a person icon.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string PersonName</code></td><td>Property</td><td>Person name</td></tr>
       <tr><td><code>string Title</code></td><td>Property</td><td>Job title</td></tr>
-      <tr><td><code>Person()</code></td><td>Method</td><td>Person name</td></tr>
+      <tr><td><code>Person()</code></td><td>Method</td><td>Initializes a new instance of the Person class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-role">
-  <h2>Role <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/Role.html">Role</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a role in an organizational chart. Displayed as a badge shape.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string RoleName</code></td><td>Property</td><td>Role name</td></tr>
-      <tr><td><code>Role()</code></td><td>Method</td><td>Role name</td></tr>
+      <tr><td><code>Role()</code></td><td>Method</td><td>Initializes a new instance of the Role class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-ruleengine">
-  <h2>RuleEngine <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/RuleEngine.html">RuleEngine</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a business rule engine in a business process diagram. Displayed as a gear/cog shape with rule indicators.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -463,12 +463,12 @@
       <tr><td><code>string RuleSetName</code></td><td>Property</td><td>Rule set name</td></tr>
       <tr><td><code>int RuleCount</code></td><td>Property</td><td>Number of rules</td></tr>
       <tr><td><code>bool IsActive</code></td><td>Property</td><td>Active state</td></tr>
-      <tr><td><code>RuleEngine()</code></td><td>Method</td><td>Rule set name</td></tr>
+      <tr><td><code>RuleEngine()</code></td><td>Method</td><td>Initializes a new instance of the RuleEngine class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-ruleflow">
-  <h2>RuleFlow <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/RuleFlow.html">RuleFlow</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a rule flow connector in a business rule diagram. Displayed as a curved arrow with rule evaluation indicators.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -476,23 +476,23 @@
       <tr><td><code>string FlowLabel</code></td><td>Property</td><td>Flow label</td></tr>
       <tr><td><code>FlowDirection Direction</code></td><td>Property</td><td>Flow direction</td></tr>
       <tr><td><code>bool IsActive</code></td><td>Property</td><td>Active state</td></tr>
-      <tr><td><code>RuleFlow()</code></td><td>Method</td><td>Flow label</td></tr>
+      <tr><td><code>RuleFlow()</code></td><td>Method</td><td>Initializes a new instance of the RuleFlow class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-startevent">
-  <h2>StartEvent <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/StartEvent.html">StartEvent</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a start event in a business process diagram. Displayed as a thin-bordered circle.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Display label</td></tr>
-      <tr><td><code>StartEvent()</code></td><td>Method</td><td>Display label</td></tr>
+      <tr><td><code>StartEvent()</code></td><td>Method</td><td>Initializes a new instance of the StartEvent class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-subprocess">
-  <h2>SubProcess <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/SubProcess.html">SubProcess</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a subprocess that contains other process elements. Displayed as a rounded rectangle with collapse/expand indicator.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -501,7 +501,7 @@
       <tr><td><code>bool IsCollapsed</code></td><td>Property</td><td>Collapsed state</td></tr>
       <tr><td><code>string ProcessName</code></td><td>Property</td><td>Process name</td></tr>
       <tr><td><code>int ChildCount</code></td><td>Property</td><td>Gets or sets the child count.</td></tr>
-      <tr><td><code>SubProcess()</code></td><td>Method</td><td>Collapsed state</td></tr>
+      <tr><td><code>SubProcess()</code></td><td>Method</td><td>Initializes a new instance of the SubProcess class.</td></tr>
       <tr><td><code>void AddChild(BusinessControl component)</code></td><td>Method</td><td>Adds a child component to this subprocess.</td></tr>
       <tr><td><code>void RemoveChild(BusinessControl component)</code></td><td>Method</td><td>Removes a child component from this subprocess.</td></tr>
       <tr><td><code>void ToggleCollapsed()</code></td><td>Method</td><td>Toggles the collapsed/expanded state of the subprocess.</td></tr>
@@ -509,7 +509,7 @@
   </table>
 </section>
 <section class="section" id="type-tasknode">
-  <h2>TaskNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-business/TaskNode.html">TaskNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Represents a workflow task node with status indicators and progress tracking. Displayed as a rounded rectangle with task-specific icons and status.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -519,12 +519,12 @@
       <tr><td><code>string AssignedTo</code></td><td>Property</td><td>Assigned owner</td></tr>
       <tr><td><code>DateTime? DueDate</code></td><td>Property</td><td>Due date</td></tr>
       <tr><td><code>int Progress</code></td><td>Property</td><td>Percent complete (0-100)</td></tr>
-      <tr><td><code>TaskNode()</code></td><td>Method</td><td>Task description</td></tr>
+      <tr><td><code>TaskNode()</code></td><td>Method</td><td>Initializes a new instance of the TaskNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-taskstatus">
-  <h2>TaskStatus <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-business/TaskStatus.html">TaskStatus</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Specifies the status of a task.</p>
 </section>
 </div></main></div>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RetryPolicy | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-model.html">Beep.Skia.Model</a><span>&rsaquo;</span> <span>RetryPolicy</span></nav>
+<div class="page-header"><h1>RetryPolicy <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia.Model &mdash; class</p></div>
+<p>Represents a retry policy for node execution failures.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>RetryPolicy(int maxRetries, TimeSpan retryDelay)</code></td><td>Method</td><td>Initializes a new instance of the RetryPolicy class. The maximum number of retry attempts. The delay between retry attempts.</td></tr>
+    <tr><td><code>int MaxRetries</code></td><td>Property</td><td>Gets or sets the maximum number of retry attempts.</td></tr>
+    <tr><td><code>TimeSpan RetryDelay</code></td><td>Property</td><td>Gets or sets the delay between retry attempts.</td></tr>
+    <tr><td><code>RetryBackoffStrategy BackoffStrategy</code></td><td>Property</td><td>Gets or sets the backoff strategy for increasing delay between retries.</td></tr>
+    <tr><td><code>TimeSpan? MaxRetryDelay</code></td><td>Property</td><td>Gets or sets the maximum delay between retries when using backoff.</td></tr>
+    <tr><td><code>RetryPolicy Clone()</code></td><td>Method</td><td>Creates a copy of this retry policy. A new RetryPolicy instance that is a copy of this one.</td></tr>
+    <tr><td><code>static RetryPolicy None()</code></td><td>Method</td><td>Creates a no-retry policy. A RetryPolicy that does not retry on failure.</td></tr>
+    <tr><td><code>static RetryPolicy Simple(int maxRetries, int delaySeconds)</code></td><td>Method</td><td>Creates a simple retry policy with fixed delay. The maximum number of retries. The delay in seconds between retries. A RetryPolicy with the specified parameters.</td></tr>
+    <tr><td><code>static RetryPolicy ExponentialBackoff(int maxRetries, int initialDelaySeconds, int maxDelaySeconds)</code></td><td>Method</td><td>Creates an exponential backoff retry policy. The maximum number of retries. The initial delay in seconds. The maximum delay in seconds. A RetryPolicy with exponential backoff.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-model.html">All types in Beep.Skia.Model</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

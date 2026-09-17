@@ -34,20 +34,20 @@
   <li><a href="#type-statenode"><code>StateNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
 </ul>
 <section class="section" id="type-choicenode">
-  <h2>ChoiceNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-statemachine/ChoiceNode.html">ChoiceNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Choice/Junction pseudostate: evaluates guard conditions and selects one outgoing transition. Rendered as a small diamond shape.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
-      <tr><td><code>ChoiceNode()</code></td><td>Method</td><td>Optional condition label</td></tr>
+      <tr><td><code>ChoiceNode()</code></td><td>Method</td><td>Initializes a new instance of the ChoiceNode class.</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
       <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-compositestatenode">
-  <h2>CompositeStateNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-statemachine/CompositeStateNode.html">CompositeStateNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Composite state: a state that contains nested sub-states (hierarchical state machine). Rendered as a larger rounded rectangle with a dashed border and title area at top. Child components are positioned within the inner content area.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -55,7 +55,7 @@
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
       <tr><td><code>float TitleBarHeight</code></td><td>Property</td><td>Gets or sets the title bar height.</td></tr>
       <tr><td><code>int RegionCount</code></td><td>Property</td><td>Number of orthogonal regions inside the composite state (1-4). Regions are separated by dashed dividers in the content area.</td></tr>
-      <tr><td><code>CompositeStateNode()</code></td><td>Method</td><td>Composite state name</td></tr>
+      <tr><td><code>CompositeStateNode()</code></td><td>Method</td><td>Initializes a new instance of the CompositeStateNode class.</td></tr>
       <tr><td><code>SKRect GetContentArea()</code></td><td>Method</td><td>Gets the inner content area for child components (below the title bar).</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
       <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
@@ -63,71 +63,71 @@
   </table>
 </section>
 <section class="section" id="type-finalstatenode">
-  <h2>FinalStateNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-statemachine/FinalStateNode.html">FinalStateNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Final state: double circle (outer ring), one input, no outputs.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
-      <tr><td><code>FinalStateNode()</code></td><td>Method</td><td>Label</td></tr>
+      <tr><td><code>FinalStateNode()</code></td><td>Method</td><td>Initializes a new instance of the FinalStateNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-forknode">
-  <h2>ForkNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-statemachine/ForkNode.html">ForkNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Fork pseudostate: one input, two or more outputs. Rendered as a thick horizontal bar splitting a single flow into multiple parallel flows.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
       <tr><td><code>new int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
-      <tr><td><code>ForkNode()</code></td><td>Method</td><td>Fork label</td></tr>
+      <tr><td><code>ForkNode()</code></td><td>Method</td><td>Initializes a new instance of the ForkNode class.</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
       <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-historynode">
-  <h2>HistoryNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-statemachine/HistoryNode.html">HistoryNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>History pseudostate: remembers the last active sub-state within a composite state. Shallow (H) remembers only the immediate sub-state. Deep (H*) remembers the full nesting path. Rendered as a circle with 'H' or 'H*' inside.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
       <tr><td><code>bool IsDeep</code></td><td>Property</td><td>Gets or sets the is deep.</td></tr>
-      <tr><td><code>HistoryNode()</code></td><td>Method</td><td>Deep history (H*) or shallow history (H)</td></tr>
+      <tr><td><code>HistoryNode()</code></td><td>Method</td><td>Initializes a new instance of the HistoryNode class.</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
       <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-initialstatenode">
-  <h2>InitialStateNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-statemachine/InitialStateNode.html">InitialStateNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Initial state: drawn as a filled circle, no inputs, one output.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
-      <tr><td><code>InitialStateNode()</code></td><td>Method</td><td>Label</td></tr>
+      <tr><td><code>InitialStateNode()</code></td><td>Method</td><td>Initializes a new instance of the InitialStateNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-joinnode">
-  <h2>JoinNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-statemachine/JoinNode.html">JoinNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Join pseudostate: two or more inputs, one output. Rendered as a thick horizontal bar merging multiple parallel flows into one.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
       <tr><td><code>new int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
-      <tr><td><code>JoinNode()</code></td><td>Method</td><td>Join label</td></tr>
+      <tr><td><code>JoinNode()</code></td><td>Method</td><td>Initializes a new instance of the JoinNode class.</td></tr>
       <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
       <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td>Gets or sets the set propperties.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-statemachinecontrol">
-  <h2>StateMachineControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-statemachine/StateMachineControl.html">StateMachineControl</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Base control for State Machine nodes with Material theming and standardized port management.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -141,7 +141,7 @@
   </table>
 </section>
 <section class="section" id="type-statemachineissue">
-  <h2>StateMachineIssue <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-statemachine/StateMachineIssue.html">StateMachineIssue</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>A single state-machine validation issue.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -156,11 +156,11 @@
   </table>
 </section>
 <section class="section" id="type-statemachineissueseverity">
-  <h2>StateMachineIssueSeverity <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-statemachine/StateMachineIssueSeverity.html">StateMachineIssueSeverity</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Severity of a state-machine validation issue.</p>
 </section>
 <section class="section" id="type-statemachinevalidator">
-  <h2>StateMachineValidator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-statemachine/StateMachineValidator.html">StateMachineValidator</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Validates state-machine diagrams: initial/final states, reachability, and guards/triggers on transitions (read from ConnectionLine.GuardCondition/TriggerEvent, falling back to Label1/Label2 for older diagrams).</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -174,7 +174,7 @@
   </table>
 </section>
 <section class="section" id="type-statenode">
-  <h2>StateNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-statemachine/StateNode.html">StateNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Regular state: rounded rectangle with optional title and entry/exit/do activities, one input and multiple outputs.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -183,7 +183,7 @@
       <tr><td><code>string EntryAction</code></td><td>Property</td><td>Activity executed when the state is entered (UML entry action).</td></tr>
       <tr><td><code>string ExitAction</code></td><td>Property</td><td>Activity executed when the state is exited (UML exit action).</td></tr>
       <tr><td><code>string DoActivity</code></td><td>Property</td><td>Activity executed while the state is active (UML do activity).</td></tr>
-      <tr><td><code>StateNode()</code></td><td>Method</td><td>State title</td></tr>
+      <tr><td><code>StateNode()</code></td><td>Method</td><td>Initializes a new instance of the StateNode class.</td></tr>
     </tbody>
   </table>
 </section>

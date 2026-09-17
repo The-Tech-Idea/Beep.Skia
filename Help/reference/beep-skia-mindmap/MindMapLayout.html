@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindMapLayout | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-mindmap.html">Mind map family</a><span>&rsaquo;</span> <span>MindMapLayout</span></nav>
+<div class="page-header"><h1>MindMapLayout <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Mind map family &mdash; class</p></div>
+<p>Radial mind-map auto-layout. The central node is placed at Center; level-1 topics are distributed around it, and deeper levels fan out within each parent's angular sector. Components not connected to the tree are placed in a row below.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>float LevelSpacing</code></td><td>Property</td><td>Distance from the central node to level-1 topics.</td></tr>
+    <tr><td><code>float SubLevelSpacing</code></td><td>Property</td><td>Distance from a parent to its child for levels deeper than one.</td></tr>
+    <tr><td><code>SKPoint Center</code></td><td>Property</td><td>Center point of the radial arrangement.</td></tr>
+    <tr><td><code>float UnconnectedSpacing</code></td><td>Property</td><td>Vertical gap used when parking unconnected components.</td></tr>
+    <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Gets or sets the arrange.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-mindmap.html">All types in Mind map family</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

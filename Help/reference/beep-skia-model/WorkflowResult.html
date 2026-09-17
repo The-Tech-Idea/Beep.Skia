@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkflowResult | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-model.html">Beep.Skia.Model</a><span>&rsaquo;</span> <span>WorkflowResult</span></nav>
+<div class="page-header"><h1>WorkflowResult <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia.Model &mdash; class</p></div>
+<p>Represents the result of executing a complete workflow.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>WorkflowResult(string workflowId, string executionId, WorkflowStatus status)</code></td><td>Method</td><td>Initializes a new instance of the WorkflowResult class. The ID of the executed workflow. The unique execution ID. The final status of the workflow execution.</td></tr>
+    <tr><td><code>string WorkflowId</code></td><td>Property</td><td>Gets the ID of the executed workflow.</td></tr>
+    <tr><td><code>string ExecutionId</code></td><td>Property</td><td>Gets the unique execution ID.</td></tr>
+    <tr><td><code>WorkflowStatus Status</code></td><td>Property</td><td>Gets the final status of the workflow execution.</td></tr>
+    <tr><td><code>DateTime StartTime</code></td><td>Property</td><td>Gets the time when the workflow execution started.</td></tr>
+    <tr><td><code>DateTime? EndTime</code></td><td>Property</td><td>Gets or sets the time when the workflow execution completed.</td></tr>
+    <tr><td><code>TimeSpan? ExecutionTime</code></td><td>Property</td><td>Gets the total execution time of the workflow.</td></tr>
+    <tr><td><code>IList&lt;NodeResult&gt; NodeResults</code></td><td>Property</td><td>Gets the results of individual node executions.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; OutputData</code></td><td>Property</td><td>Gets the final output data from the workflow execution.</td></tr>
+    <tr><td><code>IList&lt;string&gt; Errors</code></td><td>Property</td><td>Gets the collection of errors that occurred during execution.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata about the workflow execution.</td></tr>
+    <tr><td><code>void SetStatus(WorkflowStatus newStatus)</code></td><td>Method</td><td>Updates the workflow status and sets the end time if the workflow is completing. The new workflow status.</td></tr>
+    <tr><td><code>void AddNodeResult(NodeResult nodeResult)</code></td><td>Method</td><td>Adds a node execution result to the workflow result. The node execution result to add.</td></tr>
+    <tr><td><code>void AddError(string error)</code></td><td>Method</td><td>Adds an error to the workflow result. The error message to add.</td></tr>
+    <tr><td><code>T GetOutput&lt;T&gt;(string key, T defaultValue = default)</code></td><td>Method</td><td>Gets a strongly typed output value. The type to cast the value to. The key to look up. The default value to return if the key is not found. The output value cast to the specified type, or the default value.</td></tr>
+    <tr><td><code>void SetOutput(string key, object value)</code></td><td>Method</td><td>Sets an output value. The key to set. The value to set.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-model.html">All types in Beep.Skia.Model</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

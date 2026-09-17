@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkiaExtensionHost | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>SkiaExtensionHost</span></nav>
+<div class="page-header"><h1>SkiaExtensionHost <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>Discovers and loads Beep.Skia extension packages from assemblies or a plugin directory, collecting their component types and commands for palette/editor integration.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>IReadOnlyList&lt;LoadedExtension&gt; Extensions</code></td><td>Property</td><td>Loaded extensions (successful and failed).</td></tr>
+    <tr><td><code>IReadOnlyList&lt;ExtensionComponentDescriptor&gt; Components</code></td><td>Property</td><td>Component descriptors contributed by all loaded extensions.</td></tr>
+    <tr><td><code>IReadOnlyDictionary&lt;string, Action&lt;SkiaComponent&gt;&gt; Commands</code></td><td>Property</td><td>Commands registered by extensions (name → action).</td></tr>
+    <tr><td><code>IReadOnlyList&lt;string&gt; Log</code></td><td>Property</td><td>Diagnostic log collected during loading.</td></tr>
+    <tr><td><code>event EventHandler&lt;ExtensionLoadedEventArgs&gt; ExtensionLoaded</code></td><td>Event</td><td>Raised after each extension is loaded.</td></tr>
+    <tr><td><code>int LoadFromAssemblies(IEnumerable&lt;Assembly&gt; assemblies)</code></td><td>Method</td><td>Loads every ISkiaExtension found in the given assemblies. Returns the number of extensions loaded (including ones that failed initialization).</td></tr>
+    <tr><td><code>int LoadFromDirectory(string directory, string searchPattern = "*.dll")</code></td><td>Method</td><td>Loads extensions from every matching assembly in a plugin directory.</td></tr>
+    <tr><td><code>SkiaComponent CreateComponent(string assemblyQualifiedName)</code></td><td>Method</td><td>Creates a component instance from an extension component descriptor's type name.</td></tr>
+    <tr><td><code>bool InvokeCommand(string name, SkiaComponent target)</code></td><td>Method</td><td>Invokes a registered extension command for the given target component.</td></tr>
+    <tr><td><code>void Clear()</code></td><td>Method</td><td>Clears all loaded extensions, components, commands, and the log.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

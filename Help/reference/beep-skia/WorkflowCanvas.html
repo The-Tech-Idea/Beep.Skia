@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkflowCanvas | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>WorkflowCanvas</span></nav>
+<div class="page-header"><h1>WorkflowCanvas <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>Visual workflow designer canvas that provides drag-drop functionality, connection management, and workflow execution controls for automation components.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>event EventHandler&lt;NodeSelectedEventArgs&gt; NodeSelected</code></td><td>Event</td><td>Event raised when a node is selected.</td></tr>
+    <tr><td><code>event EventHandler&lt;ConnectionCreatedEventArgs&gt; ConnectionCreated</code></td><td>Event</td><td>Event raised when a connection is created.</td></tr>
+    <tr><td><code>new event EventHandler&lt;ConnectionRemovedEventArgs&gt; ConnectionRemoved</code></td><td>Property</td><td>Event raised when a connection is removed.</td></tr>
+    <tr><td><code>event EventHandler&lt;WorkflowExecutionStateChangedEventArgs&gt; ExecutionStateChanged</code></td><td>Event</td><td>Event raised when workflow execution state changes.</td></tr>
+    <tr><td><code>event EventHandler&lt;NodeAddedEventArgs&gt; NodeAdded</code></td><td>Event</td><td>Event raised when a node is added to the canvas.</td></tr>
+    <tr><td><code>event EventHandler&lt;NodeRemovedEventArgs&gt; NodeRemoved</code></td><td>Event</td><td>Event raised when a node is removed from the canvas.</td></tr>
+    <tr><td><code>IReadOnlyList&lt;AutomationNode&gt; AutomationNodes</code></td><td>Property</td><td>Gets the collection of automation nodes in the workflow.</td></tr>
+    <tr><td><code>IReadOnlyList&lt;WorkflowConnection&gt; Connections</code></td><td>Property</td><td>Gets the collection of connections between nodes.</td></tr>
+    <tr><td><code>AutomationNode SelectedNode</code></td><td>Property</td><td>Gets or sets the currently selected node.</td></tr>
+    <tr><td><code>float ZoomLevel</code></td><td>Property</td><td>Gets or sets the zoom level of the canvas.</td></tr>
+    <tr><td><code>SKPoint PanOffset</code></td><td>Property</td><td>Gets or sets the pan offset of the canvas.</td></tr>
+    <tr><td><code>bool ShowGrid</code></td><td>Property</td><td>Gets or sets whether to show the grid background.</td></tr>
+    <tr><td><code>float GridSize</code></td><td>Property</td><td>Gets or sets the grid size.</td></tr>
+    <tr><td><code>WorkflowExecutionState ExecutionState</code></td><td>Property</td><td>Gets the current workflow execution state.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; WorkflowVariables</code></td><td>Property</td><td>Gets or sets the workflow variables.</td></tr>
+    <tr><td><code>WorkflowCanvas()</code></td><td>Method</td><td>Initializes a new instance of the WorkflowCanvas class.</td></tr>
+    <tr><td><code>void AddNode(AutomationNode node, SKPoint position)</code></td><td>Method</td><td>Adds an automation node to the canvas. The node to add. The position to place the node.</td></tr>
+    <tr><td><code>void RemoveNode(AutomationNode node)</code></td><td>Method</td><td>Removes an automation node from the canvas. The node to remove.</td></tr>
+    <tr><td><code>AutomationNode GetNodeAtPosition(SKPoint position)</code></td><td>Method</td><td>Gets the node at the specified position. The position to check. The node at the position, or null if none found.</td></tr>
+    <tr><td><code>void ArrangeNodesInGrid(float spacing = 150f)</code></td><td>Method</td><td>Arranges nodes automatically in a grid layout.</td></tr>
+    <tr><td><code>void CreateConnection(AutomationNode fromNode, AutomationNode toNode, ConnectionPoint fromPoint, ConnectionPoint toPoint)</code></td><td>Method</td><td>Creates a connection between two nodes. The source node. The target node. The source connection point. The target connection point.</td></tr>
+    <tr><td><code>void RemoveConnection(WorkflowConnection connection)</code></td><td>Method</td><td>Removes a connection. The connection to remove.</td></tr>
+    <tr><td><code>WorkflowConnection GetConnectionAtPosition(SKPoint position, float tolerance = 5f)</code></td><td>Method</td><td>Gets the connection at the specified position. The position to check. The tolerance for hit detection. The connection at the position, or null if none found.</td></tr>
+    <tr><td><code>SKPoint ScreenToCanvas(SKPoint screenPoint)</code></td><td>Method</td><td>Converts screen coordinates to canvas coordinates. The screen point. The canvas point.</td></tr>
+    <tr><td><code>SKPoint CanvasToScreen(SKPoint canvasPoint)</code></td><td>Method</td><td>Converts canvas coordinates to screen coordinates. The canvas point. The screen point.</td></tr>
+    <tr><td><code>void OnMouseWheel(SKPoint point, float delta)</code></td><td>Method</td><td>Handles mouse wheel events for zooming. The mouse position. The wheel delta.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

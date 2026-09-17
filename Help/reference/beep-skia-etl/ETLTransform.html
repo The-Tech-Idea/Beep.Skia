@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETLTransform | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-etl.html">ETL family</a><span>&rsaquo;</span> <span>ETLTransform</span></nav>
+<div class="page-header"><h1>ETLTransform <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">ETL family &mdash; class</p></div>
+<p>ETL Transform node with basic operations: Select/Project, Filter, Map/Compute. Exposes OutputSchema (JSON of ColumnDefinition) for downstream nodes and lines.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>TransformKind Kind</code></td><td>Property</td><td>Transform kind</td></tr>
+    <tr><td><code>string Expression</code></td><td>Property</td><td>Filter/Map expression (simple syntax)</td></tr>
+    <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Output schema (JSON array of ColumnDefinition)</td></tr>
+    <tr><td><code>string GroupBy</code></td><td>Property</td><td>Aggregate group-by columns (CSV)</td></tr>
+    <tr><td><code>string JoinKeyLeft</code></td><td>Property</td><td>Join key in left input</td></tr>
+    <tr><td><code>string JoinKeyRight</code></td><td>Property</td><td>Join key in right input</td></tr>
+    <tr><td><code>ETLTransform()</code></td><td>Method</td><td>Initializes a new instance of the ETLTransform class.</td></tr>
+    <tr><td><code>void InferOutputSchemaFromUpstreams(Func&lt;int, string&gt; getInputSchemaJson)</code></td><td>Method</td><td>Helper used by external orchestrators or editor buttons to infer OutputSchema from upstream schemas for Aggregate and Join kinds. This is a lightweight heuristic.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-etl.html">All types in ETL family</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

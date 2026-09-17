@@ -39,7 +39,7 @@
   <li><a href="#type-taskschedule"><code>TaskSchedule</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
 </ul>
 <section class="section" id="type-budgetnode">
-  <h2>BudgetNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/BudgetNode.html">BudgetNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>PM Budget node: tracks project budget and costs. Dollar sign icon with budget vs actual comparison.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -48,12 +48,12 @@
       <tr><td><code>decimal PlannedBudget</code></td><td>Property</td><td>Gets or sets the planned budget.</td></tr>
       <tr><td><code>decimal ActualCost</code></td><td>Property</td><td>Gets or sets the actual cost.</td></tr>
       <tr><td><code>string Currency</code></td><td>Property</td><td>Gets or sets the currency.</td></tr>
-      <tr><td><code>BudgetNode()</code></td><td>Method</td><td>Budget category name</td></tr>
+      <tr><td><code>BudgetNode()</code></td><td>Method</td><td>Initializes a new instance of the BudgetNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-criticalpathcalculator">
-  <h2>CriticalPathCalculator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/CriticalPathCalculator.html">CriticalPathCalculator</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Calculates the critical path for a project network diagram. Uses forward/backward pass to compute early/late dates and float (slack).</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -66,7 +66,7 @@
   </table>
 </section>
 <section class="section" id="type-criticalpathnode">
-  <h2>CriticalPathNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/CriticalPathNode.html">CriticalPathNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>PM Critical Path node: indicates tasks on the critical path (longest sequence determining project duration). Diamond shape with warning color.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -74,12 +74,12 @@
       <tr><td><code>string TaskName</code></td><td>Property</td><td>Gets or sets the task name.</td></tr>
       <tr><td><code>float Slack</code></td><td>Property</td><td>Gets or sets the slack.</td></tr>
       <tr><td><code>int Duration</code></td><td>Property</td><td>Gets or sets the duration.</td></tr>
-      <tr><td><code>CriticalPathNode()</code></td><td>Method</td><td>Task name</td></tr>
+      <tr><td><code>CriticalPathNode()</code></td><td>Method</td><td>Initializes a new instance of the CriticalPathNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-deliverablenode">
-  <h2>DeliverableNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/DeliverableNode.html">DeliverableNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>PM Deliverable node: represents a tangible output or result from a task/phase. Hexagon shape to distinguish from regular tasks.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -87,12 +87,12 @@
       <tr><td><code>string DeliverableName</code></td><td>Property</td><td>Gets or sets the deliverable name.</td></tr>
       <tr><td><code>string DeliveryDate</code></td><td>Property</td><td>Gets or sets the delivery date.</td></tr>
       <tr><td><code>bool IsApproved</code></td><td>Property</td><td>Gets or sets the is approved.</td></tr>
-      <tr><td><code>DeliverableNode()</code></td><td>Method</td><td>Deliverable name/description</td></tr>
+      <tr><td><code>DeliverableNode()</code></td><td>Method</td><td>Initializes a new instance of the DeliverableNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-dependencynode">
-  <h2>DependencyNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/DependencyNode.html">DependencyNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>PM Dependency node: represents task dependencies with relationship types (FS, SS, FF, SF). Arrow/link style with lag/lead time indication.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -101,12 +101,12 @@
       <tr><td><code>int LagDays</code></td><td>Property</td><td>Gets or sets the lag days.</td></tr>
       <tr><td><code>string FromTask</code></td><td>Property</td><td>Gets or sets the from task.</td></tr>
       <tr><td><code>string ToTask</code></td><td>Property</td><td>Gets or sets the to task.</td></tr>
-      <tr><td><code>DependencyNode()</code></td><td>Method</td><td>Dependency type (FS=Finish-to-Start, SS=Start-to-Start, FF=Finish-to-Finish, SF=Start-to-Finish)</td></tr>
+      <tr><td><code>DependencyNode()</code></td><td>Method</td><td>Initializes a new instance of the DependencyNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-ganttbarnode">
-  <h2>GanttBarNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/GanttBarNode.html">GanttBarNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>PM Gantt Bar node: visual timeline representation showing task duration on a timeline. Horizontal bar with date range and progress indication.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -115,12 +115,12 @@
       <tr><td><code>string StartDate</code></td><td>Property</td><td>Gets or sets the start date.</td></tr>
       <tr><td><code>string EndDate</code></td><td>Property</td><td>Gets or sets the end date.</td></tr>
       <tr><td><code>int PercentComplete</code></td><td>Property</td><td>Gets or sets the percent complete.</td></tr>
-      <tr><td><code>GanttBarNode()</code></td><td>Method</td><td>Task name</td></tr>
+      <tr><td><code>GanttBarNode()</code></td><td>Method</td><td>Initializes a new instance of the GanttBarNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-ganttrow">
-  <h2>GanttRow <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/GanttRow.html">GanttRow</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>A single row in the Gantt timeline (task bar).</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -135,7 +135,7 @@
   </table>
 </section>
 <section class="section" id="type-gantttimelinenode">
-  <h2>GanttTimelineNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/GanttTimelineNode.html">GanttTimelineNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Gantt timeline view: renders scheduled tasks as bars over a day grid, highlighting the critical path. Populate with SetSchedule.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -151,13 +151,13 @@
       <tr><td><code>SKColor GridColor</code></td><td>Property</td><td>Gets or sets the grid color.</td></tr>
       <tr><td><code>List&lt;GanttRow&gt; Rows</code></td><td>Property</td><td>Gets or sets the rows.</td></tr>
       <tr><td><code>string RowsJson</code></td><td>Property</td><td>JSON projection of Rows used for persistence.</td></tr>
-      <tr><td><code>GanttTimelineNode()</code></td><td>Method</td><td>Height of each task row</td></tr>
+      <tr><td><code>GanttTimelineNode()</code></td><td>Method</td><td>Initializes a new instance of the GanttTimelineNode class.</td></tr>
       <tr><td><code>void SetSchedule(IEnumerable&lt;TaskNode&gt; tasks, CriticalPathCalculator? schedule = null)</code></td><td>Method</td><td>Populates the timeline from tasks, optionally using a computed schedule for dates/criticality. Without a schedule, tasks are laid out sequentially.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-issuenode">
-  <h2>IssueNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/IssueNode.html">IssueNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>PM Issue node: tracks active problems and blockers in the project. Red alert style with priority indication.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -166,23 +166,23 @@
       <tr><td><code>new string Priority</code></td><td>Property</td><td>Gets or sets the priority.</td></tr>
       <tr><td><code>string Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
       <tr><td><code>string AssignedTo</code></td><td>Property</td><td>Gets or sets the assigned to.</td></tr>
-      <tr><td><code>IssueNode()</code></td><td>Method</td><td>Issue title/description</td></tr>
+      <tr><td><code>IssueNode()</code></td><td>Method</td><td>Initializes a new instance of the IssueNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-milestonenode">
-  <h2>MilestoneNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/MilestoneNode.html">MilestoneNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>PM Milestone: diamond shape.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>MilestoneNode()</code></td><td>Method</td><td>Milestone label</td></tr>
+      <tr><td><code>MilestoneNode()</code></td><td>Method</td><td>Initializes a new instance of the MilestoneNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-phasenode">
-  <h2>PhaseNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/PhaseNode.html">PhaseNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>PM Phase node: represents a major project phase containing multiple tasks. Larger container with distinct visual style.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -191,12 +191,12 @@
       <tr><td><code>string StartDate</code></td><td>Property</td><td>Gets or sets the start date.</td></tr>
       <tr><td><code>string EndDate</code></td><td>Property</td><td>Gets or sets the end date.</td></tr>
       <tr><td><code>string Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
-      <tr><td><code>PhaseNode()</code></td><td>Method</td><td>Phase name</td></tr>
+      <tr><td><code>PhaseNode()</code></td><td>Method</td><td>Initializes a new instance of the PhaseNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-pmcontrol">
-  <h2>PMControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/PMControl.html">PMControl</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Base class for Project Management (PM) nodes with consistent sizing and port helpers.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -207,7 +207,7 @@
   </table>
 </section>
 <section class="section" id="type-resourcenode">
-  <h2>ResourceNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/ResourceNode.html">ResourceNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>PM Resource node: represents a resource (person, equipment, material) assigned to tasks. Displays resource allocation and availability.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -216,12 +216,12 @@
       <tr><td><code>string ResourceType</code></td><td>Property</td><td>Gets or sets the resource type.</td></tr>
       <tr><td><code>int AllocationPercent</code></td><td>Property</td><td>Gets or sets the allocation percent.</td></tr>
       <tr><td><code>decimal CostPerHour</code></td><td>Property</td><td>Gets or sets the cost per hour.</td></tr>
-      <tr><td><code>ResourceNode()</code></td><td>Method</td><td>Resource name or identifier</td></tr>
+      <tr><td><code>ResourceNode()</code></td><td>Method</td><td>Initializes a new instance of the ResourceNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-risknode">
-  <h2>RiskNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/RiskNode.html">RiskNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>PM Risk node: tracks project risks with probability and impact assessments. Warning triangle shape with risk level color coding.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -230,23 +230,23 @@
       <tr><td><code>string Probability</code></td><td>Property</td><td>Gets or sets the probability.</td></tr>
       <tr><td><code>string Impact</code></td><td>Property</td><td>Gets or sets the impact.</td></tr>
       <tr><td><code>string MitigationPlan</code></td><td>Property</td><td>Gets or sets the mitigation plan.</td></tr>
-      <tr><td><code>RiskNode()</code></td><td>Method</td><td>Risk description</td></tr>
+      <tr><td><code>RiskNode()</code></td><td>Method</td><td>Initializes a new instance of the RiskNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-summarynode">
-  <h2>SummaryNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/SummaryNode.html">SummaryNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>PM Summary/Phase: bracketed bar indicating a group span.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
-      <tr><td><code>SummaryNode()</code></td><td>Method</td><td>Summary title</td></tr>
+      <tr><td><code>SummaryNode()</code></td><td>Method</td><td>Initializes a new instance of the SummaryNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-tasknode">
-  <h2>TaskNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/TaskNode.html">TaskNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>PM Task: rounded rectangle with optional progress bar and title.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -254,12 +254,12 @@
       <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
       <tr><td><code>int PercentComplete</code></td><td>Property</td><td>Gets or sets the percent complete.</td></tr>
       <tr><td><code>int DurationDays</code></td><td>Property</td><td>Gets or sets the duration days.</td></tr>
-      <tr><td><code>TaskNode()</code></td><td>Method</td><td>Task title</td></tr>
+      <tr><td><code>TaskNode()</code></td><td>Method</td><td>Initializes a new instance of the TaskNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-taskschedule">
-  <h2>TaskSchedule <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-pm/TaskSchedule.html">TaskSchedule</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
 </section>
 </div></main></div>
 </body></html>

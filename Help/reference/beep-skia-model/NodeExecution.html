@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NodeExecution | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-model.html">Beep.Skia.Model</a><span>&rsaquo;</span> <span>NodeExecution</span></nav>
+<div class="page-header"><h1>NodeExecution <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia.Model &mdash; class</p></div>
+<p>Represents the execution of a single node within a workflow.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>NodeExecution(string nodeId, string executionId)</code></td><td>Method</td><td>Initializes a new instance of the NodeExecution class. The ID of the node being executed. The workflow execution ID.</td></tr>
+    <tr><td><code>string NodeId</code></td><td>Property</td><td>Gets the ID of the node being executed.</td></tr>
+    <tr><td><code>string ExecutionId</code></td><td>Property</td><td>Gets the workflow execution ID.</td></tr>
+    <tr><td><code>NodeStatus Status</code></td><td>Property</td><td>Gets or sets the current status of the node execution.</td></tr>
+    <tr><td><code>DateTime CreatedTime</code></td><td>Property</td><td>Gets the time when the node execution was created.</td></tr>
+    <tr><td><code>DateTime? StartTime</code></td><td>Property</td><td>Gets or sets the time when the node execution started.</td></tr>
+    <tr><td><code>DateTime? EndTime</code></td><td>Property</td><td>Gets or sets the time when the node execution completed.</td></tr>
+    <tr><td><code>TimeSpan? ExecutionTime</code></td><td>Property</td><td>Gets the execution time for this node.</td></tr>
+    <tr><td><code>NodeResult Result</code></td><td>Property</td><td>Gets or sets the result of the node execution.</td></tr>
+    <tr><td><code>string ErrorMessage</code></td><td>Property</td><td>Gets or sets error information if the node execution failed.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata about the node execution.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-model.html">All types in Beep.Skia.Model</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

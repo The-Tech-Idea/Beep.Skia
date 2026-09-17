@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETLLookup | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-etl.html">ETL family</a><span>&rsaquo;</span> <span>ETLLookup</span></nav>
+<div class="page-header"><h1>ETLLookup <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">ETL family &mdash; class</p></div>
+<p>ETL Lookup component that enriches data by joining with reference data. Displays as a cylinder with two inputs (main data + reference data). Supports caching strategies for performance optimization.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>CacheMode CacheMode</code></td><td>Property</td><td>Cache strategy: None, Partial, Full</td></tr>
+    <tr><td><code>string MatchColumns</code></td><td>Property</td><td>Columns to match (CSV: MainCol=RefCol,...)</td></tr>
+    <tr><td><code>string ReturnColumns</code></td><td>Property</td><td>Columns to return from reference (CSV)</td></tr>
+    <tr><td><code>bool FailOnNoMatch</code></td><td>Property</td><td>Fail if lookup finds no match</td></tr>
+    <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Output schema (JSON array of ColumnDefinition)</td></tr>
+    <tr><td><code>ETLLookup()</code></td><td>Method</td><td>Initializes a new instance of the ETLLookup class.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-etl.html">All types in ETL family</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

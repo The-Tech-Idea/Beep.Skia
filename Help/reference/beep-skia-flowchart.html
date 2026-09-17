@@ -66,162 +66,162 @@
   <li><a href="#type-whileloopnode"><code>WhileLoopNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
 </ul>
 <section class="section" id="type-annotationnode">
-  <h2>AnnotationNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/AnnotationNode.html">AnnotationNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Annotation node: dashed border rectangle for adding notes and comments to flowcharts. Can optionally attach to another node via a dotted connector line.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text.</td></tr>
       <tr><td><code>bool ShowConnector</code></td><td>Property</td><td>Gets or sets the show connector.</td></tr>
-      <tr><td><code>AnnotationNode()</code></td><td>Method</td><td>Annotation text (supports multi-line).</td></tr>
+      <tr><td><code>AnnotationNode()</code></td><td>Method</td><td>Initializes a new instance of the AnnotationNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-cardnode">
-  <h2>CardNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/CardNode.html">CardNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Card node: rectangle with cut corner for punch card or card-based storage. Legacy flowchart symbol for card-based data processing.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>CardNode()</code></td><td>Method</td><td>Card label or identifier.</td></tr>
+      <tr><td><code>CardNode()</code></td><td>Method</td><td>Initializes a new instance of the CardNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-codelanguage">
-  <h2>CodeLanguage <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-flowchart/CodeLanguage.html">CodeLanguage</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Target languages for FlowchartCodeGenerator.</p>
 </section>
 <section class="section" id="type-collatenode">
-  <h2>CollateNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/CollateNode.html">CollateNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Collate node: inverted trapezoid for sorting or collating data. Used to represent organizing or ordering operations.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>CollateNode()</code></td><td>Method</td><td>Text shown inside the collate shape.</td></tr>
+      <tr><td><code>CollateNode()</code></td><td>Method</td><td>Initializes a new instance of the CollateNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-commentnode">
-  <h2>CommentNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/CommentNode.html">CommentNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Comment node: fold-over corner rectangle for additional notes or comments. Similar to AnnotationNode but with a distinctive folded corner appearance.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text.</td></tr>
-      <tr><td><code>CommentNode()</code></td><td>Method</td><td>Comment text (multi-line supported).</td></tr>
+      <tr><td><code>CommentNode()</code></td><td>Method</td><td>Initializes a new instance of the CommentNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-connectordirection">
-  <h2>ConnectorDirection <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-flowchart/ConnectorDirection.html">ConnectorDirection</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
 </section>
 <section class="section" id="type-connectornode">
-  <h2>ConnectorNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/ConnectorNode.html">ConnectorNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Off-page connector: pentagon shape for referencing flow on another page/diagram. Use matching ConnectorId to link From/To pairs.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string ConnectorId</code></td><td>Property</td><td>Gets or sets the connector id.</td></tr>
       <tr><td><code>ConnectorDirection Direction</code></td><td>Property</td><td>Gets or sets the direction.</td></tr>
-      <tr><td><code>ConnectorNode()</code></td><td>Method</td><td>Identifier for matching From/To pairs (e.g., 'A', '1', 'Page2').</td></tr>
+      <tr><td><code>ConnectorNode()</code></td><td>Method</td><td>Initializes a new instance of the ConnectorNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-datanode">
-  <h2>DataNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/DataNode.html">DataNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Data (Database) node: cylinder shape representing a data store.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>DataNode()</code></td><td>Method</td><td>Text shown inside the cylinder.</td></tr>
+      <tr><td><code>DataNode()</code></td><td>Method</td><td>Initializes a new instance of the DataNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-decisionnode">
-  <h2>DecisionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/DecisionNode.html">DecisionNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Decision node: diamond shape with Yes/No ports (left/right) plus optional top/bottom ports.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>bool ShowTopBottomPorts</code></td><td>Property</td><td>Gets or sets the show top bottom ports.</td></tr>
-      <tr><td><code>DecisionNode()</code></td><td>Method</td><td>Text shown inside the diamond.</td></tr>
+      <tr><td><code>DecisionNode()</code></td><td>Method</td><td>Initializes a new instance of the DecisionNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-delaynode">
-  <h2>DelayNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/DelayNode.html">DelayNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Delay node: half-circle or rounded shape indicating a pause/wait in the process.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>string Duration</code></td><td>Property</td><td>Gets or sets the duration.</td></tr>
-      <tr><td><code>DelayNode()</code></td><td>Method</td><td>Delay description.</td></tr>
+      <tr><td><code>DelayNode()</code></td><td>Method</td><td>Initializes a new instance of the DelayNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-directaccessnode">
-  <h2>DirectAccessNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/DirectAccessNode.html">DirectAccessNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Direct Access Storage node: cylinder with flat bottom for random access storage (hard disk).</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>DirectAccessNode()</code></td><td>Method</td><td>Direct access storage description.</td></tr>
+      <tr><td><code>DirectAccessNode()</code></td><td>Method</td><td>Initializes a new instance of the DirectAccessNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-displaynode">
-  <h2>DisplayNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/DisplayNode.html">DisplayNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Display node: rounded rectangle with curved bottom (like a monitor) for output display.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>DisplayNode()</code></td><td>Method</td><td>Text shown inside the display symbol.</td></tr>
+      <tr><td><code>DisplayNode()</code></td><td>Method</td><td>Initializes a new instance of the DisplayNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-documentnode">
-  <h2>DocumentNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/DocumentNode.html">DocumentNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Document: rectangle with a curved bottom edge and centered label.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>bool OutPortsOnTop</code></td><td>Property</td><td>Gets or sets the out ports on top.</td></tr>
-      <tr><td><code>DocumentNode()</code></td><td>Method</td><td>Text shown inside the document shape.</td></tr>
+      <tr><td><code>DocumentNode()</code></td><td>Method</td><td>Initializes a new instance of the DocumentNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-dowhileloopnode">
-  <h2>DoWhileLoopNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/DoWhileLoopNode.html">DoWhileLoopNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Do-While loop node: executes body at least once, then checks condition at end. Similar to WhileLoop but with condition checked after execution.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Condition</code></td><td>Property</td><td>Gets or sets the condition.</td></tr>
-      <tr><td><code>DoWhileLoopNode()</code></td><td>Method</td><td>Boolean condition evaluated after each loop iteration.</td></tr>
+      <tr><td><code>DoWhileLoopNode()</code></td><td>Method</td><td>Initializes a new instance of the DoWhileLoopNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-extractnode">
-  <h2>ExtractNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/ExtractNode.html">ExtractNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Extract node: right-pointing triangle for data extraction operations. Used for selecting, filtering, or extracting specific data from a dataset.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>ExtractNode()</code></td><td>Method</td><td>Extract operation description.</td></tr>
+      <tr><td><code>ExtractNode()</code></td><td>Method</td><td>Initializes a new instance of the ExtractNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-flowchartcodegenerator">
-  <h2>FlowchartCodeGenerator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/FlowchartCodeGenerator.html">FlowchartCodeGenerator</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Generates structured code from a flowchart diagram. Conventions: for decision nodes the first output port is the true branch and the second is the false branch; for loop nodes the first output port is the loop body and the second is the exit.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -232,7 +232,7 @@
   </table>
 </section>
 <section class="section" id="type-flowchartcontrol">
-  <h2>FlowchartControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/FlowchartControl.html">FlowchartControl</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Base class for Flowchart nodes providing consistent sizing and port layout helpers.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -246,7 +246,7 @@
   </table>
 </section>
 <section class="section" id="type-flowchartsimulator">
-  <h2>FlowchartSimulator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/FlowchartSimulator.html">FlowchartSimulator</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Step-through execution of a flowchart. The simulator walks connection lines in port order; when a node has multiple outgoing edges (decisions, loops, forks) the optional BranchSelector chooses the branch (defaults to the first edge).</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -264,18 +264,18 @@
   </table>
 </section>
 <section class="section" id="type-forknode">
-  <h2>ForkNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/ForkNode.html">ForkNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Fork node (parallel split): thick vertical bar with single input and multiple parallel outputs. Represents splitting flow into concurrent/parallel paths.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>int ParallelPaths</code></td><td>Property</td><td>Gets or sets the parallel paths.</td></tr>
-      <tr><td><code>ForkNode()</code></td><td>Method</td><td>Number of parallel output paths (2-8).</td></tr>
+      <tr><td><code>ForkNode()</code></td><td>Method</td><td>Initializes a new instance of the ForkNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-forloopnode">
-  <h2>ForLoopNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/ForLoopNode.html">ForLoopNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>For loop node: rectangle with loop icon and condition text. Represents iterative processing with init, condition, and increment.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -284,172 +284,172 @@
       <tr><td><code>string InitExpression</code></td><td>Property</td><td>Gets or sets the init expression.</td></tr>
       <tr><td><code>string Condition</code></td><td>Property</td><td>Gets or sets the condition.</td></tr>
       <tr><td><code>string Increment</code></td><td>Property</td><td>Gets or sets the increment.</td></tr>
-      <tr><td><code>ForLoopNode()</code></td><td>Method</td><td>Loop variable name (e.g., 'i', 'item').</td></tr>
+      <tr><td><code>ForLoopNode()</code></td><td>Method</td><td>Initializes a new instance of the ForLoopNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-inputoutputnode">
-  <h2>InputOutputNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/InputOutputNode.html">InputOutputNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Input/Output (parallelogram) node with slanted sides and centered label.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>InputOutputNode()</code></td><td>Method</td><td>Text shown inside the parallelogram.</td></tr>
+      <tr><td><code>InputOutputNode()</code></td><td>Method</td><td>Initializes a new instance of the InputOutputNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-internalstoragenode">
-  <h2>InternalStorageNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/InternalStorageNode.html">InternalStorageNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Internal Storage node: rectangle with vertical lines for internal memory/storage. Used for data structures in memory (arrays, buffers, caches).</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>InternalStorageNode()</code></td><td>Method</td><td>Internal storage description.</td></tr>
+      <tr><td><code>InternalStorageNode()</code></td><td>Method</td><td>Initializes a new instance of the InternalStorageNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-joinnode">
-  <h2>JoinNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/JoinNode.html">JoinNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Join node (parallel synchronization): thick vertical bar with multiple inputs and single output. Represents waiting for all parallel paths to complete before continuing.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>int WaitCount</code></td><td>Property</td><td>Gets or sets the wait count.</td></tr>
-      <tr><td><code>JoinNode()</code></td><td>Method</td><td>Number of parallel paths to wait for (2-8).</td></tr>
+      <tr><td><code>JoinNode()</code></td><td>Method</td><td>Initializes a new instance of the JoinNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-looplimitnode">
-  <h2>LoopLimitNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/LoopLimitNode.html">LoopLimitNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Loop Limit node: hexagon with horizontal orientation for loop boundaries. Used to mark the beginning or end of a loop structure.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>LoopLimitType LimitType</code></td><td>Property</td><td>Gets or sets the limit type.</td></tr>
-      <tr><td><code>LoopLimitNode()</code></td><td>Method</td><td>Loop limit description.</td></tr>
+      <tr><td><code>LoopLimitNode()</code></td><td>Method</td><td>Initializes a new instance of the LoopLimitNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-looplimittype">
-  <h2>LoopLimitType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-flowchart/LoopLimitType.html">LoopLimitType</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
 </section>
 <section class="section" id="type-manualinputnode">
-  <h2>ManualInputNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/ManualInputNode.html">ManualInputNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Manual Input node: parallelogram with top slanted (wider at top) for manual data entry.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>ManualInputNode()</code></td><td>Method</td><td>Text shown inside the manual input shape.</td></tr>
+      <tr><td><code>ManualInputNode()</code></td><td>Method</td><td>Initializes a new instance of the ManualInputNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-manualoperationnode">
-  <h2>ManualOperationNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/ManualOperationNode.html">ManualOperationNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Manual operation node: trapezoid shape (top wider than bottom) for human-performed tasks.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>ManualOperationNode()</code></td><td>Method</td><td>Text shown inside the trapezoid.</td></tr>
+      <tr><td><code>ManualOperationNode()</code></td><td>Method</td><td>Initializes a new instance of the ManualOperationNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-mergenode">
-  <h2>MergeNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/MergeNode.html">MergeNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Merge node: inverted triangle for combining multiple flow paths (no synchronization logic).</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>MergeNode()</code></td><td>Method</td><td>Text shown inside the merge symbol.</td></tr>
+      <tr><td><code>MergeNode()</code></td><td>Method</td><td>Initializes a new instance of the MergeNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-multidocumentnode">
-  <h2>MultiDocumentNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/MultiDocumentNode.html">MultiDocumentNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Multi-Document node: stacked documents for multiple document output. Visual: Multiple overlapping document shapes with curved bottoms.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>MultiDocumentNode()</code></td><td>Method</td><td>Multi-document label.</td></tr>
+      <tr><td><code>MultiDocumentNode()</code></td><td>Method</td><td>Initializes a new instance of the MultiDocumentNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-offpagereferencenode">
-  <h2>OffPageReferenceNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/OffPageReferenceNode.html">OffPageReferenceNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Off-Page Reference node: upside-down house shape (pentagon) for page references. Alternative to ConnectorNode with a different visual style.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string ReferenceId</code></td><td>Property</td><td>Gets or sets the reference id.</td></tr>
       <tr><td><code>string PageNumber</code></td><td>Property</td><td>Gets or sets the page number.</td></tr>
-      <tr><td><code>OffPageReferenceNode()</code></td><td>Method</td><td>Unique identifier for matching references.</td></tr>
+      <tr><td><code>OffPageReferenceNode()</code></td><td>Method</td><td>Initializes a new instance of the OffPageReferenceNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-ornode">
-  <h2>OrNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/OrNode.html">OrNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Or node: logic gate shape for conditional OR operations. Circle with OR symbol. Used when any input condition can proceed to the next step.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>OrNode()</code></td><td>Method</td><td>Label for the OR gate (optional).</td></tr>
+      <tr><td><code>OrNode()</code></td><td>Method</td><td>Initializes a new instance of the OrNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-predefinedprocessnode">
-  <h2>PredefinedProcessNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/PredefinedProcessNode.html">PredefinedProcessNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Predefined Process: rectangle with vertical double-struck edges and centered label.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>PredefinedProcessNode()</code></td><td>Method</td><td>Text shown inside the predefined process rectangle.</td></tr>
+      <tr><td><code>PredefinedProcessNode()</code></td><td>Method</td><td>Initializes a new instance of the PredefinedProcessNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-preparationnode">
-  <h2>PreparationNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/PreparationNode.html">PreparationNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Preparation node: horizontal hexagon for initialization/setup steps. Commonly used for variable declarations, configuration, or setup tasks.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>PreparationNode()</code></td><td>Method</td><td>Text shown inside the preparation hexagon.</td></tr>
+      <tr><td><code>PreparationNode()</code></td><td>Method</td><td>Initializes a new instance of the PreparationNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-processnode">
-  <h2>ProcessNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/ProcessNode.html">ProcessNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Process node: rectangle with optional rounded corners and centered label.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>bool ShowTopBottomPorts</code></td><td>Property</td><td>Gets or sets the show top bottom ports.</td></tr>
-      <tr><td><code>ProcessNode()</code></td><td>Method</td><td>Text shown inside the process rectangle.</td></tr>
+      <tr><td><code>ProcessNode()</code></td><td>Method</td><td>Initializes a new instance of the ProcessNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-sequentialaccessnode">
-  <h2>SequentialAccessNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/SequentialAccessNode.html">SequentialAccessNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Sequential Access Storage node: elongated oval for sequential access storage devices. Used for devices like magnetic tape where data must be accessed sequentially.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>SequentialAccessNode()</code></td><td>Method</td><td>Sequential access storage description.</td></tr>
+      <tr><td><code>SequentialAccessNode()</code></td><td>Method</td><td>Initializes a new instance of the SequentialAccessNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-simulationedge">
-  <h2>SimulationEdge <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/SimulationEdge.html">SimulationEdge</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>A candidate transition from the current simulation node.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -461,7 +461,7 @@
   </table>
 </section>
 <section class="section" id="type-simulationstepeventargs">
-  <h2>SimulationStepEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/SimulationStepEventArgs.html">SimulationStepEventArgs</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Event args raised after each simulation step.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -473,42 +473,42 @@
   </table>
 </section>
 <section class="section" id="type-sortnode">
-  <h2>SortNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/SortNode.html">SortNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Sort node: two overlapping triangles for sorting operations.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>string SortKey</code></td><td>Property</td><td>Gets or sets the sort key.</td></tr>
-      <tr><td><code>SortNode()</code></td><td>Method</td><td>Sort operation description.</td></tr>
+      <tr><td><code>SortNode()</code></td><td>Method</td><td>Initializes a new instance of the SortNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-startendnode">
-  <h2>StartEndNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/StartEndNode.html">StartEndNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Start/End node (terminator): pill-shaped rounded rectangle with a label.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>bool ShowTopBottomPorts</code></td><td>Property</td><td>Gets or sets the show top bottom ports.</td></tr>
-      <tr><td><code>StartEndNode()</code></td><td>Method</td><td>Text shown inside the terminator pill.</td></tr>
+      <tr><td><code>StartEndNode()</code></td><td>Method</td><td>Initializes a new instance of the StartEndNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-storeddatanode">
-  <h2>StoredDataNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/StoredDataNode.html">StoredDataNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Stored data node: parallelogram tilted to the right for data storage (tape, disk). Different from InputOutput which tilts both sides.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>StoredDataNode()</code></td><td>Method</td><td>Text shown inside the stored data symbol.</td></tr>
+      <tr><td><code>StoredDataNode()</code></td><td>Method</td><td>Initializes a new instance of the StoredDataNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-subprocessnode">
-  <h2>SubProcessNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/SubProcessNode.html">SubProcessNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Sub-process node: rectangle with double border for calling/referencing another process. Can be collapsed (shows + icon) or expanded to show nested details.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -516,40 +516,40 @@
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>string SubProcessId</code></td><td>Property</td><td>Gets or sets the sub process id.</td></tr>
       <tr><td><code>bool IsExpanded</code></td><td>Property</td><td>Gets or sets the is expanded.</td></tr>
-      <tr><td><code>SubProcessNode()</code></td><td>Method</td><td>Sub-process name/description.</td></tr>
+      <tr><td><code>SubProcessNode()</code></td><td>Method</td><td>Initializes a new instance of the SubProcessNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-summingjunctionnode">
-  <h2>SummingJunctionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/SummingJunctionNode.html">SummingJunctionNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Summing Junction node: X in a circle for combining/merging multiple inputs. Different from OR gate - represents mathematical summation or aggregation.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>SummingJunctionNode()</code></td><td>Method</td><td>Optional label for the summing junction.</td></tr>
+      <tr><td><code>SummingJunctionNode()</code></td><td>Method</td><td>Initializes a new instance of the SummingJunctionNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-tapenode">
-  <h2>TapeNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/TapeNode.html">TapeNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Tape node: rounded bottom semicircle shape for magnetic tape storage. Legacy flowchart symbol for sequential tape-based storage.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
-      <tr><td><code>TapeNode()</code></td><td>Method</td><td>Tape storage label.</td></tr>
+      <tr><td><code>TapeNode()</code></td><td>Method</td><td>Initializes a new instance of the TapeNode class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-whileloopnode">
-  <h2>WhileLoopNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-flowchart/WhileLoopNode.html">WhileLoopNode</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>While loop node: hexagon (vertical orientation) with condition text. Represents loop that executes while condition is true.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td><code>string Condition</code></td><td>Property</td><td>Gets or sets the condition.</td></tr>
-      <tr><td><code>WhileLoopNode()</code></td><td>Method</td><td>Loop condition expression (e.g., 'count &amp;gt; 0', 'hasMore').</td></tr>
+      <tr><td><code>WhileLoopNode()</code></td><td>Method</td><td>Initializes a new instance of the WhileLoopNode class.</td></tr>
     </tbody>
   </table>
 </section>

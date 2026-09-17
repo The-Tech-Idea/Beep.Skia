@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CentralityMeasure | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-network.html">Network family</a><span>&rsaquo;</span> <span>CentralityMeasure</span></nav>
+<div class="page-header"><h1>CentralityMeasure <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Network family &mdash; class</p></div>
+<p>Centrality measure component that visualizes node importance in the network. Supports different centrality algorithms and displays rankings.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>CentralityType MeasureType</code></td><td>Property</td><td>Gets or sets the type of centrality measure to display.</td></tr>
+    <tr><td><code>List&lt;NodeCentrality&gt; NodeCentralities</code></td><td>Property</td><td>Gets the list of nodes with their centrality scores.</td></tr>
+    <tr><td><code>int MaxDisplayCount</code></td><td>Property</td><td>Gets or sets the maximum number of top nodes to display.</td></tr>
+    <tr><td><code>bool ShowValues</code></td><td>Property</td><td>Gets or sets whether to show centrality values.</td></tr>
+    <tr><td><code>SKColor HighCentralityColor</code></td><td>Property</td><td>Gets or sets the color for high centrality nodes.</td></tr>
+    <tr><td><code>SKColor LowCentralityColor</code></td><td>Property</td><td>Gets or sets the color for low centrality nodes.</td></tr>
+    <tr><td><code>SKColor MediumCentralityColor</code></td><td>Property</td><td>Gets or sets the color for medium centrality nodes.</td></tr>
+    <tr><td><code>CentralityMeasure()</code></td><td>Method</td><td>Initializes a new instance of the CentralityMeasure class.</td></tr>
+    <tr><td><code>void CalculateCentrality(List&lt;NetworkNode&gt; nodes, List&lt;NetworkLink&gt; links)</code></td><td>Method</td><td>Calculates centrality measures for the given network. The network nodes. The network links.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-network.html">All types in Network family</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkflowDefinition | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-model.html">Beep.Skia.Model</a><span>&rsaquo;</span> <span>WorkflowDefinition</span></nav>
+<div class="page-header"><h1>WorkflowDefinition <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia.Model &mdash; class</p></div>
+<p>Represents the definition of a workflow including its nodes, connections, and metadata. This class provides the blueprint for executing automation workflows.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>WorkflowDefinition(string id, string name)</code></td><td>Method</td><td>Initializes a new instance of the WorkflowDefinition class. The unique identifier for the workflow. The display name of the workflow.</td></tr>
+    <tr><td><code>string Id</code></td><td>Property</td><td>Gets the unique identifier for the workflow.</td></tr>
+    <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the display name of the workflow.</td></tr>
+    <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description of what this workflow does.</td></tr>
+    <tr><td><code>string Version</code></td><td>Property</td><td>Gets or sets the version of this workflow definition.</td></tr>
+    <tr><td><code>DateTime CreatedDate</code></td><td>Property</td><td>Gets the date when this workflow was created.</td></tr>
+    <tr><td><code>DateTime? LastModifiedDate</code></td><td>Property</td><td>Gets or sets the date when this workflow was last modified.</td></tr>
+    <tr><td><code>string Author</code></td><td>Property</td><td>Gets or sets the author of this workflow.</td></tr>
+    <tr><td><code>List&lt;string&gt; Tags</code></td><td>Property</td><td>Gets or sets the category or tags for organizing workflows.</td></tr>
+    <tr><td><code>bool IsEnabled</code></td><td>Property</td><td>Gets or sets a value indicating whether this workflow is enabled for execution.</td></tr>
+    <tr><td><code>IList&lt;NodeDefinition&gt; Nodes</code></td><td>Property</td><td>Gets the collection of nodes in this workflow.</td></tr>
+    <tr><td><code>IList&lt;ConnectionDefinition&gt; Connections</code></td><td>Property</td><td>Gets the collection of connections between nodes in this workflow.</td></tr>
+    <tr><td><code>IList&lt;WorkflowVariable&gt; Variables</code></td><td>Property</td><td>Gets the collection of workflow variables.</td></tr>
+    <tr><td><code>IList&lt;TriggerDefinition&gt; Triggers</code></td><td>Property</td><td>Gets the collection of triggers that can start this workflow.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; Configuration</code></td><td>Property</td><td>Gets or sets the global configuration for this workflow.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata about this workflow.</td></tr>
+    <tr><td><code>TimeSpan? MaxExecutionTime</code></td><td>Property</td><td>Gets or sets the maximum execution timeout for this workflow.</td></tr>
+    <tr><td><code>ExecutionPriority Priority</code></td><td>Property</td><td>Gets or sets the execution priority for this workflow.</td></tr>
+    <tr><td><code>void AddNode(NodeDefinition node)</code></td><td>Method</td><td>Adds a node to the workflow. The node definition to add.</td></tr>
+    <tr><td><code>bool RemoveNode(string nodeId)</code></td><td>Method</td><td>Removes a node from the workflow and all its connections. The ID of the node to remove. True if the node was removed, false if it was not found.</td></tr>
+    <tr><td><code>void AddConnection(ConnectionDefinition connection)</code></td><td>Method</td><td>Adds a connection between two nodes. The connection definition to add.</td></tr>
+    <tr><td><code>bool RemoveConnection(string connectionId)</code></td><td>Method</td><td>Removes a connection from the workflow. The ID of the connection to remove. True if the connection was removed, false if it was not found.</td></tr>
+    <tr><td><code>IEnumerable&lt;NodeDefinition&gt; GetStartingNodes()</code></td><td>Method</td><td>Gets all nodes that should execute first (nodes with no incoming connections or trigger nodes). Collection of starting node definitions.</td></tr>
+    <tr><td><code>IEnumerable&lt;NodeDefinition&gt; GetSourceNodes(string nodeId)</code></td><td>Method</td><td>Gets all nodes that connect to the specified node as input. The ID of the target node. Collection of source node definitions.</td></tr>
+    <tr><td><code>IEnumerable&lt;NodeDefinition&gt; GetTargetNodes(string nodeId)</code></td><td>Method</td><td>Gets all nodes that connect from the specified node as output. The ID of the source node. Collection of target node definitions.</td></tr>
+    <tr><td><code>ValidationResult Validate()</code></td><td>Method</td><td>Validates the workflow definition for correctness and completeness. A validation result indicating any issues found.</td></tr>
+    <tr><td><code>WorkflowDefinition Clone(string newId = null, string newName = null)</code></td><td>Method</td><td>Creates a deep copy of this workflow definition. Optional new ID for the copied workflow. Optional new name for the copied workflow. A new WorkflowDefinition instance that is a copy of this one.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-model.html">All types in Beep.Skia.Model</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

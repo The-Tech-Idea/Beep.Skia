@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GraphNavigator | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-network.html">Network family</a><span>&rsaquo;</span> <span>GraphNavigator</span></nav>
+<div class="page-header"><h1>GraphNavigator <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Network family &mdash; class</p></div>
+<p>Graph navigator component that provides interactive controls for exploring network graphs. Includes zoom, pan, node selection, and navigation history.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>float ZoomLevel</code></td><td>Property</td><td>Gets or sets the current zoom level (1.0 = 100%).</td></tr>
+    <tr><td><code>float MinZoom</code></td><td>Property</td><td>Gets or sets the minimum zoom level.</td></tr>
+    <tr><td><code>float MaxZoom</code></td><td>Property</td><td>Gets or sets the maximum zoom level.</td></tr>
+    <tr><td><code>float PanOffsetX</code></td><td>Property</td><td>Gets or sets the pan offset X.</td></tr>
+    <tr><td><code>float PanOffsetY</code></td><td>Property</td><td>Gets or sets the pan offset Y.</td></tr>
+    <tr><td><code>NetworkNode SelectedNode</code></td><td>Property</td><td>Gets the currently selected node.</td></tr>
+    <tr><td><code>List&lt;NetworkNode&gt; NavigationHistory</code></td><td>Property</td><td>Gets the list of navigation history (node selections).</td></tr>
+    <tr><td><code>bool IsPanMode</code></td><td>Property</td><td>Gets or sets whether the navigator is in pan mode.</td></tr>
+    <tr><td><code>bool ShowControls</code></td><td>Property</td><td>Gets or sets whether to show navigation controls.</td></tr>
+    <tr><td><code>float ZoomStep</code></td><td>Property</td><td>Gets or sets the zoom step size.</td></tr>
+    <tr><td><code>event EventHandler&lt;NodeSelectionEventArgs&gt; NodeSelected</code></td><td>Event</td><td>Event raised when the selected node changes.</td></tr>
+    <tr><td><code>event EventHandler&lt;ViewChangedEventArgs&gt; ViewChanged</code></td><td>Event</td><td>Event raised when the view changes (zoom/pan).</td></tr>
+    <tr><td><code>GraphNavigator()</code></td><td>Method</td><td>Initializes a new instance of the GraphNavigator class.</td></tr>
+    <tr><td><code>void ZoomIn()</code></td><td>Method</td><td>Zooms in by one step.</td></tr>
+    <tr><td><code>void ZoomOut()</code></td><td>Method</td><td>Zooms out by one step.</td></tr>
+    <tr><td><code>void SetZoom(float zoom)</code></td><td>Method</td><td>Sets the zoom level. The new zoom level.</td></tr>
+    <tr><td><code>void ResetView()</code></td><td>Method</td><td>Resets the view to default zoom and pan.</td></tr>
+    <tr><td><code>void Pan(float deltaX, float deltaY)</code></td><td>Method</td><td>Pans the view by the specified amount. The change in X position. The change in Y position.</td></tr>
+    <tr><td><code>void CenterOnNode(NetworkNode node)</code></td><td>Method</td><td>Centers the view on a specific node. The node to center on.</td></tr>
+    <tr><td><code>void SelectNode(NetworkNode node)</code></td><td>Method</td><td>Selects a node and adds it to navigation history. The node to select.</td></tr>
+    <tr><td><code>void GoBack()</code></td><td>Method</td><td>Goes back to the previously selected node.</td></tr>
+    <tr><td><code>void ClearHistory()</code></td><td>Method</td><td>Clears the navigation history.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-network.html">All types in Network family</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

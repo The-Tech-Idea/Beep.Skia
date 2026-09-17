@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NodeDefinition | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-model.html">Beep.Skia.Model</a><span>&rsaquo;</span> <span>NodeDefinition</span></nav>
+<div class="page-header"><h1>NodeDefinition <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia.Model &mdash; class</p></div>
+<p>Represents the definition of a single node within a workflow.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>NodeDefinition(string id, string name, NodeType nodeType, string componentType)</code></td><td>Method</td><td>Initializes a new instance of the NodeDefinition class. The unique identifier for the node. The display name of the node. The type of the node. The component type for creating the automation node.</td></tr>
+    <tr><td><code>string Id</code></td><td>Property</td><td>Gets the unique identifier for the node.</td></tr>
+    <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the display name of the node.</td></tr>
+    <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description of what this node does.</td></tr>
+    <tr><td><code>NodeType NodeType</code></td><td>Property</td><td>Gets the type of this node.</td></tr>
+    <tr><td><code>string ComponentType</code></td><td>Property</td><td>Gets the component type used to create the automation node instance.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; Configuration</code></td><td>Property</td><td>Gets or sets the configuration parameters for this node.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata about this node.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; InputSchema</code></td><td>Property</td><td>Gets or sets the schema defining the input parameters this node expects.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; OutputSchema</code></td><td>Property</td><td>Gets or sets the schema defining the output parameters this node produces.</td></tr>
+    <tr><td><code>SKPoint Position</code></td><td>Property</td><td>Gets or sets the position of this node on the workflow canvas.</td></tr>
+    <tr><td><code>SKSize Size</code></td><td>Property</td><td>Gets or sets the size of this node on the workflow canvas.</td></tr>
+    <tr><td><code>bool IsEnabled</code></td><td>Property</td><td>Gets or sets a value indicating whether this node is enabled for execution.</td></tr>
+    <tr><td><code>TimeSpan? ExecutionTimeout</code></td><td>Property</td><td>Gets or sets the execution timeout for this specific node.</td></tr>
+    <tr><td><code>RetryPolicy RetryPolicy</code></td><td>Property</td><td>Gets or sets the retry policy for this node if execution fails.</td></tr>
+    <tr><td><code>ValidationResult Validate()</code></td><td>Method</td><td>Validates this node definition for correctness. A validation result indicating any issues found.</td></tr>
+    <tr><td><code>NodeDefinition Clone(string newId = null)</code></td><td>Method</td><td>Creates a copy of this node definition. Optional new ID for the copied node. A new NodeDefinition instance that is a copy of this one.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-model.html">All types in Beep.Skia.Model</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

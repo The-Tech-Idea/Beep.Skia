@@ -69,6 +69,56 @@ function Get-TypeSummaryOnly([string]$file, [string]$typeName, [string]$kind) {
     return ''
 }
 
+function New-TypePage([string]$dir, [string]$assemblyPage, [string]$assemblyTitle, [object]$type) {
+    $anchor = 'type-' + $type.Name.ToLowerInvariant()
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.AppendLine('<!DOCTYPE html>')
+    [void]$sb.AppendLine('<html lang="en">')
+    [void]$sb.AppendLine('<head>')
+    [void]$sb.AppendLine('<meta charset="UTF-8">')
+    [void]$sb.AppendLine('<meta name="viewport" content="width=device-width, initial-scale=1.0">')
+    [void]$sb.AppendLine("<title>$($type.Name) | Beep.Skia Documentation</title>")
+    [void]$sb.AppendLine('<link rel="stylesheet" href="../../sphinx-style.css">')
+    [void]$sb.AppendLine('<link rel="preconnect" href="https://fonts.googleapis.com">')
+    [void]$sb.AppendLine('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>')
+    [void]$sb.AppendLine('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">')
+    [void]$sb.AppendLine('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">')
+    [void]$sb.AppendLine('<style>.content{margin-left:0!important}</style>')
+    [void]$sb.AppendLine('</head>')
+    [void]$sb.AppendLine('<body>')
+    [void]$sb.AppendLine('<div class="container">')
+    [void]$sb.AppendLine('<main class="content"><div class="content-wrapper">')
+    [void]$sb.AppendLine("<nav class=`"breadcrumb-nav`"><a href=`"../../index.html`">Home</a><span>&rsaquo;</span> <a href=`"../api-index.html`">API Reference</a><span>&rsaquo;</span> <a href=`"../$assemblyPage`">$assemblyTitle</a><span>&rsaquo;</span> <span>$($type.Name)</span></nav>")
+    [void]$sb.AppendLine("<div class=`"page-header`"><h1>$($type.Name) <span style=`"font-size:0.5em;color:var(--color-foreground-muted)`">$($type.Kind)</span></h1>")
+    [void]$sb.AppendLine("<p class=`"page-subtitle`">$assemblyTitle &mdash; $($type.Kind)</p></div>")
+    if ($type.Summary) { [void]$sb.AppendLine("<p>$($type.Summary)</p>") }
+
+    if ($type.Members -and @($type.Members).Count -gt 0) {
+        [void]$sb.AppendLine("<h2>Members</h2>")
+        [void]$sb.AppendLine('<table class="property-table">')
+        [void]$sb.AppendLine('  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>')
+        [void]$sb.AppendLine('  <tbody>')
+        foreach ($m in $type.Members) {
+            [void]$sb.AppendLine("    <tr><td><code>$($m.Signature)</code></td><td>$($m.Kind)</td><td>$($m.Summary)</td></tr>")
+        }
+        [void]$sb.AppendLine('  </tbody>')
+        [void]$sb.AppendLine('</table>')
+    } else {
+        [void]$sb.AppendLine('<p>This type exposes no public members beyond its declaration.</p>')
+    }
+
+    [void]$sb.AppendLine('<h2>Related</h2>')
+    [void]$sb.AppendLine('<ul>')
+    [void]$sb.AppendLine("  <li><a href=`"../$assemblyPage`">All types in $assemblyTitle</a></li>")
+    [void]$sb.AppendLine("  <li><a href=`"../api-index.html`">API index</a></li>")
+    [void]$sb.AppendLine('</ul>')
+    [void]$sb.AppendLine('</div></main></div>')
+    [void]$sb.AppendLine('</body></html>')
+
+    $path = Join-Path (Join-Path $help "reference\$dir") "$($type.Name).html"
+    [System.IO.File]::WriteAllText($path, $sb.ToString(), $utf8)
+}
+
 function New-RefPage([string]$fileName, [string]$title, [string]$subtitle, [string]$intro, [array]$types, [bool]$withMembers) {
     $sb = New-Object System.Text.StringBuilder
     [void]$sb.AppendLine('<!DOCTYPE html>')
@@ -104,8 +154,9 @@ function New-RefPage([string]$fileName, [string]$title, [string]$subtitle, [stri
 
     foreach ($t in $types) {
         $anchor = 'type-' + $t.Name.ToLowerInvariant()
+        $typePage = "$slug/$($t.Name).html"
         [void]$sb.AppendLine("<section class=`"section`" id=`"$anchor`">")
-        [void]$sb.AppendLine("  <h2>$($t.Name) <span style=`"font-size:0.6em;color:var(--color-foreground-muted)`">($($t.Kind))</span></h2>")
+        [void]$sb.AppendLine("  <h2><a href=`"$typePage`">$($t.Name)</a> <span style=`"font-size:0.6em;color:var(--color-foreground-muted)`">($($t.Kind))</span></h2>")
         if ($t.Summary) { [void]$sb.AppendLine("  <p>$($t.Summary)</p>") }
         if ($t.Members -and @($t.Members).Count -gt 0) {
             [void]$sb.AppendLine('  <table class="property-table">')
@@ -143,13 +194,28 @@ foreach ($p in $projects) {
         $info = Get-TypeInfo $t.File $t.Name
         $summary = $info.Summary
         if (-not $summary) { $summary = Get-TypeSummaryOnly $t.File $t.Name $t.Kind }
-        $enriched += [pscustomobject]@{ Name = $t.Name; Kind = $t.Kind; Summary = $summary; Members = $info.Members }
+        $members = @($info.Members)
+        # Constructors register NodeProperties; never harvest those descriptions for the ctor itself.
+        foreach ($m in $members) {
+            if ($m.Signature -match "^$([regex]::Escape($t.Name))\s*\(" -and $m.Summary -notmatch '^Initializes a new instance') {
+                $m.Summary = "Initializes a new instance of the $($t.Name) class."
+            }
+        }
+        $enriched += [pscustomobject]@{ Name = $t.Name; Kind = $t.Kind; Summary = $summary; Members = $members }
     }
 
     $file = "$slug.html"
     $intro = "Complete API surface of the <code>$($p.Name)</code> assembly: $($enriched.Count) public types with their documented members. Follow the family guide for usage patterns."
     New-RefPage $file $p.Title "API reference for $($p.Name) ($($enriched.Count) public types)" $intro $enriched $true
     $indexLinks[$p.Name] = $file
+
+    # One page per type
+    $typeDir = Join-Path $help "reference\$slug"
+    if (-not (Test-Path $typeDir)) { New-Item -ItemType Directory -Path $typeDir -Force | Out-Null }
+    foreach ($t in $enriched) {
+        New-TypePage $slug $file $p.Title $t
+    }
+    Write-Output "wrote reference/$slug/ ($($enriched.Count) type pages)"
 }
 
 # Persist the mapping for the API index rewrite.

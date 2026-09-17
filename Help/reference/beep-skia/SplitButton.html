@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SplitButton | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>SplitButton</span></nav>
+<div class="page-header"><h1>SplitButton <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>A Material Design 3.0 Split Button component that combines a primary action with a dropdown menu of additional options.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text displayed on the primary button.</td></tr>
+    <tr><td><code>string SelectedText</code></td><td>Property</td><td>Gets the text of the currently selected menu item.</td></tr>
+    <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of the primary button.</td></tr>
+    <tr><td><code>new SKColor TextColor</code></td><td>Property</td><td>Gets or sets the text color of the primary button.</td></tr>
+    <tr><td><code>SKColor DropdownButtonColor</code></td><td>Property</td><td>Gets or sets the background color of the dropdown button.</td></tr>
+    <tr><td><code>SKColor DropdownTextColor</code></td><td>Property</td><td>Gets or sets the text color of the dropdown button.</td></tr>
+    <tr><td><code>float CornerRadius</code></td><td>Property</td><td>Gets or sets the corner radius of the split button.</td></tr>
+    <tr><td><code>ButtonVariant Variant</code></td><td>Property</td><td>Gets or sets the button variant (Material Design 3.0).</td></tr>
+    <tr><td><code>string LeadingIcon</code></td><td>Property</td><td>Gets or sets the leading icon (SVG path or resource name).</td></tr>
+    <tr><td><code>string DropdownIcon</code></td><td>Property</td><td>Gets or sets the dropdown icon.</td></tr>
+    <tr><td><code>bool IsDropdownOpen</code></td><td>Property</td><td>Gets or sets whether the dropdown menu is open.</td></tr>
+    <tr><td><code>float SeparatorWidth</code></td><td>Property</td><td>Gets or sets the width of the separator between the primary and dropdown buttons.</td></tr>
+    <tr><td><code>SKColor SeparatorColor</code></td><td>Property</td><td>Gets or sets the color of the separator between the primary and dropdown buttons.</td></tr>
+    <tr><td><code>SplitButtonItem SelectedItem</code></td><td>Property</td><td>Gets the currently selected menu item.</td></tr>
+    <tr><td><code>IReadOnlyList&lt;SplitButtonItem&gt; MenuItems</code></td><td>Property</td><td>Gets the collection of menu items.</td></tr>
+    <tr><td><code>event EventHandler&lt;EventArgs&gt; PrimaryButtonClicked</code></td><td>Event</td><td>Occurs when the primary button is clicked.</td></tr>
+    <tr><td><code>event EventHandler&lt;EventArgs&gt; DropdownButtonClicked</code></td><td>Event</td><td>Occurs when the dropdown button is clicked.</td></tr>
+    <tr><td><code>event EventHandler&lt;SplitButtonItemSelectedEventArgs&gt; ItemSelected</code></td><td>Event</td><td>Occurs when a menu item is selected.</td></tr>
+    <tr><td><code>event EventHandler&lt;EventArgs&gt; DropdownStateChanged</code></td><td>Event</td><td>Occurs when the dropdown state changes.</td></tr>
+    <tr><td><code>SplitButton()</code></td><td>Method</td><td>Initializes a new instance of the SplitButton class.</td></tr>
+    <tr><td><code>SplitButtonItem AddMenuItem(string text, string icon = null)</code></td><td>Method</td><td>Adds a menu item to the dropdown. The text for the menu item. The icon for the menu item (optional). The created SplitButtonItem.</td></tr>
+    <tr><td><code>bool RemoveMenuItem(SplitButtonItem item)</code></td><td>Method</td><td>Removes a menu item from the dropdown. The menu item to remove. True if the item was removed successfully.</td></tr>
+    <tr><td><code>void ClearMenuItems()</code></td><td>Method</td><td>Clears all menu items from the dropdown.</td></tr>
+    <tr><td><code>void SelectItem(SplitButtonItem item)</code></td><td>Method</td><td>Selects a menu item. The menu item to select.</td></tr>
+    <tr><td><code>void SelectItem(int index)</code></td><td>Method</td><td>Selects a menu item by index. The index of the menu item to select.</td></tr>
+    <tr><td><code>static SplitButton Create(string primaryText, params string[] menuItems)</code></td><td>Method</td><td>Creates a new SplitButton instance with the specified menu items. The text for the primary button. The menu items for the dropdown. A new SplitButton instance.</td></tr>
+    <tr><td><code>static SplitButton CreateFilled(string primaryText, params string[] menuItems)</code></td><td>Method</td><td>Creates a new SplitButton instance with filled variant. The text for the primary button. The menu items for the dropdown. A new SplitButton instance.</td></tr>
+    <tr><td><code>static SplitButton CreateOutlined(string primaryText, params string[] menuItems)</code></td><td>Method</td><td>Creates a new SplitButton instance with outlined variant. The text for the primary button. The menu items for the dropdown. A new SplitButton instance.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

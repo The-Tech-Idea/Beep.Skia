@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExecutionContext | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-model.html">Beep.Skia.Model</a><span>&rsaquo;</span> <span>ExecutionContext</span></nav>
+<div class="page-header"><h1>ExecutionContext <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia.Model &mdash; class</p></div>
+<p>Provides execution context for automation nodes including input data, workflow state, and execution environment.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>ExecutionContext(string workflowId, string executionId)</code></td><td>Method</td><td>Initializes a new instance of the ExecutionContext class. The ID of the workflow being executed. The unique ID for this execution instance.</td></tr>
+    <tr><td><code>string WorkflowId</code></td><td>Property</td><td>Gets the ID of the workflow being executed.</td></tr>
+    <tr><td><code>string ExecutionId</code></td><td>Property</td><td>Gets the unique ID for this execution instance.</td></tr>
+    <tr><td><code>DateTime StartTime</code></td><td>Property</td><td>Gets the time when this execution context was created.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; Data</code></td><td>Property</td><td>Gets or sets the input data for the current node execution.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; Variables</code></td><td>Property</td><td>Gets or sets the workflow variables accessible to all nodes.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets metadata about the execution environment.</td></tr>
+    <tr><td><code>List&lt;object&gt; PreviousResults</code></td><td>Property</td><td>Gets or sets the results from previous nodes in the workflow execution.</td></tr>
+    <tr><td><code>string UserId</code></td><td>Property</td><td>Gets or sets the user ID who initiated the workflow execution.</td></tr>
+    <tr><td><code>ExecutionPriority Priority</code></td><td>Property</td><td>Gets or sets the execution priority.</td></tr>
+    <tr><td><code>bool IsDebugMode</code></td><td>Property</td><td>Gets or sets a value indicating whether the execution is in debug mode.</td></tr>
+    <tr><td><code>TimeSpan? Timeout</code></td><td>Property</td><td>Gets or sets the maximum execution timeout.</td></tr>
+    <tr><td><code>ExecutionContext CreateChild(Dictionary&lt;string, object&gt; newData = null)</code></td><td>Method</td><td>Creates a copy of the current execution context with optionally modified data. New data to replace the current data, or null to keep existing data. A new ExecutionContext instance with the specified modifications.</td></tr>
+    <tr><td><code>T GetData&lt;T&gt;(string key, T defaultValue = default)</code></td><td>Method</td><td>Gets a strongly typed value from the data dictionary. The type to cast the value to. The key to look up. The default value to return if the key is not found. The value cast to the specified type, or the default value.</td></tr>
+    <tr><td><code>void SetData(string key, object value)</code></td><td>Method</td><td>Sets a value in the data dictionary. The key to set. The value to set.</td></tr>
+    <tr><td><code>T GetVariable&lt;T&gt;(string key, T defaultValue = default)</code></td><td>Method</td><td>Gets a strongly typed variable value. The type to cast the value to. The key to look up. The default value to return if the key is not found. The variable value cast to the specified type, or the default value.</td></tr>
+    <tr><td><code>void SetVariable(string key, object value)</code></td><td>Method</td><td>Sets a workflow variable value. The key to set. The value to set.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-model.html">All types in Beep.Skia.Model</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

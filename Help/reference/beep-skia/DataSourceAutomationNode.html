@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DataSourceAutomationNode | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>DataSourceAutomationNode</span></nav>
+<div class="page-header"><h1>DataSourceAutomationNode <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>Automation node that provides access to BeepDataSources for use in workflow pipelines. Allows querying databases, files, APIs, and other data sources as part of automation workflows.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>string DataSourceName</code></td><td>Property</td><td>Gets or sets the data source name.</td></tr>
+    <tr><td><code>string EntityName</code></td><td>Property</td><td>Gets or sets the name of the entity (table, collection, etc.) to query.</td></tr>
+    <tr><td><code>string QueryString</code></td><td>Property</td><td>Gets or sets the query string to execute against the data source. Can be SQL, MongoDB query, REST endpoint, etc. depending on the data source type.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; QueryParameters</code></td><td>Property</td><td>Gets or sets the parameters for the query.</td></tr>
+    <tr><td><code>string OutputFormat</code></td><td>Property</td><td>Gets or sets the output format for the data (json, xml, csv, etc.).</td></tr>
+    <tr><td><code>int MaxRows</code></td><td>Property</td><td>Gets or sets the maximum number of rows to return.</td></tr>
+    <tr><td><code>bool UseCache</code></td><td>Property</td><td>Gets or sets whether to use caching for query results.</td></tr>
+    <tr><td><code>TimeSpan CacheTimeout</code></td><td>Property</td><td>Gets or sets the cache timeout duration.</td></tr>
+    <tr><td><code>DataSourceAutomationNode()</code></td><td>Method</td><td>Initializes a new instance of the DataSourceAutomationNode class.</td></tr>
+    <tr><td><code>DataSourceAutomationNode(IDMEEditor dmeEditor, IDMLogger logger, IErrorsInfo errorObject)</code></td><td>Method</td><td>Initializes a new instance of the DataSourceAutomationNode class with data source manager dependencies. The DME editor instance for data source management. The logger instance for logging operations. The error handler instance.</td></tr>
+    <tr><td><code>void SetDataSourceManager(IDMEEditor dmeEditor, IDMLogger logger, IErrorsInfo errorObject)</code></td><td>Method</td><td>Sets the data source manager dependencies for this node. The DME editor instance for data source management. The logger instance for logging operations. The error handler instance.</td></tr>
+    <tr><td><code>override string Description</code></td><td>Property</td><td>Gets the description of what this automation node does.</td></tr>
+    <tr><td><code>override NodeType NodeType</code></td><td>Property</td><td>Gets the type of this automation node.</td></tr>
+    <tr><td><code>override Task&lt;bool&gt; InitializeAsync(Dictionary&lt;string, object&gt; configuration, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Initializes the data source automation node with the specified configuration. The configuration parameters for the node. Token to cancel the initialization. A task representing the initialization operation.</td></tr>
+    <tr><td><code>override async Task&lt;ValidationResult&gt; ValidateAsync(Model.ExecutionContext inputData, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Validates the current configuration and input data for this node. The input data to validate. Token to cancel the validation. A task containing the validation result.</td></tr>
+    <tr><td><code>override async Task&lt;NodeResult&gt; ExecuteAsync(Model.ExecutionContext context, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Executes the data source query and returns the results. The execution context containing input data and workflow state. Token to cancel the execution. A task containing the execution result.</td></tr>
+    <tr><td><code>override Dictionary&lt;string, object&gt; GetInputSchema()</code></td><td>Method</td><td>Gets the schema defining the input parameters this node expects. A dictionary describing the input schema.</td></tr>
+    <tr><td><code>override Dictionary&lt;string, object&gt; GetOutputSchema()</code></td><td>Method</td><td>Gets the schema defining the output parameters this node produces. A dictionary describing the output schema.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

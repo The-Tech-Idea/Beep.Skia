@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ConnectionLine | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>ConnectionLine</span></nav>
+<div class="page-header"><h1>ConnectionLine <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>Represents a visual connection line between two connection points that can be drawn on a Skia canvas. This class implements the IConnectionLine interface and provides functionality for drawing lines, arrows, labels, animations, and user interaction handling.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>ConnectionLine(Action invalidateVisualAction)</code></td><td>Method</td><td>Initializes a new instance of the ConnectionLine class with an invalidate visual action. The action to call when the visual needs to be invalidated.</td></tr>
+    <tr><td><code>IConnectionPoint Start</code></td><td>Property</td><td>Gets or sets the starting connection point of this line.</td></tr>
+    <tr><td><code>IConnectionPoint End</code></td><td>Property</td><td>Gets or sets the ending connection point of this line.</td></tr>
+    <tr><td><code>SKPoint EndPoint</code></td><td>Property</td><td>Gets or sets the end point coordinates when not connected to an end connection point.</td></tr>
+    <tr><td><code>bool IsConnected</code></td><td>Property</td><td>Gets or sets a value indicating whether this connection line is connected.</td></tr>
+    <tr><td><code>bool IsSelected</code></td><td>Property</td><td>Gets or sets a value indicating whether this connection line is selected.</td></tr>
+    <tr><td><code>bool IsVisible</code></td><td>Property</td><td>Gets or sets whether this line is visible. Hidden lines are skipped by the renderer.</td></tr>
+    <tr><td><code>bool IsAnimated</code></td><td>Property</td><td>Gets or sets a value indicating whether this connection line should be animated.</td></tr>
+    <tr><td><code>bool IsDataFlowAnimated</code></td><td>Property</td><td>Gets or sets a value indicating whether data flow animation is enabled.</td></tr>
+    <tr><td><code>float DataFlowSpeed</code></td><td>Property</td><td>Gets or sets the speed of the data flow animation (pixels per second).</td></tr>
+    <tr><td><code>float DataFlowParticleSize</code></td><td>Property</td><td>Gets or sets the size of the data flow particles.</td></tr>
+    <tr><td><code>SKColor DataFlowColor</code></td><td>Property</td><td>Gets or sets the color of the data flow particles.</td></tr>
+    <tr><td><code>bool ShowStartArrow</code></td><td>Property</td><td>Gets or sets a value indicating whether to show an arrow at the start of the line.</td></tr>
+    <tr><td><code>bool ShowEndArrow</code></td><td>Property</td><td>Gets or sets a value indicating whether to show an arrow at the end of the line.</td></tr>
+    <tr><td><code>SKPaint Paint</code></td><td>Property</td><td>Gets or sets the paint object used for drawing the connection line.</td></tr>
+    <tr><td><code>string Label1</code></td><td>Property</td><td>Gets or sets the first label text to display on the connection line.</td></tr>
+    <tr><td><code>string Label2</code></td><td>Property</td><td>Gets or sets the second label text to display on the connection line.</td></tr>
+    <tr><td><code>string Label3</code></td><td>Property</td><td>Gets or sets the third label text to display on the connection line.</td></tr>
+    <tr><td><code>string DataTypeLabel</code></td><td>Property</td><td>Gets or sets the data type label to display on the connection line. If not set, will automatically use the data type from the start connection point.</td></tr>
+    <tr><td><code>string GuardCondition</code></td><td>Property</td><td>Optional guard condition evaluated before a state-machine transition fires.</td></tr>
+    <tr><td><code>string TransitionAction</code></td><td>Property</td><td>Optional action executed when a state-machine transition fires.</td></tr>
+    <tr><td><code>string TriggerEvent</code></td><td>Property</td><td>Optional trigger event name that causes the transition to fire.</td></tr>
+    <tr><td><code>event EventHandler&lt;ConnectionArgs&gt; StartArrowClicked</code></td><td>Event</td><td>Occurs when the start arrow of the connection line is clicked.</td></tr>
+    <tr><td><code>event EventHandler&lt;ConnectionArgs&gt; EndArrowClicked</code></td><td>Event</td><td>Occurs when the end arrow of the connection line is clicked.</td></tr>
+    <tr><td><code>event EventHandler&lt;LineArgs&gt; LineClicked</code></td><td>Event</td><td>Occurs when the connection line itself is clicked.</td></tr>
+    <tr><td><code>SKColor LineColor</code></td><td>Property</td><td>Gets or sets the color of the connection line.</td></tr>
+    <tr><td><code>ConnectionLine(IConnectionPoint start, IConnectionPoint end, Action invalidateVisualAction)</code></td><td>Method</td><td>Initializes a new instance of the ConnectionLine class with start and end connection points. The starting connection point. The ending connection point. The action to call when the visual needs to be invalidated. Thrown when start, end, or invalidateVisualAction is null.</td></tr>
+    <tr><td><code>ConnectionLine(IConnectionPoint start, SKPoint end, Action invalidateVisualAction)</code></td><td>Method</td><td>Initializes a new instance of the ConnectionLine class with a start connection point and end coordinates. The starting connection point. The ending point coordinates. The action to call when the visual needs to be invalidated. Thrown when start or invalidateVisualAction is null.</td></tr>
+    <tr><td><code>void Draw(SKCanvas canvas)</code></td><td>Method</td><td>Draws the connection line on the specified Skia canvas. The canvas to draw on.</td></tr>
+    <tr><td><code>bool LineContainsPoint(SKPoint point)</code></td><td>Method</td><td>Determines whether the specified point lies on the connection line within the click threshold. The point to test. true if the point is on the line; otherwise, false.</td></tr>
+    <tr><td><code>bool ArrowContainsPoint(SKPoint point, bool startArrow)</code></td><td>Method</td><td>Determines whether the specified point lies within an arrow of the connection line. The point to test. true to test the start arrow; false to test the end arrow. true if the point is within the arrow; otherwise, false.</td></tr>
+    <tr><td><code>void OnClick(SKPoint clickPoint)</code></td><td>Method</td><td>Handles click events on the connection line, determining whether an arrow or the line itself was clicked. The point where the click occurred.</td></tr>
+    <tr><td><code>void StartAnimation()</code></td><td>Method</td><td>Starts the animation of the connection line if it is set to be animated.</td></tr>
+    <tr><td><code>void StopAnimation()</code></td><td>Method</td><td>Stops the animation of the connection line.</td></tr>
+    <tr><td><code>void Dispose()</code></td><td>Method</td><td>Releases all resources used by the connection line.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

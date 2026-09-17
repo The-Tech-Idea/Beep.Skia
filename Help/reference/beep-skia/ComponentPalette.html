@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ComponentPalette | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>ComponentPalette</span></nav>
+<div class="page-header"><h1>ComponentPalette <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>A component palette that displays available Skia components in an organized list with drag and drop functionality for design-time component creation.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>event EventHandler&lt;ComponentItem&gt; ComponentSelected</code></td><td>Event</td><td>Occurs when a component is selected in the palette.</td></tr>
+    <tr><td><code>event EventHandler&lt;ComponentDragEventArgs&gt; ComponentDragStarted</code></td><td>Event</td><td>Occurs when a component starts being dragged from the palette.</td></tr>
+    <tr><td><code>event EventHandler&lt;ComponentDragEventArgs&gt; ComponentDragging</code></td><td>Event</td><td>Occurs when a component is being dragged.</td></tr>
+    <tr><td><code>event EventHandler&lt;ComponentDragEventArgs&gt; ComponentDragEnded</code></td><td>Event</td><td>Occurs when a component drag operation ends.</td></tr>
+    <tr><td><code>ObservableCollection&lt;ComponentCategory&gt; Categories</code></td><td>Property</td><td>Gets or sets the categories of components to display.</td></tr>
+    <tr><td><code>ComponentCategory SelectedCategory</code></td><td>Property</td><td>Gets or sets the currently selected category.</td></tr>
+    <tr><td><code>float ItemHeight</code></td><td>Property</td><td>Gets or sets the height of each component item.</td></tr>
+    <tr><td><code>float CategoryHeaderHeight</code></td><td>Property</td><td>Gets or sets the height of category headers.</td></tr>
+    <tr><td><code>ComponentItem DraggedComponent</code></td><td>Property</td><td>Gets the currently dragged component.</td></tr>
+    <tr><td><code>bool IsDragging</code></td><td>Property</td><td>Gets whether a component is currently being dragged.</td></tr>
+    <tr><td><code>ComponentPalette()</code></td><td>Method</td><td>Initializes a new instance of the ComponentPalette class.</td></tr>
+    <tr><td><code>void LoadComponentsFromRegistry()</code></td><td>Method</td><td>Loads components from the SkiaComponentRegistry and organizes them into categories.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

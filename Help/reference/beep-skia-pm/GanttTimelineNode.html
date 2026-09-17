@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GanttTimelineNode | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-pm.html">Project management family</a><span>&rsaquo;</span> <span>GanttTimelineNode</span></nav>
+<div class="page-header"><h1>GanttTimelineNode <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Project management family &mdash; class</p></div>
+<p>Gantt timeline view: renders scheduled tasks as bars over a day grid, highlighting the critical path. Populate with SetSchedule.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>float RowHeight</code></td><td>Property</td><td>Gets or sets the row height.</td></tr>
+    <tr><td><code>float HeaderHeight</code></td><td>Property</td><td>Gets or sets the header height.</td></tr>
+    <tr><td><code>float DayWidth</code></td><td>Property</td><td>Gets or sets the day width.</td></tr>
+    <tr><td><code>float LabelWidth</code></td><td>Property</td><td>Gets or sets the label width.</td></tr>
+    <tr><td><code>bool ShowCriticalPath</code></td><td>Property</td><td>Highlight rows on the critical path in a distinct color.</td></tr>
+    <tr><td><code>SKColor BarColor</code></td><td>Property</td><td>Gets or sets the bar color.</td></tr>
+    <tr><td><code>SKColor CriticalBarColor</code></td><td>Property</td><td>Gets or sets the critical bar color.</td></tr>
+    <tr><td><code>SKColor ProgressColor</code></td><td>Property</td><td>Gets or sets the progress color.</td></tr>
+    <tr><td><code>SKColor GridColor</code></td><td>Property</td><td>Gets or sets the grid color.</td></tr>
+    <tr><td><code>List&lt;GanttRow&gt; Rows</code></td><td>Property</td><td>Gets or sets the rows.</td></tr>
+    <tr><td><code>string RowsJson</code></td><td>Property</td><td>JSON projection of Rows used for persistence.</td></tr>
+    <tr><td><code>GanttTimelineNode()</code></td><td>Method</td><td>Initializes a new instance of the GanttTimelineNode class.</td></tr>
+    <tr><td><code>void SetSchedule(IEnumerable&lt;TaskNode&gt; tasks, CriticalPathCalculator? schedule = null)</code></td><td>Method</td><td>Populates the timeline from tasks, optionally using a computed schedule for dates/criticality. Without a schedule, tasks are laid out sequentially.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-pm.html">All types in Project management family</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

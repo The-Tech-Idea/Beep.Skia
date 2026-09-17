@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkiaComponentRegistry | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>SkiaComponentRegistry</span></nav>
+<div class="page-header"><h1>SkiaComponentRegistry <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>Static registry for managing loaded Skia components. This class provides centralized access to all available SkiaComponent types that have been registered by external loaders.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>static List&lt;AssemblyClassDefinition&gt; LoadedComponents</code></td><td>Property</td><td>Gets the list of all loaded Skia components.</td></tr>
+    <tr><td><code>static bool IsInitialized</code></td><td>Property</td><td>Gets whether the registry has been initialized.</td></tr>
+    <tr><td><code>static void SetComponents(List&lt;AssemblyClassDefinition&gt; components)</code></td><td>Method</td><td>Sets the component list from an external loader. This method should be called by the external loader after loading components. The list of AssemblyClassDefinition objects to register.</td></tr>
+    <tr><td><code>static void AddComponent(AssemblyClassDefinition component)</code></td><td>Method</td><td>Adds a single component to the registry. The AssemblyClassDefinition to add.</td></tr>
+    <tr><td><code>static void AddComponents(IEnumerable&lt;AssemblyClassDefinition&gt; components)</code></td><td>Method</td><td>Adds multiple components to the registry. The list of AssemblyClassDefinition objects to add.</td></tr>
+    <tr><td><code>static AssemblyClassDefinition GetComponentByName(string className)</code></td><td>Method</td><td>Gets a component definition by its class name. The class name to search for. The AssemblyClassDefinition if found, null otherwise.</td></tr>
+    <tr><td><code>static AssemblyClassDefinition GetComponentByGuid(string guid)</code></td><td>Method</td><td>Gets a component definition by its GUID. The GUID to search for. The AssemblyClassDefinition if found, null otherwise.</td></tr>
+    <tr><td><code>static List&lt;AssemblyClassDefinition&gt; GetComponentsByAssembly(string assemblyName)</code></td><td>Method</td><td>Gets all component definitions from a specific assembly. The assembly name to filter by. A list of AssemblyClassDefinition objects from the specified assembly.</td></tr>
+    <tr><td><code>static List&lt;AssemblyClassDefinition&gt; GetComponentsByType(string typeName)</code></td><td>Method</td><td>Gets all component definitions that implement a specific interface or inherit from a specific base class. The type name to filter by. A list of AssemblyClassDefinition objects that match the type.</td></tr>
+    <tr><td><code>static SkiaComponent CreateComponentInstance(AssemblyClassDefinition componentDefinition)</code></td><td>Method</td><td>Creates an instance of a SkiaComponent from its AssemblyClassDefinition. The component definition to instantiate. An instance of the SkiaComponent if successful, null otherwise.</td></tr>
+    <tr><td><code>static SkiaComponent CreateComponentInstance(string className)</code></td><td>Method</td><td>Creates an instance of a SkiaComponent by its class name. The class name of the component to create. An instance of the SkiaComponent if successful, null otherwise.</td></tr>
+    <tr><td><code>static void Clear()</code></td><td>Method</td><td>Clears all loaded components and resets the registry.</td></tr>
+    <tr><td><code>static int ComponentCount</code></td><td>Property</td><td>Gets the count of loaded components.</td></tr>
+    <tr><td><code>static bool IsComponentRegistered(string className)</code></td><td>Method</td><td>Checks if a component with the specified name is registered. The class name to check. True if the component is registered, false otherwise.</td></tr>
+    <tr><td><code>static List&lt;AssemblyClassDefinition&gt; GetComponentsWithMethods()</code></td><td>Method</td><td>Gets all components that have methods (useful for components with interactive functionality). A list of AssemblyClassDefinition objects that have methods defined.</td></tr>
+    <tr><td><code>static List&lt;AssemblyClassDefinition&gt; GetComponentsWithVisualProperties()</code></td><td>Method</td><td>Gets all components that have visual properties or attributes. A list of AssemblyClassDefinition objects that have visual properties.</td></tr>
+    <tr><td><code>static List&lt;AssemblyClassDefinition&gt; GetComponentsByCapabilities(bool? hasLocalDB = null, bool? isDataSource = null, bool? inMemory = null)</code></td><td>Method</td><td>Gets all components that implement specific interfaces or have specific properties. Filter by components that support LocalDB. Filter by components that are data sources. Filter by components that support in-memory operations. A list of AssemblyClassDefinition objects that match the criteria.</td></tr>
+    <tr><td><code>static List&lt;AssemblyClassDefinition&gt; GetComponentsOrdered()</code></td><td>Method</td><td>Gets components ordered by their specified order property. A list of AssemblyClassDefinition objects ordered by their Order property.</td></tr>
+    <tr><td><code>static List&lt;string&gt; GetAvailableNamespaces()</code></td><td>Method</td><td>Gets all unique namespaces from registered components. A list of unique namespace names.</td></tr>
+    <tr><td><code>static List&lt;string&gt; GetAvailableAssemblies()</code></td><td>Method</td><td>Gets all unique assembly names from registered components. A list of unique assembly names.</td></tr>
+    <tr><td><code>static List&lt;(AssemblyClassDefinition Component, MethodsClass Method)&gt; GetComponentMethods( string componentName = null, bool? hidden = null)</code></td><td>Method</td><td>Gets component methods that match specific criteria. The component name to filter by (optional). Filter by visibility (optional). A list of matching MethodsClass objects with their parent component information.</td></tr>
+    <tr><td><code>static int RegisterFromConfigEditor(IConfigEditor configEditor, string componentType = "SkiaComponent")</code></td><td>Method</td><td>Registers components from the Beep configuration system. This method should be called after the Beep loader has scanned assemblies. The configuration editor containing the loaded components. The type of components to register (e.g., "SkiaComponent"). The number of components that were registered.</td></tr>
+    <tr><td><code>static List&lt;AssemblyClassDefinition&gt; DiscoverAndRegisterDomainComponents(bool includeSystemAssemblies = false)</code></td><td>Method</td><td>Scans the currently loaded AppDomain assemblies for types that inherit from SkiaComponent and registers them into the component registry. If true, will not skip assemblies with common system prefixes. List of AssemblyClassDefinition objects that were discovered and registered.</td></tr>
+    <tr><td><code>static ExtractedComponentResult ExtractComponentDetailed(AssemblyClassDefinition componentDefinition)</code></td><td>Method</td><td>Creates a detailed component instance with full metadata initialization. The component definition to instantiate. An ExtractedComponentResult with detailed component information.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

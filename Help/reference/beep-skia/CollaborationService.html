@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CollaborationService | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>CollaborationService</span></nav>
+<div class="page-header"><h1>CollaborationService <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>In-memory collaboration service: users, document sharing with roles, comments, presence tracking, and an audit trail. Transport-agnostic so it can back a desktop host, a REST API, or a real-time server. All state is guarded by a single lock: the service is shared by UI and server callers, so concurrent comments/grants/presence updates must not corrupt it. Read APIs return snapshots so callers cannot mutate internal state (role changes must go through Grant/Revoke/SetPublic).</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>IReadOnlyList&lt;CollaborationUser&gt; Users</code></td><td>Property</td><td>Registered users.</td></tr>
+    <tr><td><code>IReadOnlyList&lt;DiagramComment&gt; AllComments</code></td><td>Property</td><td>All comments across documents.</td></tr>
+    <tr><td><code>IReadOnlyList&lt;AuditEntry&gt; AuditTrail</code></td><td>Property</td><td>Full audit trail.</td></tr>
+    <tr><td><code>void RegisterUser(CollaborationUser user)</code></td><td>Method</td><td>Registers or replaces a user.</td></tr>
+    <tr><td><code>CollaborationUser GetUser(string userId)</code></td><td>Method</td><td>Gets a user by id, or null.</td></tr>
+    <tr><td><code>DocumentShare Share( string documentId, string ownerId, params (string UserId, CollaborationRole Role)[] members)</code></td><td>Method</td><td>Shares a document with the given members. The owner is registered as Admin. Returns a snapshot of the resulting share.</td></tr>
+    <tr><td><code>DocumentShare GetShare(string documentId)</code></td><td>Method</td><td>Gets a snapshot of the sharing state for a document, or null when not shared.</td></tr>
+    <tr><td><code>CollaborationRole? GetRole(string documentId, string userId)</code></td><td>Method</td><td>Gets a user's role on a document (public documents grant Viewer).</td></tr>
+    <tr><td><code>bool CanView(string documentId, string userId)</code></td><td>Method</td><td>Gets or sets the can view.</td></tr>
+    <tr><td><code>bool CanComment(string documentId, string userId)</code></td><td>Method</td><td>Gets or sets the can comment.</td></tr>
+    <tr><td><code>bool CanEdit(string documentId, string userId)</code></td><td>Method</td><td>Gets or sets the can edit.</td></tr>
+    <tr><td><code>bool CanAdminister(string documentId, string userId)</code></td><td>Method</td><td>Gets or sets the can administer.</td></tr>
+    <tr><td><code>bool Grant(string documentId, string requesterId, string userId, CollaborationRole role)</code></td><td>Method</td><td>Grants or updates a member role (admin only).</td></tr>
+    <tr><td><code>bool Revoke(string documentId, string requesterId, string userId)</code></td><td>Method</td><td>Revokes a member (admin only; the owner cannot be revoked).</td></tr>
+    <tr><td><code>bool SetPublic(string documentId, string requesterId, bool isPublic)</code></td><td>Method</td><td>Toggles public (view-only) access (admin only).</td></tr>
+    <tr><td><code>DiagramComment AddComment(string documentId, string userId, string text, string componentId = null)</code></td><td>Method</td><td>Adds a comment (requires Commenter or higher). Returns null when not permitted.</td></tr>
+    <tr><td><code>bool ResolveComment(string documentId, string commentId, string userId)</code></td><td>Method</td><td>Resolves a comment (author or admin only).</td></tr>
+    <tr><td><code>IReadOnlyList&lt;DiagramComment&gt; GetComments(string documentId, bool includeResolved = false)</code></td><td>Method</td><td>Gets comments for a document (optionally including resolved ones).</td></tr>
+    <tr><td><code>void SetPresence(string documentId, string userId, string activity = null)</code></td><td>Method</td><td>Marks a user as active on a document (requires view permission).</td></tr>
+    <tr><td><code>IReadOnlyList&lt;PresenceEntry&gt; GetPresence(string documentId, TimeSpan? activeWindow = null)</code></td><td>Method</td><td>Gets active presence entries within the given window (default 5 minutes).</td></tr>
+    <tr><td><code>bool RemovePresence(string documentId, string userId)</code></td><td>Method</td><td>Removes a user's presence from a document.</td></tr>
+    <tr><td><code>IReadOnlyList&lt;AuditEntry&gt; GetAudit(string documentId)</code></td><td>Method</td><td>Gets the audit trail for a document (newest last).</td></tr>
+    <tr><td><code>CollaborationSnapshot CreateSnapshot()</code></td><td>Method</td><td>Captures the persistable state (users, shares, comments, audit).</td></tr>
+    <tr><td><code>void Restore(CollaborationSnapshot snapshot)</code></td><td>Method</td><td>Replaces all state from a snapshot (no-op when null).</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

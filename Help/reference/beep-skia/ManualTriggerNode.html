@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ManualTriggerNode | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>ManualTriggerNode</span></nav>
+<div class="page-header"><h1>ManualTriggerNode <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>Automation node that triggers workflow execution manually through user interaction. Provides interactive buttons, keyboard shortcuts, and programmatic triggering capabilities.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>ManualTriggerNode()</code></td><td>Method</td><td>Initializes a new instance of the ManualTriggerNode class.</td></tr>
+    <tr><td><code>event EventHandler&lt;ManualTriggerEventArgs&gt; ManuallyTriggered</code></td><td>Event</td><td>Event raised when the manual trigger is activated.</td></tr>
+    <tr><td><code>event EventHandler&lt;TriggerConfirmationEventArgs&gt; ConfirmationRequested</code></td><td>Event</td><td>Event raised when trigger confirmation is requested.</td></tr>
+    <tr><td><code>string TriggerText</code></td><td>Property</td><td>Gets or sets the text displayed on the trigger button.</td></tr>
+    <tr><td><code>string KeyboardShortcut</code></td><td>Property</td><td>Gets or sets the keyboard shortcut for triggering (e.g., "Ctrl+Enter").</td></tr>
+    <tr><td><code>bool RequireConfirmation</code></td><td>Property</td><td>Gets or sets whether confirmation is required before triggering.</td></tr>
+    <tr><td><code>string ConfirmationMessage</code></td><td>Property</td><td>Gets or sets the confirmation message displayed to users.</td></tr>
+    <tr><td><code>bool IsTriggerable</code></td><td>Property</td><td>Gets or sets whether the trigger is currently available for activation.</td></tr>
+    <tr><td><code>int ExecutionCount</code></td><td>Property</td><td>Gets the number of times this trigger has been activated.</td></tr>
+    <tr><td><code>DateTime LastExecution</code></td><td>Property</td><td>Gets the time of the last manual trigger activation.</td></tr>
+    <tr><td><code>Dictionary&lt;string, object&gt; TriggerPayload</code></td><td>Property</td><td>Gets or sets additional payload data to include with trigger execution.</td></tr>
+    <tr><td><code>bool AutoReset</code></td><td>Property</td><td>Gets or sets whether the trigger automatically resets to triggerable state after execution.</td></tr>
+    <tr><td><code>TimeSpan CooldownPeriod</code></td><td>Property</td><td>Gets or sets the cooldown period between trigger activations.</td></tr>
+    <tr><td><code>bool IsInCooldown</code></td><td>Property</td><td>Gets whether the trigger is currently in cooldown period.</td></tr>
+    <tr><td><code>TimeSpan CooldownRemaining</code></td><td>Property</td><td>Gets the time remaining in the cooldown period.</td></tr>
+    <tr><td><code>override string Description</code></td><td>Property</td><td>Gets the description of what this automation node does.</td></tr>
+    <tr><td><code>override NodeType NodeType</code></td><td>Property</td><td>Gets the type of this automation node.</td></tr>
+    <tr><td><code>override Task&lt;bool&gt; InitializeAsync(Dictionary&lt;string, object&gt; configuration, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Initializes the manual trigger node with the specified configuration. The configuration parameters for the node. Token to cancel the initialization. A task representing the initialization operation.</td></tr>
+    <tr><td><code>override async Task&lt;ValidationResult&gt; ValidateAsync(Model.ExecutionContext inputData, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Validates the current configuration for this manual trigger node. The input data to validate (not used for trigger nodes). Token to cancel the validation. A task containing the validation result.</td></tr>
+    <tr><td><code>override async Task&lt;NodeResult&gt; ExecuteAsync(Model.ExecutionContext context, CancellationToken cancellationToken = default)</code></td><td>Method</td><td>Executes the manual trigger and returns trigger information. The execution context. Token to cancel the execution. A task containing the execution result.</td></tr>
+    <tr><td><code>override Dictionary&lt;string, object&gt; GetInputSchema()</code></td><td>Method</td><td>Gets the schema defining the input parameters this node expects. Trigger nodes typically don't require input data. A dictionary describing the input schema.</td></tr>
+    <tr><td><code>override Dictionary&lt;string, object&gt; GetOutputSchema()</code></td><td>Method</td><td>Gets the schema defining the output parameters this node produces. A dictionary describing the output schema.</td></tr>
+    <tr><td><code>async Task&lt;bool&gt; TriggerAsync(string source = "Manual", Dictionary&lt;string, object&gt; additionalData = null)</code></td><td>Method</td><td>Manually triggers the workflow execution. The source of the trigger (Button, Keyboard, API, etc.). Additional data to include with the trigger. True if trigger was successful.</td></tr>
+    <tr><td><code>async Task&lt;bool&gt; TriggerFromButtonAsync()</code></td><td>Method</td><td>Triggers the workflow when triggered by button click. True if trigger was successful.</td></tr>
+    <tr><td><code>async Task&lt;bool&gt; TriggerFromKeyboardAsync()</code></td><td>Method</td><td>Triggers the workflow when triggered by keyboard shortcut. True if trigger was successful.</td></tr>
+    <tr><td><code>void Reset()</code></td><td>Method</td><td>Resets the trigger to be available for activation again.</td></tr>
+    <tr><td><code>void SetPayload(Dictionary&lt;string, object&gt; payload)</code></td><td>Method</td><td>Sets the trigger payload data. The payload data to set.</td></tr>
+    <tr><td><code>bool CanTrigger()</code></td><td>Method</td><td>Checks if the trigger can currently be activated. True if the trigger can be activated.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

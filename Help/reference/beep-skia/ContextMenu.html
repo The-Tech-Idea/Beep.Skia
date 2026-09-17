@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContextMenu | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>ContextMenu</span></nav>
+<div class="page-header"><h1>ContextMenu <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>A Material Design 3.0 Context Menu component that appears on right-click.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>SKPoint TriggerPoint</code></td><td>Property</td><td>Gets or sets the point where the context menu was triggered.</td></tr>
+    <tr><td><code>object ContextObject</code></td><td>Property</td><td>Gets or sets the context object associated with this menu.</td></tr>
+    <tr><td><code>event EventHandler&lt;ContextMenuEventArgs&gt; Showing</code></td><td>Event</td><td>Occurs when the context menu is about to be shown.</td></tr>
+    <tr><td><code>ContextMenu()</code></td><td>Method</td><td>Initializes a new instance of the ContextMenu class.</td></tr>
+    <tr><td><code>void Show(SKPoint triggerPoint, object contextObject = null)</code></td><td>Method</td><td>Shows the context menu at the specified position with the given context object. The point where the context menu was triggered. The context object associated with the menu.</td></tr>
+    <tr><td><code>void AddContextItem(string text, EventHandler action, bool autoIcon = true)</code></td><td>Method</td><td>Adds a context menu item with automatic icon assignment based on common actions. The menu item text. The action to perform. Whether to automatically assign an icon based on the text.</td></tr>
+    <tr><td><code>void AddStandardItems( bool includeCopy = true, bool includeCut = true, bool includePaste = true, bool includeDelete = true, bool includeSelectAll = false)</code></td><td>Method</td><td>Adds standard context menu items for common operations. Whether to include copy operation. Whether to include cut operation. Whether to include paste operation. Whether to include delete operation. Whether to include select all operation.</td></tr>
+    <tr><td><code>void AddStandardItems( DrawingManager manager, bool includeCopy = true, bool includeCut = true, bool includePaste = true, bool includeDelete = true, bool includeSelectAll = true)</code></td><td>Method</td><td>Adds standard context menu items wired to DrawingManager commands. The menu hides itself after a command is invoked. The drawing manager that provides the commands. Whether to include copy operation. Whether to include cut operation. Whether to include paste operation. Whether to include delete operation. Whether to include select all operation.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

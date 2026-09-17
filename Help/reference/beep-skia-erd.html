@@ -37,13 +37,13 @@
   <li><a href="#type-tableinfo"><code>TableInfo</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
 </ul>
 <section class="section" id="type-columninfo">
-  <h2>ColumnInfo <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/ColumnInfo.html">ColumnInfo</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
 </section>
 <section class="section" id="type-constraintinfo">
-  <h2>ConstraintInfo <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/ConstraintInfo.html">ConstraintInfo</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
 </section>
 <section class="section" id="type-ddlexporter">
-  <h2>DDLExporter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/DDLExporter.html">DDLExporter</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Exports ERD entities and relationships to DDL (Data Definition Language) statements. Supports standard SQL with basic dialect hints.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -55,7 +55,7 @@
   </table>
 </section>
 <section class="section" id="type-ddlimporter">
-  <h2>DDLImporter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/DDLImporter.html">DDLImporter</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Parses SQL CREATE TABLE statements into entity definitions. Dialect-aware parsing for SQL Server, PostgreSQL, MySQL, Oracle, and SQLite.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -67,7 +67,7 @@
   </table>
 </section>
 <section class="section" id="type-erdattribute">
-  <h2>ERDAttribute <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/ERDAttribute.html">ERDAttribute</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ERD Attribute: ellipse with optional underline (for key) and double ellipse (for multivalued).</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -80,7 +80,7 @@
   </table>
 </section>
 <section class="section" id="type-erdcontrol">
-  <h2>ERDControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/ERDControl.html">ERDControl</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Base class for ERD nodes (entities, relationships, attributes). Inherits MaterialControl; provides common sizing and port layout helpers.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -91,7 +91,7 @@
   </table>
 </section>
 <section class="section" id="type-erdentity">
-  <h2>ERDEntity <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/ERDEntity.html">ERDEntity</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ERD Entity: rectangle with title band and attribute list area.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -100,7 +100,7 @@
       <tr><td><code>string RowsText</code></td><td>Property</td><td>One row name per line or comma-separated</td></tr>
       <tr><td><code>IReadOnlyList&lt;string&gt; Rows</code></td><td>Property</td><td>Gets or sets the rows.</td></tr>
       <tr><td><code>string RowIdsCsv</code></td><td>Property</td><td>Gets or sets the row ids csv.</td></tr>
-      <tr><td><code>ERDEntity()</code></td><td>Method</td><td>Entity name/title</td></tr>
+      <tr><td><code>ERDEntity()</code></td><td>Method</td><td>Initializes a new instance of the ERDEntity class.</td></tr>
       <tr><td><code>new int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
       <tr><td><code>new int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
       <tr><td><code>string Columns</code></td><td>Property</td><td>Public JSON property exposing columns in a structured form for enterprise editors. On set, updates the internal rows and connection points.</td></tr>
@@ -111,7 +111,7 @@
   </table>
 </section>
 <section class="section" id="type-erdrelationship">
-  <h2>ERDRelationship <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/ERDRelationship.html">ERDRelationship</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>ERD Relationship: diamond shape with ports on left/right, optional degree text.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -119,12 +119,12 @@
       <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
       <tr><td><code>string Degree</code></td><td>Property</td><td>Gets or sets the degree.</td></tr>
       <tr><td><code>bool Identifying</code></td><td>Property</td><td>Gets or sets the identifying.</td></tr>
-      <tr><td><code>ERDRelationship()</code></td><td>Method</td><td>Whether this is an identifying relationship (child PK includes parent PK)</td></tr>
+      <tr><td><code>ERDRelationship()</code></td><td>Method</td><td>Initializes a new instance of the ERDRelationship class.</td></tr>
     </tbody>
   </table>
 </section>
 <section class="section" id="type-migrationscriptgenerator">
-  <h2>MigrationScriptGenerator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/MigrationScriptGenerator.html">MigrationScriptGenerator</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Generates forward and rollback migration scripts from a SchemaComparisonResult. Dialect-aware DDL for SQL Server, PostgreSQL, MySQL, Oracle, SQLite, and ANSI.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -135,7 +135,7 @@
   </table>
 </section>
 <section class="section" id="type-schemachange">
-  <h2>SchemaChange <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/SchemaChange.html">SchemaChange</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>A single schema difference. For altered columns, Column is the target definition and PreviousColumn is the source definition (used to build rollback scripts).</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -152,11 +152,11 @@
   </table>
 </section>
 <section class="section" id="type-schemachangekind">
-  <h2>SchemaChangeKind <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-erd/SchemaChangeKind.html">SchemaChangeKind</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
   <p>Kind of schema change detected between a source (current) and target (desired) schema.</p>
 </section>
 <section class="section" id="type-schemacomparer">
-  <h2>SchemaComparer <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/SchemaComparer.html">SchemaComparer</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Compares a source schema against a target schema and reports the changes needed to migrate source to target. Tables/columns are matched case-insensitively.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -166,7 +166,7 @@
   </table>
 </section>
 <section class="section" id="type-schemacomparisonresult">
-  <h2>SchemaComparisonResult <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/SchemaComparisonResult.html">SchemaComparisonResult</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
   <p>Result of comparing two schemas.</p>
   <table class="property-table">
     <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
@@ -179,10 +179,10 @@
   </table>
 </section>
 <section class="section" id="type-sqldialect">
-  <h2>SQLDialect <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <h2><a href="beep-skia-erd/SQLDialect.html">SQLDialect</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
 </section>
 <section class="section" id="type-tableinfo">
-  <h2>TableInfo <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <h2><a href="beep-skia-erd/TableInfo.html">TableInfo</a> <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
 </section>
 </div></main></div>
 </body></html>

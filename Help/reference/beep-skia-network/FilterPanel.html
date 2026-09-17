@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FilterPanel | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-network.html">Network family</a><span>&rsaquo;</span> <span>FilterPanel</span></nav>
+<div class="page-header"><h1>FilterPanel <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Network family &mdash; class</p></div>
+<p>Filter panel component that provides filtering and search capabilities for network elements. Supports node/link filtering by properties, search queries, and visibility controls.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>string SearchQuery</code></td><td>Property</td><td>Gets or sets the search query text.</td></tr>
+    <tr><td><code>bool CaseSensitive</code></td><td>Property</td><td>Gets or sets whether the search is case-sensitive.</td></tr>
+    <tr><td><code>bool UseRegex</code></td><td>Property</td><td>Gets or sets whether to use regular expressions for search.</td></tr>
+    <tr><td><code>int MinDegree</code></td><td>Property</td><td>Gets or sets the minimum node degree filter.</td></tr>
+    <tr><td><code>int MaxDegree</code></td><td>Property</td><td>Gets or sets the maximum node degree filter.</td></tr>
+    <tr><td><code>bool ShowConnectedOnly</code></td><td>Property</td><td>Gets or sets whether to show only connected nodes.</td></tr>
+    <tr><td><code>bool ShowIsolatedNodes</code></td><td>Property</td><td>Gets or sets whether to show isolated nodes (degree = 0).</td></tr>
+    <tr><td><code>List&lt;NetworkNode&gt; FilteredNodes</code></td><td>Property</td><td>Gets the list of filtered nodes.</td></tr>
+    <tr><td><code>List&lt;NetworkLink&gt; FilteredLinks</code></td><td>Property</td><td>Gets the list of filtered links.</td></tr>
+    <tr><td><code>bool ShowControls</code></td><td>Property</td><td>Gets or sets whether to show filter controls.</td></tr>
+    <tr><td><code>event EventHandler&lt;FilterChangedEventArgs&gt; FilterChanged</code></td><td>Event</td><td>Event raised when the filter changes.</td></tr>
+    <tr><td><code>FilterPanel()</code></td><td>Method</td><td>Initializes a new instance of the FilterPanel class.</td></tr>
+    <tr><td><code>void ApplyFilters(List&lt;NetworkNode&gt; nodes, List&lt;NetworkLink&gt; links)</code></td><td>Method</td><td>Applies filters to the given network data. The network nodes. The network links.</td></tr>
+    <tr><td><code>void ClearFilters()</code></td><td>Method</td><td>Clears all filters and shows all elements.</td></tr>
+    <tr><td><code>void SetSearchQuery(string query)</code></td><td>Method</td><td>Sets a search query and applies filters. The search query.</td></tr>
+    <tr><td><code>void SetDegreeRange(int minDegree, int maxDegree)</code></td><td>Method</td><td>Sets degree range filter. The minimum degree. The maximum degree.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-network.html">All types in Network family</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

@@ -179,6 +179,7 @@ namespace Beep.Skia.Sample.WinForms
             // Help
             var ddHelp = new ToolStripDropDownButton("Help");
             ddHelp.DropDownItems.Add("Documentation (F1)", null, (s, e) => DoOpenHelp("index.html"));
+            ddHelp.DropDownItems.Add("Keyboard Shortcuts…", null, (s, e) => DoShowShortcuts());
             ddHelp.DropDownItems.Add("Quick Start", null, (s, e) => DoOpenHelp("getting-started/quick-start.html"));
             ddHelp.DropDownItems.Add("Sample Applications", null, (s, e) => DoOpenHelp("getting-started/samples.html"));
             ddHelp.DropDownItems.Add("Troubleshooting", null, (s, e) => DoOpenHelp("guides/troubleshooting.html"));
@@ -206,6 +207,26 @@ namespace Beep.Skia.Sample.WinForms
 
             // Clear
             _tbClear = AddToolBtn("Clear", (s, e) => ClearAll());
+
+            // First-run hint (dismissible)
+            toolStrip1.Items.Add(new ToolStripSeparator());
+            var hintLabel = new ToolStripLabel(
+                "New here?  Press F1 for the documentation  ·  drag components from the in-canvas palette  ·  Ctrl+T toggles the theme")
+            {
+                ForeColor = SystemColors.GrayText
+            };
+            var dismissHint = new ToolStripButton("×")
+            {
+                ToolTipText = "Hide this hint",
+                Alignment = ToolStripItemAlignment.Right
+            };
+            dismissHint.Click += (s, e) =>
+            {
+                toolStrip1.Items.Remove(hintLabel);
+                toolStrip1.Items.Remove(dismissHint);
+            };
+            toolStrip1.Items.Add(hintLabel);
+            toolStrip1.Items.Add(dismissHint);
         }
 
         private ToolStripButton AddToolBtn(string text, EventHandler handler)
@@ -245,6 +266,45 @@ namespace Beep.Skia.Sample.WinForms
             var url = "https://github.com/The-Tech-Idea/Beep.Skia/blob/master/README.md";
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
             _statusLabel.Text = "Help folder not found next to the app; opened the repository README";
+        }
+
+        private void DoShowShortcuts()
+        {
+            var lines = new[]
+            {
+                "Editing",
+                "  Ctrl+Z / Ctrl+Y          Undo / redo",
+                "  Ctrl+C / Ctrl+X / Ctrl+V Copy / cut / paste",
+                "  Delete or Backspace      Delete the selection and its lines",
+                "  Ctrl+S                   Save (raises SaveRequested)",
+                "",
+                "Selection and navigation",
+                "  Ctrl+A                   Select all",
+                "  Tab / Shift+Tab          Cycle the selection",
+                "  Escape                   Clear the selection",
+                "  Arrow keys               Move the selection by 1 unit",
+                "  Shift+arrows             Move the selection by 10 units",
+                "",
+                "View",
+                "  + / -                    Zoom in / out (0.1x to 5x)",
+                "  Mouse wheel              Zoom around the pointer",
+                "  Middle-button drag       Pan the viewport",
+                "  Ctrl+G                   Toggle the grid",
+                "  Ctrl+T                   Toggle the light / dark theme",
+                "",
+                "Mouse",
+                "  Drag from a port         Draw a connection",
+                "  Drag on empty canvas     Marquee selection",
+                "  Right-click              Context menu",
+                "  Double-click a component Drill-down hook",
+                "",
+                "Help",
+                "  F1                       Open the documentation"
+            };
+
+            MessageBox.Show(string.Join(Environment.NewLine, lines),
+                "Keyboard and Mouse Shortcuts",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void DoShowAbout()

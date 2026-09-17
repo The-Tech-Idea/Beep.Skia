@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MinimapControl | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>MinimapControl</span></nav>
+<div class="page-header"><h1>MinimapControl <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<p>Diagram minimap: a scaled overview of all components and connection lines with a viewport rectangle showing the currently visible world area (from pan/zoom). Intended to be added as a static overlay component.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>DrawingManager Manager</code></td><td>Property</td><td>Drawing manager providing the diagram content and viewport.</td></tr>
+    <tr><td><code>float MinimapPadding</code></td><td>Property</td><td>Padding inside the minimap frame.</td></tr>
+    <tr><td><code>bool ShowViewport</code></td><td>Property</td><td>Draws the viewport rectangle when true.</td></tr>
+    <tr><td><code>SKColor MinimapBackground</code></td><td>Property</td><td>Gets or sets the minimap background.</td></tr>
+    <tr><td><code>SKColor ComponentFill</code></td><td>Property</td><td>Gets or sets the component fill.</td></tr>
+    <tr><td><code>SKColor ComponentStroke</code></td><td>Property</td><td>Gets or sets the component stroke.</td></tr>
+    <tr><td><code>SKColor ViewportStroke</code></td><td>Property</td><td>Gets or sets the viewport stroke.</td></tr>
+    <tr><td><code>MinimapControl()</code></td><td>Method</td><td>Initializes a new instance of the MinimapControl class.</td></tr>
+    <tr><td><code>SKRect CalculateWorldBounds()</code></td><td>Method</td><td>World-space bounds of the diagram content (minimum 1x1).</td></tr>
+    <tr><td><code>float CalculateScale()</code></td><td>Method</td><td>Scale factor mapping world units to minimap pixels.</td></tr>
+    <tr><td><code>SKPoint MapWorldToMinimap(SKPoint world)</code></td><td>Method</td><td>Maps a world-space point to canvas coordinates inside the minimap.</td></tr>
+    <tr><td><code>SKRect CalculateViewportWorldRect()</code></td><td>Method</td><td>World-space rectangle currently visible, derived from pan/zoom and the bound canvas. Returns an empty rect when no canvas is attached.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia.html">All types in Beep.Skia (core)</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>
