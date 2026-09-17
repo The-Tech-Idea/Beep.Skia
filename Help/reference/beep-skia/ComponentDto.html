@@ -17,6 +17,13 @@
 <nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia.html">Beep.Skia (core)</a><span>&rsaquo;</span> <span>ComponentDto</span></nav>
 <div class="page-header"><h1>ComponentDto <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
 <p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
+<h2>Quick usage</h2>
+<div class="code-example">
+<pre><code class="language-csharp">var component = new ComponentDto { X = 100, Y = 100, Width = 160, Height = 60 };
+component.Name = "Example";
+drawingManager.AddComponent(component);
+drawingManager.RequestRedraw();</code></pre>
+</div>
 <h2>Members</h2>
 <table class="property-table">
   <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>

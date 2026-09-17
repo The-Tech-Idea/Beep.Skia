@@ -18,6 +18,13 @@
 <div class="page-header"><h1>SkiaComponentDescriptor <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
 <p class="page-subtitle">Beep.Skia (core) &mdash; class</p></div>
 <p>Serializable descriptor for a Skia component at design time. Hosts (WinForms, WPF, Avalonia, MAUI, Blazor) emit instances into designer code when a component is dropped onto the canvas.</p>
+<h2>Quick usage</h2>
+<div class="code-example">
+<pre><code class="language-csharp">var component = new SkiaComponentDescriptor { X = 100, Y = 100, Width = 160, Height = 60 };
+component.Name = "Example";
+drawingManager.AddComponent(component);
+drawingManager.RequestRedraw();</code></pre>
+</div>
 <h2>Members</h2>
 <table class="property-table">
   <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>

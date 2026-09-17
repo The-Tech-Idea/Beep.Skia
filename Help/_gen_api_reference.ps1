@@ -93,6 +93,23 @@ function New-TypePage([string]$dir, [string]$assemblyPage, [string]$assemblyTitl
     [void]$sb.AppendLine("<p class=`"page-subtitle`">$assemblyTitle &mdash; $($type.Kind)</p></div>")
     if ($type.Summary) { [void]$sb.AppendLine("<p>$($type.Summary)</p>") }
 
+    # Components (types exposing X/Y/Width/Height) get a quick usage snippet.
+    $memberNames = @($type.Members | ForEach-Object { if ($_.Signature -match '([A-Za-z_]\w*)\s*$') { $matches[1] } })
+    $isComponent = ($memberNames -contains 'X') -and ($memberNames -contains 'Y') -and ($memberNames -contains 'Width') -and ($memberNames -contains 'Height')
+    if ($isComponent) {
+        $labelProp = $null
+        foreach ($candidate in @('Label', 'Title', 'Text', 'DisplayText', 'Name')) {
+            if ($memberNames -contains $candidate) { $labelProp = $candidate; break }
+        }
+        [void]$sb.AppendLine('<h2>Quick usage</h2>')
+        [void]$sb.AppendLine('<div class="code-example">')
+        [void]$sb.AppendLine('<pre><code class="language-csharp">var component = new ' + $type.Name + ' { X = 100, Y = 100, Width = 160, Height = 60 };')
+        if ($labelProp) { [void]$sb.AppendLine('component.' + $labelProp + ' = "Example";') }
+        [void]$sb.AppendLine('drawingManager.AddComponent(component);')
+        [void]$sb.AppendLine('drawingManager.RequestRedraw();</code></pre>')
+        [void]$sb.AppendLine('</div>')
+    }
+
     if ($type.Members -and @($type.Members).Count -gt 0) {
         [void]$sb.AppendLine("<h2>Members</h2>")
         [void]$sb.AppendLine('<table class="property-table">')
