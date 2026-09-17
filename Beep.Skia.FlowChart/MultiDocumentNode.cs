@@ -74,25 +74,26 @@ namespace Beep.Skia.Flowchart
                     r.Bottom - (2 - i) * stackOffset
                 );
 
-                using var path = new SKPath();
-                path.MoveTo(docRect.Left, docRect.Top);
-                path.LineTo(docRect.Right, docRect.Top);
-                path.LineTo(docRect.Right, docRect.Bottom - waveHeight);
+                using var pathBuilder = new SKPathBuilder();
+                pathBuilder.MoveTo(docRect.Left, docRect.Top);
+                pathBuilder.LineTo(docRect.Right, docRect.Top);
+                pathBuilder.LineTo(docRect.Right, docRect.Bottom - waveHeight);
 
                 // Wavy bottom edge
                 float waveWidth = docRect.Width / 3;
-                path.CubicTo(
+                pathBuilder.CubicTo(
                     docRect.Right - waveWidth * 0.5f, docRect.Bottom,
                     docRect.Right - waveWidth * 1.5f, docRect.Bottom - waveHeight * 2,
                     docRect.Right - waveWidth * 2, docRect.Bottom - waveHeight * 0.5f
                 );
-                path.CubicTo(
+                pathBuilder.CubicTo(
                     docRect.Left + waveWidth * 0.5f, docRect.Bottom,
                     docRect.Left, docRect.Bottom - waveHeight,
                     docRect.Left, docRect.Bottom - waveHeight
                 );
-                path.Close();
+                pathBuilder.Close();
 
+                using var path = pathBuilder.Detach();
                 canvas.DrawPath(path, fill);
                 canvas.DrawPath(path, stroke);
             }

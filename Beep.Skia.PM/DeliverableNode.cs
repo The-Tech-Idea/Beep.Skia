@@ -129,14 +129,14 @@ namespace Beep.Skia.PM
             float indent = r.Width * 0.15f;
 
             // Horizontal hexagon shape
-            using var path = new SKPath();
-            path.MoveTo(r.Left + indent, r.Top);
-            path.LineTo(r.Right - indent, r.Top);
-            path.LineTo(r.Right, r.MidY);
-            path.LineTo(r.Right - indent, r.Bottom);
-            path.LineTo(r.Left + indent, r.Bottom);
-            path.LineTo(r.Left, r.MidY);
-            path.Close();
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(r.Left + indent, r.Top);
+            pathBuilder.LineTo(r.Right - indent, r.Top);
+            pathBuilder.LineTo(r.Right, r.MidY);
+            pathBuilder.LineTo(r.Right - indent, r.Bottom);
+            pathBuilder.LineTo(r.Left + indent, r.Bottom);
+            pathBuilder.LineTo(r.Left, r.MidY);
+            pathBuilder.Close();
 
             SKColor fillColor = _isApproved 
                 ? new SKColor(0xE8, 0xF5, 0xE9)  // Light green if approved
@@ -146,6 +146,7 @@ namespace Beep.Skia.PM
             using var stroke = new SKPaint { Color = MaterialColors.Outline, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
             using var text = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawPath(path, stroke);
 

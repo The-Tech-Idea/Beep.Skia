@@ -24,6 +24,34 @@ namespace Beep.Skia.ECAD
             CheckOutputConflicts(components, lines);
             CheckMissingPowerGround(components, lines);
             CheckUnconnectedPorts(components, lines);
+            CheckShortCircuits(components, lines);
+        }
+
+        /// <summary>
+        /// Detects direct power-to-ground connections (short circuits).
+        /// </summary>
+        private void CheckShortCircuits(IReadOnlyList<SkiaComponent> components, IReadOnlyList<IConnectionLine> lines)
+        {
+            foreach (var line in lines)
+            {
+                if (!(line?.Start?.Component is SkiaComponent startComponent)) continue;
+                if (!(line?.End?.Component is SkiaComponent endComponent)) continue;
+
+                var startType = ElectricalPinModel.GetPinType(startComponent, line.Start);
+                var endType = ElectricalPinModel.GetPinType(endComponent, line.End);
+
+                if (!ElectricalPinModel.IsShortCircuit(startType, endType)) continue;
+
+                Violations.Add(new ElectricalRuleViolation
+                {
+                    Message = $"Short circuit: '{startComponent.Name}' ({startType}) is directly connected to '{endComponent.Name}' ({endType})",
+                    Severity = ElectricalViolationSeverity.Error,
+                    Category = "ShortCircuit",
+                    Component = startComponent,
+                    Line = line,
+                    FixSuggestion = "Insert a load (resistor, regulator, or component) between power and ground"
+                });
+            }
         }
 
         /// <summary>
@@ -203,13 +231,13 @@ namespace Beep.Skia.ECAD
     /// </summary>
     public class ElectricalRuleViolation
     {
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
         public ElectricalViolationSeverity Severity { get; set; } = ElectricalViolationSeverity.Warning;
-        public string Category { get; set; }
-        public string FixSuggestion { get; set; }
-        public SkiaComponent Component { get; set; }
-        public IConnectionPoint Port { get; set; }
-        public IConnectionLine Line { get; set; }
+        public string Category { get; set; } = string.Empty;
+        public string? FixSuggestion { get; set; }
+        public SkiaComponent? Component { get; set; }
+        public IConnectionPoint? Port { get; set; }
+        public IConnectionLine? Line { get; set; }
 
         public override string ToString() => $"[{Severity}] {Category}: {Message}";
     }

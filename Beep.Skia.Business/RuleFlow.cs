@@ -91,9 +91,10 @@ namespace Beep.Skia.Business
                 Y - Height * 0.5f : Y + Height * 1.5f;
 
             // Draw curved line
-            using var path = new SKPath();
-            path.MoveTo(startX, startY);
-            path.QuadTo((startX + endX) / 2, controlY, endX, endY);
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(startX, startY);
+            pathBuilder.QuadTo((startX + endX) / 2, controlY, endX, endY);
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, arrowPaint);
 
             // Draw arrowhead
@@ -103,22 +104,22 @@ namespace Beep.Skia.Business
         private void DrawArrowhead(SKCanvas canvas, float x, float y, SKPaint paint)
         {
             float arrowSize = 8;
-            using var arrowPath = new SKPath();
+            using var arrowPathBuilder = new SKPathBuilder();
 
             // Calculate arrow direction based on flow
             float angle = Direction == FlowDirection.True ? -45 : 45;
             float radian = angle * (float)Math.PI / 180f;
 
-            arrowPath.MoveTo(x, y);
-            arrowPath.LineTo(
+            arrowPathBuilder.MoveTo(x, y);
+            arrowPathBuilder.LineTo(
                 x - arrowSize * (float)Math.Cos(radian - Math.PI / 6),
                 y - arrowSize * (float)Math.Sin(radian - Math.PI / 6)
             );
-            arrowPath.LineTo(
+            arrowPathBuilder.LineTo(
                 x - arrowSize * (float)Math.Cos(radian + Math.PI / 6),
                 y - arrowSize * (float)Math.Sin(radian + Math.PI / 6)
             );
-            arrowPath.Close();
+            arrowPathBuilder.Close();
 
             using var fillPaint = new SKPaint
             {
@@ -127,6 +128,7 @@ namespace Beep.Skia.Business
                 IsAntialias = true
             };
 
+            using var arrowPath = arrowPathBuilder.Detach();
             canvas.DrawPath(arrowPath, fillPaint);
         }
 

@@ -67,20 +67,21 @@ namespace Beep.Skia.MindMap
 
             float r = 8f;
             float fold = Math.Min(Width, Height) * 0.2f;
-            using var path = new SKPath();
-            path.MoveTo(X + r, Y);
-            path.LineTo(X + Width - fold - r, Y);
-            path.ArcTo(new SKRect(X + Width - fold - 2 * r, Y, X + Width - fold, Y + 2 * r), 270, 90, false);
-            path.LineTo(X + Width - fold, Y + fold);
-            path.LineTo(X + Width, Y + fold);
-            path.LineTo(X + Width, Y + Height - r);
-            path.ArcTo(new SKRect(X + Width - 2 * r, Y + Height - 2 * r, X + Width, Y + Height), 0, 90, false);
-            path.LineTo(X + r, Y + Height);
-            path.ArcTo(new SKRect(X, Y + Height - 2 * r, X + 2 * r, Y + Height), 90, 90, false);
-            path.LineTo(X, Y + r);
-            path.ArcTo(new SKRect(X, Y, X + 2 * r, Y + 2 * r), 180, 90, false);
-            path.Close();
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(X + r, Y);
+            pathBuilder.LineTo(X + Width - fold - r, Y);
+            pathBuilder.ArcTo(new SKRect(X + Width - fold - 2 * r, Y, X + Width - fold, Y + 2 * r), 270, 90, false);
+            pathBuilder.LineTo(X + Width - fold, Y + fold);
+            pathBuilder.LineTo(X + Width, Y + fold);
+            pathBuilder.LineTo(X + Width, Y + Height - r);
+            pathBuilder.ArcTo(new SKRect(X + Width - 2 * r, Y + Height - 2 * r, X + Width, Y + Height), 0, 90, false);
+            pathBuilder.LineTo(X + r, Y + Height);
+            pathBuilder.ArcTo(new SKRect(X, Y + Height - 2 * r, X + 2 * r, Y + Height), 90, 90, false);
+            pathBuilder.LineTo(X, Y + r);
+            pathBuilder.ArcTo(new SKRect(X, Y, X + 2 * r, Y + 2 * r), 180, 90, false);
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawPath(path, stroke);
 
@@ -90,9 +91,13 @@ namespace Beep.Skia.MindMap
 
             if (!string.IsNullOrWhiteSpace(Notes))
             {
-                using var font2 = new SKFont(SKTypeface.Default, 11);
-                using var t2 = new SKPaint { Color = MaterialColors.OnSurfaceVariant, IsAntialias = true };
-                canvas.DrawText(Notes!.Length > 140 ? Notes!.Substring(0, 140) + "…" : Notes!, X + 10, Y + 42, font2, t2);
+                MindMapRichText.Draw(
+                    canvas,
+                    Notes!,
+                    new SKRect(X + 8f, Y + 30f, X + Width - 8f, Y + Height - 8f),
+                    MaterialColors.OnSurfaceVariant,
+                    fontSize: 10f,
+                    lineHeight: 13f);
             }
 
             DrawConnectionPoints(canvas);

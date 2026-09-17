@@ -40,6 +40,24 @@ namespace Beep.Skia.StateMachine
             }
         }
 
+        private int _regionCount = 1;
+        /// <summary>
+        /// Number of orthogonal regions inside the composite state (1-4).
+        /// Regions are separated by dashed dividers in the content area.
+        /// </summary>
+        public int RegionCount
+        {
+            get => _regionCount;
+            set
+            {
+                var v = Math.Max(1, Math.Min(4, value));
+                if (_regionCount == v) return;
+                _regionCount = v;
+                if (NodeProperties.TryGetValue("RegionCount", out var pi)) pi.ParameterCurrentValue = _regionCount;
+                InvalidateVisual();
+            }
+        }
+
         public CompositeStateNode()
         {
             Width = 240; Height = 180;
@@ -51,6 +69,7 @@ namespace Beep.Skia.StateMachine
 
             NodeProperties["Title"] = new ParameterInfo { ParameterName = "Title", ParameterType = typeof(string), DefaultParameterValue = _title, ParameterCurrentValue = _title, Description = "Composite state name" };
             NodeProperties["TitleBarHeight"] = new ParameterInfo { ParameterName = "TitleBarHeight", ParameterType = typeof(float), DefaultParameterValue = _titleBarHeight, ParameterCurrentValue = _titleBarHeight, Description = "Height of title bar" };
+            NodeProperties["RegionCount"] = new ParameterInfo { ParameterName = "RegionCount", ParameterType = typeof(int), DefaultParameterValue = _regionCount, ParameterCurrentValue = _regionCount, Description = "Number of orthogonal regions (1-4)" };
         }
 
         /// <summary>
@@ -94,11 +113,31 @@ namespace Beep.Skia.StateMachine
             // Title text
             using var font = new SKFont(SKTypeface.Default, 12);
             using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
-            canvas.DrawText(_title, X + 12, Y + _titleBarHeight / 2f + 4, font, textPaint);
+            canvas.DrawText(_title, X + 12, Y + _titleBarHeight / 2f + 4, SKTextAlign.Left, font, textPaint);
 
             // Separator line for content area
             using var sepPaint = new SKPaint { Color = new SKColor(0xE0, 0xE0, 0xE0), Style = SKPaintStyle.Stroke, StrokeWidth = 0.5f, IsAntialias = true };
             canvas.DrawLine(X + 4, Y + _titleBarHeight + 2, X + Width - 4, Y + _titleBarHeight + 2, sepPaint);
+
+            // Orthogonal region dividers
+            if (_regionCount > 1)
+            {
+                var content = GetContentArea();
+                float regionWidth = content.Width / _regionCount;
+                using var dividerPaint = new SKPaint
+                {
+                    Color = BorderColor.WithAlpha(140),
+                    Style = SKPaintStyle.Stroke,
+                    StrokeWidth = 1f,
+                    IsAntialias = true,
+                    PathEffect = SKPathEffect.CreateDash(new float[] { 4f, 3f }, 0)
+                };
+                for (int i = 1; i < _regionCount; i++)
+                {
+                    float dx = content.Left + i * regionWidth;
+                    canvas.DrawLine(dx, content.Top, dx, content.Bottom, dividerPaint);
+                }
+            }
 
             DrawConnectionPoints(canvas);
         }
@@ -108,6 +147,7 @@ namespace Beep.Skia.StateMachine
             var props = base.GetProperties(includeCommon, includeNodeProperties);
             props["Title"] = _title;
             props["TitleBarHeight"] = _titleBarHeight;
+            props["RegionCount"] = _regionCount;
             return props;
         }
 
@@ -116,6 +156,7 @@ namespace Beep.Skia.StateMachine
             base.SetPropperties(properties, updateNodeProperties, applyToPublicSetters);
             if (properties.TryGetValue("Title", out var t) && t is string ts) Title = ts;
             if (properties.TryGetValue("TitleBarHeight", out var h) && h != null) TitleBarHeight = Convert.ToSingle(h);
+            if (properties.TryGetValue("RegionCount", out var r) && r != null) RegionCount = Convert.ToInt32(r);
         }
     }
 }

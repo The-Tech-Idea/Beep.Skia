@@ -73,13 +73,14 @@ namespace Beep.Skia.Business
             float centerX = X + Width / 2;
             float centerY = Y + Height / 2;
 
-            using var path = new SKPath();
-            path.MoveTo(centerX, Y + 5);
-            path.LineTo(X + Width - 5, centerY);
-            path.LineTo(centerX, Y + Height - 5);
-            path.LineTo(X + 5, centerY);
-            path.Close();
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(centerX, Y + 5);
+            pathBuilder.LineTo(X + Width - 5, centerY);
+            pathBuilder.LineTo(centerX, Y + Height - 5);
+            pathBuilder.LineTo(X + 5, centerY);
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fillPaint);
             canvas.DrawPath(path, borderPaint);
 
@@ -130,20 +131,23 @@ namespace Beep.Skia.Business
                     break;
 
                 case GatewayType.EventBased:
+                {
                     float pr = s * 0.5f;
-                    var pentPath = new SKPath();
+                    var pentPathBuilder = new SKPathBuilder();
                     for (int i = 0; i < 5; i++)
                     {
                         float angle = (float)(-Math.PI / 2 + 2 * Math.PI * i / 5);
                         float px = cx + pr * (float)Math.Cos(angle);
                         float py = cy + pr * (float)Math.Sin(angle);
-                        if (i == 0) pentPath.MoveTo(px, py);
-                        else pentPath.LineTo(px, py);
+                        if (i == 0) pentPathBuilder.MoveTo(px, py);
+                        else pentPathBuilder.LineTo(px, py);
                     }
-                    pentPath.Close();
+                    pentPathBuilder.Close();
+                    using var pentPath = pentPathBuilder.Detach();
                     canvas.DrawPath(pentPath, iconPaint);
                     canvas.DrawCircle(cx, cy, pr * 0.3f, iconPaint);
                     break;
+                }
             }
         }
 

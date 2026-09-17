@@ -93,14 +93,15 @@ namespace Beep.Skia.Business
             float boltSize = Math.Min(Width, Height) * 0.3f;
 
             // Draw lightning bolt path
-            using var path = new SKPath();
-            path.MoveTo(centerX - boltSize * 0.3f, centerY - boltSize * 0.5f);
-            path.LineTo(centerX + boltSize * 0.1f, centerY - boltSize * 0.5f);
-            path.LineTo(centerX - boltSize * 0.4f, centerY + boltSize * 0.2f);
-            path.LineTo(centerX + boltSize * 0.4f, centerY + boltSize * 0.2f);
-            path.LineTo(centerX - boltSize * 0.1f, centerY + boltSize * 0.5f);
-            path.LineTo(centerX + boltSize * 0.3f, centerY + boltSize * 0.5f);
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(centerX - boltSize * 0.3f, centerY - boltSize * 0.5f);
+            pathBuilder.LineTo(centerX + boltSize * 0.1f, centerY - boltSize * 0.5f);
+            pathBuilder.LineTo(centerX - boltSize * 0.4f, centerY + boltSize * 0.2f);
+            pathBuilder.LineTo(centerX + boltSize * 0.4f, centerY + boltSize * 0.2f);
+            pathBuilder.LineTo(centerX - boltSize * 0.1f, centerY + boltSize * 0.5f);
+            pathBuilder.LineTo(centerX + boltSize * 0.3f, centerY + boltSize * 0.5f);
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, iconPaint);
         }
 

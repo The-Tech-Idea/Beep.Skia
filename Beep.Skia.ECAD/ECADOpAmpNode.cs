@@ -42,22 +42,25 @@ namespace Beep.Skia.ECAD
 
             // Draw triangle for op-amp
             using var line = new SKPaint { Color = BorderColor, StrokeWidth = 2, Style = SKPaintStyle.Stroke, IsAntialias = true };
-            var path = new SKPath();
+            var pathBuilder = new SKPathBuilder();
             float inset = 15;
-            path.MoveTo(r.Left + inset, r.Top + inset);
-            path.LineTo(r.Left + inset, r.Bottom - inset);
-            path.LineTo(r.Right - inset, r.MidY);
-            path.Close();
+            pathBuilder.MoveTo(r.Left + inset, r.Top + inset);
+            pathBuilder.LineTo(r.Left + inset, r.Bottom - inset);
+            pathBuilder.LineTo(r.Right - inset, r.MidY);
+            pathBuilder.Close();
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, line);
 
             // +/- symbols
-            using var text = new SKPaint { Color = BorderColor, TextSize = 12, IsAntialias = true };
-            canvas.DrawText("+", r.Left + inset + 5, r.Top + inset + 12, text);
-            canvas.DrawText("-", r.Left + inset + 5, r.Bottom - inset - 3, text);
+            using var text = new SKPaint { Color = BorderColor, IsAntialias = true };
+            using var symbolFont = new SKFont(SKTypeface.Default, 12);
+            canvas.DrawText("+", r.Left + inset + 5, r.Top + inset + 12, SKTextAlign.Left, symbolFont, text);
+            canvas.DrawText("-", r.Left + inset + 5, r.Bottom - inset - 3, SKTextAlign.Left, symbolFont, text);
 
             // Label
-            using var label = new SKPaint { Color = TextColor, TextSize = 10, IsAntialias = true };
-            canvas.DrawText(_model, r.MidX - label.MeasureText(_model) / 2, r.Bottom - 4, label);
+            using var label = new SKPaint { Color = TextColor, IsAntialias = true };
+            using var labelFont = new SKFont(SKTypeface.Default, 10);
+            canvas.DrawText(_model, r.MidX - labelFont.MeasureText(_model) / 2, r.Bottom - 4, SKTextAlign.Left, labelFont, label);
 
             DrawPorts(canvas);
         }

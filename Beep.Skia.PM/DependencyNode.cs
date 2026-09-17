@@ -135,13 +135,14 @@ namespace Beep.Skia.PM
 
             // Draw parallelogram (link shape)
             float skew = 10f;
-            using var path = new SKPath();
-            path.MoveTo(r.Left + skew, r.Top);
-            path.LineTo(r.Right, r.Top);
-            path.LineTo(r.Right - skew, r.Bottom);
-            path.LineTo(r.Left, r.Bottom);
-            path.Close();
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(r.Left + skew, r.Top);
+            pathBuilder.LineTo(r.Right, r.Top);
+            pathBuilder.LineTo(r.Right - skew, r.Bottom);
+            pathBuilder.LineTo(r.Left, r.Bottom);
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawPath(path, stroke);
 

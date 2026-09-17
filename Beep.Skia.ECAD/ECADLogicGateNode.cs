@@ -40,41 +40,42 @@ namespace Beep.Skia.ECAD
             // Draw gate symbol
             using var line = new SKPaint { Color = BorderColor, StrokeWidth = 2, Style = SKPaintStyle.Stroke, IsAntialias = true };
             float inset = 10;
-            var path = new SKPath();
+            var pathBuilder = new SKPathBuilder();
             
             switch (_gateType)
             {
                 case "AND":
                 case "NAND":
-                    path.MoveTo(r.Left + inset, r.Top + inset);
-                    path.LineTo(r.MidX, r.Top + inset);
-                    path.ArcTo(new SKRect(r.MidX, r.Top + inset, r.Right - inset, r.Bottom - inset), -90, 180, false);
-                    path.LineTo(r.Left + inset, r.Bottom - inset);
-                    path.Close();
+                    pathBuilder.MoveTo(r.Left + inset, r.Top + inset);
+                    pathBuilder.LineTo(r.MidX, r.Top + inset);
+                    pathBuilder.ArcTo(new SKRect(r.MidX, r.Top + inset, r.Right - inset, r.Bottom - inset), -90, 180, false);
+                    pathBuilder.LineTo(r.Left + inset, r.Bottom - inset);
+                    pathBuilder.Close();
                     break;
                 case "OR":
                 case "NOR":
-                    path.MoveTo(r.Left + inset, r.Top + inset);
-                    path.CubicTo(r.Left + 20, r.Top + inset, r.Right - 20, r.MidY - 10, r.Right - inset, r.MidY);
-                    path.CubicTo(r.Right - 20, r.MidY + 10, r.Left + 20, r.Bottom - inset, r.Left + inset, r.Bottom - inset);
-                    path.Close();
+                    pathBuilder.MoveTo(r.Left + inset, r.Top + inset);
+                    pathBuilder.CubicTo(r.Left + 20, r.Top + inset, r.Right - 20, r.MidY - 10, r.Right - inset, r.MidY);
+                    pathBuilder.CubicTo(r.Right - 20, r.MidY + 10, r.Left + 20, r.Bottom - inset, r.Left + inset, r.Bottom - inset);
+                    pathBuilder.Close();
                     break;
                 case "XOR":
                 case "XNOR":
                     canvas.DrawArc(new SKRect(r.Left + inset - 5, r.Top + inset, r.Left + inset + 10, r.Bottom - inset), 90, 180, false, line);
-                    path.MoveTo(r.Left + inset + 5, r.Top + inset);
-                    path.CubicTo(r.Left + 25, r.Top + inset, r.Right - 20, r.MidY - 10, r.Right - inset, r.MidY);
-                    path.CubicTo(r.Right - 20, r.MidY + 10, r.Left + 25, r.Bottom - inset, r.Left + inset + 5, r.Bottom - inset);
-                    path.Close();
+                    pathBuilder.MoveTo(r.Left + inset + 5, r.Top + inset);
+                    pathBuilder.CubicTo(r.Left + 25, r.Top + inset, r.Right - 20, r.MidY - 10, r.Right - inset, r.MidY);
+                    pathBuilder.CubicTo(r.Right - 20, r.MidY + 10, r.Left + 25, r.Bottom - inset, r.Left + inset + 5, r.Bottom - inset);
+                    pathBuilder.Close();
                     break;
                 case "NOT":
                 case "Buffer":
-                    path.MoveTo(r.Left + inset, r.Top + inset);
-                    path.LineTo(r.Left + inset, r.Bottom - inset);
-                    path.LineTo(r.Right - inset - (_gateType == "NOT" ? 8 : 0), r.MidY);
-                    path.Close();
+                    pathBuilder.MoveTo(r.Left + inset, r.Top + inset);
+                    pathBuilder.LineTo(r.Left + inset, r.Bottom - inset);
+                    pathBuilder.LineTo(r.Right - inset - (_gateType == "NOT" ? 8 : 0), r.MidY);
+                    pathBuilder.Close();
                     break;
             }
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, line);
 
             if (_gateType.Contains("N") || _gateType == "NOT")
@@ -84,8 +85,9 @@ namespace Beep.Skia.ECAD
                 canvas.DrawCircle(bubbleX, r.MidY, 4, line);
             }
 
-            using var text = new SKPaint { Color = TextColor, TextSize = 10, IsAntialias = true };
-            canvas.DrawText(_gateType, r.MidX - text.MeasureText(_gateType) / 2, r.Bottom - 4, text);
+            using var text = new SKPaint { Color = TextColor, IsAntialias = true };
+            using var textFont = new SKFont(SKTypeface.Default, 10);
+            canvas.DrawText(_gateType, r.MidX - textFont.MeasureText(_gateType) / 2, r.Bottom - 4, SKTextAlign.Left, textFont, text);
 
             DrawPorts(canvas);
         }

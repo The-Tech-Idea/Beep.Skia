@@ -78,20 +78,21 @@ namespace Beep.Skia.ETL
         protected override void DrawShape(SKCanvas canvas)
         {
             var r = Bounds;
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
 
             // Triangle/cone shape - single input fans out to multiple outputs
             float bottomWidth = r.Width * 0.8f;
             float bottomOffset = (r.Width - bottomWidth) / 2;
 
-            path.MoveTo(r.MidX, r.Top + HeaderHeight);
-            path.LineTo(r.Left + bottomOffset, r.Bottom);
-            path.LineTo(r.Right - bottomOffset, r.Bottom);
-            path.Close();
+            pathBuilder.MoveTo(r.MidX, r.Top + HeaderHeight);
+            pathBuilder.LineTo(r.Left + bottomOffset, r.Bottom);
+            pathBuilder.LineTo(r.Right - bottomOffset, r.Bottom);
+            pathBuilder.Close();
 
             using var fill = new SKPaint { Color = Background, IsAntialias = true };
             using var stroke = new SKPaint { Color = Stroke, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawPath(path, stroke);
         }

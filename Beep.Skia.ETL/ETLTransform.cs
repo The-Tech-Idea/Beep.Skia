@@ -150,18 +150,19 @@ namespace Beep.Skia.ETL
         {
             var rect = new SKRect(X, Y, X + Width, Y + Height);
 
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
             float indent = 20f;
             // Create hexagon
-            path.MoveTo(rect.Left + indent, rect.Top);
-            path.LineTo(rect.Right - indent, rect.Top);
-            path.LineTo(rect.Right, rect.MidY);
-            path.LineTo(rect.Right - indent, rect.Bottom);
-            path.LineTo(rect.Left + indent, rect.Bottom);
-            path.LineTo(rect.Left, rect.MidY);
-            path.Close();
+            pathBuilder.MoveTo(rect.Left + indent, rect.Top);
+            pathBuilder.LineTo(rect.Right - indent, rect.Top);
+            pathBuilder.LineTo(rect.Right, rect.MidY);
+            pathBuilder.LineTo(rect.Right - indent, rect.Bottom);
+            pathBuilder.LineTo(rect.Left + indent, rect.Bottom);
+            pathBuilder.LineTo(rect.Left, rect.MidY);
+            pathBuilder.Close();
 
             using var fill = new SKPaint { Color = Background, Style = SKPaintStyle.Fill, IsAntialias = true };
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
 
             using var border = new SKPaint { Color = Stroke, Style = SKPaintStyle.Stroke, StrokeWidth = 1.25f, IsAntialias = true };

@@ -65,20 +65,20 @@ namespace Beep.Skia.UML
                 using var font = new SKFont(SKTypeface.Default, 10);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 var stereotypeWidth = font.MeasureText(Stereotype);
-                canvas.DrawText(Stereotype, (Width - stereotypeWidth) / 2, 18, font, textPaint);
+                canvas.DrawText(Stereotype, (Width - stereotypeWidth) / 2, 18, SKTextAlign.Left, font, textPaint);
             }
 
             // Draw trigger type
-            using var typeFont = new SKFont(SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold), 12);
+            using var typeFont = new SKFont(TypefaceCache.Get("Arial", SKFontStyle.Bold), 12);
             using var typePaint = new SKPaint { IsAntialias = true, Color = TextColor };
-            canvas.DrawText(TriggerType, 8, 35, typeFont, typePaint);
+            canvas.DrawText(TriggerType, 8, 35, SKTextAlign.Left, typeFont, typePaint);
 
             // Draw trigger condition if present
             if (!string.IsNullOrEmpty(TriggerCondition))
             {
                 using var condFont = new SKFont(SKTypeface.Default, 10);
                 using var condPaint = new SKPaint { IsAntialias = true, Color = TextColor };
-                canvas.DrawText(TriggerCondition, 8, 55, condFont, condPaint);
+                canvas.DrawText(TriggerCondition, 8, 55, SKTextAlign.Left, condFont, condPaint);
             }
 
             // Draw lightning bolt icon to represent trigger
@@ -102,15 +102,16 @@ namespace Beep.Skia.UML
                 paint.StrokeWidth = 2;
                 paint.IsAntialias = true;
 
-                var path = new SKPath();
-                path.MoveTo(x + 5, y);
-                path.LineTo(x + 2, y + 3);
-                path.LineTo(x + 6, y + 3);
-                path.LineTo(x + 1, y + 8);
-                path.LineTo(x + 8, y + 3);
-                path.LineTo(x + 3, y + 3);
-                path.Close();
+                var pathBuilder = new SKPathBuilder();
+                pathBuilder.MoveTo(x + 5, y);
+                pathBuilder.LineTo(x + 2, y + 3);
+                pathBuilder.LineTo(x + 6, y + 3);
+                pathBuilder.LineTo(x + 1, y + 8);
+                pathBuilder.LineTo(x + 8, y + 3);
+                pathBuilder.LineTo(x + 3, y + 3);
+                pathBuilder.Close();
 
+                using var path = pathBuilder.Detach();
                 canvas.DrawPath(path, paint);
             }
         }

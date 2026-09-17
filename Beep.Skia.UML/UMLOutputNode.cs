@@ -68,13 +68,13 @@ namespace Beep.Skia.UML
             {
                 using var font = new SKFont(SKTypeface.Default, 9);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
-                canvas.DrawText(Stereotype, 10, 18, font, textPaint);
+                canvas.DrawText(Stereotype, 10, 18, SKTextAlign.Left, font, textPaint);
             }
 
             // Draw output type
-            using var typeFont = new SKFont(SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold), 11);
+            using var typeFont = new SKFont(TypefaceCache.Get("Arial", SKFontStyle.Bold), 11);
             using var typePaint = new SKPaint { IsAntialias = true, Color = TextColor };
-            canvas.DrawText(OutputType, 10, 38, typeFont, typePaint);
+            canvas.DrawText(OutputType, 10, 38, SKTextAlign.Left, typeFont, typePaint);
 
             // Draw output destination if present
             if (!string.IsNullOrEmpty(OutputDestination))
@@ -87,7 +87,7 @@ namespace Beep.Skia.UML
                     OutputDestination.Substring(0, 22) + "..." :
                     OutputDestination;
 
-                canvas.DrawText(dest, 10, 52, destFont, destPaint);
+                canvas.DrawText(dest, 10, 52, SKTextAlign.Left, destFont, destPaint);
             }
 
             // Draw output arrow icon

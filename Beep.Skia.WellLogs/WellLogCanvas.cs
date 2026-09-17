@@ -1,4 +1,5 @@
 using Beep.Skia.Components;
+using Beep.Skia.Model;
 using SkiaSharp;
 using System;
 

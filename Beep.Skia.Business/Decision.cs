@@ -55,18 +55,19 @@ namespace Beep.Skia.Business
             };
 
             // Create diamond path
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
             float centerX = X + Width / 2;
             float centerY = Y + Height / 2;
             float halfWidth = Width / 2;
             float halfHeight = Height / 2;
 
-            path.MoveTo(centerX, Y); // Top
-            path.LineTo(X + Width, centerY); // Right
-            path.LineTo(centerX, Y + Height); // Bottom
-            path.LineTo(X, centerY); // Left
-            path.Close();
+            pathBuilder.MoveTo(centerX, Y); // Top
+            pathBuilder.LineTo(X + Width, centerY); // Right
+            pathBuilder.LineTo(centerX, Y + Height); // Bottom
+            pathBuilder.LineTo(X, centerY); // Left
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fillPaint);
             canvas.DrawPath(path, borderPaint);
         }

@@ -23,10 +23,18 @@ namespace Beep.Skia.Security
         public class ThreatResult
         {
             public StrideCategory Category { get; set; }
-            public string AssetName { get; set; }
-            public string Threat { get; set; }
-            public string Mitigation { get; set; }
+            public string AssetName { get; set; } = string.Empty;
+            public string Threat { get; set; } = string.Empty;
+            public string Mitigation { get; set; } = string.Empty;
             public string Severity { get; set; } = "Medium";
+
+            /// <summary>MITRE ATT&amp;CK techniques mapped to this threat's STRIDE category.</summary>
+            public List<MitreTechnique> Techniques { get; } = new List<MitreTechnique>();
+
+            /// <summary>DREAD risk score derived from severity/likelihood.</summary>
+            public DreadScore Dread { get; set; } = new DreadScore();
+
+            public override string ToString() => $"[{Category}] {Threat} ({Severity}, {Dread.RiskLevel})";
         }
 
         public List<ThreatResult> Threats { get; } = new List<ThreatResult>();
@@ -41,7 +49,15 @@ namespace Beep.Skia.Security
 
             foreach (var asset in assets)
             {
-                GenerateThreats(asset.Name ?? "Unnamed", asset.AssetType);
+                GenerateThreats(asset.Name ?? "Unnamed", asset.Category.ToString());
+            }
+
+            // Enrich threats with MITRE ATT&CK techniques and DREAD risk scores.
+            foreach (var threat in Threats)
+            {
+                threat.Techniques.Clear();
+                threat.Techniques.AddRange(MitreAttackLibrary.ForStrideCategory(threat.Category));
+                threat.Dread = DreadCalculator.Calculate(threat.Severity, "Possible");
             }
         }
 

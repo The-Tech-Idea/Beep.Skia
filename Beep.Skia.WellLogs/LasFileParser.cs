@@ -186,8 +186,12 @@ namespace Beep.Skia.WellLogs
 
         private float _nullValue = -999.25f;
 
+        /// <summary>Curves in file order (used by the data section; tracks reorder them for display).</summary>
+        private readonly List<WellLogCurve> _curvesInFileOrder = new List<WellLogCurve>();
+
         private void ParseCurveSection(List<string> lines)
         {
+            _curvesInFileOrder.Clear();
             var curves = new List<WellLogCurve>();
             foreach (var line in lines)
             {
@@ -218,12 +222,7 @@ namespace Beep.Skia.WellLogs
 
             if (curves.Count > 0)
             {
-                var track = new WellLogTrack
-                {
-                    Name = "Main",
-                    Role = WellLogTrackRole.Curve,
-                    Curves = curves
-                };
+                _curvesInFileOrder.AddRange(curves);
 
                 // Auto-assign styles for common curves
                 foreach (var c in curves)
@@ -231,9 +230,79 @@ namespace Beep.Skia.WellLogs
                     AutoStyleCurve(c);
                 }
 
-                Document.Tracks.Add(track);
+                foreach (var track in BuildTracks(curves))
+                {
+                    Document.Tracks.Add(track);
+                }
             }
         }
+
+        /// <summary>
+        /// Groups parsed curves into tracks: a depth track plus one track per curve family
+        /// (Gamma Ray, Resistivity, Porosity, Sonic, Caliper, Other).
+        /// </summary>
+        private static IEnumerable<WellLogTrack> BuildTracks(List<WellLogCurve> curves)
+        {
+            var tracks = new List<WellLogTrack>();
+
+            var depthCurves = curves.Where(c => !c.IsVisible).ToList();
+            if (depthCurves.Count > 0)
+            {
+                var depthTrack = new WellLogTrack
+                {
+                    Name = "Depth",
+                    Role = WellLogTrackRole.Depth,
+                    WidthRatio = 0.6f,
+                    ShowGrid = false
+                };
+                depthTrack.Curves.AddRange(depthCurves);
+                tracks.Add(depthTrack);
+            }
+
+            var groups = curves
+                .Where(c => c.IsVisible)
+                .GroupBy(c => ClassifyCurve(c.Mnemonic))
+                .OrderBy(g => TrackOrder(g.Key))
+                .ThenBy(g => g.Key, StringComparer.OrdinalIgnoreCase);
+
+            foreach (var group in groups)
+            {
+                var track = new WellLogTrack
+                {
+                    Name = group.Key,
+                    Role = WellLogTrackRole.Curve,
+                    WidthRatio = 1f
+                };
+                track.Curves.AddRange(group);
+                tracks.Add(track);
+            }
+
+            return tracks;
+        }
+
+        /// <summary>
+        /// Classifies a curve mnemonic into a display track family.
+        /// </summary>
+        private static string ClassifyCurve(string mnemonic)
+        {
+            var m = (mnemonic ?? string.Empty).ToUpperInvariant();
+            if (m.Contains("GR") || m.Contains("GAMMA") || m.Contains("SGR") || m.Contains("CGR") || m == "SP" || m == "NGT") return "Gamma Ray";
+            if (m.Contains("RES") || m.Contains("ILD") || m.Contains("LLD") || m.Contains("MSFL") || m.Contains("RXO") || m.StartsWith("RT")) return "Resistivity";
+            if (m.Contains("RHOB") || m.Contains("NPHI") || m.Contains("DPHI") || m.Contains("TNPH") || m.Contains("PEF") || m.Contains("PHI")) return "Porosity";
+            if (m.Contains("DT") || m.Contains("SONIC") || m == "AC") return "Sonic";
+            if (m.Contains("CAL") || m == "BS") return "Caliper";
+            return "Other";
+        }
+
+        private static int TrackOrder(string category) => category switch
+        {
+            "Gamma Ray" => 0,
+            "Resistivity" => 1,
+            "Porosity" => 2,
+            "Sonic" => 3,
+            "Caliper" => 4,
+            _ => 5
+        };
 
         private void AutoStyleCurve(WellLogCurve curve)
         {
@@ -290,11 +359,12 @@ namespace Beep.Skia.WellLogs
 
         private void ParseDataSection(List<string> lines)
         {
-            var track = Document.Tracks.FirstOrDefault();
-            if (track == null || track.Curves.Count == 0) return;
+            // Curves keep their file order even though they are grouped into display tracks.
+            var curves = _curvesInFileOrder;
+            if (curves.Count == 0) return;
 
-            int curveCount = track.Curves.Count;
-            var depthCurveIdx = track.Curves.TakeWhile(c => !IsDepthCurve(c.Mnemonic)).Count();
+            int curveCount = curves.Count;
+            var depthCurveIdx = curves.TakeWhile(c => !IsDepthCurve(c.Mnemonic)).Count();
             // If no depth curve found, assume first curve is depth
             if (depthCurveIdx >= curveCount) depthCurveIdx = 0;
 
@@ -327,12 +397,6 @@ namespace Beep.Skia.WellLogs
                     hasDepth = true;
                 }
 
-                if (!hasDepth && depthCurveIdx < values.Count)
-                {
-                    depth = values[depthCurveIdx];
-                    hasDepth = true;
-                }
-
                 if (!hasDepth) continue;
 
                 // Add samples to each curve
@@ -341,7 +405,7 @@ namespace Beep.Skia.WellLogs
                     float val = values[c];
                     if (Math.Abs(val - _nullValue) < 0.001f) val = float.NaN;
 
-                    track.Curves[c].Samples.Add(new WellLogCurveSample
+                    curves[c].Samples.Add(new WellLogCurveSample
                     {
                         Depth = depth,
                         Value = val
@@ -350,7 +414,7 @@ namespace Beep.Skia.WellLogs
             }
 
             // Calculate curve value ranges
-            foreach (var curve in track.Curves.Where(c => c.IsVisible))
+            foreach (var curve in curves.Where(c => c.IsVisible))
             {
                 var validSamples = curve.Samples.Where(s => !float.IsNaN(s.Value)).ToList();
                 if (validSamples.Count > 0)

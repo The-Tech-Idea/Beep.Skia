@@ -106,14 +106,13 @@ namespace Beep.Skia.ETL
             using var textPaint = new SKPaint
             {
                 Color = Stroke.WithAlpha((byte)(Stroke.Alpha * 0.3f)),
-                TextSize = 24,
-                IsAntialias = true,
-                Typeface = SKTypeface.FromFamilyName("Arial", SKFontStyle.Italic)
+                IsAntialias = true
             };
+            using var fxFont = new SKFont(TypefaceCache.Get("Arial", SKFontStyle.Italic), 24);
             var fxText = "f(x)";
             var textBounds = new SKRect();
-            textPaint.MeasureText(fxText, ref textBounds);
-            canvas.DrawText(fxText, rect.MidX - textBounds.MidX, rect.MidY - textBounds.MidY, textPaint);
+            fxFont.MeasureText(fxText, out textBounds);
+            canvas.DrawText(fxText, rect.MidX - textBounds.MidX, rect.MidY - textBounds.MidY, SKTextAlign.Left, fxFont, textPaint);
 
             // Border
             using var border = new SKPaint

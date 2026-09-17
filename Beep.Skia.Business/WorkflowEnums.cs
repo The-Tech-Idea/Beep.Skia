@@ -54,11 +54,35 @@ namespace Beep.Skia.Business
         Complex,     // diamond with *
         EventBased   // diamond with pentagon
     }
+
+    /// <summary>
+    /// Specifies the type of connection or flow between workflow elements.
+    /// </summary>
+    public enum ConnectionType
     {
+        /// <summary>
+        /// A normal sequence flow between elements.
+        /// </summary>
         Sequence,
+
+        /// <summary>
+        /// A flow guarded by a condition.
+        /// </summary>
         Conditional,
+
+        /// <summary>
+        /// A parallel flow (fork/join).
+        /// </summary>
         Parallel,
+
+        /// <summary>
+        /// A message flow between participants.
+        /// </summary>
         Message,
+
+        /// <summary>
+        /// An exception or error flow.
+        /// </summary>
         Exception
     }
 }

@@ -148,7 +148,7 @@ namespace Beep.Skia.UML
             {
                 var textWidth = font.MeasureText(line);
                 float x = isTargetEnd ? position.X - textWidth - 5 : position.X + 5;
-                canvas.DrawText(line, x, currentY, font, paint);
+                canvas.DrawText(line, x, currentY, SKTextAlign.Left, font, paint);
                 currentY += lineHeight;
             }
         }

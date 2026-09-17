@@ -54,19 +54,20 @@ namespace Beep.Skia.Business
             };
 
             // Create badge path with notched corners
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
             float notchSize = 8;
 
-            path.MoveTo(X + notchSize, Y);
-            path.LineTo(X + Width - notchSize, Y);
-            path.LineTo(X + Width, Y + notchSize);
-            path.LineTo(X + Width, Y + Height - notchSize);
-            path.LineTo(X + Width - notchSize, Y + Height);
-            path.LineTo(X + notchSize, Y + Height);
-            path.LineTo(X, Y + Height - notchSize);
-            path.LineTo(X, Y + notchSize);
-            path.Close();
+            pathBuilder.MoveTo(X + notchSize, Y);
+            pathBuilder.LineTo(X + Width - notchSize, Y);
+            pathBuilder.LineTo(X + Width, Y + notchSize);
+            pathBuilder.LineTo(X + Width, Y + Height - notchSize);
+            pathBuilder.LineTo(X + Width - notchSize, Y + Height);
+            pathBuilder.LineTo(X + notchSize, Y + Height);
+            pathBuilder.LineTo(X, Y + Height - notchSize);
+            pathBuilder.LineTo(X, Y + notchSize);
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fillPaint);
             canvas.DrawPath(path, borderPaint);
         }

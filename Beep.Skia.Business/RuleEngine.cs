@@ -102,7 +102,7 @@ namespace Beep.Skia.Business
 
         private void DrawGear(SKCanvas canvas, float centerX, float centerY, float outerRadius, float innerRadius, SKPaint fillPaint, SKPaint borderPaint)
         {
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
             int teeth = 8;
             float angleStep = 360f / (teeth * 2);
 
@@ -116,12 +116,13 @@ namespace Beep.Skia.Business
                 float y = centerY + radius * (float)Math.Sin(radian);
 
                 if (i == 0)
-                    path.MoveTo(x, y);
+                    pathBuilder.MoveTo(x, y);
                 else
-                    path.LineTo(x, y);
+                    pathBuilder.LineTo(x, y);
             }
-            path.Close();
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fillPaint);
             canvas.DrawPath(path, borderPaint);
 

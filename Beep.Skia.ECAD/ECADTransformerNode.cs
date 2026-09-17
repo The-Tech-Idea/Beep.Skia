@@ -42,21 +42,23 @@ namespace Beep.Skia.ECAD
             float cx = r.MidX; float cy = r.MidY; float coilW = 20;
             
             // Primary coil
-            var path1 = new SKPath();
+            var path1Builder = new SKPathBuilder();
             for (int i = 0; i < 3; i++)
             {
                 float y = cy - 15 + i * 10;
-                path1.AddArc(new SKRect(cx - coilW - 5, y, cx - 5, y + 10), 90, 180);
+                path1Builder.AddArc(new SKRect(cx - coilW - 5, y, cx - 5, y + 10), 90, 180);
             }
+            using var path1 = path1Builder.Detach();
             canvas.DrawPath(path1, line);
             
             // Secondary coil
-            var path2 = new SKPath();
+            var path2Builder = new SKPathBuilder();
             for (int i = 0; i < 3; i++)
             {
                 float y = cy - 15 + i * 10;
-                path2.AddArc(new SKRect(cx + 5, y, cx + coilW + 5, y + 10), -90, 180);
+                path2Builder.AddArc(new SKRect(cx + 5, y, cx + coilW + 5, y + 10), -90, 180);
             }
+            using var path2 = path2Builder.Detach();
             canvas.DrawPath(path2, line);
             
             // Core lines
@@ -64,9 +66,10 @@ namespace Beep.Skia.ECAD
             canvas.DrawLine(cx + 2, cy - 20, cx + 2, cy + 20, line);
 
             // Label
-            using var text = new SKPaint { Color = TextColor, TextSize = 10, IsAntialias = true };
+            using var text = new SKPaint { Color = TextColor, IsAntialias = true };
+            using var textFont = new SKFont(SKTypeface.Default, 10);
             string label = $"{_primaryVoltage}V:{_secondaryVoltage}V";
-            canvas.DrawText(label, r.MidX - text.MeasureText(label) / 2, r.Bottom - 4, text);
+            canvas.DrawText(label, r.MidX - textFont.MeasureText(label) / 2, r.Bottom - 4, SKTextAlign.Left, textFont, text);
 
             DrawPorts(canvas);
         }

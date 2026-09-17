@@ -50,19 +50,23 @@ namespace Beep.Skia.ECAD
                 case "Signal":
                 case "Digital":
                 case "Analog":
-                    var path = new SKPath();
-                    path.MoveTo(cx, cy - 10);
-                    path.LineTo(cx - 10, cy + 5);
-                    path.LineTo(cx + 10, cy + 5);
-                    path.Close();
+                {
+                    var pathBuilder = new SKPathBuilder();
+                    pathBuilder.MoveTo(cx, cy - 10);
+                    pathBuilder.LineTo(cx - 10, cy + 5);
+                    pathBuilder.LineTo(cx + 10, cy + 5);
+                    pathBuilder.Close();
+                    using var path = pathBuilder.Detach();
                     canvas.DrawPath(path, line);
                     canvas.DrawLine(cx - 12, cy + 8, cx + 12, cy + 8, line);
                     break;
+                }
             }
 
             // Label
-            using var text = new SKPaint { Color = TextColor, TextSize = 9, IsAntialias = true };
-            canvas.DrawText(_groundType, r.MidX - text.MeasureText(_groundType) / 2, r.Bottom - 4, text);
+            using var text = new SKPaint { Color = TextColor, IsAntialias = true };
+            using var textFont = new SKFont(SKTypeface.Default, 9);
+            canvas.DrawText(_groundType, r.MidX - textFont.MeasureText(_groundType) / 2, r.Bottom - 4, SKTextAlign.Left, textFont, text);
 
             DrawPorts(canvas);
         }

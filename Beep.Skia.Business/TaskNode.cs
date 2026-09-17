@@ -161,11 +161,12 @@ namespace Beep.Skia.Business
                     StrokeCap = SKStrokeCap.Round
                 };
 
-                using var checkPath = new SKPath();
-                checkPath.MoveTo(iconX + 3, iconY + 8);
-                checkPath.LineTo(iconX + 7, iconY + 12);
-                checkPath.LineTo(iconX + 13, iconY + 6);
+                using var checkPathBuilder = new SKPathBuilder();
+                checkPathBuilder.MoveTo(iconX + 3, iconY + 8);
+                checkPathBuilder.LineTo(iconX + 7, iconY + 12);
+                checkPathBuilder.LineTo(iconX + 13, iconY + 6);
 
+                using var checkPath = checkPathBuilder.Detach();
                 canvas.DrawPath(checkPath, checkPaint);
             }
         }

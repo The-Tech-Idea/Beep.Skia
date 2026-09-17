@@ -70,7 +70,8 @@ namespace Beep.Skia.MindMap
             {
                 using var font2 = new SKFont(SKTypeface.Default, 11);
                 using var t2 = new SKPaint { Color = MaterialColors.OnSurfaceVariant, IsAntialias = true };
-                canvas.DrawText(Notes!.Length > 120 ? Notes!.Substring(0, 120) + "…" : Notes!, X + 12, Y + Height - 12, font2, t2);
+                var noteText = Notes.Length > 120 ? Notes.Substring(0, 120) + "..." : Notes;
+                canvas.DrawText(noteText, X + 12, Y + Height - 12, SKTextAlign.Left, font2, t2);
             }
 
             DrawConnectionPoints(canvas);

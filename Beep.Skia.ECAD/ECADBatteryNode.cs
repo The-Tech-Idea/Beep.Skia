@@ -52,14 +52,16 @@ namespace Beep.Skia.ECAD
             }
 
             // +/- symbols
-            using var text = new SKPaint { Color = BorderColor, TextSize = 12, IsAntialias = true };
-            canvas.DrawText("+", cx + 20, cy + 5, text);
-            canvas.DrawText("-", cx - 30, cy + 5, text);
+            using var text = new SKPaint { Color = BorderColor, IsAntialias = true };
+            using var symbolFont = new SKFont(SKTypeface.Default, 12);
+            canvas.DrawText("+", cx + 20, cy + 5, SKTextAlign.Left, symbolFont, text);
+            canvas.DrawText("-", cx - 30, cy + 5, SKTextAlign.Left, symbolFont, text);
 
             // Label
-            using var label = new SKPaint { Color = TextColor, TextSize = 9, IsAntialias = true };
+            using var label = new SKPaint { Color = TextColor, IsAntialias = true };
+            using var labelFont = new SKFont(SKTypeface.Default, 9);
             string info = $"{_voltage * _cells}V {_capacity}mAh";
-            canvas.DrawText(info, r.MidX - label.MeasureText(info) / 2, r.Bottom - 4, label);
+            canvas.DrawText(info, r.MidX - labelFont.MeasureText(info) / 2, r.Bottom - 4, SKTextAlign.Left, labelFont, label);
 
             DrawPorts(canvas);
         }

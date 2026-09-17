@@ -134,11 +134,12 @@ namespace Beep.Skia.Business
                     {
                         // Draw document with fold
                         canvas.DrawRect(iconX, iconY, iconX + iconSize, iconY + iconSize, iconPaint);
-                        using (var foldPath = new SKPath())
+                        using (var foldPathBuilder = new SKPathBuilder())
                         {
-                            foldPath.MoveTo(iconX + iconSize - 4, iconY);
-                            foldPath.LineTo(iconX + iconSize, iconY + 4);
-                            foldPath.LineTo(iconX + iconSize, iconY + iconSize);
+                            foldPathBuilder.MoveTo(iconX + iconSize - 4, iconY);
+                            foldPathBuilder.LineTo(iconX + iconSize, iconY + 4);
+                            foldPathBuilder.LineTo(iconX + iconSize, iconY + iconSize);
+                            using var foldPath = foldPathBuilder.Detach();
                             canvas.DrawPath(foldPath, iconPaint);
                         }
                     }
@@ -157,15 +158,16 @@ namespace Beep.Skia.Business
                 case DataType.Email:
                     {
                         // Draw envelope
-                        using (var envelopePath = new SKPath())
+                        using (var envelopePathBuilder = new SKPathBuilder())
                         {
-                            envelopePath.MoveTo(iconX, iconY + iconSize);
-                            envelopePath.LineTo(iconX + iconSize / 2, iconY);
-                            envelopePath.LineTo(iconX + iconSize, iconY + iconSize);
-                            envelopePath.LineTo(iconX, iconY + iconSize);
-                            envelopePath.MoveTo(iconX, iconY + iconSize);
-                            envelopePath.LineTo(iconX + iconSize / 2, iconY + iconSize / 2);
-                            envelopePath.LineTo(iconX + iconSize, iconY + iconSize);
+                            envelopePathBuilder.MoveTo(iconX, iconY + iconSize);
+                            envelopePathBuilder.LineTo(iconX + iconSize / 2, iconY);
+                            envelopePathBuilder.LineTo(iconX + iconSize, iconY + iconSize);
+                            envelopePathBuilder.LineTo(iconX, iconY + iconSize);
+                            envelopePathBuilder.MoveTo(iconX, iconY + iconSize);
+                            envelopePathBuilder.LineTo(iconX + iconSize / 2, iconY + iconSize / 2);
+                            envelopePathBuilder.LineTo(iconX + iconSize, iconY + iconSize);
+                            using var envelopePath = envelopePathBuilder.Detach();
                             canvas.DrawPath(envelopePath, iconPaint);
                         }
                     }

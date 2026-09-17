@@ -164,6 +164,50 @@ namespace Beep.Skia.ETL
             PositionPortsAlongEdge(OutConnectionPoints, new SKPoint(X + Width, 0), outAreaTop, outAreaBottom, +1);
         }
 
+        /// <summary>
+        /// Distributes input ports along the left edge and output ports along the right edge,
+        /// inset from the top and bottom of the component bounds.
+        /// </summary>
+        protected void LayoutPortsVerticalSegments(float topInset, float bottomInset, float leftOffset = -2f, float rightOffset = 2f)
+        {
+            var b = Bounds;
+            float yTop = b.Top + Math.Max(0, topInset);
+            float yBottom = b.Bottom - Math.Max(0, bottomInset);
+            yBottom = Math.Max(yTop, yBottom);
+
+            int nIn = Math.Max(InConnectionPoints.Count, 1);
+            for (int i = 0; i < InConnectionPoints.Count; i++)
+            {
+                float t = (i + 1) / (float)(nIn + 1);
+                float cy = yTop + t * (yBottom - yTop);
+                float cx = b.Left + leftOffset;
+                var cp = InConnectionPoints[i];
+                cp.Center = new SKPoint(cx, cy);
+                cp.Position = cp.Center;
+                cp.Bounds = new SKRect(cx - PortRadius, cy - PortRadius, cx + PortRadius, cy + PortRadius);
+                cp.Rect = cp.Bounds;
+                cp.Index = i;
+                cp.Component = this;
+                cp.IsAvailable = true;
+            }
+
+            int nOut = Math.Max(OutConnectionPoints.Count, 1);
+            for (int i = 0; i < OutConnectionPoints.Count; i++)
+            {
+                float t = (i + 1) / (float)(nOut + 1);
+                float cy = yTop + t * (yBottom - yTop);
+                float cx = b.Right + rightOffset;
+                var cp = OutConnectionPoints[i];
+                cp.Center = new SKPoint(cx, cy);
+                cp.Position = cp.Center;
+                cp.Bounds = new SKRect(cx - PortRadius, cy - PortRadius, cx + PortRadius, cy + PortRadius);
+                cp.Rect = cp.Bounds;
+                cp.Index = i;
+                cp.Component = this;
+                cp.IsAvailable = true;
+            }
+        }
+
         private void PositionPortsAlongEdge(System.Collections.Generic.List<IConnectionPoint> ports, SKPoint edge, float top, float bottom, int dir)
         {
             int n = Math.Max(ports.Count, 1);

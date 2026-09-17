@@ -88,21 +88,23 @@ namespace Beep.Skia.Flowchart
             float offset = r.Height * 0.15f;
 
             // Upper triangle (pointing down)
-            using var upperPath = new SKPath();
-            upperPath.MoveTo(r.MidX, r.Top);
-            upperPath.LineTo(r.Right, midY - offset);
-            upperPath.LineTo(r.Left, midY - offset);
-            upperPath.Close();
+            using var upperPathBuilder = new SKPathBuilder();
+            upperPathBuilder.MoveTo(r.MidX, r.Top);
+            upperPathBuilder.LineTo(r.Right, midY - offset);
+            upperPathBuilder.LineTo(r.Left, midY - offset);
+            upperPathBuilder.Close();
 
             // Lower triangle (pointing up)
-            using var lowerPath = new SKPath();
-            lowerPath.MoveTo(r.MidX, r.Bottom);
-            lowerPath.LineTo(r.Left, midY + offset);
-            lowerPath.LineTo(r.Right, midY + offset);
-            lowerPath.Close();
+            using var lowerPathBuilder = new SKPathBuilder();
+            lowerPathBuilder.MoveTo(r.MidX, r.Bottom);
+            lowerPathBuilder.LineTo(r.Left, midY + offset);
+            lowerPathBuilder.LineTo(r.Right, midY + offset);
+            lowerPathBuilder.Close();
 
+            using var upperPath = upperPathBuilder.Detach();
             canvas.DrawPath(upperPath, fill);
             canvas.DrawPath(upperPath, stroke);
+            using var lowerPath = lowerPathBuilder.Detach();
             canvas.DrawPath(lowerPath, fill);
             canvas.DrawPath(lowerPath, stroke);
 

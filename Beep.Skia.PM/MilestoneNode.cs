@@ -94,12 +94,13 @@ namespace Beep.Skia.PM
             var bottom = new SKPoint(cx, r.Bottom);
             var left = new SKPoint(r.Left, cy);
 
-            using var path = new SKPath();
-            path.MoveTo(top);
-            path.LineTo(right);
-            path.LineTo(bottom);
-            path.LineTo(left);
-            path.Close();
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(top);
+            pathBuilder.LineTo(right);
+            pathBuilder.LineTo(bottom);
+            pathBuilder.LineTo(left);
+            pathBuilder.Close();
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawPath(path, stroke);
 

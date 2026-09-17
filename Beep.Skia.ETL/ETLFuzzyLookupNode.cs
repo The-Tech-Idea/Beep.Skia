@@ -48,8 +48,8 @@ namespace Beep.Skia.ETL
             canvas.DrawLine(r.MidX - 7, r.MidY - 1, r.MidX + 8, r.MidY + 8, icon);
             using var font = new SKFont(SKTypeface.Default, 9);
             using var text = new SKPaint { Color = new SKColor(0x33, 0x33, 0x33), IsAntialias = true };
-            canvas.DrawText("Fuzzy", r.MidX + 16, r.MidY, font, text);
-            canvas.DrawText("Lookup", r.MidX + 16, r.MidY + 12, font, text);
+            canvas.DrawText("Fuzzy", r.MidX + 16, r.MidY, SKTextAlign.Left, font, text);
+            canvas.DrawText("Lookup", r.MidX + 16, r.MidY + 12, SKTextAlign.Left, font, text);
             DrawPorts(canvas);
         }
 

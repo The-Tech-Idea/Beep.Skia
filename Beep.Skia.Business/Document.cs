@@ -54,26 +54,28 @@ namespace Beep.Skia.Business
             };
 
             // Create document path with folded corner
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
             float foldSize = 15;
 
-            path.MoveTo(X, Y);
-            path.LineTo(X + Width - foldSize, Y);
-            path.LineTo(X + Width, Y + foldSize);
-            path.LineTo(X + Width, Y + Height);
-            path.LineTo(X, Y + Height);
-            path.Close();
+            pathBuilder.MoveTo(X, Y);
+            pathBuilder.LineTo(X + Width - foldSize, Y);
+            pathBuilder.LineTo(X + Width, Y + foldSize);
+            pathBuilder.LineTo(X + Width, Y + Height);
+            pathBuilder.LineTo(X, Y + Height);
+            pathBuilder.Close();
 
             // Draw main document
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fillPaint);
             canvas.DrawPath(path, borderPaint);
 
             // Draw fold line
-            using var foldPath = new SKPath();
-            foldPath.MoveTo(X + Width - foldSize, Y);
-            foldPath.LineTo(X + Width - foldSize, Y + foldSize);
-            foldPath.LineTo(X + Width, Y + foldSize);
+            using var foldPathBuilder = new SKPathBuilder();
+            foldPathBuilder.MoveTo(X + Width - foldSize, Y);
+            foldPathBuilder.LineTo(X + Width - foldSize, Y + foldSize);
+            foldPathBuilder.LineTo(X + Width, Y + foldSize);
 
+            using var foldPath = foldPathBuilder.Detach();
             canvas.DrawPath(foldPath, borderPaint);
         }
 

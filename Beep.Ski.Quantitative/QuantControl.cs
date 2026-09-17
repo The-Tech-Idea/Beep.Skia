@@ -122,5 +122,16 @@ namespace Beep.Ski.Quantitative
             foreach (var p in InConnectionPoints) canvas.DrawCircle(p.Center, PortRadius, inFill);
             foreach (var p in OutConnectionPoints) canvas.DrawCircle(p.Center, PortRadius, outFill);
         }
+
+        /// <summary>
+        /// Draws connection points using the family port colors.
+        /// </summary>
+        protected void DrawPorts(SKCanvas canvas)
+        {
+            using var inFill = new SKPaint { Color = new SKColor(0x39, 0x91, 0x7A), Style = SKPaintStyle.Fill, IsAntialias = true };
+            using var outFill = new SKPaint { Color = new SKColor(0x1E, 0x88, 0xE5), Style = SKPaintStyle.Fill, IsAntialias = true };
+            foreach (var p in InConnectionPoints) canvas.DrawCircle(p.Center, PortRadius, inFill);
+            foreach (var p in OutConnectionPoints) canvas.DrawCircle(p.Center, PortRadius, outFill);
+        }
     }
 }

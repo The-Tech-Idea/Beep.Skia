@@ -54,38 +54,41 @@ namespace Beep.Skia.Business
             };
 
             // Create open box path
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
             float depth = 10;
 
             // Front face
-            path.MoveTo(X, Y + depth);
-            path.LineTo(X + Width - depth, Y + depth);
-            path.LineTo(X + Width - depth, Y + Height);
-            path.LineTo(X, Y + Height);
-            path.Close();
+            pathBuilder.MoveTo(X, Y + depth);
+            pathBuilder.LineTo(X + Width - depth, Y + depth);
+            pathBuilder.LineTo(X + Width - depth, Y + Height);
+            pathBuilder.LineTo(X, Y + Height);
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fillPaint);
             canvas.DrawPath(path, borderPaint);
 
             // Top face
-            using var topPath = new SKPath();
-            topPath.MoveTo(X, Y + depth);
-            topPath.LineTo(X + depth, Y);
-            topPath.LineTo(X + Width, Y);
-            topPath.LineTo(X + Width - depth, Y + depth);
-            topPath.Close();
+            using var topPathBuilder = new SKPathBuilder();
+            topPathBuilder.MoveTo(X, Y + depth);
+            topPathBuilder.LineTo(X + depth, Y);
+            topPathBuilder.LineTo(X + Width, Y);
+            topPathBuilder.LineTo(X + Width - depth, Y + depth);
+            topPathBuilder.Close();
 
+            using var topPath = topPathBuilder.Detach();
             canvas.DrawPath(topPath, fillPaint);
             canvas.DrawPath(topPath, borderPaint);
 
             // Right face
-            using var rightPath = new SKPath();
-            rightPath.MoveTo(X + Width - depth, Y + depth);
-            rightPath.LineTo(X + Width, Y);
-            rightPath.LineTo(X + Width, Y + Height - depth);
-            rightPath.LineTo(X + Width - depth, Y + Height);
-            rightPath.Close();
+            using var rightPathBuilder = new SKPathBuilder();
+            rightPathBuilder.MoveTo(X + Width - depth, Y + depth);
+            rightPathBuilder.LineTo(X + Width, Y);
+            rightPathBuilder.LineTo(X + Width, Y + Height - depth);
+            rightPathBuilder.LineTo(X + Width - depth, Y + Height);
+            rightPathBuilder.Close();
 
+            using var rightPath = rightPathBuilder.Detach();
             canvas.DrawPath(rightPath, fillPaint);
             canvas.DrawPath(rightPath, borderPaint);
         }

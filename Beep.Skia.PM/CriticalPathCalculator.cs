@@ -13,7 +13,7 @@ namespace Beep.Skia.PM
     {
         public class TaskSchedule
         {
-            public TaskNode Task { get; set; }
+            public TaskNode? Task { get; set; }
             public int EarlyStart { get; set; }
             public int EarlyFinish { get; set; }
             public int LateStart { get; set; }
@@ -27,6 +27,8 @@ namespace Beep.Skia.PM
         public int ProjectDuration { get; private set; }
         public List<TaskNode> CriticalPath { get; } = new List<TaskNode>();
 
+        private List<DependencyNode> _dependencyNodes = new List<DependencyNode>();
+
         /// <summary>
         /// Computes the schedule from components and connection lines.
         /// Lines represent FS (Finish-to-Start) dependencies by default.
@@ -39,6 +41,8 @@ namespace Beep.Skia.PM
 
             var tasks = components.OfType<TaskNode>().Where(t => !t.IsStatic).ToList();
             if (tasks.Count == 0) return;
+
+            _dependencyNodes = components.OfType<DependencyNode>().Where(d => !d.IsStatic).ToList();
 
             foreach (var t in tasks)
             {
@@ -103,7 +107,7 @@ namespace Beep.Skia.PM
             foreach (var s in Schedules.Where(s => s.HasValues))
             {
                 s.LateFinish = ProjectDuration;
-                s.LateStart = s.LateFinish - s.Task.DurationDays + 1;
+                s.LateStart = s.LateFinish - (s.Task?.DurationDays ?? 0) + 1;
             }
 
             // Backward pass from end nodes (no successors)
@@ -156,22 +160,34 @@ namespace Beep.Skia.PM
             {
                 sched.TotalFloat = sched.LateStart - sched.EarlyStart;
                 if (sched.TotalFloat <= 0)
-                    CriticalPath.Add(sched.Task);
+                    CriticalPath.Add(sched.Task!);
             }
         }
 
         private int GetLagDays(TaskNode from, TaskNode to, IReadOnlyList<IConnectionLine> lines)
         {
+            // An explicit DependencyNode (matched by task names) wins over line labels.
+            var dep = _dependencyNodes.FirstOrDefault(d => Matches(d.FromTask, from) && Matches(d.ToTask, to));
+            if (dep != null)
+                return dep.LagDays;
+
             foreach (var line in lines)
             {
                 if (line?.Start?.Component == from && line?.End?.Component == to)
                 {
-                    if (line is ConnectionLine cl && cl.Tag is int lag)
+                    // Lag is annotated on the connection label when numeric (days).
+                    if (int.TryParse(line.Label1, out var lag))
                         return lag;
-                    // Check for DependencyNode in the line path
                 }
             }
             return 0;
+        }
+
+        private static bool Matches(string value, TaskNode task)
+        {
+            if (string.IsNullOrWhiteSpace(value) || task == null) return false;
+            return string.Equals(value, task.Title, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(value, task.Name, StringComparison.OrdinalIgnoreCase);
         }
 
         private Dictionary<TaskNode, List<TaskNode>> BuildPredecessorMap(List<TaskNode> tasks, IReadOnlyList<IConnectionLine> lines)

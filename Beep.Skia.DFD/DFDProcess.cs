@@ -51,7 +51,7 @@ namespace Beep.Skia.DFD
         /// Child diagram DTO for this process's decomposition (Level N+1).
         /// Set this when a child diagram exists.
         /// </summary>
-        public Beep.Skia.Serialization.DiagramDto ChildDiagramData { get; set; }
+        public Beep.Skia.Serialization.DiagramDto? ChildDiagramData { get; set; }
 
         /// <summary>
         /// Whether a child decomposition diagram exists for this process.

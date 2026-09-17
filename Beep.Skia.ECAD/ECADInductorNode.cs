@@ -40,18 +40,20 @@ namespace Beep.Skia.ECAD
             // Draw inductor coils
             using var line = new SKPaint { Color = BorderColor, StrokeWidth = 2, Style = SKPaintStyle.Stroke, IsAntialias = true };
             float y = r.MidY; float startX = r.Left + 10; float coilWidth = (r.Width - 20) / 4f;
-            var path = new SKPath();
-            path.MoveTo(startX, y);
+            var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(startX, y);
             for (int i = 0; i < 4; i++)
             {
                 float x = startX + i * coilWidth;
-                path.ArcTo(new SKRect(x, y - 10, x + coilWidth, y + 10), 180, 180, false);
+                pathBuilder.ArcTo(new SKRect(x, y - 10, x + coilWidth, y + 10), 180, 180, false);
             }
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, line);
 
             // Label
-            using var text = new SKPaint { Color = TextColor, TextSize = 10, IsAntialias = true };
-            canvas.DrawText(_value, r.MidX - text.MeasureText(_value) / 2, r.Bottom - 4, text);
+            using var text = new SKPaint { Color = TextColor, IsAntialias = true };
+            using var textFont = new SKFont(SKTypeface.Default, 10);
+            canvas.DrawText(_value, r.MidX - textFont.MeasureText(_value) / 2, r.Bottom - 4, SKTextAlign.Left, textFont, text);
 
             DrawPorts(canvas);
         }

@@ -13,6 +13,43 @@ namespace Beep.Skia.Business
     {
         private string _label = "Task";
 
+        /// <summary>
+        /// Supported BPMN task types (mapped to bpmn:*Task elements on export).
+        /// </summary>
+        public static readonly string[] TaskTypes =
+        {
+            "Task", "Service", "User", "Script", "Manual", "BusinessRule", "Send", "Receive"
+        };
+
+        private string _taskType = "Task";
+
+        /// <summary>
+        /// BPMN task type: Task, Service, User, Script, Manual, BusinessRule, Send, or Receive.
+        /// </summary>
+        public string TaskType
+        {
+            get => _taskType;
+            set
+            {
+                var v = string.IsNullOrWhiteSpace(value) ? "Task" : value;
+                if (_taskType == v) return;
+                _taskType = v;
+                if (NodeProperties.TryGetValue("TaskType", out var p))
+                    p.ParameterCurrentValue = _taskType;
+                else
+                    NodeProperties["TaskType"] = new ParameterInfo
+                    {
+                        ParameterName = "TaskType",
+                        ParameterType = typeof(string),
+                        DefaultParameterValue = "Task",
+                        ParameterCurrentValue = _taskType,
+                        Description = "BPMN task type",
+                        Choices = TaskTypes
+                    };
+                InvalidateVisual();
+            }
+        }
+
         public BusinessTask()
         {
             Width = 120;
@@ -21,6 +58,16 @@ namespace Beep.Skia.Business
             ComponentType = BusinessComponentType.Task;
             // Seed editable label synced with Name
             Label = Name;
+
+            NodeProperties["TaskType"] = new ParameterInfo
+            {
+                ParameterName = "TaskType",
+                ParameterType = typeof(string),
+                DefaultParameterValue = "Task",
+                ParameterCurrentValue = _taskType,
+                Description = "BPMN task type",
+                Choices = TaskTypes
+            };
         }
 
         /// <summary>

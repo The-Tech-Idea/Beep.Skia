@@ -238,9 +238,10 @@ namespace Beep.Skia.Network
             var dx = (End.X - Start.X) * Curvature;
             var c1 = new SKPoint(Start.X + dx, Start.Y);
             var c2 = new SKPoint(End.X - dx, End.Y);
-            using var path = new SKPath();
-            path.MoveTo(Start);
-            path.CubicTo(c1, c2, End);
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(Start);
+            pathBuilder.CubicTo(c1, c2, End);
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, paint);
 
             dashEffect?.Dispose();
@@ -270,11 +271,12 @@ namespace Beep.Skia.Network
                     var rightY = baseCy - perpY * (ArrowSize * 0.5f);
 
                     using var fill = new SKPaint { Color = effectiveColor, Style = SKPaintStyle.Fill, IsAntialias = true };
-                    using var arrow = new SKPath();
-                    arrow.MoveTo(tip);
-                    arrow.LineTo(leftX, leftY);
-                    arrow.LineTo(rightX, rightY);
-                    arrow.Close();
+                    using var arrowBuilder = new SKPathBuilder();
+                    arrowBuilder.MoveTo(tip);
+                    arrowBuilder.LineTo(leftX, leftY);
+                    arrowBuilder.LineTo(rightX, rightY);
+                    arrowBuilder.Close();
+                    using var arrow = arrowBuilder.Detach();
                     canvas.DrawPath(arrow, fill);
                 }
 
@@ -301,11 +303,12 @@ namespace Beep.Skia.Network
                         var rightY = baseCy - perpY * (ArrowSize * 0.5f);
 
                         using var fill2 = new SKPaint { Color = effectiveColor, Style = SKPaintStyle.Fill, IsAntialias = true };
-                        using var arrow2 = new SKPath();
-                        arrow2.MoveTo(tip);
-                        arrow2.LineTo(leftX, leftY);
-                        arrow2.LineTo(rightX, rightY);
-                        arrow2.Close();
+                        using var arrow2Builder = new SKPathBuilder();
+                        arrow2Builder.MoveTo(tip);
+                        arrow2Builder.LineTo(leftX, leftY);
+                        arrow2Builder.LineTo(rightX, rightY);
+                        arrow2Builder.Close();
+                        using var arrow2 = arrow2Builder.Detach();
                         canvas.DrawPath(arrow2, fill2);
                     }
                 }

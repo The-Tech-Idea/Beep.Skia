@@ -85,15 +85,7 @@ namespace Beep.Skia.UML
                 canvas.DrawText(_actionName, X + Width / 2f, Y + Height / 2f + 4, SKTextAlign.Center, font, text);
             }
 
-            DrawConnectionPoints(canvas);
-        }
-
-        protected override void LayoutPorts()
-        {
-            int inCount = _actionType == ActivityNodeType.Initial ? 0 : _actionType == ActivityNodeType.Final ? 1 : 1;
-            int outCount = _actionType == ActivityNodeType.Final ? 0 : _actionType == ActivityNodeType.Initial ? 1 : 1;
-            EnsurePortCounts(inCount, outCount);
-            LayoutPortsOnEllipse(4, 4, 2);
+            DrawConnectionPoints(canvas, context);
         }
 
         public override Dictionary<string, object> GetProperties(bool includeCommon = true, bool includeNodeProperties = true)

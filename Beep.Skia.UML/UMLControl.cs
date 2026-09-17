@@ -368,8 +368,13 @@ namespace Beep.Skia.UML
 
         /// <summary>
         /// Derived UML nodes implement their visuals here. Base DrawContent handles port layout.
+        /// The default implementation renders <see cref="DrawShape"/> so nodes that only
+        /// override the shape still draw.
         /// </summary>
-        protected virtual void DrawUMLContent(SKCanvas canvas, DrawingContext context) { }
+        protected virtual void DrawUMLContent(SKCanvas canvas, DrawingContext context)
+        {
+            DrawShape(canvas, context);
+        }
 
         /// <summary>
         /// Draws the connection points for this UML control.

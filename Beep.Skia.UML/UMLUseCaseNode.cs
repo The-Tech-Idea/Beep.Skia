@@ -46,13 +46,7 @@ namespace Beep.Skia.UML
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
             canvas.DrawText(_useCaseName, X + Width / 2f, Y + Height / 2f + 4, SKTextAlign.Center, font, text);
 
-            DrawConnectionPoints(canvas);
-        }
-
-        protected override void LayoutPorts()
-        {
-            EnsurePortCounts(1, 1);
-            LayoutPortsOnEllipse(4, 4, 2);
+            DrawConnectionPoints(canvas, context);
         }
 
         public override Dictionary<string, object> GetProperties(bool includeCommon = true, bool includeNodeProperties = true)

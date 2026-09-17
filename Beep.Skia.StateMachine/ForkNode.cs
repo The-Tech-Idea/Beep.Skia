@@ -26,7 +26,7 @@ namespace Beep.Skia.StateMachine
         }
 
         private int _outPortCount = 2;
-        public int OutPortCount
+        public new int OutPortCount
         {
             get => _outPortCount;
             set

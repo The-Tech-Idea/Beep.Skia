@@ -33,13 +33,13 @@ namespace Beep.Skia.ETL
         {
             var rect = new SKRect(X, Y, X + Width, Y + Height);
 
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
             // Create funnel shape (wider at top, narrower at bottom)
-            path.MoveTo(rect.Left + 10, rect.Top);
-            path.LineTo(rect.Right - 10, rect.Top);
-            path.LineTo(rect.Right - 30, rect.Bottom);
-            path.LineTo(rect.Left + 30, rect.Bottom);
-            path.Close();
+            pathBuilder.MoveTo(rect.Left + 10, rect.Top);
+            pathBuilder.LineTo(rect.Right - 10, rect.Top);
+            pathBuilder.LineTo(rect.Right - 30, rect.Bottom);
+            pathBuilder.LineTo(rect.Left + 30, rect.Bottom);
+            pathBuilder.Close();
 
             using var fill = new SKPaint
             {
@@ -47,6 +47,7 @@ namespace Beep.Skia.ETL
                 Style = SKPaintStyle.Fill,
                 IsAntialias = true
             };
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
 
             using var border = new SKPaint

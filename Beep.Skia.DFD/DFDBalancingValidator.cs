@@ -50,12 +50,12 @@ namespace Beep.Skia.DFD
                     {
                         if (line?.Start?.Component == c && line?.End?.Component is SkiaComponent target)
                         {
-                            string flowLabel = line.Label1 ?? line.DataTypeLabel ?? $"flow_{Guid.NewGuid():N}";
+                            string flowLabel = line.Label1 ?? line.Label2 ?? $"flow_{Guid.NewGuid():N}";
                             childInputFlows.Add(flowLabel);
                         }
                         if (line?.End?.Component == c && line?.Start?.Component is SkiaComponent source)
                         {
-                            string flowLabel = line.Label1 ?? line.DataTypeLabel ?? $"flow_{Guid.NewGuid():N}";
+                            string flowLabel = line.Label1 ?? line.Label2 ?? $"flow_{Guid.NewGuid():N}";
                             childOutputFlows.Add(flowLabel);
                         }
                     }
@@ -65,7 +65,7 @@ namespace Beep.Skia.DFD
             // Check for unlabeled data flows (common DFD error)
             foreach (var line in childLines)
             {
-                if (string.IsNullOrWhiteSpace(line?.Label1) && string.IsNullOrWhiteSpace(line?.DataTypeLabel)
+                if (string.IsNullOrWhiteSpace(line?.Label1) && string.IsNullOrWhiteSpace(line?.Label2)
                     && line?.Start != null && line?.End != null)
                 {
                     Issues.Add(new DFDBalanceIssue
@@ -117,10 +117,10 @@ namespace Beep.Skia.DFD
 
     public class DFDBalanceIssue
     {
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
         public DFDBalanceSeverity Severity { get; set; } = DFDBalanceSeverity.Warning;
-        public string FixSuggestion { get; set; }
-        public SkiaComponent Component { get; set; }
+        public string? FixSuggestion { get; set; }
+        public SkiaComponent? Component { get; set; }
 
         public override string ToString() => $"[{Severity}] {Message}";
     }

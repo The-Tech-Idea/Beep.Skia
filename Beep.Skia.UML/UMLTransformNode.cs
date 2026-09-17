@@ -67,13 +67,13 @@ namespace Beep.Skia.UML
             {
                 using var font = new SKFont(SKTypeface.Default, 9);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
-                canvas.DrawText(Stereotype, 10, 18, font, textPaint);
+                canvas.DrawText(Stereotype, 10, 18, SKTextAlign.Left, font, textPaint);
             }
 
             // Draw transform type
-            using var typeFont = new SKFont(SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold), 11);
+            using var typeFont = new SKFont(TypefaceCache.Get("Arial", SKFontStyle.Bold), 11);
             using var typePaint = new SKPaint { IsAntialias = true, Color = TextColor };
-            canvas.DrawText(TransformType, 10, 38, typeFont, typePaint);
+            canvas.DrawText(TransformType, 10, 38, SKTextAlign.Left, typeFont, typePaint);
 
             // Draw transform description if present
             if (!string.IsNullOrEmpty(TransformDescription))
@@ -86,7 +86,7 @@ namespace Beep.Skia.UML
                     TransformDescription.Substring(0, 17) + "..." :
                     TransformDescription;
 
-                canvas.DrawText(desc, 10, 55, descFont, descPaint);
+                canvas.DrawText(desc, 10, 55, SKTextAlign.Left, descFont, descPaint);
             }
 
             // Draw transform arrows
@@ -165,7 +165,7 @@ namespace Beep.Skia.UML
         /// </summary>
         private SKPath CreateHexagonPath()
         {
-            var path = new SKPath();
+            var pathBuilder = new SKPathBuilder();
             var centerX = Width / 2;
             var centerY = Height / 2;
             var radius = Width / 2 - 5;
@@ -178,13 +178,14 @@ namespace Beep.Skia.UML
                 var y = centerY + radius * Math.Sin(angle);
 
                 if (i == 0)
-                    path.MoveTo((float)x, (float)y);
+                    pathBuilder.MoveTo((float)x, (float)y);
                 else
-                    path.LineTo((float)x, (float)y);
+                    pathBuilder.LineTo((float)x, (float)y);
             }
-            path.Close();
+            pathBuilder.Close();
 
-            return path;
+            // The path is handed to the caller, so it must not be disposed here.
+            return pathBuilder.Detach();
         }
 
         /// <summary>

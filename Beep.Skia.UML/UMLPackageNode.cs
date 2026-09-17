@@ -60,23 +60,17 @@ namespace Beep.Skia.UML
             // Package name in the tab
             using var font = new SKFont(SKTypeface.Default, 10) { Embolden = true };
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
-            canvas.DrawText(_packageName, tab.Left + 6, tab.Top + _tabHeight / 2f + 4, font, text);
+            canvas.DrawText(_packageName, tab.Left + 6, tab.Top + _tabHeight / 2f + 4, SKTextAlign.Left, font, text);
 
             // Stereotype if set
             if (!string.IsNullOrWhiteSpace(Stereotype))
             {
                 using var smallFont = new SKFont(SKTypeface.Default, 8);
                 using var smallText = new SKPaint { Color = BorderColor, IsAntialias = true };
-                canvas.DrawText(Stereotype, body.Left + 6, body.Top + 14, smallFont, smallText);
+                canvas.DrawText(Stereotype, body.Left + 6, body.Top + 14, SKTextAlign.Left, smallFont, smallText);
             }
 
-            DrawConnectionPoints(canvas);
-        }
-
-        protected override void LayoutPorts()
-        {
-            EnsurePortCounts(1, 1);
-            LayoutPortsOnEllipse(4, 4, 2);
+            DrawConnectionPoints(canvas, context);
         }
 
         public override Dictionary<string, object> GetProperties(bool includeCommon = true, bool includeNodeProperties = true)

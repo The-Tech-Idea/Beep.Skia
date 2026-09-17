@@ -128,13 +128,14 @@ namespace Beep.Skia.PM
             var r = Bounds;
 
             // Diamond shape
-            using var path = new SKPath();
-            path.MoveTo(r.Left, r.MidY);
-            path.LineTo(r.MidX, r.Top);
-            path.LineTo(r.Right, r.MidY);
-            path.LineTo(r.MidX, r.Bottom);
-            path.Close();
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(r.Left, r.MidY);
+            pathBuilder.LineTo(r.MidX, r.Top);
+            pathBuilder.LineTo(r.Right, r.MidY);
+            pathBuilder.LineTo(r.MidX, r.Bottom);
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             // Critical path = red/orange, has slack = yellow
             SKColor criticalColor = _slack <= 0 ? new SKColor(0xE5, 0x39, 0x35) : new SKColor(0xFF, 0xEB, 0x3B);
 

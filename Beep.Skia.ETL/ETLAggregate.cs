@@ -33,18 +33,18 @@ namespace Beep.Skia.ETL
         {
             var rect = new SKRect(X, Y, X + Width, Y + Height);
 
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
             float corner = 15f;
             // Create octagon (rectangle with cut corners)
-            path.MoveTo(rect.Left + corner, rect.Top);
-            path.LineTo(rect.Right - corner, rect.Top);
-            path.LineTo(rect.Right, rect.Top + corner);
-            path.LineTo(rect.Right, rect.Bottom - corner);
-            path.LineTo(rect.Right - corner, rect.Bottom);
-            path.LineTo(rect.Left + corner, rect.Bottom);
-            path.LineTo(rect.Left, rect.Bottom - corner);
-            path.LineTo(rect.Left, rect.Top + corner);
-            path.Close();
+            pathBuilder.MoveTo(rect.Left + corner, rect.Top);
+            pathBuilder.LineTo(rect.Right - corner, rect.Top);
+            pathBuilder.LineTo(rect.Right, rect.Top + corner);
+            pathBuilder.LineTo(rect.Right, rect.Bottom - corner);
+            pathBuilder.LineTo(rect.Right - corner, rect.Bottom);
+            pathBuilder.LineTo(rect.Left + corner, rect.Bottom);
+            pathBuilder.LineTo(rect.Left, rect.Bottom - corner);
+            pathBuilder.LineTo(rect.Left, rect.Top + corner);
+            pathBuilder.Close();
 
             using var fill = new SKPaint
             {
@@ -52,6 +52,7 @@ namespace Beep.Skia.ETL
                 Style = SKPaintStyle.Fill,
                 IsAntialias = true
             };
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
 
             using var border = new SKPaint

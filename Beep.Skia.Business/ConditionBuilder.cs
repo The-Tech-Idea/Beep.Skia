@@ -64,26 +64,27 @@ namespace Beep.Skia.Business
             float iconSize = Math.Min(Width, Height) * 0.4f;
 
             // Draw question mark path
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
             float startX = centerX - iconSize * 0.3f;
             float startY = centerY - iconSize * 0.4f;
 
             // Question mark curve
-            path.MoveTo(startX, startY);
-            path.CubicTo(
+            pathBuilder.MoveTo(startX, startY);
+            pathBuilder.CubicTo(
                 startX + iconSize * 0.2f, startY - iconSize * 0.3f,
                 startX + iconSize * 0.6f, startY - iconSize * 0.3f,
                 startX + iconSize * 0.6f, startY
             );
-            path.CubicTo(
+            pathBuilder.CubicTo(
                 startX + iconSize * 0.6f, startY + iconSize * 0.2f,
                 startX + iconSize * 0.4f, startY + iconSize * 0.4f,
                 startX + iconSize * 0.4f, startY + iconSize * 0.4f
             );
 
             // Dot
-            path.AddCircle(startX + iconSize * 0.4f, startY + iconSize * 0.6f, 2);
+            pathBuilder.AddCircle(startX + iconSize * 0.4f, startY + iconSize * 0.6f, 2);
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, iconPaint);
         }
 

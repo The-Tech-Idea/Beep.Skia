@@ -225,20 +225,21 @@ namespace Beep.Skia.WellLogs
                 referenceX = WellLogLayoutEngine.MapValueToX(curve, referenceValue.Value, layout.PlotBounds);
             }
 
-            using var path = new SKPath();
-            path.MoveTo(referenceX, firstY);
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(referenceX, firstY);
 
             foreach (var sample in ordered)
             {
                 var x = WellLogLayoutEngine.MapValueToX(curve, sample.Value, layout.PlotBounds);
                 var y = WellLogLayoutEngine.MapDepthToY(axis, sample.Depth, layout.PlotBounds);
-                path.LineTo(x, y);
+                pathBuilder.LineTo(x, y);
             }
 
-            path.LineTo(referenceX, lastY);
-            path.Close();
+            pathBuilder.LineTo(referenceX, lastY);
+            pathBuilder.Close();
 
             canvas.Save();
+            using var path = pathBuilder.Detach();
             canvas.ClipPath(path, SKClipOperation.Intersect, true);
             WellLogBrushLibrary.DrawPattern(canvas, layout.PlotBounds, curve.Style.BrushKey, 90);
             canvas.Restore();
@@ -268,16 +269,16 @@ namespace Beep.Skia.WellLogs
                 return;
             }
 
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
             var firstA = orderedA[0];
-            path.MoveTo(
+            pathBuilder.MoveTo(
                 WellLogLayoutEngine.MapValueToX(curve, firstA.Value, layout.PlotBounds),
                 WellLogLayoutEngine.MapDepthToY(axis, firstA.Depth, layout.PlotBounds));
 
             for (int index = 0; index < count; index++)
             {
                 var sample = orderedA[index];
-                path.LineTo(
+                pathBuilder.LineTo(
                     WellLogLayoutEngine.MapValueToX(curve, sample.Value, layout.PlotBounds),
                     WellLogLayoutEngine.MapDepthToY(axis, sample.Depth, layout.PlotBounds));
             }
@@ -285,13 +286,14 @@ namespace Beep.Skia.WellLogs
             for (int index = count - 1; index >= 0; index--)
             {
                 var sample = orderedB[index];
-                path.LineTo(
+                pathBuilder.LineTo(
                     WellLogLayoutEngine.MapValueToX(companion, sample.Value, layout.PlotBounds),
                     WellLogLayoutEngine.MapDepthToY(axis, sample.Depth, layout.PlotBounds));
             }
 
-            path.Close();
+            pathBuilder.Close();
             canvas.Save();
+            using var path = pathBuilder.Detach();
             canvas.ClipPath(path, SKClipOperation.Intersect, true);
             WellLogBrushLibrary.DrawPattern(canvas, layout.PlotBounds, curve.Style.BrushKey, 88);
             canvas.Restore();
@@ -312,7 +314,7 @@ namespace Beep.Skia.WellLogs
                 Color = curve.Style.LineColor,
                 StrokeWidth = curve.Style.StrokeWidth
             };
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
 
             for (int index = 0; index < ordered.Count; index++)
             {
@@ -322,16 +324,17 @@ namespace Beep.Skia.WellLogs
 
                 if (index == 0)
                 {
-                    path.MoveTo(x, y);
+                    pathBuilder.MoveTo(x, y);
                 }
                 else
                 {
-                    path.LineTo(x, y);
+                    pathBuilder.LineTo(x, y);
                 }
             }
 
             canvas.Save();
             canvas.ClipRect(layout.PlotBounds);
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, linePaint);
             canvas.Restore();
         }

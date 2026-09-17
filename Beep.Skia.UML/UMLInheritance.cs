@@ -82,12 +82,13 @@ namespace Beep.Skia.UML
                 IsAntialias = true
             };
 
-            var path = new SKPath();
-            path.MoveTo(tip);
-            path.LineTo(left);
-            path.LineTo(right);
-            path.Close();
+            var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(tip);
+            pathBuilder.LineTo(left);
+            pathBuilder.LineTo(right);
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, paint);
         }
     }

@@ -241,12 +241,13 @@ namespace Beep.Skia.UML
             );
 
             // Draw arrow
-            var path = new SKPath();
-            path.MoveTo(tip);
-            path.LineTo(left);
-            path.LineTo(right);
-            path.Close();
+            var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(tip);
+            pathBuilder.LineTo(left);
+            pathBuilder.LineTo(right);
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             if (filled && fillPaint != null)
             {
                 canvas.DrawPath(path, fillPaint);

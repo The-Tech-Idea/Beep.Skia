@@ -73,6 +73,40 @@ namespace Beep.Skia.MindMap
 
         // Note: TextColor is declared in SkiaComponent. We only seed metadata for it below.
 
+        private string _icon = string.Empty;
+        /// <summary>
+        /// Optional icon text (emoji or short glyph) drawn at the node's top-left corner.
+        /// </summary>
+        public string Icon
+        {
+            get => _icon;
+            set
+            {
+                var v = value ?? string.Empty;
+                if (_icon == v) return;
+                _icon = v;
+                if (NodeProperties.TryGetValue("Icon", out var pi)) pi.ParameterCurrentValue = _icon;
+                InvalidateVisual();
+            }
+        }
+
+        private bool _isCollapsed;
+        /// <summary>
+        /// When true, descendant nodes and their connecting lines are hidden
+        /// (apply with <see cref="MindMapVisibility.Apply"/>).
+        /// </summary>
+        public bool IsCollapsed
+        {
+            get => _isCollapsed;
+            set
+            {
+                if (_isCollapsed == value) return;
+                _isCollapsed = value;
+                if (NodeProperties.TryGetValue("IsCollapsed", out var pi)) pi.ParameterCurrentValue = _isCollapsed;
+                InvalidateVisual();
+            }
+        }
+
         protected MindMapControl()
         {
             TextColor = MaterialColors.OnSurface;
@@ -127,6 +161,22 @@ namespace Beep.Skia.MindMap
                 DefaultParameterValue = this.TextColor,
                 ParameterCurrentValue = this.TextColor,
                 Description = "Primary text color"
+            };
+            NodeProperties["Icon"] = new ParameterInfo
+            {
+                ParameterName = "Icon",
+                ParameterType = typeof(string),
+                DefaultParameterValue = string.Empty,
+                ParameterCurrentValue = _icon,
+                Description = "Optional icon glyph shown at the top-left"
+            };
+            NodeProperties["IsCollapsed"] = new ParameterInfo
+            {
+                ParameterName = "IsCollapsed",
+                ParameterType = typeof(bool),
+                DefaultParameterValue = false,
+                ParameterCurrentValue = _isCollapsed,
+                Description = "Hide descendant nodes and lines"
             };
         }
 
@@ -316,9 +366,34 @@ namespace Beep.Skia.MindMap
         {
             EnsurePortLayout(() => LayoutPorts());
             DrawMindMapContent(canvas, context);
+            DrawIconAndCollapseBadge(canvas);
         }
 
         protected virtual void DrawMindMapContent(SKCanvas canvas, DrawingContext context) { }
+
+        /// <summary>
+        /// Draws the optional icon glyph and the collapse/expand badge (when the node has children).
+        /// </summary>
+        protected virtual void DrawIconAndCollapseBadge(SKCanvas canvas)
+        {
+            if (!string.IsNullOrWhiteSpace(_icon))
+            {
+                using var iconFont = new SKFont(SKTypeface.Default, 12);
+                using var iconPaint = new SKPaint { Color = TextColor, IsAntialias = true };
+                canvas.DrawText(_icon, X + 6f, Y + 16f, SKTextAlign.Left, iconFont, iconPaint);
+            }
+
+            bool hasChildren = OutgoingConnections != null && OutgoingConnections.Count > 0;
+            if (!hasChildren) return;
+
+            float cx = X + Width - 8f;
+            float cy = Y + Height - 8f;
+            using var badgePaint = new SKPaint { Color = MaterialColors.Primary, Style = SKPaintStyle.Fill, IsAntialias = true };
+            using var badgeTextPaint = new SKPaint { Color = SKColors.White, IsAntialias = true };
+            using var badgeFont = new SKFont(SKTypeface.Default, 10) { Embolden = true };
+            canvas.DrawCircle(cx, cy, 7f, badgePaint);
+            canvas.DrawText(_isCollapsed ? "+" : "−", cx, cy + 4f, SKTextAlign.Center, badgeFont, badgeTextPaint);
+        }
 
         protected override void OnBoundsChanged(SKRect bounds)
         {

@@ -62,7 +62,8 @@ namespace Beep.Skia.Business
             Width = 60;
             Height = 60;
             Name = "IntermediateEvent";
-            ComponentType = BusinessComponentType.StartEvent;
+            // Intermediate events participate in the flow: one input, one output.
+            ComponentType = BusinessComponentType.Task;
             NodeProperties["Label"] = new ParameterInfo { ParameterName = "Label", ParameterType = typeof(string), DefaultParameterValue = _label, ParameterCurrentValue = _label, Description = "Event label" };
             NodeProperties["EventType"] = new ParameterInfo { ParameterName = "EventType", ParameterType = typeof(EventType), DefaultParameterValue = _eventType, ParameterCurrentValue = _eventType, Description = "Event type", Choices = Enum.GetNames(typeof(EventType)) };
             NodeProperties["EventPosition"] = new ParameterInfo { ParameterName = "EventPosition", ParameterType = typeof(EventPosition), DefaultParameterValue = _eventPosition, ParameterCurrentValue = _eventPosition, Description = "Catch or Throw", Choices = Enum.GetNames(typeof(EventPosition)) };
@@ -121,12 +122,13 @@ namespace Beep.Skia.Business
                     break;
 
                 case EventType.Message:
-                    using (var path = new SKPath())
+                    using (var pathBuilder = new SKPathBuilder())
                     {
-                        path.MoveTo(cx - size * 0.5f, cy - size * 0.3f);
-                        path.LineTo(cx, cy + size * 0.3f);
-                        path.LineTo(cx + size * 0.5f, cy - size * 0.3f);
-                        path.Close();
+                        pathBuilder.MoveTo(cx - size * 0.5f, cy - size * 0.3f);
+                        pathBuilder.LineTo(cx, cy + size * 0.3f);
+                        pathBuilder.LineTo(cx + size * 0.5f, cy - size * 0.3f);
+                        pathBuilder.Close();
+                        using var path = pathBuilder.Detach();
                         canvas.DrawPath(path, iconPaint);
                     }
                     break;

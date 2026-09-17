@@ -298,10 +298,11 @@ namespace Beep.Skia.ETL
                 StrokeWidth = 1.25f,
                 IsAntialias = true
             };
-            using var path = new SKPath();
-            path.AddOval(new SKRect(rect.Left, rect.Top, rect.Right, rect.Top + 16));
-            path.AddRect(new SKRect(rect.Left, rect.Top + 8, rect.Right, rect.Bottom - 8));
-            path.AddOval(new SKRect(rect.Left, rect.Bottom - 16, rect.Right, rect.Bottom));
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.AddOval(new SKRect(rect.Left, rect.Top, rect.Right, rect.Top + 16));
+            pathBuilder.AddRect(new SKRect(rect.Left, rect.Top + 8, rect.Right, rect.Bottom - 8));
+            pathBuilder.AddOval(new SKRect(rect.Left, rect.Bottom - 16, rect.Right, rect.Bottom));
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, border);
         }
 

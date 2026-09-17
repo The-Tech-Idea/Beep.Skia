@@ -142,12 +142,13 @@ namespace Beep.Skia.Business
             {
                 case EventType.Start:
                     // Draw play triangle
-                    using (var path = new SKPath())
+                    using (var pathBuilder = new SKPathBuilder())
                     {
-                        path.MoveTo(centerX - iconSize * 0.4f, centerY - iconSize * 0.5f);
-                        path.LineTo(centerX + iconSize * 0.4f, centerY);
-                        path.LineTo(centerX - iconSize * 0.4f, centerY + iconSize * 0.5f);
-                        path.Close();
+                        pathBuilder.MoveTo(centerX - iconSize * 0.4f, centerY - iconSize * 0.5f);
+                        pathBuilder.LineTo(centerX + iconSize * 0.4f, centerY);
+                        pathBuilder.LineTo(centerX - iconSize * 0.4f, centerY + iconSize * 0.5f);
+                        pathBuilder.Close();
+                        using var path = pathBuilder.Detach();
                         canvas.DrawPath(path, iconPaint);
                     }
                     break;
@@ -171,15 +172,16 @@ namespace Beep.Skia.Business
 
                 case EventType.Message:
                     // Draw envelope
-                    using (var path = new SKPath())
+                    using (var pathBuilder = new SKPathBuilder())
                     {
-                        path.MoveTo(centerX - iconSize * 0.5f, centerY - iconSize * 0.3f);
-                        path.LineTo(centerX, centerY + iconSize * 0.3f);
-                        path.LineTo(centerX + iconSize * 0.5f, centerY - iconSize * 0.3f);
-                        path.LineTo(centerX - iconSize * 0.5f, centerY - iconSize * 0.3f);
-                        path.MoveTo(centerX - iconSize * 0.5f, centerY - iconSize * 0.3f);
-                        path.LineTo(centerX - iconSize * 0.5f, centerY + iconSize * 0.1f);
-                        path.LineTo(centerX, centerY + iconSize * 0.3f);
+                        pathBuilder.MoveTo(centerX - iconSize * 0.5f, centerY - iconSize * 0.3f);
+                        pathBuilder.LineTo(centerX, centerY + iconSize * 0.3f);
+                        pathBuilder.LineTo(centerX + iconSize * 0.5f, centerY - iconSize * 0.3f);
+                        pathBuilder.LineTo(centerX - iconSize * 0.5f, centerY - iconSize * 0.3f);
+                        pathBuilder.MoveTo(centerX - iconSize * 0.5f, centerY - iconSize * 0.3f);
+                        pathBuilder.LineTo(centerX - iconSize * 0.5f, centerY + iconSize * 0.1f);
+                        pathBuilder.LineTo(centerX, centerY + iconSize * 0.3f);
+                        using var path = pathBuilder.Detach();
                         canvas.DrawPath(path, iconPaint);
                     }
                     break;

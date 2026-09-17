@@ -16,7 +16,7 @@ namespace Beep.Skia.Cloud
         public string InstanceType { get => _instanceType; set { var v = value ?? ""; if (_instanceType == v) return; _instanceType = v; SetProp("InstanceType", v); InvalidateVisual(); } }
         public string OperatingSystem { get => _os; set { var v = value ?? ""; if (_os == v) return; _os = v; SetProp("OperatingSystem", v); InvalidateVisual(); } }
 
-        private void SetProp(string n, object v, string d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
+        private void SetProp(string n, object v, string? d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
 
         public VirtualMachineNode() { Width = 120; Height = 70; Name = "VM"; EnsurePortCounts(1, 1); SetProp("InstanceType", _instanceType); SetProp("OperatingSystem", _os); }
         protected override void DrawCloudContent(SKCanvas canvas, DrawingContext ctx)
@@ -41,7 +41,7 @@ namespace Beep.Skia.Cloud
     {
         private string _storageClass = "Standard";
         public string StorageClass { get => _storageClass; set { var v = value ?? ""; if (_storageClass == v) return; _storageClass = v; SetProp("StorageClass", v); InvalidateVisual(); } }
-        private void SetProp(string n, object v, string d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
+        private void SetProp(string n, object v, string? d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
         public ObjectStorageNode() { Width = 120; Height = 70; Name = "Storage"; EnsurePortCounts(1, 1); SetProp("StorageClass", _storageClass); }
         protected override void DrawCloudContent(SKCanvas canvas, DrawingContext ctx)
         {
@@ -65,7 +65,7 @@ namespace Beep.Skia.Cloud
         private int _timeoutSec = 60;
         public string Runtime { get => _runtime; set { var v = value ?? ""; if (_runtime == v) return; _runtime = v; SetProp("Runtime", v); InvalidateVisual(); } }
         public int TimeoutSec { get => _timeoutSec; set { var v = Math.Max(1, value); if (_timeoutSec == v) return; _timeoutSec = v; SetProp("TimeoutSec", v); InvalidateVisual(); } }
-        private void SetProp(string n, object v, string d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
+        private void SetProp(string n, object v, string? d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
         public ServerlessFunctionNode() { Width = 130; Height = 70; Name = "Function"; EnsurePortCounts(1, 1); SetProp("Runtime", _runtime); SetProp("TimeoutSec", _timeoutSec); }
         protected override void DrawCloudContent(SKCanvas canvas, DrawingContext ctx)
         {
@@ -76,7 +76,7 @@ namespace Beep.Skia.Cloud
             using var font = new SKFont(SKTypeface.Default, 9) { Embolden = true };
             using var text = new SKPaint { Color = new SKColor(0x33, 0x33, 0x33), IsAntialias = true };
             canvas.DrawText("\u03BB", r.MidX - 8, r.MidY + 6, SKTextAlign.Center, font, text);
-            canvas.DrawText(Name, r.MidX + 10, r.MidY + 6, font, text);
+            canvas.DrawText(Name, r.MidX + 10, r.MidY + 6, SKTextAlign.Left, font, text);
         }
         protected override void LayoutPorts() { LayoutPortsVerticalSegments(6, 6); }
     }
@@ -90,7 +90,7 @@ namespace Beep.Skia.Cloud
         private string _version = "15";
         public string Engine { get => _engine; set { var v = value ?? ""; if (_engine == v) return; _engine = v; SetProp("Engine", v); InvalidateVisual(); } }
         public string Version { get => _version; set { var v = value ?? ""; if (_version == v) return; _version = v; SetProp("Version", v); InvalidateVisual(); } }
-        private void SetProp(string n, object v, string d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
+        private void SetProp(string n, object v, string? d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
         public ManagedDatabaseNode() { Width = 130; Height = 75; Name = "RDS"; EnsurePortCounts(1, 1); SetProp("Engine", _engine); SetProp("Version", _version); }
         protected override void DrawCloudContent(SKCanvas canvas, DrawingContext ctx)
         {
@@ -119,7 +119,7 @@ namespace Beep.Skia.Cloud
     {
         private string _stage = "prod";
         public string Stage { get => _stage; set { var v = value ?? ""; if (_stage == v) return; _stage = v; SetProp("Stage", v); InvalidateVisual(); } }
-        private void SetProp(string n, object v, string d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
+        private void SetProp(string n, object v, string? d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
         public ApiGatewayNode() { Width = 130; Height = 65; Name = "API Gateway"; EnsurePortCounts(2, 2); SetProp("Stage", _stage); }
         protected override void DrawCloudContent(SKCanvas canvas, DrawingContext ctx)
         {
@@ -141,7 +141,7 @@ namespace Beep.Skia.Cloud
     {
         private string _cidr = "10.0.0.0/16";
         public string Cidr { get => _cidr; set { var v = value ?? ""; if (_cidr == v) return; _cidr = v; SetProp("Cidr", v); InvalidateVisual(); } }
-        private void SetProp(string n, object v, string d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
+        private void SetProp(string n, object v, string? d = null) { if (NodeProperties.TryGetValue(n, out var p) && p != null) p.ParameterCurrentValue = v; else NodeProperties[n] = new ParameterInfo { ParameterName = n, ParameterType = v.GetType(), DefaultParameterValue = v, ParameterCurrentValue = v, Description = d ?? n }; }
         public VirtualNetworkNode() { Width = 240; Height = 160; Name = "VPC"; EnsurePortCounts(0, 0); }
         protected override void DrawCloudContent(SKCanvas canvas, DrawingContext ctx)
         {
@@ -151,7 +151,7 @@ namespace Beep.Skia.Cloud
             canvas.DrawRoundRect(r, 6, 6, fill); canvas.DrawRoundRect(r, 6, 6, stroke);
             using var font = new SKFont(SKTypeface.Default, 9) { Embolden = true };
             using var text = new SKPaint { Color = new SKColor(0x45, 0x55, 0xA0), IsAntialias = true };
-            canvas.DrawText("VPC: " + _cidr, r.Left + 8, r.Top + 16, font, text);
+            canvas.DrawText("VPC: " + _cidr, r.Left + 8, r.Top + 16, SKTextAlign.Left, font, text);
         }
         protected override void LayoutPorts() { }
     }

@@ -73,20 +73,21 @@ namespace Beep.Skia.ETL
         protected override void DrawShape(SKCanvas canvas)
         {
             var r = Bounds;
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
 
             // Inverted triangle/funnel shape - multiple inputs converge to one output
             float topWidth = r.Width * 0.8f;
             float topOffset = (r.Width - topWidth) / 2;
 
-            path.MoveTo(r.Left + topOffset, r.Top + HeaderHeight);
-            path.LineTo(r.Right - topOffset, r.Top + HeaderHeight);
-            path.LineTo(r.MidX, r.Bottom);
-            path.Close();
+            pathBuilder.MoveTo(r.Left + topOffset, r.Top + HeaderHeight);
+            pathBuilder.LineTo(r.Right - topOffset, r.Top + HeaderHeight);
+            pathBuilder.LineTo(r.MidX, r.Bottom);
+            pathBuilder.Close();
 
             using var fill = new SKPaint { Color = Background, IsAntialias = true };
             using var stroke = new SKPaint { Color = Stroke, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawPath(path, stroke);
         }

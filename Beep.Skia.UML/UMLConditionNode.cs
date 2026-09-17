@@ -46,13 +46,14 @@ namespace Beep.Skia.UML
                 paint.Color = BackgroundColor;
                 paint.IsAntialias = true;
 
-                var path = new SKPath();
-                path.MoveTo(Width / 2, 2);
-                path.LineTo(Width - 2, Height / 2);
-                path.LineTo(Width / 2, Height - 2);
-                path.LineTo(2, Height / 2);
-                path.Close();
+                var pathBuilder = new SKPathBuilder();
+                pathBuilder.MoveTo(Width / 2, 2);
+                pathBuilder.LineTo(Width - 2, Height / 2);
+                pathBuilder.LineTo(Width / 2, Height - 2);
+                pathBuilder.LineTo(2, Height / 2);
+                pathBuilder.Close();
 
+                using var path = pathBuilder.Detach();
                 canvas.DrawPath(path, paint);
 
                 // Draw border
@@ -67,14 +68,14 @@ namespace Beep.Skia.UML
             {
                 using var font = new SKFont(SKTypeface.Default, 9);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
-                canvas.DrawText(Stereotype, Width / 2 - 25, 18, font, textPaint);
+                canvas.DrawText(Stereotype, Width / 2 - 25, 18, SKTextAlign.Left, font, textPaint);
             }
 
             // Draw condition type
-            using var typeFont = new SKFont(SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold), 10);
+            using var typeFont = new SKFont(TypefaceCache.Get("Arial", SKFontStyle.Bold), 10);
             using var typePaint = new SKPaint { IsAntialias = true, Color = TextColor };
             var typeWidth = typeFont.MeasureText(ConditionType);
-            canvas.DrawText(ConditionType, (Width - typeWidth) / 2, Height / 2 - 5, typeFont, typePaint);
+            canvas.DrawText(ConditionType, (Width - typeWidth) / 2, Height / 2 - 5, SKTextAlign.Left, typeFont, typePaint);
 
             // Draw condition expression if present
             if (!string.IsNullOrEmpty(ConditionExpression))
@@ -88,11 +89,11 @@ namespace Beep.Skia.UML
                     var truncated = ConditionExpression.Length > 15 ?
                         ConditionExpression.Substring(0, 12) + "..." : ConditionExpression;
                     var truncWidth = exprFont.MeasureText(truncated);
-                    canvas.DrawText(truncated, (Width - truncWidth) / 2, Height / 2 + 10, exprFont, exprPaint);
+                    canvas.DrawText(truncated, (Width - truncWidth) / 2, Height / 2 + 10, SKTextAlign.Left, exprFont, exprPaint);
                 }
                 else
                 {
-                    canvas.DrawText(ConditionExpression, (Width - exprWidth) / 2, Height / 2 + 10, exprFont, exprPaint);
+                    canvas.DrawText(ConditionExpression, (Width - exprWidth) / 2, Height / 2 + 10, SKTextAlign.Left, exprFont, exprPaint);
                 }
             }
 

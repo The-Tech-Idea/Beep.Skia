@@ -33,13 +33,14 @@ namespace Beep.Skia.DFD
             canvas.DrawRect(r, fill);
 
             // Draw three-sided border: left, top, bottom
-            using var path = new SKPath();
-            path.MoveTo(r.Left, r.Top);
-            path.LineTo(r.Right, r.Top);   // top
-            path.MoveTo(r.Left, r.Bottom);
-            path.LineTo(r.Right, r.Bottom); // bottom
-            path.MoveTo(r.Left, r.Top);
-            path.LineTo(r.Left, r.Bottom); // left
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(r.Left, r.Top);
+            pathBuilder.LineTo(r.Right, r.Top);   // top
+            pathBuilder.MoveTo(r.Left, r.Bottom);
+            pathBuilder.LineTo(r.Right, r.Bottom); // bottom
+            pathBuilder.MoveTo(r.Left, r.Top);
+            pathBuilder.LineTo(r.Left, r.Bottom); // left
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, stroke);
 
             DrawPorts(canvas);

@@ -175,17 +175,18 @@ namespace Beep.Skia.PM
             float triTop = r.Top + 8;
 
             // Triangle (warning symbol)
-            using var path = new SKPath();
-            path.MoveTo(r.MidX, triTop);
-            path.LineTo(r.Left + 8, triTop + triHeight);
-            path.LineTo(r.Right - 8, triTop + triHeight);
-            path.Close();
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(r.MidX, triTop);
+            pathBuilder.LineTo(r.Left + 8, triTop + triHeight);
+            pathBuilder.LineTo(r.Right - 8, triTop + triHeight);
+            pathBuilder.Close();
 
             SKColor riskColor = GetRiskColor();
             using var fill = new SKPaint { Color = riskColor.WithAlpha(100), IsAntialias = true };
             using var stroke = new SKPaint { Color = riskColor, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2.5f };
             using var text = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawPath(path, stroke);
 

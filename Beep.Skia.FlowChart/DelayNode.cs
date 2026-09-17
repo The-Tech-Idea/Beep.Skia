@@ -112,22 +112,23 @@ namespace Beep.Skia.Flowchart
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0xFF, 0xA0, 0x00), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Orange
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
             using var font = new SKFont(SKTypeface.Default, 14);
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
 
             // D-shape: straight left edge, curved right edge
-            path.MoveTo(r.Left, r.Top);
-            path.LineTo(r.Left, r.Bottom);
+            pathBuilder.MoveTo(r.Left, r.Top);
+            pathBuilder.LineTo(r.Left, r.Bottom);
             
             // Arc on the right side (half circle)
-            path.ArcTo(
+            pathBuilder.ArcTo(
                 new SKRect(r.Left, r.Top, r.Right, r.Bottom),
                 90,  // Start angle
                 180, // Sweep angle
                 false
             );
             
-            path.Close();
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawPath(path, stroke);
 

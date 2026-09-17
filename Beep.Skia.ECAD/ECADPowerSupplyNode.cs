@@ -46,19 +46,21 @@ namespace Beep.Skia.ECAD
             canvas.DrawRect(cx - 25, cy - 15, 50, 30, line);
             
             // Arrow showing conversion
-            var arrow = new SKPath();
-            arrow.MoveTo(cx - 15, cy);
-            arrow.LineTo(cx + 10, cy);
-            arrow.LineTo(cx + 5, cy - 5);
-            arrow.MoveTo(cx + 10, cy);
-            arrow.LineTo(cx + 5, cy + 5);
+            var arrowBuilder = new SKPathBuilder();
+            arrowBuilder.MoveTo(cx - 15, cy);
+            arrowBuilder.LineTo(cx + 10, cy);
+            arrowBuilder.LineTo(cx + 5, cy - 5);
+            arrowBuilder.MoveTo(cx + 10, cy);
+            arrowBuilder.LineTo(cx + 5, cy + 5);
+            using var arrow = arrowBuilder.Detach();
             canvas.DrawPath(arrow, line);
 
             // Labels
-            using var text = new SKPaint { Color = TextColor, TextSize = 9, IsAntialias = true };
-            canvas.DrawText($"{_inputVoltage}V", r.Left + 5, r.Top + 12, text);
-            canvas.DrawText($"{_outputVoltage}V", r.Right - 30, r.Top + 12, text);
-            canvas.DrawText($"{_outputCurrent}A", r.MidX - text.MeasureText($"{_outputCurrent}A") / 2, r.Bottom - 4, text);
+            using var text = new SKPaint { Color = TextColor, IsAntialias = true };
+            using var textFont = new SKFont(SKTypeface.Default, 9);
+            canvas.DrawText($"{_inputVoltage}V", r.Left + 5, r.Top + 12, SKTextAlign.Left, textFont, text);
+            canvas.DrawText($"{_outputVoltage}V", r.Right - 30, r.Top + 12, SKTextAlign.Left, textFont, text);
+            canvas.DrawText($"{_outputCurrent}A", r.MidX - textFont.MeasureText($"{_outputCurrent}A") / 2, r.Bottom - 4, SKTextAlign.Left, textFont, text);
 
             DrawPorts(canvas);
         }

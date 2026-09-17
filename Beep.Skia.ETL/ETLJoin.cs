@@ -33,14 +33,14 @@ namespace Beep.Skia.ETL
         {
             var rect = new SKRect(X, Y, X + Width, Y + Height);
 
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
             // Create right-pointing triangle with flat left side
-            path.MoveTo(rect.Left, rect.Top + 10);
-            path.LineTo(rect.Right - 20, rect.MidY);
-            path.LineTo(rect.Left, rect.Bottom - 10);
-            path.LineTo(rect.Left + 20, rect.Bottom - 10);
-            path.LineTo(rect.Left + 20, rect.Top + 10);
-            path.Close();
+            pathBuilder.MoveTo(rect.Left, rect.Top + 10);
+            pathBuilder.LineTo(rect.Right - 20, rect.MidY);
+            pathBuilder.LineTo(rect.Left, rect.Bottom - 10);
+            pathBuilder.LineTo(rect.Left + 20, rect.Bottom - 10);
+            pathBuilder.LineTo(rect.Left + 20, rect.Top + 10);
+            pathBuilder.Close();
 
             using var fill = new SKPaint
             {
@@ -48,6 +48,7 @@ namespace Beep.Skia.ETL
                 Style = SKPaintStyle.Fill,
                 IsAntialias = true
             };
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
 
             using var border = new SKPaint

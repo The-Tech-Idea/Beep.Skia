@@ -103,8 +103,9 @@ namespace Beep.Skia.Business
             float bodyRadius = iconSize * 0.4f;
             var bodyRect = new SKRect(centerX - bodyRadius, bodyTop, centerX + bodyRadius, bodyTop + bodyRadius * 1.2f);
 
-            using var bodyPath = new SKPath();
-            bodyPath.AddArc(bodyRect, 30, 120); // Arc from 30 to 150 degrees
+            using var bodyPathBuilder = new SKPathBuilder();
+            bodyPathBuilder.AddArc(bodyRect, 30, 120); // Arc from 30 to 150 degrees
+            using var bodyPath = bodyPathBuilder.Detach();
             canvas.DrawPath(bodyPath, iconPaint);
         }
 

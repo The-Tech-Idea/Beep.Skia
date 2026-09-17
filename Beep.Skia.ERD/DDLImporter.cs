@@ -17,20 +17,20 @@ namespace Beep.Skia.ERD
 
         public class TableInfo
         {
-            public string TableName { get; set; }
-            public string SchemaName { get; set; }
+            public string TableName { get; set; } = string.Empty;
+            public string? SchemaName { get; set; }
             public List<ColumnInfo> Columns { get; set; } = new();
             public List<ConstraintInfo> Constraints { get; set; } = new();
         }
 
         public class ColumnInfo
         {
-            public string Name { get; set; }
-            public string DataType { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string DataType { get; set; } = string.Empty;
             public bool IsPrimaryKey { get; set; }
             public bool IsNullable { get; set; } = true;
             public bool IsAutoIncrement { get; set; }
-            public string DefaultValue { get; set; }
+            public string? DefaultValue { get; set; }
             public int? MaxLength { get; set; }
             public int? Precision { get; set; }
             public int? Scale { get; set; }
@@ -38,13 +38,13 @@ namespace Beep.Skia.ERD
 
         public class ConstraintInfo
         {
-            public string Name { get; set; }
-            public string Type { get; set; }
-            public string Columns { get; set; }
-            public string ReferencedTable { get; set; }
-            public string ReferencedColumns { get; set; }
-            public string OnDelete { get; set; }
-            public string OnUpdate { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string Type { get; set; } = string.Empty;
+            public string Columns { get; set; } = string.Empty;
+            public string? ReferencedTable { get; set; }
+            public string? ReferencedColumns { get; set; }
+            public string? OnDelete { get; set; }
+            public string? OnUpdate { get; set; }
         }
 
         public DDLImporter(SQLDialect dialect = SQLDialect.ANSI) { _dialect = dialect; }
@@ -59,18 +59,23 @@ namespace Beep.Skia.ERD
             ddl = Regex.Replace(ddl, @"/\*.*?\*/", "", RegexOptions.Singleline);
             ddl = ddl.Replace("\r\n", "\n").Replace("\r", "\n");
 
+            // Accepts quoted identifiers ("Order Items", [Order Items], `Order Items`) as well as plain ones.
             var matches = Regex.Matches(ddl,
-                @"CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:`?\[?""?)?""?(\w+(?:\.\w+)?)""?""?\]?`?\s*\(([\s\S]*?)\)\s*;",
+                @"CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:""(?<name>[^""]+)""|\[(?<name>[^\]]+)\]|`(?<name>[^`]+)`|(?<name>[\w.]+))\s*\((?<body>[\s\S]*?)\)\s*;",
                 RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
             foreach (Match match in matches)
             {
+                var rawName = match.Groups["name"].Value.Trim();
+                if (rawName.Length == 0) continue;
+
+                var separator = rawName.IndexOf('.');
                 var table = new TableInfo
                 {
-                    TableName = match.Groups[1].Value.Contains(".") ? match.Groups[1].Value.Split('.')[1] : match.Groups[1].Value,
-                    SchemaName = match.Groups[1].Value.Contains(".") ? match.Groups[1].Value.Split('.')[0] : null
+                    TableName = separator >= 0 ? rawName.Substring(separator + 1) : rawName,
+                    SchemaName = separator >= 0 ? rawName.Substring(0, separator) : null
                 };
-                ParseTableBody(match.Groups[2].Value, table);
+                ParseTableBody(match.Groups["body"].Value, table);
                 ApplyPkConstraints(table);
                 tables.Add(table);
             }
@@ -169,8 +174,9 @@ namespace Beep.Skia.ERD
 
         private void ParseColumn(string part, TableInfo table)
         {
+            // Type is a single word plus optional multi-word qualifiers (e.g., DOUBLE PRECISION, CHARACTER VARYING).
             var m = Regex.Match(part,
-                @"^(?:`?\[?""?)?""?(\w+)""?""?\]?`?\s+(\w[\w\s]*?\w|\w)(?:\s*\(\s*(\d+(?:\s*,\s*\d+)?)\s*\))?\s*(.*)",
+                @"^(?:`?\[?""?)?""?(\w+)""?""?\]?`?\s+([A-Za-z_]\w*(?:\s+(?:PRECISION|VARYING|UNSIGNED|ZEROFILL))?)(?:\s*\(\s*(\d+(?:\s*,\s*\d+)?)\s*\))?\s*(.*)",
                 RegexOptions.IgnoreCase);
             if (!m.Success) return;
 

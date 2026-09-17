@@ -33,7 +33,6 @@ namespace Beep.Skia.UML
             BackgroundColor = new SKColor(0xF5, 0xF5, 0xF5);
             BorderColor = new SKColor(0x75, 0x75, 0x75);
             Name = "SystemBoundary";
-            EnsurePortCounts(0, 0);
             NodeProperties["SystemName"] = new ParameterInfo { ParameterName = "SystemName", ParameterType = typeof(string), DefaultParameterValue = _systemName, ParameterCurrentValue = _systemName, Description = "System or subsystem name" };
         }
 
@@ -58,11 +57,9 @@ namespace Beep.Skia.UML
             {
                 using var font = new SKFont(SKTypeface.Default, 11) { Embolden = true };
                 using var text = new SKPaint { Color = BorderColor, IsAntialias = true };
-                canvas.DrawText(_systemName, X + 8, Y + 16, font, text);
+                canvas.DrawText(_systemName, X + 8, Y + 16, SKTextAlign.Left, font, text);
             }
         }
-
-        protected override void LayoutPorts() { EnsurePortCounts(0, 0); }
 
         public override Dictionary<string, object> GetProperties(bool includeCommon = true, bool includeNodeProperties = true)
         {

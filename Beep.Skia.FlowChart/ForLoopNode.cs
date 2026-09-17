@@ -204,13 +204,14 @@ namespace Beep.Skia.Flowchart
             float iconSize = 18f;
             float iconX = r.Left + 10;
             float iconY = r.Top + 10;
-            using var iconPath = new SKPath();
-            iconPath.AddArc(new SKRect(iconX, iconY, iconX + iconSize, iconY + iconSize), 45, 270);
+            using var iconPathBuilder = new SKPathBuilder();
+            iconPathBuilder.AddArc(new SKRect(iconX, iconY, iconX + iconSize, iconY + iconSize), 45, 270);
             // Add arrow head
-            iconPath.MoveTo(iconX + iconSize * 0.85f, iconY);
-            iconPath.LineTo(iconX + iconSize * 0.85f, iconY + 5);
-            iconPath.LineTo(iconX + iconSize + 2, iconY + 2.5f);
-            iconPath.Close();
+            iconPathBuilder.MoveTo(iconX + iconSize * 0.85f, iconY);
+            iconPathBuilder.LineTo(iconX + iconSize * 0.85f, iconY + 5);
+            iconPathBuilder.LineTo(iconX + iconSize + 2, iconY + 2.5f);
+            iconPathBuilder.Close();
+            using var iconPath = iconPathBuilder.Detach();
             canvas.DrawPath(iconPath, loopIcon);
 
             // Draw loop text

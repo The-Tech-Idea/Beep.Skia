@@ -43,16 +43,18 @@ namespace Beep.Skia.ECAD
             canvas.DrawRect(cx - 20, cy - 8, 40, 16, line);
             
             // S-curve representing fuse wire
-            var path = new SKPath();
-            path.MoveTo(cx - 15, cy);
-            path.CubicTo(cx - 10, cy - 6, cx - 5, cy + 6, cx, cy);
-            path.CubicTo(cx + 5, cy - 6, cx + 10, cy + 6, cx + 15, cy);
+            var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(cx - 15, cy);
+            pathBuilder.CubicTo(cx - 10, cy - 6, cx - 5, cy + 6, cx, cy);
+            pathBuilder.CubicTo(cx + 5, cy - 6, cx + 10, cy + 6, cx + 15, cy);
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, line);
 
             // Label
-            using var text = new SKPaint { Color = TextColor, TextSize = 10, IsAntialias = true };
+            using var text = new SKPaint { Color = TextColor, IsAntialias = true };
+            using var textFont = new SKFont(SKTypeface.Default, 10);
             string label = $"{_rating}A";
-            canvas.DrawText(label, r.MidX - text.MeasureText(label) / 2, r.Bottom - 4, text);
+            canvas.DrawText(label, r.MidX - textFont.MeasureText(label) / 2, r.Bottom - 4, SKTextAlign.Left, textFont, text);
 
             DrawPorts(canvas);
         }

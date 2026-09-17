@@ -59,7 +59,33 @@ namespace Beep.Skia.ML
             while (OutConnectionPoints.Count < outCount)
                 OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
             while (OutConnectionPoints.Count > outCount) OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
+
+            // Keep the persisted port-count properties in sync. The base constructor registers them
+            // before derived constructors add their ports, so without this a stale 0 would be saved
+            // and re-applied on load - which deletes the ports and with them every connection.
+            SyncPortCountProperty("InPortCount", InConnectionPoints.Count);
+            SyncPortCountProperty("OutPortCount", OutConnectionPoints.Count);
+
             MarkPortsDirty();
+        }
+
+        private void SyncPortCountProperty(string name, int count)
+        {
+            if (NodeProperties.TryGetValue(name, out var existing) && existing != null)
+            {
+                existing.DefaultParameterValue = count;
+                existing.ParameterCurrentValue = count;
+                return;
+            }
+
+            NodeProperties[name] = new ParameterInfo
+            {
+                ParameterName = name,
+                ParameterType = typeof(int),
+                DefaultParameterValue = count,
+                ParameterCurrentValue = count,
+                Description = name == "InPortCount" ? "Number of inputs" : "Number of outputs"
+            };
         }
 
         protected void LayoutPortsVertical(float topInset, float bottomInset)

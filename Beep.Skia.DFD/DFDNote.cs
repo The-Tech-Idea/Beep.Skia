@@ -34,11 +34,12 @@ namespace Beep.Skia.DFD
             // Folded corner effect (top-right)
             float fold = 12f;
             using var foldPaint = new SKPaint { Color = MaterialColors.SecondaryContainer, IsAntialias = true };
-            var path = new SKPath();
-            path.MoveTo(r.Right - fold, r.Top);
-            path.LineTo(r.Right, r.Top);
-            path.LineTo(r.Right, r.Top + fold);
-            path.Close();
+            var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(r.Right - fold, r.Top);
+            pathBuilder.LineTo(r.Right, r.Top);
+            pathBuilder.LineTo(r.Right, r.Top + fold);
+            pathBuilder.Close();
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, foldPaint);
         }
     }

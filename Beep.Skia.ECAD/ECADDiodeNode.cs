@@ -42,17 +42,19 @@ namespace Beep.Skia.ECAD
             using var fill = new SKPaint { Color = BorderColor, Style = SKPaintStyle.Fill, IsAntialias = true };
             
             float cx = r.MidX; float cy = r.MidY; float size = 12;
-            var path = new SKPath();
-            path.MoveTo(cx - size, cy - size);
-            path.LineTo(cx - size, cy + size);
-            path.LineTo(cx + size, cy);
-            path.Close();
+            var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(cx - size, cy - size);
+            pathBuilder.LineTo(cx - size, cy + size);
+            pathBuilder.LineTo(cx + size, cy);
+            pathBuilder.Close();
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawLine(cx + size, cy - size, cx + size, cy + size, line);
 
             // Label
-            using var text = new SKPaint { Color = TextColor, TextSize = 10, IsAntialias = true };
-            canvas.DrawText(_type, r.MidX - text.MeasureText(_type) / 2, r.Bottom - 4, text);
+            using var text = new SKPaint { Color = TextColor, IsAntialias = true };
+            using var textFont = new SKFont(SKTypeface.Default, 10);
+            canvas.DrawText(_type, r.MidX - textFont.MeasureText(_type) / 2, r.Bottom - 4, SKTextAlign.Left, textFont, text);
 
             DrawPorts(canvas);
         }

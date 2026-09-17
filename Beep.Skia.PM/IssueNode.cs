@@ -155,12 +155,13 @@ namespace Beep.Skia.PM
             // Draw priority stripe on left edge
             var stripeRect = new SKRect(r.Left, r.Top, r.Left + 6, r.Bottom);
             using var stripeFill = new SKPaint { Color = priorityColor, IsAntialias = true };
-            using var stripePath = new SKPath();
-            stripePath.MoveTo(r.Left, r.Top + CornerRadius);
-            stripePath.LineTo(r.Left, r.Bottom - CornerRadius);
-            stripePath.LineTo(r.Left + 6, r.Bottom - CornerRadius);
-            stripePath.LineTo(r.Left + 6, r.Top + CornerRadius);
-            stripePath.Close();
+            using var stripePathBuilder = new SKPathBuilder();
+            stripePathBuilder.MoveTo(r.Left, r.Top + CornerRadius);
+            stripePathBuilder.LineTo(r.Left, r.Bottom - CornerRadius);
+            stripePathBuilder.LineTo(r.Left + 6, r.Bottom - CornerRadius);
+            stripePathBuilder.LineTo(r.Left + 6, r.Top + CornerRadius);
+            stripePathBuilder.Close();
+            using var stripePath = stripePathBuilder.Detach();
             canvas.DrawPath(stripePath, stripeFill);
 
             // Draw alert icon (!)

@@ -37,33 +37,34 @@ namespace Beep.Skia.ECAD
 
             // Zig-zag for resistor
             using var line = new SKPaint { Color = BorderColor, StrokeWidth = 2, Style = SKPaintStyle.Stroke, IsAntialias = true };
-            var path = new SKPath();
+            var pathBuilder = new SKPathBuilder();
             if (Orientation == Orientation.Horizontal)
             {
                 float y = r.MidY; float x = r.Left + 8; float step = (r.Width - 16) / 6f;
-                path.MoveTo(x, y);
+                pathBuilder.MoveTo(x, y);
                 for (int i = 0; i < 6; i++)
                 {
                     float x1 = x + i * step;
                     float x2 = x1 + step;
                     float y1 = (i % 2 == 0) ? y - 8 : y + 8;
-                    path.LineTo(x1 + step / 2, y1);
-                    path.LineTo(x2, y);
+                    pathBuilder.LineTo(x1 + step / 2, y1);
+                    pathBuilder.LineTo(x2, y);
                 }
             }
             else
             {
                 float x = r.MidX; float y = r.Top + 8; float step = (r.Height - 16) / 6f;
-                path.MoveTo(x, y);
+                pathBuilder.MoveTo(x, y);
                 for (int i = 0; i < 6; i++)
                 {
                     float y1 = y + i * step;
                     float y2 = y1 + step;
                     float x1 = (i % 2 == 0) ? x - 8 : x + 8;
-                    path.LineTo(x1, y1 + step / 2);
-                    path.LineTo(x, y2);
+                    pathBuilder.LineTo(x1, y1 + step / 2);
+                    pathBuilder.LineTo(x, y2);
                 }
             }
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, line);
 
             using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };

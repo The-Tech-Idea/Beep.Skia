@@ -61,25 +61,27 @@ namespace Beep.Skia.Flowchart
             using var font = new SKFont(SKTypeface.Default, 12);
 
             // Main rectangle body
-            using var bodyPath = new SKPath();
-            bodyPath.MoveTo(r.Left, r.Top);
-            bodyPath.LineTo(r.Right - foldSize, r.Top);
-            bodyPath.LineTo(r.Right, r.Top + foldSize);
-            bodyPath.LineTo(r.Right, r.Bottom);
-            bodyPath.LineTo(r.Left, r.Bottom);
-            bodyPath.Close();
+            using var bodyPathBuilder = new SKPathBuilder();
+            bodyPathBuilder.MoveTo(r.Left, r.Top);
+            bodyPathBuilder.LineTo(r.Right - foldSize, r.Top);
+            bodyPathBuilder.LineTo(r.Right, r.Top + foldSize);
+            bodyPathBuilder.LineTo(r.Right, r.Bottom);
+            bodyPathBuilder.LineTo(r.Left, r.Bottom);
+            bodyPathBuilder.Close();
 
+            using var bodyPath = bodyPathBuilder.Detach();
             canvas.DrawPath(bodyPath, fill);
             canvas.DrawPath(bodyPath, stroke);
 
             // Folded corner
-            using var foldPath = new SKPath();
-            foldPath.MoveTo(r.Right - foldSize, r.Top);
-            foldPath.LineTo(r.Right - foldSize, r.Top + foldSize);
-            foldPath.LineTo(r.Right, r.Top + foldSize);
-            foldPath.Close();
+            using var foldPathBuilder = new SKPathBuilder();
+            foldPathBuilder.MoveTo(r.Right - foldSize, r.Top);
+            foldPathBuilder.LineTo(r.Right - foldSize, r.Top + foldSize);
+            foldPathBuilder.LineTo(r.Right, r.Top + foldSize);
+            foldPathBuilder.Close();
 
             using var foldFill = new SKPaint { Color = new SKColor(0xF0, 0xF0, 0xD0), IsAntialias = true }; // Slightly darker yellow
+            using var foldPath = foldPathBuilder.Detach();
             canvas.DrawPath(foldPath, foldFill);
             canvas.DrawPath(foldPath, stroke);
 

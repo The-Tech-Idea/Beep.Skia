@@ -145,12 +145,13 @@ namespace Beep.Skia.Business
 
                 case AnnotationType.Warning:
                     // Draw warning triangle
-                    using (var path = new SKPath())
+                    using (var pathBuilder = new SKPathBuilder())
                     {
-                        path.MoveTo(indicatorX + size / 2, indicatorY);
-                        path.LineTo(indicatorX, indicatorY + size);
-                        path.LineTo(indicatorX + size, indicatorY + size);
-                        path.Close();
+                        pathBuilder.MoveTo(indicatorX + size / 2, indicatorY);
+                        pathBuilder.LineTo(indicatorX, indicatorY + size);
+                        pathBuilder.LineTo(indicatorX + size, indicatorY + size);
+                        pathBuilder.Close();
+                        using var path = pathBuilder.Detach();
                         canvas.DrawPath(path, indicatorPaint);
                     }
                     // Exclamation mark
@@ -162,11 +163,12 @@ namespace Beep.Skia.Business
                     // Draw speech bubble
                     canvas.DrawOval(new SKRect(indicatorX, indicatorY, indicatorX + size, indicatorY + size * 0.8f), indicatorPaint);
                     // Bubble tail
-                    using (var tailPath = new SKPath())
+                    using (var tailPathBuilder = new SKPathBuilder())
                     {
-                        tailPath.MoveTo(indicatorX + size * 0.3f, indicatorY + size * 0.8f);
-                        tailPath.LineTo(indicatorX + size * 0.5f, indicatorY + size);
-                        tailPath.LineTo(indicatorX + size * 0.7f, indicatorY + size * 0.8f);
+                        tailPathBuilder.MoveTo(indicatorX + size * 0.3f, indicatorY + size * 0.8f);
+                        tailPathBuilder.LineTo(indicatorX + size * 0.5f, indicatorY + size);
+                        tailPathBuilder.LineTo(indicatorX + size * 0.7f, indicatorY + size * 0.8f);
+                        using var tailPath = tailPathBuilder.Detach();
                         canvas.DrawPath(tailPath, indicatorPaint);
                     }
                     break;

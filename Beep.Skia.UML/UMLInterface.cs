@@ -120,8 +120,8 @@ namespace Beep.Skia.UML
             float radiusY = Height / 2 - 5;
 
             // Create oval path for interface
-            using var interfacePath = new SKPath();
-            interfacePath.AddOval(new SKRect(centerX - radiusX, centerY - radiusY, 
+            using var interfacePathBuilder = new SKPathBuilder();
+            interfacePathBuilder.AddOval(new SKRect(centerX - radiusX, centerY - radiusY, 
                                            centerX + radiusX, centerY + radiusY));
 
             // Add subtle gradient effect
@@ -139,6 +139,7 @@ namespace Beep.Skia.UML
             fillPaint.Shader = gradient;
 
             // Draw the interface shape
+            using var interfacePath = interfacePathBuilder.Detach();
             canvas.DrawPath(interfacePath, fillPaint);
             canvas.DrawPath(interfacePath, borderPaint);
 
@@ -150,7 +151,7 @@ namespace Beep.Skia.UML
                 IsAntialias = true
             };
 
-            using var symbolFont = new SKFont(SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold), 16);
+            using var symbolFont = new SKFont(TypefaceCache.Get("Arial", SKFontStyle.Bold), 16);
 
             canvas.DrawText("I", centerX - 4, Y + 20, SKTextAlign.Center, symbolFont, symbolPaint);
         }

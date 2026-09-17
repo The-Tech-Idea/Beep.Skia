@@ -62,20 +62,20 @@ namespace Beep.Skia.UML
                 using var font = new SKFont(SKTypeface.Default, 10);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 var stereotypeWidth = font.MeasureText(Stereotype);
-                canvas.DrawText(Stereotype, (Width - stereotypeWidth) / 2, 18, font, textPaint);
+                canvas.DrawText(Stereotype, (Width - stereotypeWidth) / 2, 18, SKTextAlign.Left, font, textPaint);
             }
 
             // Draw action type
-            using var typeFont = new SKFont(SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold), 12);
+            using var typeFont = new SKFont(TypefaceCache.Get("Arial", SKFontStyle.Bold), 12);
             using var typePaint = new SKPaint { IsAntialias = true, Color = TextColor };
-            canvas.DrawText(ActionType, 8, 35, typeFont, typePaint);
+            canvas.DrawText(ActionType, 8, 35, SKTextAlign.Left, typeFont, typePaint);
 
             // Draw action description if present
             if (!string.IsNullOrEmpty(ActionDescription))
             {
                 using var descFont = new SKFont(SKTypeface.Default, 10);
                 using var descPaint = new SKPaint { IsAntialias = true, Color = TextColor };
-                canvas.DrawText(ActionDescription, 8, 55, descFont, descPaint);
+                canvas.DrawText(ActionDescription, 8, 55, SKTextAlign.Left, descFont, descPaint);
             }
 
             // Draw gear icon to represent action

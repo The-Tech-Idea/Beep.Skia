@@ -83,20 +83,20 @@ namespace Beep.Skia.UML
             {
                 using var font = new SKFont(SKTypeface.Default, 9);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
-                canvas.DrawText(Stereotype, left + 10, top + 18, font, textPaint);
+                canvas.DrawText(Stereotype, left + 10, top + 18, SKTextAlign.Left, font, textPaint);
             }
 
             // Draw data source type
-            using var typeFont = new SKFont(SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold), 11);
+            using var typeFont = new SKFont(TypefaceCache.Get("Arial", SKFontStyle.Bold), 11);
             using var typePaint = new SKPaint { IsAntialias = true, Color = TextColor };
-            canvas.DrawText(DataSourceType, left + 10, top + 40, typeFont, typePaint);
+            canvas.DrawText(DataSourceType, left + 10, top + 40, SKTextAlign.Left, typeFont, typePaint);
 
             // Draw data source name if present
             if (!string.IsNullOrEmpty(DataSourceName))
             {
                 using var nameFont = new SKFont(SKTypeface.Default, 9);
                 using var namePaint = new SKPaint { IsAntialias = true, Color = TextColor };
-                canvas.DrawText(DataSourceName, left + 10, top + 58, nameFont, namePaint);
+                canvas.DrawText(DataSourceName, left + 10, top + 58, SKTextAlign.Left, nameFont, namePaint);
             }
 
             // Draw database icon (absolute)

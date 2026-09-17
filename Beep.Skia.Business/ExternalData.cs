@@ -54,15 +54,16 @@ namespace Beep.Skia.Business
             };
 
             // Create parallelogram path
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
             float skew = 15;
 
-            path.MoveTo(X + skew, Y);
-            path.LineTo(X + Width, Y);
-            path.LineTo(X + Width - skew, Y + Height);
-            path.LineTo(X, Y + Height);
-            path.Close();
+            pathBuilder.MoveTo(X + skew, Y);
+            pathBuilder.LineTo(X + Width, Y);
+            pathBuilder.LineTo(X + Width - skew, Y + Height);
+            pathBuilder.LineTo(X, Y + Height);
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fillPaint);
             canvas.DrawPath(path, borderPaint);
         }

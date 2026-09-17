@@ -51,26 +51,28 @@ namespace Beep.Skia.ECAD
             
             if (_type.Contains("NPN") || _type.Contains("PNP"))
             {
-                var arrow = new SKPath();
+                var arrowBuilder = new SKPathBuilder();
                 if (_type == "NPN")
                 {
-                    arrow.MoveTo(cx + 12, cy + 15);
-                    arrow.LineTo(cx + 10, cy + 10);
-                    arrow.LineTo(cx + 15, cy + 13);
-                    arrow.Close();
+                    arrowBuilder.MoveTo(cx + 12, cy + 15);
+                    arrowBuilder.LineTo(cx + 10, cy + 10);
+                    arrowBuilder.LineTo(cx + 15, cy + 13);
+                    arrowBuilder.Close();
                 }
                 else
                 {
-                    arrow.MoveTo(cx + 3, cy + 8);
-                    arrow.LineTo(cx, cy + 12);
-                    arrow.LineTo(cx + 5, cy + 12);
-                    arrow.Close();
+                    arrowBuilder.MoveTo(cx + 3, cy + 8);
+                    arrowBuilder.LineTo(cx, cy + 12);
+                    arrowBuilder.LineTo(cx + 5, cy + 12);
+                    arrowBuilder.Close();
                 }
+                using var arrow = arrowBuilder.Detach();
                 canvas.DrawPath(arrow, new SKPaint { Color = BorderColor, Style = SKPaintStyle.Fill });
             }
 
-            using var text = new SKPaint { Color = TextColor, TextSize = 10, IsAntialias = true };
-            canvas.DrawText(_type, r.MidX - text.MeasureText(_type) / 2, r.Bottom - 4, text);
+            using var text = new SKPaint { Color = TextColor, IsAntialias = true };
+            using var textFont = new SKFont(SKTypeface.Default, 10);
+            canvas.DrawText(_type, r.MidX - textFont.MeasureText(_type) / 2, r.Bottom - 4, SKTextAlign.Left, textFont, text);
 
             DrawPorts(canvas);
         }

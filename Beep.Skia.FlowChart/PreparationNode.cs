@@ -72,13 +72,14 @@ namespace Beep.Skia.Flowchart
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0xF4, 0x43, 0x36), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Red
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
             using var font = new SKFont(SKTypeface.Default, 14);
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
 
-            path.MoveTo(points[0]);
+            pathBuilder.MoveTo(points[0]);
             for (int i = 1; i < points.Length; i++)
-                path.LineTo(points[i]);
-            path.Close();
+                pathBuilder.LineTo(points[i]);
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawPath(path, stroke);
 

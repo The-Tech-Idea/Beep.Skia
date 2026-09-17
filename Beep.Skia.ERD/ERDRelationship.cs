@@ -71,13 +71,14 @@ namespace Beep.Skia.ERD
             using var text = new SKPaint { Color = MaterialControl.MaterialColors.OnSurface, IsAntialias = true };
             using var font = new SKFont(SKTypeface.Default, 13);
 
-            using var path = new SKPath();
-            path.MoveTo(pTop);
-            path.LineTo(pRight);
-            path.LineTo(pBottom);
-            path.LineTo(pLeft);
-            path.Close();
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(pTop);
+            pathBuilder.LineTo(pRight);
+            pathBuilder.LineTo(pBottom);
+            pathBuilder.LineTo(pLeft);
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawPath(path, stroke);
 

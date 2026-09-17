@@ -49,12 +49,14 @@ namespace Beep.Skia.ECAD
             canvas.DrawRect(cx - 20, cy - 12, 40, 24, line);
             
             // Label inside
-            using var text = new SKPaint { Color = BorderColor, TextSize = 10, IsAntialias = true, TextAlign = SKTextAlign.Center };
-            canvas.DrawText("REG", cx, cy + 3, text);
+            using var text = new SKPaint { Color = BorderColor, IsAntialias = true };
+            using var regFont = new SKFont(SKTypeface.Default, 10);
+            canvas.DrawText("REG", cx, cy + 3, SKTextAlign.Center, regFont, text);
 
             // Voltage labels
-            using var label = new SKPaint { Color = TextColor, TextSize = 9, IsAntialias = true };
-            canvas.DrawText($"{_outputVoltage}V", r.MidX - label.MeasureText($"{_outputVoltage}V") / 2, r.Bottom - 4, label);
+            using var label = new SKPaint { Color = TextColor, IsAntialias = true };
+            using var labelFont = new SKFont(SKTypeface.Default, 9);
+            canvas.DrawText($"{_outputVoltage}V", r.MidX - labelFont.MeasureText($"{_outputVoltage}V") / 2, r.Bottom - 4, SKTextAlign.Left, labelFont, label);
 
             DrawPorts(canvas);
         }

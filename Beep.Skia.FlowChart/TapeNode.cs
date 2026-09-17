@@ -89,29 +89,30 @@ namespace Beep.Skia.Flowchart
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x66, 0x9B, 0x00), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Olive
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
             using var font = new SKFont(SKTypeface.Default, 14);
-            using var path = new SKPath();
+            using var pathBuilder = new SKPathBuilder();
 
             // Wavy top edge
-            path.MoveTo(r.Left, r.Top + waveHeight);
-            path.CubicTo(
+            pathBuilder.MoveTo(r.Left, r.Top + waveHeight);
+            pathBuilder.CubicTo(
                 r.Left + r.Width * 0.25f, r.Top,
                 r.Left + r.Width * 0.75f, r.Top,
                 r.Right, r.Top + waveHeight
             );
 
             // Right edge
-            path.LineTo(r.Right, r.Bottom - waveHeight);
+            pathBuilder.LineTo(r.Right, r.Bottom - waveHeight);
 
             // Wavy bottom edge
-            path.CubicTo(
+            pathBuilder.CubicTo(
                 r.Left + r.Width * 0.75f, r.Bottom,
                 r.Left + r.Width * 0.25f, r.Bottom,
                 r.Left, r.Bottom - waveHeight
             );
 
             // Left edge
-            path.Close();
+            pathBuilder.Close();
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawPath(path, stroke);
 

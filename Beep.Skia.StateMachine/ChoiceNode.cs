@@ -94,16 +94,17 @@ namespace Beep.Skia.StateMachine
         {
             var b = Bounds;
 
-            using var path = new SKPath();
-            path.MoveTo(b.MidX, b.Top);
-            path.LineTo(b.Right, b.MidY);
-            path.LineTo(b.MidX, b.Bottom);
-            path.LineTo(b.Left, b.MidY);
-            path.Close();
+            using var pathBuilder = new SKPathBuilder();
+            pathBuilder.MoveTo(b.MidX, b.Top);
+            pathBuilder.LineTo(b.Right, b.MidY);
+            pathBuilder.LineTo(b.MidX, b.Bottom);
+            pathBuilder.LineTo(b.Left, b.MidY);
+            pathBuilder.Close();
 
             using var fill = new SKPaint { Color = BackgroundColor, Style = SKPaintStyle.Fill, IsAntialias = true };
             using var stroke = new SKPaint { Color = BorderColor, Style = SKPaintStyle.Stroke, StrokeWidth = 2f, IsAntialias = true };
 
+            using var path = pathBuilder.Detach();
             canvas.DrawPath(path, fill);
             canvas.DrawPath(path, stroke);
 
