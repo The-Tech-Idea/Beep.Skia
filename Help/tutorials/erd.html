@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial: Model a Database Schema | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .step{border-left:3px solid var(--color-brand-content);padding-left:1rem;margin:1.5rem 0} .step h3{margin-top:0}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Tutorials</span><span>&rsaquo;</span> <span>Tutorial: Model a Database Schema</span></nav>
+<div class="page-header"><h1>Tutorial: Model a Database Schema</h1><p class="page-subtitle">Design entities, export DDL and generate a migration</p></div>
+<p><strong>You will build:</strong> a small sales schema, export it to PostgreSQL DDL, change it, and generate the migration. <strong>Time:</strong> about 20 minutes. <strong>Prerequisites:</strong> <code>Beep.Skia</code> and <code>Beep.Skia.ERD</code>.</p>
+
+<div class="toc"><h3>Steps</h3><ul>
+<li><a href="#step-1">1. Create entities</a></li>
+<li><a href="#step-2">2. Describe columns, keys and indexes</a></li>
+<li><a href="#step-3">3. Connect the relationship</a></li>
+<li><a href="#step-4">4. Export DDL</a></li>
+<li><a href="#step-5">5. Change the schema and diff it</a></li>
+<li><a href="#step-6">6. Generate the migration</a></li>
+</ul></div>
+
+<div class="step" id="step-1">
+<h3>1. Create entities</h3>
+<p><code>ERDEntity</code> keeps the table definition as text, so the canvas and the schema tools share one source of truth.</p>
+<pre><code class="language-csharp">using Beep.Skia;
+using Beep.Skia.ERD;
+
+var manager = new DrawingManager();
+
+var customers = new ERDEntity
+{
+    EntityName = "Customers",
+    X = 60, Y = 60, Width = 260, Height = 160
+};
+var orders = new ERDEntity
+{
+    EntityName = "Orders",
+    X = 420, Y = 60, Width = 260, Height = 160
+};
+
+manager.AddComponent(customers);
+manager.AddComponent(orders);</code></pre>
+</div>
+
+<div class="step" id="step-2">
+<h3>2. Describe columns, keys and indexes</h3>
+<p>Set <code>Columns</code>, <code>Indexes</code> and <code>ForeignKeys</code>. The exporter understands standard SQL fragments, so you can paste existing definitions.</p>
+<pre><code class="language-csharp">customers.Columns = @"Id INT PRIMARY KEY
+Name NVARCHAR(200) NOT NULL
+Email NVARCHAR(320) NOT NULL
+CreatedAt DATETIME NOT NULL";
+customers.Indexes = "IX_Customers_Email UNIQUE (Email)";
+
+orders.Columns = @"Id INT PRIMARY KEY
+CustomerId INT NOT NULL
+Total DECIMAL(18,2) NOT NULL
+Status NVARCHAR(32) NOT NULL
+PlacedAt DATETIME NOT NULL";
+orders.Indexes = "IX_Orders_CustomerId (CustomerId)";
+orders.ForeignKeys = "FK_Orders_Customers FOREIGN KEY (CustomerId) REFERENCES Customers(Id)";</code></pre>
+</div>
+
+<div class="step" id="step-3">
+<h3>3. Connect the relationship</h3>
+<p>Draw the line for the diagram, then set the ERD cardinality markers on it.</p>
+<pre><code class="language-csharp">manager.ConnectComponents(customers, orders);
+
+var fk = manager.GetLines().Last();
+fk.Label1 = "places";
+fk.StartMultiplicity = ERDMultiplicity.OneOnly;        // one customer
+fk.EndMultiplicity = ERDMultiplicity.ZeroOrMany;       // places zero or many orders
+fk.RoutingMode = LineRoutingMode.Orthogonal;</code></pre>
+</div>
+
+<div class="step" id="step-4">
+<h3>4. Export DDL</h3>
+<p><code>DDLExporter</code> emits <code>CREATE TABLE</code> statements in six dialects, ordered so referenced tables come first.</p>
+<pre><code class="language-csharp">var exporter = new DDLExporter(DDLImporter.SQLDialect.PostgreSQL);
+var entities = manager.GetComponents().OfType&lt;ERDEntity&gt;();
+string script = exporter.ExportEntities(entities);
+File.WriteAllText("schema.sql", script);</code></pre>
+</div>
+
+<div class="step" id="step-5">
+<h3>5. Change the schema and diff it</h3>
+<p>Parse the exported DDL as the "source" schema, apply a change to the model (a new column), parse that as the "target", and compare. In practice the source usually comes from a live database dump.</p>
+<pre><code class="language-csharp">var importer = new DDLImporter(DDLImporter.SQLDialect.PostgreSQL);
+var source = importer.Parse(File.ReadAllText("schema.sql"));
+
+orders.Columns += "\nShippedAt DATETIME NULL";
+var target = importer.Parse(exporter.ExportEntities(entities));
+
+var diff = new SchemaComparer().Compare(source, target);
+Console.WriteLine(diff.Summary());
+foreach (var change in diff.OfKind(SchemaChangeKind.AddedColumn))
+    Console.WriteLine($"  + {change.TableName}.{change.Column?.Name}");</code></pre>
+</div>
+
+<div class="step" id="step-6">
+<h3>6. Generate the migration</h3>
+<p>The generator produces both directions; review them before running anything destructive.</p>
+<pre><code class="language-csharp">var migrations = new MigrationScriptGenerator();
+File.WriteAllText("migrate_up.sql", migrations.GenerateForward(diff, DDLImporter.SQLDialect.PostgreSQL));
+File.WriteAllText("migrate_down.sql", migrations.GenerateRollback(diff, DDLImporter.SQLDialect.PostgreSQL));</code></pre>
+</div>
+
+<h2>Next steps</h2>
+<ul>
+<li><a href="../diagram-families/erd-advanced.html">ERD enterprise features</a> &mdash; dialects, constraints, the full comparison rules</li>
+<li><a href="etl.html">ETL tutorial</a> &mdash; load the tables you just designed</li>
+<li><a href="../guides/troubleshooting.html">Troubleshooting</a> &mdash; if DDL import does not parse a statement</li>
+</ul>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

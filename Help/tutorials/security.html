@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial: Build a Threat Model | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .step{border-left:3px solid var(--color-brand-content);padding-left:1rem;margin:1.5rem 0} .step h3{margin-top:0}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Tutorials</span><span>&rsaquo;</span> <span>Tutorial: Build a Threat Model</span></nav>
+<div class="page-header"><h1>Tutorial: Build a Threat Model</h1><p class="page-subtitle">Assets, controls, STRIDE, DREAD and MITRE</p></div>
+<p><strong>You will build:</strong> a threat model over a small system and turn it into a scored threat list with MITRE mappings. <strong>Time:</strong> about 20 minutes. <strong>Prerequisites:</strong> <code>Beep.Skia</code> and <code>Beep.Skia.Security</code>.</p>
+
+<div class="toc"><h3>Steps</h3><ul>
+<li><a href="#step-1">1. Assets</a></li>
+<li><a href="#step-2">2. Controls and vulnerabilities</a></li>
+<li><a href="#step-3">3. Run STRIDE</a></li>
+<li><a href="#step-4">4. Score with DREAD</a></li>
+<li><a href="#step-5">5. Map to MITRE ATT&amp;CK</a></li>
+</ul></div>
+
+<div class="step" id="step-1">
+<h3>1. Assets</h3>
+<p>STRIDE analysis inspects <code>AssetNode</code>s; describe what is worth protecting first.</p>
+<pre><code class="language-csharp">using Beep.Skia;
+using Beep.Skia.Security;
+
+var manager = new DrawingManager();
+
+var db = new AssetNode { X = 60, Y = 80, Width = 200, Height = 90, AssetName = "Customer database" };
+var api = new AssetNode { X = 340, Y = 80, Width = 200, Height = 90, AssetName = "Public API" };
+manager.AddComponent(db);
+manager.AddComponent(api);</code></pre>
+</div>
+
+<div class="step" id="step-2">
+<h3>2. Controls and vulnerabilities</h3>
+<pre><code class="language-csharp">var waf = new ControlNode { X = 340, Y = 240, Width = 200, Height = 80, Label = "WAF" };
+var vuln = new VulnerabilityNode { X = 60, Y = 240, Width = 200, Height = 80, Label = "Unpatched DB", Cve = "CVE-2024-0001" };
+manager.AddComponent(waf);
+manager.AddComponent(vuln);
+
+manager.ConnectComponents(api, waf);
+manager.ConnectComponents(db, vuln);</code></pre>
+</div>
+
+<div class="step" id="step-3">
+<h3>3. Run STRIDE</h3>
+<p>The analyzer produces a threat per asset with category, mitigation and severity.</p>
+<pre><code class="language-csharp">var analyzer = new StrideAnalyzer();
+analyzer.Analyze(manager.GetComponents());
+
+foreach (var threat in analyzer.Threats)
+    Console.WriteLine($"[{threat.Category}] {threat.AssetName}: {threat.Threat} ({threat.Severity})");</code></pre>
+</div>
+
+<div class="step" id="step-4">
+<h3>4. Score with DREAD</h3>
+<p>Each threat already carries a <code>DreadScore</code>; you can also score threat nodes directly or in bulk from severity/likelihood pairs.</p>
+<pre><code class="language-csharp">foreach (var threat in analyzer.Threats)
+    Console.WriteLine($"{threat.Threat}: {threat.Dread.Average:0.0} ({threat.Dread.RiskLevel})");</code></pre>
+</div>
+
+<div class="step" id="step-5">
+<h3>5. Map to MITRE ATT&amp;CK</h3>
+<pre><code class="language-csharp">foreach (var technique in MitreAttackLibrary.ForStrideCategory(StrideAnalyzer.StrideCategory.Tampering))
+    Console.WriteLine($"{technique.Id} {technique.Name} ({technique.Tactic})");
+
+var specific = MitreAttackLibrary.Find("T1190");
+Console.WriteLine($"lookup: {specific}");</code></pre>
+<p>Materialize the threats as nodes on the canvas so they can be reviewed and linked to controls (the sample does exactly that).</p>
+</div>
+
+<h2>Next steps</h2>
+<ul>
+<li><a href="../diagram-families/security.html">Security family</a> &mdash; every node type and the rendered grid</li>
+<li><a href="../ecosystem/collaboration.html">Collaboration</a> &mdash; review findings with the team</li>
+<li><a href="../guides/getting-help.html">Getting help</a> &mdash; reporting a security issue in the framework itself</li>
+</ul>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

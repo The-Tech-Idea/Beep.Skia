@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial: Model a Business Process | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .step{border-left:3px solid var(--color-brand-content);padding-left:1rem;margin:1.5rem 0} .step h3{margin-top:0}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Tutorials</span><span>&rsaquo;</span> <span>Tutorial: Model a Business Process</span></nav>
+<div class="page-header"><h1>Tutorial: Model a Business Process</h1><p class="page-subtitle">Pools, lanes, gateways and a BPMN round-trip</p></div>
+<p><strong>You will build:</strong> an order process with pools, lanes and a gateway, export it as BPMN 2.0, and import it back into a fresh canvas. <strong>Time:</strong> about 20 minutes. <strong>Prerequisites:</strong> <code>Beep.Skia</code> and <code>Beep.Skia.Business</code>.</p>
+
+<div class="toc"><h3>Steps</h3><ul>
+<li><a href="#step-1">1. Pool and lanes</a></li>
+<li><a href="#step-2">2. Events and tasks</a></li>
+<li><a href="#step-3">3. Gateway and flow</a></li>
+<li><a href="#step-4">4. Validate the process</a></li>
+<li><a href="#step-5">5. Export to BPMN</a></li>
+<li><a href="#step-6">6. Import it back</a></li>
+</ul></div>
+
+<div class="step" id="step-1">
+<h3>1. Pool and lanes</h3>
+<p><code>BpmnPoolNode</code> is the process container; <code>BpmnLaneNode</code> splits it by role.</p>
+<pre><code class="language-csharp">using Beep.Skia;
+using Beep.Skia.Business;
+
+var manager = new DrawingManager();
+
+var pool = new BpmnPoolNode { X = 40, Y = 40, Width = 820, Height = 420, Label = "Order handling" };
+manager.AddComponent(pool);
+
+var sales = new BpmnLaneNode { X = 60, Y = 90, Width = 780, Height = 160, Label = "Sales" };
+var warehouse = new BpmnLaneNode { X = 60, Y = 260, Width = 780, Height = 160, Label = "Warehouse" };
+manager.AddComponent(sales);
+manager.AddComponent(warehouse);</code></pre>
+</div>
+
+<div class="step" id="step-2">
+<h3>2. Events and tasks</h3>
+<pre><code class="language-csharp">var start = new StartEvent { X = 100, Y = 150, Width = 44, Height = 44, Label = "Order received" };
+var review = new TaskNode { X = 220, Y = 140, Width = 150, Height = 70, Label = "Review order" };
+var pick = new TaskNode { X = 220, Y = 300, Width = 150, Height = 70, Label = "Pick items" };
+var end = new EndEvent { X = 700, Y = 310, Width = 44, Height = 44, Label = "Shipped" };
+
+foreach (var node in new SkiaComponent[] { start, review, pick, end })
+    manager.AddComponent(node);</code></pre>
+</div>
+
+<div class="step" id="step-3">
+<h3>3. Gateway and flow</h3>
+<pre><code class="language-csharp">var decision = new Gateway { X = 430, Y = 140, Width = 60, Height = 60, Label = "Approved?" };
+manager.AddComponent(decision);
+
+manager.ConnectComponents(start, review);
+manager.ConnectComponents(review, decision);
+manager.ConnectComponents(decision, pick);
+manager.ConnectComponents(pick, end);
+
+foreach (var line in manager.GetLines())
+    line.RoutingMode = LineRoutingMode.Orthogonal;</code></pre>
+</div>
+
+<div class="step" id="step-4">
+<h3>4. Validate the process</h3>
+<p>The same validator used by every family catches orphans and dead ends before you export.</p>
+<pre><code class="language-csharp">var validator = new DiagramValidator();
+validator.AddDefaultRules();
+
+var issues = validator.Validate(manager.GetComponents().ToList(), manager.GetLines());
+foreach (var issue in issues)
+    Console.WriteLine($"[{issue.Severity}] {issue.RuleName}: {issue.Message}");</code></pre>
+</div>
+
+<div class="step" id="step-5">
+<h3>5. Export to BPMN</h3>
+<pre><code class="language-csharp">var exporter = new BpmnExporter();
+string xml = exporter.Export(manager.GetComponents(), manager.GetLines(), "Order Handling");
+File.WriteAllText("order-process.bpmn", xml);</code></pre>
+<p>The result opens in any BPMN 2.0 modeling tool (bpmn.io, Camunda Modeler, Signavio).</p>
+</div>
+
+<div class="step" id="step-6">
+<h3>6. Import it back</h3>
+<p>Import into a fresh manager and check the warnings: unsupported constructs are reported rather than dropped silently.</p>
+<pre><code class="language-csharp">var importer = new BpmnImporter();
+var result = importer.Parse(File.ReadAllText("order-process.bpmn"));
+
+Console.WriteLine($"process={result.ProcessName}, nodes={result.Components.Count}, flows={result.Flows.Count}");
+foreach (var warning in result.Warnings)
+    Console.WriteLine($"warning: {warning}");
+
+var roundTrip = new DrawingManager();
+importer.LoadInto(roundTrip, File.ReadAllText("order-process.bpmn"));</code></pre>
+</div>
+
+<h2>Next steps</h2>
+<ul>
+<li><a href="../diagram-families/business-process.html">Business process family</a> &mdash; all node types and the rendered grid</li>
+<li><a href="uml.html">UML tutorial</a> &mdash; when you model the system instead of the process</li>
+<li><a href="../automation/workflow-engine.html">Workflow engine</a> &mdash; execute the process as automation</li>
+</ul>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial: Model a State Machine | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .step{border-left:3px solid var(--color-brand-content);padding-left:1rem;margin:1.5rem 0} .step h3{margin-top:0}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Tutorials</span><span>&rsaquo;</span> <span>Tutorial: Model a State Machine</span></nav>
+<div class="page-header"><h1>Tutorial: Model a State Machine</h1><p class="page-subtitle">States, guarded transitions and state behaviour</p></div>
+<p><strong>You will build:</strong> a state machine with guarded transitions. <strong>Time:</strong> about 15 minutes. <strong>Prerequisites:</strong> <code>Beep.Skia</code> and <code>Beep.Skia.StateMachine</code>.</p>
+
+<div class="toc"><h3>Steps</h3><ul>
+<li><a href="#step-1">1. States</a></li>
+<li><a href="#step-2">2. Transitions with triggers and guards</a></li>
+<li><a href="#step-3">3. Behaviour on states</a></li>
+<li><a href="#step-4">4. Validate</a></li>
+</ul></div>
+
+<div class="step" id="step-1">
+<h3>1. States</h3>
+<pre><code class="language-csharp">using Beep.Skia;
+using Beep.Skia.StateMachine;
+
+var manager = new DrawingManager();
+
+var idle = new InitialStateNode { X = 60, Y = 120, Width = 50, Height = 50 };
+var active = new StateNode { X = 200, Y = 100, Width = 180, Height = 80, Title = "Active" };
+var done = new FinalStateNode { X = 460, Y = 120, Width = 50, Height = 50 };
+
+foreach (var node in new SkiaComponent[] { idle, active, done })
+    manager.AddComponent(node);</code></pre>
+</div>
+
+<div class="step" id="step-2">
+<h3>2. Transitions with triggers and guards</h3>
+<p>Transition semantics live on the line: a trigger event, an optional guard and an action. The three properties also drive the label, so the diagram reads <code>trigger [guard] / action</code>.</p>
+<pre><code class="language-csharp">manager.ConnectComponents(idle, active);
+var start = manager.GetLines().Last();
+start.TriggerEvent = "power.on";
+start.Label1 = "power.on";
+
+manager.ConnectComponents(active, done);
+var finish = manager.GetLines().Last();
+finish.TriggerEvent = "work.completed";
+finish.GuardCondition = "errors == 0";
+finish.TransitionAction = "flushMetrics()";
+finish.Label1 = "work.completed [errors == 0] / flushMetrics()";</code></pre>
+</div>
+
+<div class="step" id="step-3">
+<h3>3. Behaviour on states</h3>
+<p>States carry entry and exit behaviour plus an activity performed while active:</p>
+<pre><code class="language-csharp">active.EntryAction = "startHeartbeat()";
+active.DoActivity = "processQueue()";
+active.ExitAction = "stopHeartbeat()";</code></pre>
+</div>
+
+<div class="step" id="step-4">
+<h3>4. Validate</h3>
+<p>Validation flags unreachable states and dead ends; the workflow engine then executes the graph with the guards evaluated at run time.</p>
+<pre><code class="language-csharp">var validator = new DiagramValidator();
+validator.AddDefaultRules();
+var issues = validator.Validate(manager.GetComponents().ToList(), manager.GetLines());
+Console.WriteLine($"{issues.Count} issue(s)");</code></pre>
+<p>To execute it, publish the diagram as a workflow &mdash; see the <a href="../automation/workflow-engine.html">Workflow Engine</a>.</p>
+</div>
+
+<h2>Next steps</h2>
+<ul>
+<li><a href="../diagram-families/state-machine.html">State machine family</a> &mdash; the rendered grid and transition reference</li>
+<li><a href="../automation/nodes.html">Automation nodes</a> &mdash; the executable node types</li>
+<li><a href="flowchart.html">Flowchart tutorial</a> &mdash; for procedural flows without state</li>
+</ul>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

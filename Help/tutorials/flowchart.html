@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial: Build a Flowchart | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .step{border-left:3px solid var(--color-brand-content);padding-left:1rem;margin:1.5rem 0} .step h3{margin-top:0}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Tutorials</span><span>&rsaquo;</span> <span>Tutorial: Build a Flowchart</span></nav>
+<div class="page-header"><h1>Tutorial: Build a Flowchart</h1><p class="page-subtitle">Draw an approval flow, generate code from it and simulate it</p></div>
+<p><strong>You will build:</strong> an order-approval flowchart, generate C# from it, and step through it with the simulator. <strong>Time:</strong> about 20 minutes. <strong>Prerequisites:</strong> a project that references <code>Beep.Skia</code> and <code>Beep.Skia.FlowChart</code> (see <a href="../getting-started/installation.html">Installation</a>).</p>
+
+<div class="toc"><h3>Steps</h3><ul>
+<li><a href="#step-1">1. Create the canvas</a></li>
+<li><a href="#step-2">2. Add the nodes</a></li>
+<li><a href="#step-3">3. Connect and label the flow</a></li>
+<li><a href="#step-4">4. Generate code</a></li>
+<li><a href="#step-5">5. Simulate the flow</a></li>
+<li><a href="#step-6">6. Save the diagram</a></li>
+</ul></div>
+
+<div class="step" id="step-1">
+<h3>1. Create the canvas</h3>
+<p>Everything hangs off a <code>DrawingManager</code>. When you are ready to show it, attach a host control (see the <a href="../hosts/winforms.html">WinForms controls</a> page); for now render to a surface.</p>
+<pre><code class="language-csharp">using Beep.Skia;
+using Beep.Skia.Flowchart;
+using SkiaSharp;
+
+var manager = new DrawingManager
+{
+    ShowGrid = true,
+    GridSpacing = 20,
+    SnapToGrid = true
+};</code></pre>
+</div>
+
+<div class="step" id="step-2">
+<h3>2. Add the nodes</h3>
+<p>Flowchart nodes derive from <code>FlowchartControl</code>. Use <code>StartEndNode</code> for terminals, <code>ProcessNode</code> for steps and <code>DecisionNode</code> for branches; every component exposes <code>X</code>, <code>Y</code>, <code>Width</code> and <code>Height</code>.</p>
+<pre><code class="language-csharp">var start = new StartEndNode { Label = "Order received", X = 340, Y = 40, Width = 160, Height = 48 };
+var validate = new ProcessNode { Label = "Validate order", X = 340, Y = 140, Width = 160, Height = 60 };
+var decision = new DecisionNode { Label = "Valid?", X = 350, Y = 250, Width = 140, Height = 80 };
+var approve = new ProcessNode { Label = "Approve", X = 340, Y = 380, Width = 160, Height = 60 };
+var reject = new ProcessNode
+{
+    Label = "Reject",
+    X = 560, Y = 260, Width = 140, Height = 60,
+    CustomFillColor = new SKColor(0xFF, 0xEB, 0xEE),
+    CustomStrokeColor = new SKColor(0xC6, 0x28, 0x28)
+};
+var end = new StartEndNode { Label = "Done", X = 340, Y = 480, Width = 160, Height = 48 };
+
+foreach (var node in new SkiaComponent[] { start, validate, decision, approve, reject, end })
+    manager.AddComponent(node);</code></pre>
+</div>
+
+<div class="step" id="step-3">
+<h3>3. Connect and label the flow</h3>
+<p><code>ConnectComponents</code> creates the line with automatic port assignment; enumerate <code>GetLines()</code> to style it.</p>
+<pre><code class="language-csharp">manager.ConnectComponents(start, validate);
+manager.ConnectComponents(validate, decision);
+manager.ConnectComponents(decision, approve);
+manager.ConnectComponents(approve, end);
+manager.ConnectComponents(decision, reject);
+
+foreach (var line in manager.GetLines())
+{
+    line.RoutingMode = LineRoutingMode.Orthogonal;
+    line.Paint.StrokeWidth = 2;
+    line.ShowEndArrow = true;
+}
+
+var yes = manager.GetLines().First(l =&gt; l.Start.Component == decision &amp;&amp; l.End.Component == approve);
+yes.Label1 = "Yes";
+var no = manager.GetLines().First(l =&gt; l.Start.Component == decision &amp;&amp; l.End.Component == reject);
+no.Label1 = "No";
+no.LineColor = SKColors.Firebrick;</code></pre>
+</div>
+
+<div class="step" id="step-4">
+<h3>4. Generate code</h3>
+<p>The generator walks the graph from the start node and emits nested constructs for loops and decisions. Pseudocode is the default; C# and Python are also supported.</p>
+<pre><code class="language-csharp">var generator = new FlowchartCodeGenerator();
+string csharp = generator.Generate(manager, CodeLanguage.CSharp);
+Console.WriteLine(csharp);</code></pre>
+<p>Expect a structure like <code>ValidateOrder(); if (Valid) { Approve(); } else { Reject(); }</code> derived from the node labels and the graph shape.</p>
+</div>
+
+<div class="step" id="step-5">
+<h3>5. Simulate the flow</h3>
+<p>The simulator runs the same graph step by step. <code>BranchSelector</code> decides which outgoing edge to take at a decision node; return <code>null</code> to stop.</p>
+<pre><code class="language-csharp">var simulator = new FlowchartSimulator();
+simulator.Reset(manager.GetComponents().ToList(), manager.GetLines());
+
+simulator.BranchSelector = (node, edges) =&gt;
+    node is DecisionNode &amp;&amp; node.Label == "Valid?"
+        ? edges.FirstOrDefault(e =&gt; e.Line?.Label1 == "Yes")
+        : edges.FirstOrDefault();
+
+simulator.Run(maxSteps: 200);
+
+Console.WriteLine($"finished={simulator.IsFinished}, steps={simulator.StepCount}");
+Console.WriteLine(string.Join(" -&gt; ", simulator.Trace));</code></pre>
+<p>The trace shows the visited nodes in order, which is exactly what a test would assert on.</p>
+</div>
+
+<div class="step" id="step-6">
+<h3>6. Save the diagram</h3>
+<p>The same DTO round-trip used everywhere else:</p>
+<pre><code class="language-csharp">var json = System.Text.Json.JsonSerializer.Serialize(manager.ToDto());
+File.WriteAllText("approval-flow.json", json);</code></pre>
+</div>
+
+<h2>Next steps</h2>
+<ul>
+<li><a href="../diagram-families/flowchart.html">Flowchart family reference</a> &mdash; all 36 node types with the rendered grid</li>
+<li><a href="../automation/workflow-engine.html">Run it as a workflow</a> &mdash; execute the diagram with real data</li>
+<li><a href="etl.html">ETL tutorial</a> &mdash; when the flow is a data pipeline instead of logic</li>
+</ul>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>
