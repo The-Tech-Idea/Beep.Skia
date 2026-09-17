@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.7.11925.98
@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beep.Skia.Network", "Beep.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beep.Skia.ERD", "Beep.Skia.ERD\Beep.Skia.ERD.csproj", "{4909D16D-44E7-439C-B9C7-C318A0B54500}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beep.Skia.FlowChart", "Beep.Skia.Flowchart\Beep.Skia.FlowChart.csproj", "{0D1FA1D4-2FE8-41D2-B04A-56758CE660F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beep.Skia.FlowChart", "Beep.Skia.FlowChart\Beep.Skia.FlowChart.csproj", "{0D1FA1D4-2FE8-41D2-B04A-56758CE660F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beep.Skia.MindMap", "Beep.Skia.MindMap\Beep.Skia.MindMap.csproj", "{6D941207-7DAF-4720-A18C-44E168FC323D}"
 EndProject

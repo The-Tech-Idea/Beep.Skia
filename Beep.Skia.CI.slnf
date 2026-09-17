@@ -13,7 +13,7 @@
       "Beep.Skia.Business\\Beep.Skia.Business.csproj",
       "Beep.Skia.Network\\Beep.Skia.Network.csproj",
       "Beep.Skia.ERD\\Beep.Skia.ERD.csproj",
-      "Beep.Skia.Flowchart\\Beep.Skia.FlowChart.csproj",
+      "Beep.Skia.FlowChart\\Beep.Skia.FlowChart.csproj",
       "Beep.Skia.MindMap\\Beep.Skia.MindMap.csproj",
       "Beep.Skia.StateMachine\\Beep.Skia.StateMachine.csproj",
       "Beep.Skia.WellLogs\\Beep.Skia.WellLogs.csproj",
