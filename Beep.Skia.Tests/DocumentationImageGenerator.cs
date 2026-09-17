@@ -135,6 +135,50 @@ namespace Beep.Skia.Tests
             Assert.True(generated > 0, "no family images were generated");
         }
 
+        [Fact]
+        public void GenerateTemplateImages()
+        {
+            if (Environment.GetEnvironmentVariable("BEEP_SKIA_GENERATE_DOC_IMAGES") != "1")
+                return;
+
+            var root = FindRepositoryRoot();
+            Assert.False(string.IsNullOrEmpty(root), "repository root (containing Help/) was not found");
+
+            var outputDir = Path.Combine(root, "Help", "assets", "templates");
+            Directory.CreateDirectory(outputDir);
+
+            var generated = 0;
+            foreach (var template in Beep.Skia.DiagramTemplates.All)
+            {
+                var manager = new DrawingManager();
+                manager.LoadTemplate(template.Value());
+
+                var bounds = manager.GetContentBounds(24f);
+                var width = (int)Math.Ceiling(Math.Max(320, bounds.Width));
+                var height = (int)Math.Ceiling(Math.Max(200, bounds.Height));
+
+                using var surface = SKSurface.Create(new SKImageInfo(width, height));
+                var canvas = surface.Canvas;
+                canvas.Clear(SKColors.White);
+                canvas.Translate(-bounds.Left, -bounds.Top);
+                manager.Draw(canvas);
+
+                using var image = surface.Snapshot();
+                using var data = image.Encode(SKEncodedImageFormat.Png, 92);
+                using var stream = File.OpenWrite(Path.Combine(outputDir, SafeName(template.Key) + ".png"));
+                data.SaveTo(stream);
+                generated++;
+            }
+
+            Assert.True(generated > 0, "no template images were generated");
+        }
+
+        private static string SafeName(string name)
+        {
+            var chars = name.Select(c => char.IsLetterOrDigit(c) ? char.ToLowerInvariant(c) : '-').ToArray();
+            return new string(chars).Trim('-');
+        }
+
         private static string FindRepositoryRoot()
         {
             var dir = new DirectoryInfo(AppContext.BaseDirectory);

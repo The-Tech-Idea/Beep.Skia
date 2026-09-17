@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagram Templates | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .tpl{margin:2rem 0;padding-bottom:1.5rem;border-bottom:1px solid var(--color-background-border)} .tpl img{max-width:100%;border:1px solid var(--color-background-border);border-radius:8px} .tpl h3{margin-bottom:0.25rem} .tpl .meta{color:var(--color-foreground-muted);font-size:0.85rem;margin-bottom:0.75rem}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Editor</span><span>&rsaquo;</span> <span>Diagram Templates</span></nav>
+<div class="page-header"><h1>Diagram Templates</h1><p class="page-subtitle">Twelve ready-made diagrams, rendered here exactly as the framework draws them</p></div>
+<p><code>DiagramTemplates.All</code> exposes twelve template factories that return a <code>DiagramDto</code>; load one with <code>DrawingManager.LoadTemplate(dto)</code> and it materializes on the canvas with connections intact. The editor sample lists them in the <strong>Templates</strong> menu.</p>
+
+<div class="code-example">
+  <h3>Loading a template</h3>
+  <pre><code class="language-csharp">using Beep.Skia;
+
+if (DiagramTemplates.All.TryGetValue("ERD - E-commerce schema", out var factory))
+{
+    drawingManager.LoadTemplate(factory());
+    drawingManager.RequestRedraw();
+}
+
+// Or enumerate them for a menu
+foreach (var name in DiagramTemplates.All.Keys)
+    Console.WriteLine(name);</code></pre>
+</div>
+
+<div class="toc">
+  <h3>Gallery</h3>
+  <ul>
+    <li><a href="#flowchart-order-validation">Flowchart &mdash; Order validation</a></li>
+    <li><a href="#flowchart-purchase-approval">Flowchart &mdash; Purchase approval</a></li>
+    <li><a href="#erd">ERD &mdash; E-commerce schema</a></li>
+    <li><a href="#etl">ETL &mdash; Data warehouse pipeline</a></li>
+    <li><a href="#dfd">DFD &mdash; Order system (level 0)</a></li>
+    <li><a href="#uml">UML &mdash; Class diagram</a></li>
+    <li><a href="#network">Network &mdash; Social graph</a></li>
+    <li><a href="#mindmap">Mind map &mdash; Product strategy</a></li>
+    <li><a href="#bpmn">Business process &mdash; Purchase approval</a></li>
+    <li><a href="#pm">Project management &mdash; Sprint plan</a></li>
+    <li><a href="#statemachine-login">State machine &mdash; Login process</a></li>
+    <li><a href="#statemachine-order">State machine &mdash; Order lifecycle</a></li>
+  </ul>
+</div>
+
+<div class="tpl" id="flowchart-order-validation">
+  <h3>Flowchart &mdash; Order validation</h3>
+  <p class="meta">Family: <a href="../diagram-families/flowchart.html">Flowchart</a> &middot; 7 nodes &middot; start, process, decision, two outcomes</p>
+  <img src="../assets/templates/flowchart--order-validation.png" alt="Flowchart template: order validation with a decision branch" loading="lazy">
+  <p>The canonical flow: receive the order, validate it, branch on validity, then process payment and ship, or notify the customer. Good starting point for the <a href="../tutorials/flowchart.html">flowchart tutorial</a>.</p>
+</div>
+
+<div class="tpl" id="flowchart-purchase-approval">
+  <h3>Flowchart &mdash; Purchase approval</h3>
+  <p class="meta">Family: <a href="../diagram-families/flowchart.html">Flowchart</a> &middot; approval flow with a rejection path</p>
+  <img src="../assets/templates/flowchart--purchase-approval.png" alt="Flowchart template: purchase approval with approval and rejection paths" loading="lazy">
+</div>
+
+<div class="tpl" id="erd">
+  <h3>ERD &mdash; E-commerce schema</h3>
+  <p class="meta">Family: <a href="../diagram-families/erd.html">ERD</a> &middot; Customers, Orders, Products, OrderItems with foreign keys and crow's-foot markers</p>
+  <img src="../assets/templates/erd--e-commerce-schema.png" alt="ERD template: e-commerce schema with four entities and foreign key relationships" loading="lazy">
+  <p>Shows row-level connections (the ports sit on individual columns), relationship labels and multiplicity markers. Export it with the <a href="../diagram-families/erd-advanced.html">DDL exporter</a>.</p>
+</div>
+
+<div class="tpl" id="etl">
+  <h3>ETL &mdash; Data warehouse pipeline</h3>
+  <p class="meta">Family: <a href="../diagram-families/etl.html">ETL</a> &middot; source, transforms, destination</p>
+  <img src="../assets/templates/etl--data-warehouse-pipeline.png" alt="ETL template: a data warehouse pipeline from source through transforms to target" loading="lazy">
+  <p>Extend it with lookups, SCD and profiling as in the <a href="../tutorials/etl.html">ETL tutorial</a>.</p>
+</div>
+
+<div class="tpl" id="dfd">
+  <h3>DFD &mdash; Order system (level 0)</h3>
+  <p class="meta">Family: <a href="../diagram-families/dfd.html">DFD</a> &middot; processes, data stores, external entities</p>
+  <img src="../assets/templates/dfd--order-system-level-0.png" alt="DFD template: level 0 order system with processes, stores and external entities" loading="lazy">
+</div>
+
+<div class="tpl" id="uml">
+  <h3>UML &mdash; Class diagram</h3>
+  <p class="meta">Family: <a href="../diagram-families/uml.html">UML</a> &middot; classes with attributes, operations and relationships</p>
+  <img src="../assets/templates/uml--class-diagram.png" alt="UML template: class diagram with attributes, operations and relationships" loading="lazy">
+  <p>Export it to XMI as in the <a href="../tutorials/uml.html">UML tutorial</a>.</p>
+</div>
+
+<div class="tpl" id="network">
+  <h3>Network &mdash; Social graph</h3>
+  <p class="meta">Family: <a href="../diagram-families/network.html">Network</a> &middot; weighted nodes and links</p>
+  <img src="../assets/templates/network--social-graph.png" alt="Network template: a social graph with weighted links" loading="lazy">
+</div>
+
+<div class="tpl" id="mindmap">
+  <h3>Mind map &mdash; Product strategy</h3>
+  <p class="meta">Family: <a href="../diagram-families/mindmap.html">Mind map</a> &middot; central topic with branches and sub-topics</p>
+  <img src="../assets/templates/mindmap--product-strategy.png" alt="Mind map template: product strategy with topics and sub-topics" loading="lazy">
+</div>
+
+<div class="tpl" id="bpmn">
+  <h3>Business process &mdash; Purchase approval</h3>
+  <p class="meta">Family: <a href="../diagram-families/business-process.html">Business process</a> &middot; events, tasks, gateway</p>
+  <img src="../assets/templates/business--purchase-approval.png" alt="Business process template: purchase approval with events, tasks and a gateway" loading="lazy">
+  <p>Round-trips through BPMN XML &mdash; see the <a href="../tutorials/bpmn.html">BPMN tutorial</a>.</p>
+</div>
+
+<div class="tpl" id="pm">
+  <h3>Project management &mdash; Sprint plan</h3>
+  <p class="meta">Family: <a href="../diagram-families/project-management.html">Project management</a> &middot; tasks and milestones</p>
+  <img src="../assets/templates/pm--sprint-plan.png" alt="Project management template: sprint plan with tasks and milestones" loading="lazy">
+  <p>Compute the critical path and add a Gantt timeline as in the <a href="../tutorials/project-management.html">PM tutorial</a>.</p>
+</div>
+
+<div class="tpl" id="statemachine-login">
+  <h3>State machine &mdash; Login process</h3>
+  <p class="meta">Family: <a href="../diagram-families/state-machine.html">State machine</a> &middot; states with transitions</p>
+  <img src="../assets/templates/statemachine--login-process.png" alt="State machine template: login process with states and transitions" loading="lazy">
+</div>
+
+<div class="tpl" id="statemachine-order">
+  <h3>State machine &mdash; Order lifecycle</h3>
+  <p class="meta">Family: <a href="../diagram-families/state-machine.html">State machine</a> &middot; guarded transitions</p>
+  <img src="../assets/templates/statemachine--order-lifecycle.png" alt="State machine template: order lifecycle with guarded transitions" loading="lazy">
+  <p>Add triggers, guards and actions as in the <a href="../tutorials/state-machine.html">state machine tutorial</a>.</p>
+</div>
+
+<h2>Regenerating these images</h2>
+<p>Every image on this page was produced by the framework itself, not by a drawing tool. The generator lives in the test suite and is opt-in:</p>
+<div class="code-example">
+  <pre><code class="language-powershell">$env:BEEP_SKIA_GENERATE_DOC_IMAGES=1
+dotnet test Beep.Skia.Tests/Beep.Skia.Tests.csproj --filter DocumentationImageGenerator</code></pre>
+</div>
+<p>It writes <code>Help/assets/templates/*.png</code> (and the family grids under <code>Help/assets/families/</code>) by loading each template into a <code>DrawingManager</code> and drawing it to a Skia surface.</p>
+
+</div></main></div>
+</body></html>
