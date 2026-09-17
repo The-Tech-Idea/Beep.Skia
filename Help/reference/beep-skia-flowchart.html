@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flowchart family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>Flowchart family</span></nav>
+<div class="page-header"><h1>Flowchart family</h1><p class="page-subtitle">API reference for Beep.Skia.FlowChart (44 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.FlowChart</code> assembly: 44 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-annotationnode"><code>AnnotationNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-cardnode"><code>CardNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-codelanguage"><code>CodeLanguage</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-collatenode"><code>CollateNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-commentnode"><code>CommentNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-connectordirection"><code>ConnectorDirection</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-connectornode"><code>ConnectorNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-datanode"><code>DataNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-decisionnode"><code>DecisionNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-delaynode"><code>DelayNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-directaccessnode"><code>DirectAccessNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-displaynode"><code>DisplayNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-documentnode"><code>DocumentNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dowhileloopnode"><code>DoWhileLoopNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-extractnode"><code>ExtractNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-flowchartcodegenerator"><code>FlowchartCodeGenerator</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-flowchartcontrol"><code>FlowchartControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-flowchartsimulator"><code>FlowchartSimulator</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-forknode"><code>ForkNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-forloopnode"><code>ForLoopNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-inputoutputnode"><code>InputOutputNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-internalstoragenode"><code>InternalStorageNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-joinnode"><code>JoinNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-looplimitnode"><code>LoopLimitNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-looplimittype"><code>LoopLimitType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-manualinputnode"><code>ManualInputNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-manualoperationnode"><code>ManualOperationNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mergenode"><code>MergeNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-multidocumentnode"><code>MultiDocumentNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-offpagereferencenode"><code>OffPageReferenceNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ornode"><code>OrNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-predefinedprocessnode"><code>PredefinedProcessNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-preparationnode"><code>PreparationNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-processnode"><code>ProcessNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-sequentialaccessnode"><code>SequentialAccessNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-simulationedge"><code>SimulationEdge</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-simulationstepeventargs"><code>SimulationStepEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-sortnode"><code>SortNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-startendnode"><code>StartEndNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-storeddatanode"><code>StoredDataNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-subprocessnode"><code>SubProcessNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-summingjunctionnode"><code>SummingJunctionNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-tapenode"><code>TapeNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-whileloopnode"><code>WhileLoopNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+</ul>
+<section class="section" id="type-annotationnode">
+  <h2>AnnotationNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Annotation node: dashed border rectangle for adding notes and comments to flowcharts. Can optionally attach to another node via a dotted connector line.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text.</td></tr>
+      <tr><td><code>bool ShowConnector</code></td><td>Property</td><td>Gets or sets the show connector.</td></tr>
+      <tr><td><code>AnnotationNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-cardnode">
+  <h2>CardNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Card node: rectangle with cut corner for punch card or card-based storage. Legacy flowchart symbol for card-based data processing.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>CardNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-codelanguage">
+  <h2>CodeLanguage <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Target languages for FlowchartCodeGenerator.</p>
+</section>
+<section class="section" id="type-collatenode">
+  <h2>CollateNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Collate node: inverted trapezoid for sorting or collating data. Used to represent organizing or ordering operations.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>CollateNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-commentnode">
+  <h2>CommentNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Comment node: fold-over corner rectangle for additional notes or comments. Similar to AnnotationNode but with a distinctive folded corner appearance.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text.</td></tr>
+      <tr><td><code>CommentNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-connectordirection">
+  <h2>ConnectorDirection <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-connectornode">
+  <h2>ConnectorNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Off-page connector: pentagon shape for referencing flow on another page/diagram. Use matching ConnectorId to link From/To pairs.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ConnectorId</code></td><td>Property</td><td>Gets or sets the connector id.</td></tr>
+      <tr><td><code>ConnectorDirection Direction</code></td><td>Property</td><td>Gets or sets the direction.</td></tr>
+      <tr><td><code>ConnectorNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-datanode">
+  <h2>DataNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Data (Database) node: cylinder shape representing a data store.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>DataNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-decisionnode">
+  <h2>DecisionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Decision node: diamond shape with Yes/No ports (left/right) plus optional top/bottom ports.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>bool ShowTopBottomPorts</code></td><td>Property</td><td>Gets or sets the show top bottom ports.</td></tr>
+      <tr><td><code>DecisionNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-delaynode">
+  <h2>DelayNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Delay node: half-circle or rounded shape indicating a pause/wait in the process.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>string Duration</code></td><td>Property</td><td>Gets or sets the duration.</td></tr>
+      <tr><td><code>DelayNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-directaccessnode">
+  <h2>DirectAccessNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Direct Access Storage node: cylinder with flat bottom for random access storage (hard disk).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>DirectAccessNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-displaynode">
+  <h2>DisplayNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Display node: rounded rectangle with curved bottom (like a monitor) for output display.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>DisplayNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-documentnode">
+  <h2>DocumentNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Document: rectangle with a curved bottom edge and centered label.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>bool OutPortsOnTop</code></td><td>Property</td><td>Gets or sets the out ports on top.</td></tr>
+      <tr><td><code>DocumentNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dowhileloopnode">
+  <h2>DoWhileLoopNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Do-While loop node: executes body at least once, then checks condition at end. Similar to WhileLoop but with condition checked after execution.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Condition</code></td><td>Property</td><td>Gets or sets the condition.</td></tr>
+      <tr><td><code>DoWhileLoopNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-extractnode">
+  <h2>ExtractNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Extract node: right-pointing triangle for data extraction operations. Used for selecting, filtering, or extracting specific data from a dataset.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>ExtractNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-flowchartcodegenerator">
+  <h2>FlowchartCodeGenerator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Generates structured code from a flowchart diagram. Conventions: for decision nodes the first output port is the true branch and the second is the false branch; for loop nodes the first output port is the loop body and the second is the exit.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Generate(DrawingManager manager, CodeLanguage language = CodeLanguage.Pseudocode)</code></td><td>Method</td><td>Generates code for the flowchart held by a drawing manager.</td></tr>
+      <tr><td><code>string Generate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines, CodeLanguage language = CodeLanguage.Pseudocode)</code></td><td>Method</td><td>Generates code for the given components and connection lines.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-flowchartcontrol">
+  <h2>FlowchartControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Base class for Flowchart nodes providing consistent sizing and port layout helpers.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKColor? CustomFillColor</code></td><td>Property</td><td>Optional custom fill color (overrides default node color). Set to null to use default.</td></tr>
+      <tr><td><code>SKColor? CustomStrokeColor</code></td><td>Property</td><td>Optional custom stroke color (overrides default border color). Set to null to use default.</td></tr>
+      <tr><td><code>SKColor? CustomTextColor</code></td><td>Property</td><td>Optional custom text color (overrides default text color). Set to null to use default.</td></tr>
+      <tr><td><code>int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
+      <tr><td><code>int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-flowchartsimulator">
+  <h2>FlowchartSimulator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Step-through execution of a flowchart. The simulator walks connection lines in port order; when a node has multiple outgoing edges (decisions, loops, forks) the optional BranchSelector chooses the branch (defaults to the first edge).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaComponent? CurrentNode</code></td><td>Property</td><td>Gets the node the simulation is currently on.</td></tr>
+      <tr><td><code>bool IsFinished</code></td><td>Property</td><td>Gets a value indicating whether the simulation reached a terminal node.</td></tr>
+      <tr><td><code>int StepCount</code></td><td>Property</td><td>Gets the number of steps executed since the last reset.</td></tr>
+      <tr><td><code>List&lt;string&gt; Trace</code></td><td>Property</td><td>Gets the execution trace (node labels in visit order).</td></tr>
+      <tr><td><code>Func&lt;SkiaComponent, IReadOnlyList&lt;SimulationEdge&gt;, SimulationEdge?&gt;? BranchSelector</code></td><td>Property</td><td>Optional branch selector for nodes with multiple outgoing edges. Return null to fall back to the first edge.</td></tr>
+      <tr><td><code>event EventHandler&lt;SimulationStepEventArgs&gt;? Stepped</code></td><td>Event</td><td>Raised after each step.</td></tr>
+      <tr><td><code>void Reset(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Resets the simulation to the entry node of the given diagram.</td></tr>
+      <tr><td><code>bool Step()</code></td><td>Method</td><td>Advances the simulation by one node. Returns false when already finished.</td></tr>
+      <tr><td><code>bool Run(int maxSteps = 1000)</code></td><td>Method</td><td>Runs until finished or the step cap is reached. True when the simulation finished naturally; false when capped.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-forknode">
+  <h2>ForkNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Fork node (parallel split): thick vertical bar with single input and multiple parallel outputs. Represents splitting flow into concurrent/parallel paths.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int ParallelPaths</code></td><td>Property</td><td>Gets or sets the parallel paths.</td></tr>
+      <tr><td><code>ForkNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-forloopnode">
+  <h2>ForLoopNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>For loop node: rectangle with loop icon and condition text. Represents iterative processing with init, condition, and increment.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string LoopVariable</code></td><td>Property</td><td>Gets or sets the loop variable.</td></tr>
+      <tr><td><code>string InitExpression</code></td><td>Property</td><td>Gets or sets the init expression.</td></tr>
+      <tr><td><code>string Condition</code></td><td>Property</td><td>Gets or sets the condition.</td></tr>
+      <tr><td><code>string Increment</code></td><td>Property</td><td>Gets or sets the increment.</td></tr>
+      <tr><td><code>ForLoopNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-inputoutputnode">
+  <h2>InputOutputNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Input/Output (parallelogram) node with slanted sides and centered label.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>InputOutputNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-internalstoragenode">
+  <h2>InternalStorageNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Internal Storage node: rectangle with vertical lines for internal memory/storage. Used for data structures in memory (arrays, buffers, caches).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>InternalStorageNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-joinnode">
+  <h2>JoinNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Join node (parallel synchronization): thick vertical bar with multiple inputs and single output. Represents waiting for all parallel paths to complete before continuing.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int WaitCount</code></td><td>Property</td><td>Gets or sets the wait count.</td></tr>
+      <tr><td><code>JoinNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-looplimitnode">
+  <h2>LoopLimitNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Loop Limit node: hexagon with horizontal orientation for loop boundaries. Used to mark the beginning or end of a loop structure.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>LoopLimitType LimitType</code></td><td>Property</td><td>Gets or sets the limit type.</td></tr>
+      <tr><td><code>LoopLimitNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-looplimittype">
+  <h2>LoopLimitType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-manualinputnode">
+  <h2>ManualInputNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Manual Input node: parallelogram with top slanted (wider at top) for manual data entry.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>ManualInputNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-manualoperationnode">
+  <h2>ManualOperationNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Manual operation node: trapezoid shape (top wider than bottom) for human-performed tasks.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>ManualOperationNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mergenode">
+  <h2>MergeNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Merge node: inverted triangle for combining multiple flow paths (no synchronization logic).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>MergeNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-multidocumentnode">
+  <h2>MultiDocumentNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Multi-Document node: stacked documents for multiple document output. Visual: Multiple overlapping document shapes with curved bottoms.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>MultiDocumentNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-offpagereferencenode">
+  <h2>OffPageReferenceNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Off-Page Reference node: upside-down house shape (pentagon) for page references. Alternative to ConnectorNode with a different visual style.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ReferenceId</code></td><td>Property</td><td>Gets or sets the reference id.</td></tr>
+      <tr><td><code>string PageNumber</code></td><td>Property</td><td>Gets or sets the page number.</td></tr>
+      <tr><td><code>OffPageReferenceNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ornode">
+  <h2>OrNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Or node: logic gate shape for conditional OR operations. Circle with OR symbol. Used when any input condition can proceed to the next step.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>OrNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-predefinedprocessnode">
+  <h2>PredefinedProcessNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Predefined Process: rectangle with vertical double-struck edges and centered label.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>PredefinedProcessNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-preparationnode">
+  <h2>PreparationNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Preparation node: horizontal hexagon for initialization/setup steps. Commonly used for variable declarations, configuration, or setup tasks.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>PreparationNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-processnode">
+  <h2>ProcessNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Process node: rectangle with optional rounded corners and centered label.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>bool ShowTopBottomPorts</code></td><td>Property</td><td>Gets or sets the show top bottom ports.</td></tr>
+      <tr><td><code>ProcessNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-sequentialaccessnode">
+  <h2>SequentialAccessNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Sequential Access Storage node: elongated oval for sequential access storage devices. Used for devices like magnetic tape where data must be accessed sequentially.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>SequentialAccessNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-simulationedge">
+  <h2>SimulationEdge <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A candidate transition from the current simulation node.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IConnectionLine? Line</code></td><td>Property</td><td>Gets or sets the line.</td></tr>
+      <tr><td><code>SkiaComponent? Target</code></td><td>Property</td><td>Gets or sets the target.</td></tr>
+      <tr><td><code>int PortIndex</code></td><td>Property</td><td>Gets or sets the port index.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-simulationstepeventargs">
+  <h2>SimulationStepEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Event args raised after each simulation step.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaComponent? Node</code></td><td>Property</td><td>Gets or sets the node.</td></tr>
+      <tr><td><code>IReadOnlyList&lt;SimulationEdge&gt; Outgoing</code></td><td>Property</td><td>Gets or sets the outgoing.</td></tr>
+      <tr><td><code>bool IsFinished</code></td><td>Property</td><td>Gets or sets the is finished.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-sortnode">
+  <h2>SortNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Sort node: two overlapping triangles for sorting operations.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>string SortKey</code></td><td>Property</td><td>Gets or sets the sort key.</td></tr>
+      <tr><td><code>SortNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-startendnode">
+  <h2>StartEndNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Start/End node (terminator): pill-shaped rounded rectangle with a label.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>bool ShowTopBottomPorts</code></td><td>Property</td><td>Gets or sets the show top bottom ports.</td></tr>
+      <tr><td><code>StartEndNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-storeddatanode">
+  <h2>StoredDataNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Stored data node: parallelogram tilted to the right for data storage (tape, disk). Different from InputOutput which tilts both sides.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>StoredDataNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-subprocessnode">
+  <h2>SubProcessNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Sub-process node: rectangle with double border for calling/referencing another process. Can be collapsed (shows + icon) or expanded to show nested details.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>string SubProcessId</code></td><td>Property</td><td>Gets or sets the sub process id.</td></tr>
+      <tr><td><code>bool IsExpanded</code></td><td>Property</td><td>Gets or sets the is expanded.</td></tr>
+      <tr><td><code>SubProcessNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-summingjunctionnode">
+  <h2>SummingJunctionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Summing Junction node: X in a circle for combining/merging multiple inputs. Different from OR gate - represents mathematical summation or aggregation.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>SummingJunctionNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-tapenode">
+  <h2>TapeNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Tape node: rounded bottom semicircle shape for magnetic tape storage. Legacy flowchart symbol for sequential tape-based storage.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>TapeNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-whileloopnode">
+  <h2>WhileLoopNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>While loop node: hexagon (vertical orientation) with condition text. Represents loop that executes while condition is true.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Condition</code></td><td>Property</td><td>Gets or sets the condition.</td></tr>
+      <tr><td><code>WhileLoopNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+</body></html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETL family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>ETL family</span></nav>
+<div class="page-header"><h1>ETL family</h1><p class="page-subtitle">API reference for Beep.Skia.ETL (38 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.ETL</code> assembly: 38 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-cdcmethod"><code>CdcMethod</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-columnprofile"><code>ColumnProfile</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-datapreviewformatter"><code>DataPreviewFormatter</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dataprofile"><code>DataProfile</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dataprofiler"><code>DataProfiler</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-destinationkind"><code>DestinationKind</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-etlaggregate"><code>ETLAggregate</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlcdcnode"><code>ETLCdcNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlconditionalsplit"><code>ETLConditionalSplit</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlcontrol"><code>ETLControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlderivedcolumn"><code>ETLDerivedColumn</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etldestination"><code>ETLDestination</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlfilter"><code>ETLFilter</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlfuzzylookupnode"><code>ETLFuzzyLookupNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etljoin"><code>ETLJoin</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etllookup"><code>ETLLookup</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlmerge"><code>ETLMerge</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlmulticast"><code>ETLMulticast</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlpivot"><code>ETLPivot</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlrowcount"><code>ETLRowCount</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlscd"><code>ETLScd</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlscript"><code>ETLScript</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlsort"><code>ETLSort</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlsource"><code>ETLSource</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlsurrogatekeynode"><code>ETLSurrogateKeyNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etltarget"><code>ETLTarget</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etltransform"><code>ETLTransform</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-etlunpivot"><code>ETLUnpivot</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-expressionengine"><code>ExpressionEngine</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-expressionexception"><code>ExpressionException</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-flattenoptions"><code>FlattenOptions</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-fuzzyalgorithm"><code>FuzzyAlgorithm</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-noderunmetrics"><code>NodeRunMetrics</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-pipelinemetrics"><code>PipelineMetrics</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-sourcekind"><code>SourceKind</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-structureddataflattener"><code>StructuredDataFlattener</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-transformkind"><code>TransformKind</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-writemode"><code>WriteMode</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+</ul>
+<section class="section" id="type-cdcmethod">
+  <h2>CdcMethod <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-columnprofile">
+  <h2>ColumnProfile <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Statistical profile of a single column.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>int Count</code></td><td>Property</td><td>Gets or sets the count.</td></tr>
+      <tr><td><code>int NullCount</code></td><td>Property</td><td>Gets or sets the null count.</td></tr>
+      <tr><td><code>int DistinctCount</code></td><td>Property</td><td>Gets or sets the distinct count.</td></tr>
+      <tr><td><code>object Min</code></td><td>Property</td><td>Gets or sets the min.</td></tr>
+      <tr><td><code>object Max</code></td><td>Property</td><td>Gets or sets the max.</td></tr>
+      <tr><td><code>double? Average</code></td><td>Property</td><td>Gets or sets the average.</td></tr>
+      <tr><td><code>double? Sum</code></td><td>Property</td><td>Gets or sets the sum.</td></tr>
+      <tr><td><code>int? MinLength</code></td><td>Property</td><td>Gets or sets the min length.</td></tr>
+      <tr><td><code>int? MaxLength</code></td><td>Property</td><td>Gets or sets the max length.</td></tr>
+      <tr><td><code>List&lt;object&gt; SampleValues</code></td><td>Property</td><td>Gets or sets the sample values.</td></tr>
+      <tr><td><code>bool IsNumeric</code></td><td>Property</td><td>Gets or sets the is numeric.</td></tr>
+      <tr><td><code>bool IsDateTime</code></td><td>Property</td><td>Gets or sets the is date time.</td></tr>
+      <tr><td><code>double NullPercentage(int rowCount)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-datapreviewformatter">
+  <h2>DataPreviewFormatter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Formats rows (dictionaries) as an aligned plain-text table for data previews.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static string ToTable( IEnumerable&lt;IDictionary&lt;string, object&gt;&gt; rows, int maxRows = 20, int maxColumnWidth = 24)</code></td><td>Method</td><td>Renders up to rows as a fixed-width text table. Long cell values are truncated to .</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dataprofile">
+  <h2>DataProfile <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Profile of a dataset: row count and per-column statistics.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int RowCount</code></td><td>Property</td><td>Gets or sets the row count.</td></tr>
+      <tr><td><code>List&lt;ColumnProfile&gt; Columns</code></td><td>Property</td><td>Gets or sets the columns.</td></tr>
+      <tr><td><code>string Summary()</code></td><td>Method</td><td>Human-readable profile report.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dataprofiler">
+  <h2>DataProfiler <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Computes column-level statistics (counts, nulls, distinct, min/max, average, string lengths) over a set of rows represented as dictionaries.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DataProfile Profile(IEnumerable&lt;IDictionary&lt;string, object&gt;&gt; rows, int sampleSize = 5)</code></td><td>Method</td><td>Profiles the given rows. Column order follows first-seen order.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-destinationkind">
+  <h2>DestinationKind <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-etlaggregate">
+  <h2>ETLAggregate <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Aggregate component that represents data aggregation operations in ETL workflows. Displays as an octagon shape indicating data summarization/grouping.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ETLAggregate()</code></td><td>Method</td><td>Initializes a new instance of the ETLAggregate class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlcdcnode">
+  <h2>ETLCdcNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>CdcMethod Method</code></td><td>Property</td><td>Gets or sets the method.</td></tr>
+      <tr><td><code>string TrackingColumn</code></td><td>Property</td><td>Gets or sets the tracking column.</td></tr>
+      <tr><td><code>string ChangeIndicator</code></td><td>Property</td><td>Gets or sets the change indicator.</td></tr>
+      <tr><td><code>ETLCdcNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlconditionalsplit">
+  <h2>ETLConditionalSplit <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Conditional Split component that routes rows to multiple outputs based on conditions. Displays as a diamond with multiple output ports. Evaluates conditions in order; first match wins. Unmatched rows go to default output.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Conditions</code></td><td>Property</td><td>Gets or sets the conditions.</td></tr>
+      <tr><td><code>bool HasDefaultOutput</code></td><td>Property</td><td>Gets or sets the has default output.</td></tr>
+      <tr><td><code>ETLConditionalSplit()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlcontrol">
+  <h2>ETLControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Base visual for ETL nodes: rounded rectangle with a header/title and optional subtitle. Provides helpers to create and maintain input/output connection points along the left/right edges.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>bool HasErrorOutput</code></td><td>Property</td><td>Gets or sets the has error output.</td></tr>
+      <tr><td><code>int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
+      <tr><td><code>int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlderivedcolumn">
+  <h2>ETLDerivedColumn <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Derived Column component for adding calculated columns to the data flow. Displays as a rectangle with expression builder support. Supports multiple derived columns with expressions using built-in function library.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string DerivedColumns</code></td><td>Property</td><td>Gets or sets the derived columns.</td></tr>
+      <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Gets or sets the output schema.</td></tr>
+      <tr><td><code>ETLDerivedColumn()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etldestination">
+  <h2>ETLDestination <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Destination component that represents data destinations in ETL workflows. Displays as a funnel shape indicating data output/storage.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ETLDestination()</code></td><td>Method</td><td>Initializes a new instance of the ETLDestination class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlfilter">
+  <h2>ETLFilter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Filter component that represents data filtering operations in ETL workflows. Displays as a diamond shape indicating conditional data filtering.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ETLFilter()</code></td><td>Method</td><td>Initializes a new instance of the ETLFilter class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlfuzzylookupnode">
+  <h2>ETLFuzzyLookupNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>FuzzyAlgorithm Algorithm</code></td><td>Property</td><td>Gets or sets the algorithm.</td></tr>
+      <tr><td><code>double Threshold</code></td><td>Property</td><td>Gets or sets the threshold.</td></tr>
+      <tr><td><code>string MatchColumn</code></td><td>Property</td><td>Gets or sets the match column.</td></tr>
+      <tr><td><code>string ReferenceColumn</code></td><td>Property</td><td>Gets or sets the reference column.</td></tr>
+      <tr><td><code>ETLFuzzyLookupNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etljoin">
+  <h2>ETLJoin <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Join component that represents data joining operations in ETL workflows. Displays as a triangle shape indicating data merging/combining.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ETLJoin()</code></td><td>Method</td><td>Initializes a new instance of the ETLJoin class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etllookup">
+  <h2>ETLLookup <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Lookup component that enriches data by joining with reference data. Displays as a cylinder with two inputs (main data + reference data). Supports caching strategies for performance optimization.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>CacheMode CacheMode</code></td><td>Property</td><td>Gets or sets the cache mode.</td></tr>
+      <tr><td><code>string MatchColumns</code></td><td>Property</td><td>Gets or sets the match columns.</td></tr>
+      <tr><td><code>string ReturnColumns</code></td><td>Property</td><td>Gets or sets the return columns.</td></tr>
+      <tr><td><code>bool FailOnNoMatch</code></td><td>Property</td><td>Gets or sets the fail on no match.</td></tr>
+      <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Gets or sets the output schema.</td></tr>
+      <tr><td><code>ETLLookup()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlmerge">
+  <h2>ETLMerge <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Merge node: combines multiple input streams into one output (UNION ALL). Different from Join - simply concatenates rows from multiple sources.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int InputCount</code></td><td>Property</td><td>Gets or sets the input count.</td></tr>
+      <tr><td><code>bool RemoveDuplicates</code></td><td>Property</td><td>Gets or sets the remove duplicates.</td></tr>
+      <tr><td><code>ETLMerge()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlmulticast">
+  <h2>ETLMulticast <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Multicast node: sends identical copy of data to multiple outputs. Used for parallel processing or feeding multiple destinations.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int OutputCount</code></td><td>Property</td><td>Gets or sets the output count.</td></tr>
+      <tr><td><code>ETLMulticast()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlpivot">
+  <h2>ETLPivot <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Pivot node: rotates data from rows to columns (crosstab transformation). Converts row-based data into column-based aggregated view.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string PivotColumn</code></td><td>Property</td><td>Gets or sets the pivot column.</td></tr>
+      <tr><td><code>string GroupByColumns</code></td><td>Property</td><td>Gets or sets the group by columns.</td></tr>
+      <tr><td><code>string ValueColumn</code></td><td>Property</td><td>Gets or sets the value column.</td></tr>
+      <tr><td><code>string AggregateFunction</code></td><td>Property</td><td>Gets or sets the aggregate function.</td></tr>
+      <tr><td><code>ETLPivot()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlrowcount">
+  <h2>ETLRowCount <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Row Count node: counts rows passing through and optionally adds count column. Useful for auditing and debugging pipeline data flow.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>bool AddCountColumn</code></td><td>Property</td><td>Gets or sets the add count column.</td></tr>
+      <tr><td><code>string CountColumnName</code></td><td>Property</td><td>Gets or sets the count column name.</td></tr>
+      <tr><td><code>ETLRowCount()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlscd">
+  <h2>ETLScd <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL SCD (Slowly Changing Dimension) component for managing dimension updates. Displays as a special cylinder with historical tracking icon. Supports Type 1 (overwrite) and Type 2 (historical with effective dates).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ScdType Type</code></td><td>Property</td><td>Gets or sets the type.</td></tr>
+      <tr><td><code>string BusinessKeys</code></td><td>Property</td><td>Gets or sets the business keys.</td></tr>
+      <tr><td><code>string ChangeTrackingColumns</code></td><td>Property</td><td>Gets or sets the change tracking columns.</td></tr>
+      <tr><td><code>string EffectiveFromColumn</code></td><td>Property</td><td>Gets or sets the effective from column.</td></tr>
+      <tr><td><code>string EffectiveToColumn</code></td><td>Property</td><td>Gets or sets the effective to column.</td></tr>
+      <tr><td><code>string CurrentFlagColumn</code></td><td>Property</td><td>Gets or sets the current flag column.</td></tr>
+      <tr><td><code>string TableName</code></td><td>Property</td><td>Gets or sets the table name.</td></tr>
+      <tr><td><code>ETLScd()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlscript">
+  <h2>ETLScript <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Script node: executes custom transformation script (SQL, Python, C#, etc). Allows arbitrary transformations beyond built-in operations.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ScriptLanguage</code></td><td>Property</td><td>Gets or sets the script language.</td></tr>
+      <tr><td><code>string Script</code></td><td>Property</td><td>Gets or sets the script.</td></tr>
+      <tr><td><code>ETLScript()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlsort">
+  <h2>ETLSort <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Sort node: orders rows by specified columns and direction.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string SortColumns</code></td><td>Property</td><td>Gets or sets the sort columns.</td></tr>
+      <tr><td><code>string SortDirections</code></td><td>Property</td><td>Gets or sets the sort directions.</td></tr>
+      <tr><td><code>bool RemoveDuplicates</code></td><td>Property</td><td>Gets or sets the remove duplicates.</td></tr>
+      <tr><td><code>ETLSort()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlsource">
+  <h2>ETLSource <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Source component that represents data sources in ETL workflows. Displays as a cylinder shape indicating data storage/retrieval.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SourceKind Kind</code></td><td>Property</td><td>Gets or sets the kind.</td></tr>
+      <tr><td><code>string ConnectionString</code></td><td>Property</td><td>Gets or sets the connection string.</td></tr>
+      <tr><td><code>string Path</code></td><td>Property</td><td>Gets or sets the path.</td></tr>
+      <tr><td><code>ETLSource()</code></td><td>Method</td><td>Initializes a new instance of the ETLSource class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlsurrogatekeynode">
+  <h2>ETLSurrogateKeyNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string KeyColumn</code></td><td>Property</td><td>Gets or sets the key column.</td></tr>
+      <tr><td><code>long StartValue</code></td><td>Property</td><td>Gets or sets the start value.</td></tr>
+      <tr><td><code>long Increment</code></td><td>Property</td><td>Gets or sets the increment.</td></tr>
+      <tr><td><code>ETLSurrogateKeyNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etltarget">
+  <h2>ETLTarget <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Target (Sink) node representing a destination like a table, file, or topic. Accepts one input, validates incoming schema vs ExpectedSchema, and shows warnings on mismatch.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ConnectionString</code></td><td>Property</td><td>Gets or sets the connection string.</td></tr>
+      <tr><td><code>DestinationKind Destination</code></td><td>Property</td><td>Gets or sets the destination.</td></tr>
+      <tr><td><code>string TableName</code></td><td>Property</td><td>Gets or sets the table name.</td></tr>
+      <tr><td><code>WriteMode Mode</code></td><td>Property</td><td>Gets or sets the mode.</td></tr>
+      <tr><td><code>bool PreCreateTable</code></td><td>Property</td><td>Gets or sets the pre create table.</td></tr>
+      <tr><td><code>string ExpectedSchema</code></td><td>Property</td><td>Gets or sets the expected schema.</td></tr>
+      <tr><td><code>string DataQualityRules</code></td><td>Property</td><td>Gets or sets the data quality rules.</td></tr>
+      <tr><td><code>ETLTarget()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etltransform">
+  <h2>ETLTransform <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Transform node with basic operations: Select/Project, Filter, Map/Compute. Exposes OutputSchema (JSON of ColumnDefinition) for downstream nodes and lines.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>TransformKind Kind</code></td><td>Property</td><td>Gets or sets the kind.</td></tr>
+      <tr><td><code>string Expression</code></td><td>Property</td><td>Gets or sets the expression.</td></tr>
+      <tr><td><code>string OutputSchema</code></td><td>Property</td><td>Gets or sets the output schema.</td></tr>
+      <tr><td><code>string GroupBy</code></td><td>Property</td><td>Gets or sets the group by.</td></tr>
+      <tr><td><code>string JoinKeyLeft</code></td><td>Property</td><td>Gets or sets the join key left.</td></tr>
+      <tr><td><code>string JoinKeyRight</code></td><td>Property</td><td>Gets or sets the join key right.</td></tr>
+      <tr><td><code>ETLTransform()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void InferOutputSchemaFromUpstreams(Func&lt;int, string&gt; getInputSchemaJson)</code></td><td>Method</td><td>Helper used by external orchestrators or editor buttons to infer OutputSchema from upstream schemas for Aggregate and Join kinds. This is a lightweight heuristic.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-etlunpivot">
+  <h2>ETLUnpivot <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ETL Unpivot node: rotates data from columns to rows (denormalization). Converts column-based data into row-based normalized format.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string UnpivotColumns</code></td><td>Property</td><td>Gets or sets the unpivot columns.</td></tr>
+      <tr><td><code>string AttributeColumn</code></td><td>Property</td><td>Gets or sets the attribute column.</td></tr>
+      <tr><td><code>string ValueColumn</code></td><td>Property</td><td>Gets or sets the value column.</td></tr>
+      <tr><td><code>ETLUnpivot()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-expressionengine">
+  <h2>ExpressionEngine <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Small SQL-like expression engine for ETL derived columns, conditional splits, filters, and custom data-quality rules. Supports: literals (number/string/TRUE/FALSE/NULL), column references ([Column], "Column", `Column`, or bare identifiers), arithmetic (+ - * / %), comparisons (= == != &amp;lt;&amp;gt; &amp;lt; &amp;lt;= &amp;gt; &amp;gt;=), logical operators (AND OR NOT), IS NULL / IS NOT NULL, LIKE, and a built-in function library. Unknown columns evaluate to null.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static IReadOnlyCollection&lt;string&gt; Functions</code></td><td>Property</td><td>Gets the names of all built-in functions.</td></tr>
+      <tr><td><code>object Evaluate(string expression, IDictionary&lt;string, object&gt; row)</code></td><td>Method</td><td>Evaluates an expression against a row. Returns null when the result is NULL.</td></tr>
+      <tr><td><code>bool EvaluateBoolean(string expression, IDictionary&lt;string, object&gt; row)</code></td><td>Method</td><td>Evaluates an expression as a boolean (null/0/empty/"false" are false).</td></tr>
+      <tr><td><code>IReadOnlyCollection&lt;string&gt; GetReferencedColumns(string expression)</code></td><td>Method</td><td>Returns the column names referenced by the expression (excluding function names).</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-expressionexception">
+  <h2>ExpressionException <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Raised when an expression cannot be parsed or evaluated.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ExpressionException(string message) : base(message) { }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-flattenoptions">
+  <h2>FlattenOptions <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Options controlling flattening behavior.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Separator</code></td><td>Property</td><td>Separator used between nested field names (default ".").</td></tr>
+      <tr><td><code>int MaxDepth</code></td><td>Property</td><td>Maximum nesting depth to flatten.</td></tr>
+      <tr><td><code>bool IncludeNulls</code></td><td>Property</td><td>When true, JSON nulls are emitted as null values; otherwise omitted.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-fuzzyalgorithm">
+  <h2>FuzzyAlgorithm <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-noderunmetrics">
+  <h2>NodeRunMetrics <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Runtime metrics for a single pipeline node.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string NodeName</code></td><td>Property</td><td>Gets or sets the node name.</td></tr>
+      <tr><td><code>int RowsIn</code></td><td>Property</td><td>Gets or sets the rows in.</td></tr>
+      <tr><td><code>int RowsOut</code></td><td>Property</td><td>Gets or sets the rows out.</td></tr>
+      <tr><td><code>TimeSpan Elapsed</code></td><td>Property</td><td>Gets or sets the elapsed.</td></tr>
+      <tr><td><code>string Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
+      <tr><td><code>DateTime RecordedAt</code></td><td>Property</td><td>Gets or sets the recorded at.</td></tr>
+      <tr><td><code>double RowsPerSecond</code></td><td>Property</td><td>Gets or sets the rows per second.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-pipelinemetrics">
+  <h2>PipelineMetrics <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Collects per-node runtime metrics for an ETL pipeline run.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;NodeRunMetrics&gt; Nodes</code></td><td>Property</td><td>Gets or sets the nodes.</td></tr>
+      <tr><td><code>DateTime? StartedAt</code></td><td>Property</td><td>Gets or sets the started at.</td></tr>
+      <tr><td><code>DateTime? CompletedAt</code></td><td>Property</td><td>Gets or sets the completed at.</td></tr>
+      <tr><td><code>bool IsRunning</code></td><td>Property</td><td>Gets or sets the is running.</td></tr>
+      <tr><td><code>TimeSpan TotalElapsed</code></td><td>Property</td><td>Gets or sets the total elapsed.</td></tr>
+      <tr><td><code>void Start()</code></td><td>Method</td><td>Marks the start of a pipeline run.</td></tr>
+      <tr><td><code>void Complete()</code></td><td>Method</td><td>Marks the end of a pipeline run.</td></tr>
+      <tr><td><code>NodeRunMetrics Record(string nodeName, int rowsIn, int rowsOut, TimeSpan elapsed, string status = "Completed")</code></td><td>Method</td><td>Records a completed node execution.</td></tr>
+      <tr><td><code>int Measure(string nodeName, int rowsIn, Func&lt;int&gt; action)</code></td><td>Method</td><td>Measures a node action and records its metrics. Returns the action's row count.</td></tr>
+      <tr><td><code>void Reset()</code></td><td>Method</td><td>Clears all metrics and timing.</td></tr>
+      <tr><td><code>string Summary()</code></td><td>Method</td><td>Human-readable metrics report.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-sourcekind">
+  <h2>SourceKind <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-structureddataflattener">
+  <h2>StructuredDataFlattener <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Flattens structured JSON/XML into tabular rows (dictionaries) for ETL processing, and infers a tabular schema from flattened rows. Nested objects become dot-separated columns (address.city); arrays are preserved as JSON text so no data is lost; XML attributes become "@name" columns.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;Dictionary&lt;string, object&gt;&gt; FlattenJson(string json, string rootPath = null, FlattenOptions options = null)</code></td><td>Method</td><td>Flattens a JSON document into rows. JSON text. Optional dot path to the array/object to flatten (e.g., "data.items"). Flattening options.</td></tr>
+      <tr><td><code>List&lt;Dictionary&lt;string, object&gt;&gt; FlattenXml(string xml, string rowElement = null, FlattenOptions options = null)</code></td><td>Method</td><td>Flattens an XML document into rows. When is null, the most frequent child element of the root is used as the row element.</td></tr>
+      <tr><td><code>List&lt;ColumnDefinition&gt; InferSchema(IEnumerable&lt;IDictionary&lt;string, object&gt;&gt; rows, string stringType = "VARCHAR")</code></td><td>Method</td><td>Infers a tabular schema from flattened rows. Numeric columns merge to FLOAT, mixed types fall back to STRING, and sparse/missing values mark the column nullable.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-transformkind">
+  <h2>TransformKind <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-writemode">
+  <h2>WriteMode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+</div></main></div>
+</body></html>

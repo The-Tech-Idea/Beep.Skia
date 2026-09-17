@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantitative finance family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>Quantitative finance family</span></nav>
+<div class="page-header"><h1>Quantitative finance family</h1><p class="page-subtitle">API reference for Beep.Ski.Quantitative (26 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Ski.Quantitative</code> assembly: 26 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-aggregatenode"><code>AggregateNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-atrnode"><code>ATRNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-backtestnode"><code>BacktestNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-bollingerbandsnode"><code>BollingerBandsNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-chartnode"><code>ChartNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-chartseries"><code>ChartSeries</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-correlationnode"><code>CorrelationNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-datasourcenode"><code>DataSourceNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-distributionnode"><code>DistributionNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-exportnode"><code>ExportNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-filternode"><code>FilterNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-forecastnode"><code>ForecastNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-indicatornode"><code>IndicatorNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-macdnode"><code>MACDNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-montecarlonode"><code>MonteCarloNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-performancenode"><code>PerformanceNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-portfoliooptimizernode"><code>PortfolioOptimizerNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-quantcontrol"><code>QuantControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-regressionnode"><code>RegressionNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-riskmanagernode"><code>RiskManagerNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-rsinode"><code>RSINode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-stochasticnode"><code>StochasticNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-strategynode"><code>StrategyNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-timeseriesnode"><code>TimeSeriesNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-transformnode"><code>TransformNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-varnode"><code>VaRNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+</ul>
+<section class="section" id="type-aggregatenode">
+  <h2>AggregateNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Aggregation node for combining multiple series.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Operation</code></td><td>Property</td><td>Gets or sets the operation.</td></tr>
+      <tr><td><code>bool SkipNaN</code></td><td>Property</td><td>Gets or sets the skip na n.</td></tr>
+      <tr><td><code>AggregateNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-atrnode">
+  <h2>ATRNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Average True Range (ATR) volatility indicator.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Period</code></td><td>Property</td><td>Gets or sets the period.</td></tr>
+      <tr><td><code>ATRNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-backtestnode">
+  <h2>BacktestNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Backtesting engine node to test strategies on historical data.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DateTime StartDate</code></td><td>Property</td><td>Gets or sets the start date.</td></tr>
+      <tr><td><code>DateTime EndDate</code></td><td>Property</td><td>Gets or sets the end date.</td></tr>
+      <tr><td><code>double InitialCapital</code></td><td>Property</td><td>Gets or sets the initial capital.</td></tr>
+      <tr><td><code>double Commission</code></td><td>Property</td><td>Gets or sets the commission.</td></tr>
+      <tr><td><code>BacktestNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-bollingerbandsnode">
+  <h2>BollingerBandsNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Bollinger Bands indicator with upper, middle, and lower bands.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Period</code></td><td>Property</td><td>Gets or sets the period.</td></tr>
+      <tr><td><code>double StdDev</code></td><td>Property</td><td>Gets or sets the std dev.</td></tr>
+      <tr><td><code>BollingerBandsNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-chartnode">
+  <h2>ChartNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Chart/visualization node for displaying data.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ChartType</code></td><td>Property</td><td>Gets or sets the chart type.</td></tr>
+      <tr><td><code>bool ShowGrid</code></td><td>Property</td><td>Gets or sets the show grid.</td></tr>
+      <tr><td><code>bool ShowLegend</code></td><td>Property</td><td>Gets or sets the show legend.</td></tr>
+      <tr><td><code>int MaxPoints</code></td><td>Property</td><td>Gets or sets the max points.</td></tr>
+      <tr><td><code>bool ShowAxes</code></td><td>Property</td><td>Gets or sets the show axes.</td></tr>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>List&lt;ChartSeries&gt; Series</code></td><td>Property</td><td>Data series rendered by this chart.</td></tr>
+      <tr><td><code>string SeriesJson</code></td><td>Property</td><td>JSON projection of Series used for persistence.</td></tr>
+      <tr><td><code>ChartNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void SetData(params ChartSeries[] series)</code></td><td>Method</td><td>Replaces all series data.</td></tr>
+      <tr><td><code>ChartSeries AddSeries(string name, params double[] values)</code></td><td>Method</td><td>Adds a series and returns it.</td></tr>
+      <tr><td><code>void ClearData()</code></td><td>Method</td><td>Clears all series data.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-chartseries">
+  <h2>ChartSeries <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A named data series for chart nodes.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Series display name (used by the legend).</td></tr>
+      <tr><td><code>uint ColorArgb</code></td><td>Property</td><td>Series color as an ARGB uint (JSON-friendly).</td></tr>
+      <tr><td><code>List&lt;double&gt; Values</code></td><td>Property</td><td>Series values in order.</td></tr>
+      <tr><td><code>SKColor Color</code></td><td>Property</td><td>Gets the series color as an SKColor.</td></tr>
+      <tr><td><code>ChartSeries WithColor(SKColor color)</code></td><td>Method</td><td>Sets the series color from an SKColor.</td></tr>
+      <tr><td><code>ChartSeries Add(double value)</code></td><td>Method</td><td>Appends a value.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-correlationnode">
+  <h2>CorrelationNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Correlation matrix calculator node.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Method</code></td><td>Property</td><td>Gets or sets the method.</td></tr>
+      <tr><td><code>int Window</code></td><td>Property</td><td>Gets or sets the window.</td></tr>
+      <tr><td><code>bool Rolling</code></td><td>Property</td><td>Gets or sets the rolling.</td></tr>
+      <tr><td><code>CorrelationNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-datasourcenode">
+  <h2>DataSourceNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Data source node for loading market data from various sources.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>string Symbol</code></td><td>Property</td><td>Gets or sets the symbol.</td></tr>
+      <tr><td><code>string Interval</code></td><td>Property</td><td>Gets or sets the interval.</td></tr>
+      <tr><td><code>DateTime StartDate</code></td><td>Property</td><td>Gets or sets the start date.</td></tr>
+      <tr><td><code>DataSourceNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-distributionnode">
+  <h2>DistributionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Statistical distribution analysis node.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string DistributionType</code></td><td>Property</td><td>Gets or sets the distribution type.</td></tr>
+      <tr><td><code>int Bins</code></td><td>Property</td><td>Gets or sets the bins.</td></tr>
+      <tr><td><code>bool ShowKDE</code></td><td>Property</td><td>Gets or sets the show KDE.</td></tr>
+      <tr><td><code>DistributionNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-exportnode">
+  <h2>ExportNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Export node for saving results to file or database.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Format</code></td><td>Property</td><td>Gets or sets the format.</td></tr>
+      <tr><td><code>string FilePath</code></td><td>Property</td><td>Gets or sets the file path.</td></tr>
+      <tr><td><code>bool IncludeHeader</code></td><td>Property</td><td>Gets or sets the include header.</td></tr>
+      <tr><td><code>ExportNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-filternode">
+  <h2>FilterNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Filter node for removing noise or outliers.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string FilterType</code></td><td>Property</td><td>Gets or sets the filter type.</td></tr>
+      <tr><td><code>double Threshold</code></td><td>Property</td><td>Gets or sets the threshold.</td></tr>
+      <tr><td><code>string Method</code></td><td>Property</td><td>Gets or sets the method.</td></tr>
+      <tr><td><code>FilterNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-forecastnode">
+  <h2>ForecastNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Time series forecasting node using ARIMA/Prophet models.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Model</code></td><td>Property</td><td>Gets or sets the model.</td></tr>
+      <tr><td><code>int HorizonDays</code></td><td>Property</td><td>Gets or sets the horizon days.</td></tr>
+      <tr><td><code>double ConfidenceLevel</code></td><td>Property</td><td>Gets or sets the confidence level.</td></tr>
+      <tr><td><code>bool IncludeSeasonality</code></td><td>Property</td><td>Gets or sets the include seasonality.</td></tr>
+      <tr><td><code>ForecastNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-indicatornode">
+  <h2>IndicatorNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A quantitative indicator node (e.g., SMA), with one input series and one output series.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Indicator</code></td><td>Property</td><td>Gets or sets the indicator.</td></tr>
+      <tr><td><code>int Period</code></td><td>Property</td><td>Gets or sets the period.</td></tr>
+      <tr><td><code>IndicatorNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-macdnode">
+  <h2>MACDNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Moving Average Convergence Divergence (MACD) indicator with signal line. Inputs: Price series Outputs: MACD line, Signal line, Histogram</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int FastPeriod</code></td><td>Property</td><td>Gets or sets the fast period.</td></tr>
+      <tr><td><code>int SlowPeriod</code></td><td>Property</td><td>Gets or sets the slow period.</td></tr>
+      <tr><td><code>int SignalPeriod</code></td><td>Property</td><td>Gets or sets the signal period.</td></tr>
+      <tr><td><code>MACDNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-montecarlonode">
+  <h2>MonteCarloNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Monte Carlo simulation node for scenario analysis.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int NumSimulations</code></td><td>Property</td><td>Gets or sets the num simulations.</td></tr>
+      <tr><td><code>int TimeSteps</code></td><td>Property</td><td>Gets or sets the time steps.</td></tr>
+      <tr><td><code>double InitialValue</code></td><td>Property</td><td>Gets or sets the initial value.</td></tr>
+      <tr><td><code>int RandomSeed</code></td><td>Property</td><td>Gets or sets the random seed.</td></tr>
+      <tr><td><code>MonteCarloNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-performancenode">
+  <h2>PerformanceNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Performance metrics calculator node.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>bool IncludeDrawdown</code></td><td>Property</td><td>Gets or sets the include drawdown.</td></tr>
+      <tr><td><code>bool IncludeSharpe</code></td><td>Property</td><td>Gets or sets the include sharpe.</td></tr>
+      <tr><td><code>double RiskFreeRate</code></td><td>Property</td><td>Gets or sets the risk free rate.</td></tr>
+      <tr><td><code>PerformanceNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-portfoliooptimizernode">
+  <h2>PortfolioOptimizerNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Portfolio optimization node using Modern Portfolio Theory.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Method</code></td><td>Property</td><td>Gets or sets the method.</td></tr>
+      <tr><td><code>double TargetReturn</code></td><td>Property</td><td>Gets or sets the target return.</td></tr>
+      <tr><td><code>int NumAssets</code></td><td>Property</td><td>Gets or sets the num assets.</td></tr>
+      <tr><td><code>PortfolioOptimizerNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-quantcontrol">
+  <h2>QuantControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Base class for quantitative analysis components (e.g., time series, indicators). Provides consistent styling and standardized connection points.</p>
+</section>
+<section class="section" id="type-regressionnode">
+  <h2>RegressionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Regression analysis node for linear/polynomial fitting.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string RegressionType</code></td><td>Property</td><td>Gets or sets the regression type.</td></tr>
+      <tr><td><code>int Degree</code></td><td>Property</td><td>Gets or sets the degree.</td></tr>
+      <tr><td><code>bool IncludeIntercept</code></td><td>Property</td><td>Gets or sets the include intercept.</td></tr>
+      <tr><td><code>RegressionNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-riskmanagernode">
+  <h2>RiskManagerNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Risk management node for position sizing and stop-loss.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>double MaxRiskPerTrade</code></td><td>Property</td><td>Gets or sets the max risk per trade.</td></tr>
+      <tr><td><code>double StopLossPercent</code></td><td>Property</td><td>Gets or sets the stop loss percent.</td></tr>
+      <tr><td><code>double TakeProfitPercent</code></td><td>Property</td><td>Gets or sets the take profit percent.</td></tr>
+      <tr><td><code>string PositionSizing</code></td><td>Property</td><td>Gets or sets the position sizing.</td></tr>
+      <tr><td><code>RiskManagerNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-rsinode">
+  <h2>RSINode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Relative Strength Index (RSI) oscillator.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Period</code></td><td>Property</td><td>Gets or sets the period.</td></tr>
+      <tr><td><code>double Overbought</code></td><td>Property</td><td>Gets or sets the overbought.</td></tr>
+      <tr><td><code>double Oversold</code></td><td>Property</td><td>Gets or sets the oversold.</td></tr>
+      <tr><td><code>RSINode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-stochasticnode">
+  <h2>StochasticNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Stochastic Oscillator with %K and %D lines.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int KPeriod</code></td><td>Property</td><td>Gets or sets the k period.</td></tr>
+      <tr><td><code>int DPeriod</code></td><td>Property</td><td>Gets or sets the d period.</td></tr>
+      <tr><td><code>int Smooth</code></td><td>Property</td><td>Gets or sets the smooth.</td></tr>
+      <tr><td><code>StochasticNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-strategynode">
+  <h2>StrategyNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Trading strategy node that generates buy/sell signals.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string StrategyType</code></td><td>Property</td><td>Gets or sets the strategy type.</td></tr>
+      <tr><td><code>double Threshold</code></td><td>Property</td><td>Gets or sets the threshold.</td></tr>
+      <tr><td><code>bool LongOnly</code></td><td>Property</td><td>Gets or sets the long only.</td></tr>
+      <tr><td><code>StrategyNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-timeseriesnode">
+  <h2>TimeSeriesNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A quantitative component representing an input time series (e.g., price data).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Length</code></td><td>Property</td><td>Gets or sets the length.</td></tr>
+      <tr><td><code>string Symbol</code></td><td>Property</td><td>Gets or sets the symbol.</td></tr>
+      <tr><td><code>TimeSeriesNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-transformnode">
+  <h2>TransformNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Data transformation node for resampling, normalization, etc.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Operation</code></td><td>Property</td><td>Gets or sets the operation.</td></tr>
+      <tr><td><code>bool Percentage</code></td><td>Property</td><td>Gets or sets the percentage.</td></tr>
+      <tr><td><code>int Lag</code></td><td>Property</td><td>Gets or sets the lag.</td></tr>
+      <tr><td><code>TransformNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-varnode">
+  <h2>VaRNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Value at Risk (VaR) and Conditional VaR calculator.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>double ConfidenceLevel</code></td><td>Property</td><td>Gets or sets the confidence level.</td></tr>
+      <tr><td><code>string Method</code></td><td>Property</td><td>Gets or sets the method.</td></tr>
+      <tr><td><code>int WindowSize</code></td><td>Property</td><td>Gets or sets the window size.</td></tr>
+      <tr><td><code>VaRNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+</body></html>

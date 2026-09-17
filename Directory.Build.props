@@ -25,7 +25,23 @@
 		<PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://github.com/The-Tech-Idea/Beep.Skia</PackageProjectUrl>
 		<RepositoryUrl Condition="'$(RepositoryUrl)' == ''">https://github.com/The-Tech-Idea/Beep.Skia</RepositoryUrl>
 		<RepositoryType Condition="'$(RepositoryType)' == ''">git</RepositoryType>
+		<PackageReadmeFile Condition="'$(PackageReadmeFile)' == ''">README.md</PackageReadmeFile>
 	</PropertyGroup>
+
+	<!--
+	  Ship XML documentation with every library so consumers get IntelliSense.
+	  CS1591 (missing XML comment) is suppressed because the public surface is
+	  documented in the Help site's API reference; the XML file carries the
+	  summaries that exist in source today.
+	-->
+	<PropertyGroup Condition="'$(GenerateDocumentationFile)' == ''">
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(PackageReadmeFile)' == 'README.md' and Exists('$(MSBuildThisFileDirectory)README.md')">
+		<None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Visible="false" />
+	</ItemGroup>
 
 	<!--
 	  MinVer derives the package version from git tags (prefix "v", e.g. v1.2.0).

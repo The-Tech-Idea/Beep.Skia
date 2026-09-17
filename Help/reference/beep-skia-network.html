@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>Network family</span></nav>
+<div class="page-header"><h1>Network family</h1><p class="page-subtitle">API reference for Beep.Skia.Network (30 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.Network</code> assembly: 30 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-centralitymeasure"><code>CentralityMeasure</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-centralitytype"><code>CentralityType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-community"><code>Community</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-communityalgorithm"><code>CommunityAlgorithm</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-communitydetector"><code>CommunityDetector</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-exportcompletedeventargs"><code>ExportCompletedEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-exportfailedeventargs"><code>ExportFailedEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-exportformat"><code>ExportFormat</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-exportoptions"><code>ExportOptions</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-exportpanel"><code>ExportPanel</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-filterchangedeventargs"><code>FilterChangedEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-filterpanel"><code>FilterPanel</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-graphnavigator"><code>GraphNavigator</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-layoutalgorithm"><code>LayoutAlgorithm</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-layoutchangedeventargs"><code>LayoutChangedEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-layoutparameters"><code>LayoutParameters</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-layoutparameterschangedeventargs"><code>LayoutParametersChangedEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-layoutselector"><code>LayoutSelector</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-networkalgorithms"><code>NetworkAlgorithms</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-networkanalyzer"><code>NetworkAnalyzer</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-networkcontrol"><code>NetworkControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-networkgraph"><code>NetworkGraph</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-networklink"><code>NetworkLink</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-networknode"><code>NetworkNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-nodecentrality"><code>NodeCentrality</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-nodecluster"><code>NodeCluster</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-nodeselectioneventargs"><code>NodeSelectionEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-pagerankresult"><code>PageRankResult</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-pathfinder"><code>PathFinder</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-viewchangedeventargs"><code>ViewChangedEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+</ul>
+<section class="section" id="type-centralitymeasure">
+  <h2>CentralityMeasure <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Centrality measure component that visualizes node importance in the network. Supports different centrality algorithms and displays rankings.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>CentralityType MeasureType</code></td><td>Property</td><td>Gets or sets the type of centrality measure to display.</td></tr>
+      <tr><td><code>List&lt;NodeCentrality&gt; NodeCentralities</code></td><td>Property</td><td>Gets the list of nodes with their centrality scores.</td></tr>
+      <tr><td><code>int MaxDisplayCount</code></td><td>Property</td><td>Gets or sets the maximum number of top nodes to display.</td></tr>
+      <tr><td><code>bool ShowValues</code></td><td>Property</td><td>Gets or sets whether to show centrality values.</td></tr>
+      <tr><td><code>SKColor HighCentralityColor</code></td><td>Property</td><td>Gets or sets the color for high centrality nodes.</td></tr>
+      <tr><td><code>SKColor LowCentralityColor</code></td><td>Property</td><td>Gets or sets the color for low centrality nodes.</td></tr>
+      <tr><td><code>SKColor MediumCentralityColor</code></td><td>Property</td><td>Gets or sets the color for medium centrality nodes.</td></tr>
+      <tr><td><code>CentralityMeasure()</code></td><td>Method</td><td>Initializes a new instance of the CentralityMeasure class.</td></tr>
+      <tr><td><code>void CalculateCentrality(List&lt;NetworkNode&gt; nodes, List&lt;NetworkLink&gt; links)</code></td><td>Method</td><td>Calculates centrality measures for the given network. The network nodes. The network links.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-centralitytype">
+  <h2>CentralityType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Types of centrality measures.</p>
+</section>
+<section class="section" id="type-community">
+  <h2>Community <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a network community.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Id</code></td><td>Property</td><td>Gets or sets the community ID.</td></tr>
+      <tr><td><code>List&lt;NetworkNode&gt; Nodes</code></td><td>Property</td><td>Gets or sets the list of nodes in this community.</td></tr>
+      <tr><td><code>SKColor Color</code></td><td>Property</td><td>Gets or sets the color assigned to this community.</td></tr>
+      <tr><td><code>double Modularity</code></td><td>Property</td><td>Gets the modularity score for this community.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-communityalgorithm">
+  <h2>CommunityAlgorithm <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Community detection algorithms.</p>
+</section>
+<section class="section" id="type-communitydetector">
+  <h2>CommunityDetector <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Community detector component that identifies and visualizes network communities. Uses clustering algorithms to group related nodes and color-code them.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>CommunityAlgorithm Algorithm</code></td><td>Property</td><td>Gets or sets the algorithm used for community detection.</td></tr>
+      <tr><td><code>List&lt;Community&gt; Communities</code></td><td>Property</td><td>Gets the list of detected communities.</td></tr>
+      <tr><td><code>int MinCommunitySize</code></td><td>Property</td><td>Gets or sets the minimum community size to display.</td></tr>
+      <tr><td><code>bool ShowLabels</code></td><td>Property</td><td>Gets or sets whether to show community labels.</td></tr>
+      <tr><td><code>List&lt;SKColor&gt; CommunityColors</code></td><td>Property</td><td>Gets or sets the color palette for communities.</td></tr>
+      <tr><td><code>CommunityDetector()</code></td><td>Method</td><td>Initializes a new instance of the CommunityDetector class.</td></tr>
+      <tr><td><code>void DetectCommunities(List&lt;NetworkNode&gt; nodes, List&lt;NetworkLink&gt; links)</code></td><td>Method</td><td>Detects communities in the given network. The network nodes. The network links.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-exportcompletedeventargs">
+  <h2>ExportCompletedEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Event arguments for export completed events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string FilePath</code></td><td>Property</td><td>Gets the export file path.</td></tr>
+      <tr><td><code>ExportFormat Format</code></td><td>Property</td><td>Gets the export format.</td></tr>
+      <tr><td><code>ExportCompletedEventArgs(string filePath, ExportFormat format)</code></td><td>Method</td><td>Initializes a new instance of the ExportCompletedEventArgs class. The file path. The export format.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-exportfailedeventargs">
+  <h2>ExportFailedEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Event arguments for export failed events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ErrorMessage</code></td><td>Property</td><td>Gets the error message.</td></tr>
+      <tr><td><code>ExportFailedEventArgs(string errorMessage)</code></td><td>Method</td><td>Initializes a new instance of the ExportFailedEventArgs class. The error message.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-exportformat">
+  <h2>ExportFormat <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Export format types.</p>
+</section>
+<section class="section" id="type-exportoptions">
+  <h2>ExportOptions <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Export options.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>bool IncludePositions</code></td><td>Property</td><td>Gets or sets whether to include node positions.</td></tr>
+      <tr><td><code>bool IncludeAttributes</code></td><td>Property</td><td>Gets or sets whether to include node attributes.</td></tr>
+      <tr><td><code>bool IncludeWeights</code></td><td>Property</td><td>Gets or sets whether to include link weights.</td></tr>
+      <tr><td><code>int ImageResolution</code></td><td>Property</td><td>Gets or sets the image resolution for image exports.</td></tr>
+      <tr><td><code>bool CompressOutput</code></td><td>Property</td><td>Gets or sets whether to compress the output.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-exportpanel">
+  <h2>ExportPanel <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Export panel component that provides functionality to export network data and visualizations. Supports various formats including CSV, JSON, GraphML, and image exports.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ExportFormat SelectedFormat</code></td><td>Property</td><td>Gets or sets the selected export format.</td></tr>
+      <tr><td><code>List&lt;ExportFormat&gt; AvailableFormats</code></td><td>Property</td><td>Gets the list of available export formats.</td></tr>
+      <tr><td><code>ExportOptions Options</code></td><td>Property</td><td>Gets or sets the export options.</td></tr>
+      <tr><td><code>bool IsExporting</code></td><td>Property</td><td>Gets or sets whether an export is currently in progress.</td></tr>
+      <tr><td><code>string LastExportPath</code></td><td>Property</td><td>Gets or sets the last export path.</td></tr>
+      <tr><td><code>bool ShowOptions</code></td><td>Property</td><td>Gets or sets whether to show export options.</td></tr>
+      <tr><td><code>event EventHandler&lt;ExportCompletedEventArgs&gt; ExportCompleted</code></td><td>Event</td><td>Event raised when an export is completed.</td></tr>
+      <tr><td><code>event EventHandler&lt;ExportFailedEventArgs&gt; ExportFailed</code></td><td>Event</td><td>Event raised when an export fails.</td></tr>
+      <tr><td><code>ExportPanel()</code></td><td>Method</td><td>Initializes a new instance of the ExportPanel class.</td></tr>
+      <tr><td><code>void Export(List&lt;NetworkNode&gt; nodes, List&lt;NetworkLink&gt; links, string filePath)</code></td><td>Method</td><td>Exports the network data using the current settings. The network nodes to export. The network links to export. The file path to export to.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-filterchangedeventargs">
+  <h2>FilterChangedEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Event arguments for filter change events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IReadOnlyList&lt;NetworkNode&gt; FilteredNodes</code></td><td>Property</td><td>Gets the filtered nodes.</td></tr>
+      <tr><td><code>IReadOnlyList&lt;NetworkLink&gt; FilteredLinks</code></td><td>Property</td><td>Gets the filtered links.</td></tr>
+      <tr><td><code>FilterChangedEventArgs(IReadOnlyList&lt;NetworkNode&gt; filteredNodes, IReadOnlyList&lt;NetworkLink&gt; filteredLinks)</code></td><td>Method</td><td>Initializes a new instance of the FilterChangedEventArgs class. The filtered nodes. The filtered links.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-filterpanel">
+  <h2>FilterPanel <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Filter panel component that provides filtering and search capabilities for network elements. Supports node/link filtering by properties, search queries, and visibility controls.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string SearchQuery</code></td><td>Property</td><td>Gets or sets the search query text.</td></tr>
+      <tr><td><code>bool CaseSensitive</code></td><td>Property</td><td>Gets or sets whether the search is case-sensitive.</td></tr>
+      <tr><td><code>bool UseRegex</code></td><td>Property</td><td>Gets or sets whether to use regular expressions for search.</td></tr>
+      <tr><td><code>int MinDegree</code></td><td>Property</td><td>Gets or sets the minimum node degree filter.</td></tr>
+      <tr><td><code>int MaxDegree</code></td><td>Property</td><td>Gets or sets the maximum node degree filter.</td></tr>
+      <tr><td><code>bool ShowConnectedOnly</code></td><td>Property</td><td>Gets or sets whether to show only connected nodes.</td></tr>
+      <tr><td><code>bool ShowIsolatedNodes</code></td><td>Property</td><td>Gets or sets whether to show isolated nodes (degree = 0).</td></tr>
+      <tr><td><code>List&lt;NetworkNode&gt; FilteredNodes</code></td><td>Property</td><td>Gets the list of filtered nodes.</td></tr>
+      <tr><td><code>List&lt;NetworkLink&gt; FilteredLinks</code></td><td>Property</td><td>Gets the list of filtered links.</td></tr>
+      <tr><td><code>bool ShowControls</code></td><td>Property</td><td>Gets or sets whether to show filter controls.</td></tr>
+      <tr><td><code>event EventHandler&lt;FilterChangedEventArgs&gt; FilterChanged</code></td><td>Event</td><td>Event raised when the filter changes.</td></tr>
+      <tr><td><code>FilterPanel()</code></td><td>Method</td><td>Initializes a new instance of the FilterPanel class.</td></tr>
+      <tr><td><code>void ApplyFilters(List&lt;NetworkNode&gt; nodes, List&lt;NetworkLink&gt; links)</code></td><td>Method</td><td>Applies filters to the given network data. The network nodes. The network links.</td></tr>
+      <tr><td><code>void ClearFilters()</code></td><td>Method</td><td>Clears all filters and shows all elements.</td></tr>
+      <tr><td><code>void SetSearchQuery(string query)</code></td><td>Method</td><td>Sets a search query and applies filters. The search query.</td></tr>
+      <tr><td><code>void SetDegreeRange(int minDegree, int maxDegree)</code></td><td>Method</td><td>Sets degree range filter. The minimum degree. The maximum degree.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-graphnavigator">
+  <h2>GraphNavigator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Graph navigator component that provides interactive controls for exploring network graphs. Includes zoom, pan, node selection, and navigation history.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>float ZoomLevel</code></td><td>Property</td><td>Gets or sets the current zoom level (1.0 = 100%).</td></tr>
+      <tr><td><code>float MinZoom</code></td><td>Property</td><td>Gets or sets the minimum zoom level.</td></tr>
+      <tr><td><code>float MaxZoom</code></td><td>Property</td><td>Gets or sets the maximum zoom level.</td></tr>
+      <tr><td><code>float PanOffsetX</code></td><td>Property</td><td>Gets or sets the pan offset X.</td></tr>
+      <tr><td><code>float PanOffsetY</code></td><td>Property</td><td>Gets or sets the pan offset Y.</td></tr>
+      <tr><td><code>NetworkNode SelectedNode</code></td><td>Property</td><td>Gets the currently selected node.</td></tr>
+      <tr><td><code>List&lt;NetworkNode&gt; NavigationHistory</code></td><td>Property</td><td>Gets the list of navigation history (node selections).</td></tr>
+      <tr><td><code>bool IsPanMode</code></td><td>Property</td><td>Gets or sets whether the navigator is in pan mode.</td></tr>
+      <tr><td><code>bool ShowControls</code></td><td>Property</td><td>Gets or sets whether to show navigation controls.</td></tr>
+      <tr><td><code>float ZoomStep</code></td><td>Property</td><td>Gets or sets the zoom step size.</td></tr>
+      <tr><td><code>event EventHandler&lt;NodeSelectionEventArgs&gt; NodeSelected</code></td><td>Event</td><td>Event raised when the selected node changes.</td></tr>
+      <tr><td><code>event EventHandler&lt;ViewChangedEventArgs&gt; ViewChanged</code></td><td>Event</td><td>Event raised when the view changes (zoom/pan).</td></tr>
+      <tr><td><code>GraphNavigator()</code></td><td>Method</td><td>Initializes a new instance of the GraphNavigator class.</td></tr>
+      <tr><td><code>void ZoomIn()</code></td><td>Method</td><td>Zooms in by one step.</td></tr>
+      <tr><td><code>void ZoomOut()</code></td><td>Method</td><td>Zooms out by one step.</td></tr>
+      <tr><td><code>void SetZoom(float zoom)</code></td><td>Method</td><td>Sets the zoom level. The new zoom level.</td></tr>
+      <tr><td><code>void ResetView()</code></td><td>Method</td><td>Resets the view to default zoom and pan.</td></tr>
+      <tr><td><code>void Pan(float deltaX, float deltaY)</code></td><td>Method</td><td>Pans the view by the specified amount. The change in X position. The change in Y position.</td></tr>
+      <tr><td><code>void CenterOnNode(NetworkNode node)</code></td><td>Method</td><td>Centers the view on a specific node. The node to center on.</td></tr>
+      <tr><td><code>void SelectNode(NetworkNode node)</code></td><td>Method</td><td>Selects a node and adds it to navigation history. The node to select.</td></tr>
+      <tr><td><code>void GoBack()</code></td><td>Method</td><td>Goes back to the previously selected node.</td></tr>
+      <tr><td><code>void ClearHistory()</code></td><td>Method</td><td>Clears the navigation history.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-layoutalgorithm">
+  <h2>LayoutAlgorithm <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Layout algorithm types.</p>
+</section>
+<section class="section" id="type-layoutchangedeventargs">
+  <h2>LayoutChangedEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Event arguments for layout change events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>LayoutAlgorithm Algorithm</code></td><td>Property</td><td>Gets the selected layout algorithm.</td></tr>
+      <tr><td><code>LayoutChangedEventArgs(LayoutAlgorithm algorithm)</code></td><td>Method</td><td>Initializes a new instance of the LayoutChangedEventArgs class. The selected algorithm.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-layoutparameters">
+  <h2>LayoutParameters <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Parameters for layout algorithms.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>float AttractionStrength</code></td><td>Property</td><td>Gets or sets the attraction force strength.</td></tr>
+      <tr><td><code>float RepulsionStrength</code></td><td>Property</td><td>Gets or sets the repulsion force strength.</td></tr>
+      <tr><td><code>float Damping</code></td><td>Property</td><td>Gets or sets the damping factor.</td></tr>
+      <tr><td><code>int MaxIterations</code></td><td>Property</td><td>Gets or sets the maximum iterations for iterative algorithms.</td></tr>
+      <tr><td><code>float ConvergenceThreshold</code></td><td>Property</td><td>Gets or sets the convergence threshold.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-layoutparameterschangedeventargs">
+  <h2>LayoutParametersChangedEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Event arguments for layout parameters change events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>LayoutParameters Parameters</code></td><td>Property</td><td>Gets the layout parameters.</td></tr>
+      <tr><td><code>LayoutParametersChangedEventArgs(LayoutParameters parameters)</code></td><td>Method</td><td>Initializes a new instance of the LayoutParametersChangedEventArgs class. The layout parameters.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-layoutselector">
+  <h2>LayoutSelector <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Layout selector component that provides controls for choosing and applying different graph layout algorithms. Supports force-directed, circular, hierarchical, and other layout types.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>LayoutAlgorithm SelectedAlgorithm</code></td><td>Property</td><td>Gets or sets the currently selected layout algorithm.</td></tr>
+      <tr><td><code>List&lt;LayoutAlgorithm&gt; AvailableAlgorithms</code></td><td>Property</td><td>Gets the list of available layout algorithms.</td></tr>
+      <tr><td><code>LayoutParameters Parameters</code></td><td>Property</td><td>Gets or sets the layout parameters.</td></tr>
+      <tr><td><code>bool IsCalculating</code></td><td>Property</td><td>Gets or sets whether the layout is currently being calculated.</td></tr>
+      <tr><td><code>bool ShowOptions</code></td><td>Property</td><td>Gets or sets whether to show layout options.</td></tr>
+      <tr><td><code>event EventHandler&lt;LayoutChangedEventArgs&gt; LayoutChanged</code></td><td>Event</td><td>Event raised when the layout algorithm changes.</td></tr>
+      <tr><td><code>event EventHandler&lt;LayoutParametersChangedEventArgs&gt; ParametersChanged</code></td><td>Event</td><td>Event raised when layout parameters change.</td></tr>
+      <tr><td><code>LayoutSelector()</code></td><td>Method</td><td>Initializes a new instance of the LayoutSelector class.</td></tr>
+      <tr><td><code>void SetAlgorithm(LayoutAlgorithm algorithm)</code></td><td>Method</td><td>Sets the layout algorithm. The layout algorithm to use.</td></tr>
+      <tr><td><code>void ApplyLayout(List&lt;NetworkNode&gt; nodes, List&lt;NetworkLink&gt; links, SKRect bounds)</code></td><td>Method</td><td>Applies the current layout to the given nodes. The nodes to layout. The links between nodes. The bounds to layout within.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-networkalgorithms">
+  <h2>NetworkAlgorithms <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Graph algorithms over NetworkNode/NetworkLink diagrams: PageRank, shortest paths, all simple paths, connectivity, and connected components. Links are treated as directed unless Bidirectional is set.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static PageRankResult PageRank( IEnumerable&lt;NetworkNode&gt; nodes, IEnumerable&lt;NetworkLink&gt; links, double damping = 0.85, int maxIterations = 100, double tolerance = 1e-8)</code></td><td>Method</td><td>Computes PageRank scores. Dangling nodes distribute their rank evenly across all nodes.</td></tr>
+      <tr><td><code>static void ApplyPageRank(PageRankResult result, SKColor? color = null)</code></td><td>Method</td><td>Applies PageRank scores visually: node scale (and optional color alpha) are normalized between the minimum and maximum scores.</td></tr>
+      <tr><td><code>static List&lt;NetworkNode&gt; ShortestPath( NetworkNode from, NetworkNode to, IEnumerable&lt;NetworkLink&gt; links, bool weighted = true)</code></td><td>Method</td><td>Finds the shortest path (Dijkstra when weighted, BFS otherwise). Returns the node sequence including endpoints, or an empty list when unreachable.</td></tr>
+      <tr><td><code>static List&lt;List&lt;NetworkNode&gt;&gt; AllSimplePaths( NetworkNode from, NetworkNode to, IEnumerable&lt;NetworkLink&gt; links, int maxPaths = 50, int maxDepth = 32)</code></td><td>Method</td><td>Enumerates simple (loop-free) paths between two nodes, depth-first, up to a cap.</td></tr>
+      <tr><td><code>static bool IsConnected(IEnumerable&lt;NetworkNode&gt; nodes, IEnumerable&lt;NetworkLink&gt; links)</code></td><td>Method</td><td>Returns true when all nodes are reachable from the first node (ignoring link direction).</td></tr>
+      <tr><td><code>static List&lt;List&lt;NetworkNode&gt;&gt; ConnectedComponents(IEnumerable&lt;NetworkNode&gt; nodes, IEnumerable&lt;NetworkLink&gt; links)</code></td><td>Method</td><td>Returns connected components (undirected view of the graph).</td></tr>
+      <tr><td><code>static double PathCost(IReadOnlyList&lt;NetworkNode&gt; path, IEnumerable&lt;NetworkLink&gt; links, bool weighted = true)</code></td><td>Method</td><td>Sums the cost of a node path (edges matched by consecutive node pairs).</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-networkanalyzer">
+  <h2>NetworkAnalyzer <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Network analyzer component that displays network metrics and statistics. Shows various network analysis data in a structured panel.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int NodeCount</code></td><td>Property</td><td>Gets or sets the number of nodes in the network.</td></tr>
+      <tr><td><code>int LinkCount</code></td><td>Property</td><td>Gets or sets the number of links in the network.</td></tr>
+      <tr><td><code>double AverageDegree</code></td><td>Property</td><td>Gets or sets the average degree of nodes in the network.</td></tr>
+      <tr><td><code>double Density</code></td><td>Property</td><td>Gets or sets the network density.</td></tr>
+      <tr><td><code>int ConnectedComponents</code></td><td>Property</td><td>Gets or sets the number of connected components.</td></tr>
+      <tr><td><code>double ClusteringCoefficient</code></td><td>Property</td><td>Gets or sets the average clustering coefficient.</td></tr>
+      <tr><td><code>int Diameter</code></td><td>Property</td><td>Gets or sets the network diameter.</td></tr>
+      <tr><td><code>NetworkAnalyzer()</code></td><td>Method</td><td>Initializes a new instance of the NetworkAnalyzer class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-networkcontrol">
+  <h2>NetworkControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Base class for all network-related controls in the Beep.Skia framework. Provides common functionality for network visualization components.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKColor PrimaryColor</code></td><td>Property</td><td>Gets or sets the primary color.</td></tr>
+      <tr><td><code>SKColor SecondaryColor</code></td><td>Property</td><td>Gets or sets the secondary color.</td></tr>
+      <tr><td><code>SKColor AccentColor</code></td><td>Property</td><td>Gets or sets the accent color.</td></tr>
+      <tr><td><code>SKColor BorderColor</code></td><td>Property</td><td>Gets or sets the border color.</td></tr>
+      <tr><td><code>float BorderThickness</code></td><td>Property</td><td>Gets or sets the border thickness.</td></tr>
+      <tr><td><code>float CornerRadius</code></td><td>Property</td><td>Gets or sets the corner radius.</td></tr>
+      <tr><td><code>bool IsHighlighted</code></td><td>Property</td><td>Gets or sets the is highlighted.</td></tr>
+      <tr><td><code>SKColor HighlightColor</code></td><td>Property</td><td>Gets or sets the highlight color.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-networkgraph">
+  <h2>NetworkGraph <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;NetworkNode&gt; Nodes</code></td><td>Property</td><td>Gets or sets the nodes.</td></tr>
+      <tr><td><code>List&lt;NetworkLink&gt; Links</code></td><td>Property</td><td>Gets or sets the links.</td></tr>
+      <tr><td><code>NetworkGraph()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-networklink">
+  <h2>NetworkLink <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKPoint Start</code></td><td>Property</td><td>Gets or sets the start.</td></tr>
+      <tr><td><code>SKPoint End</code></td><td>Property</td><td>Gets or sets the end.</td></tr>
+      <tr><td><code>SKColor Color</code></td><td>Property</td><td>Gets or sets the color.</td></tr>
+      <tr><td><code>float Thickness</code></td><td>Property</td><td>Gets or sets the thickness.</td></tr>
+      <tr><td><code>NetworkNode SourceNode</code></td><td>Property</td><td>Gets or sets the source node.</td></tr>
+      <tr><td><code>NetworkNode TargetNode</code></td><td>Property</td><td>Gets or sets the target node.</td></tr>
+      <tr><td><code>double Weight</code></td><td>Property</td><td>Gets or sets the weight.</td></tr>
+      <tr><td><code>string LinkType</code></td><td>Property</td><td>Gets or sets the link type.</td></tr>
+      <tr><td><code>float ArrowSize</code></td><td>Property</td><td>Gets or sets the arrow size.</td></tr>
+      <tr><td><code>bool IsHighlighted</code></td><td>Property</td><td>Gets or sets the is highlighted.</td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>SKColor LabelColor</code></td><td>Property</td><td>Gets or sets the label color.</td></tr>
+      <tr><td><code>float LabelTextSize</code></td><td>Property</td><td>Gets or sets the label text size.</td></tr>
+      <tr><td><code>float Curvature</code></td><td>Property</td><td>Gets or sets the curvature.</td></tr>
+      <tr><td><code>bool Bidirectional</code></td><td>Property</td><td>Gets or sets the bidirectional.</td></tr>
+      <tr><td><code>NetworkLink()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-networknode">
+  <h2>NetworkNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKColor FillColor</code></td><td>Property</td><td>Gets or sets the fill color.</td></tr>
+      <tr><td><code>SKColor StrokeColor</code></td><td>Property</td><td>Gets or sets the stroke color.</td></tr>
+      <tr><td><code>float StrokeWidth</code></td><td>Property</td><td>Gets or sets the stroke width.</td></tr>
+      <tr><td><code>float CornerRadius</code></td><td>Property</td><td>Gets or sets the corner radius.</td></tr>
+      <tr><td><code>string NodeType</code></td><td>Property</td><td>Gets or sets the node type.</td></tr>
+      <tr><td><code>bool IsHighlighted</code></td><td>Property</td><td>Gets or sets the is highlighted.</td></tr>
+      <tr><td><code>float Scale</code></td><td>Property</td><td>Gets or sets the scale.</td></tr>
+      <tr><td><code>SKColor CentralityColor</code></td><td>Property</td><td>Gets or sets the centrality color.</td></tr>
+      <tr><td><code>SKColor CommunityColor</code></td><td>Property</td><td>Gets or sets the community color.</td></tr>
+      <tr><td><code>int CommunityId</code></td><td>Property</td><td>Gets or sets the community id.</td></tr>
+      <tr><td><code>int InputPortCount</code></td><td>Property</td><td>Gets or sets the input port count.</td></tr>
+      <tr><td><code>int OutputPortCount</code></td><td>Property</td><td>Gets or sets the output port count.</td></tr>
+      <tr><td><code>NetworkNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-nodecentrality">
+  <h2>NodeCentrality <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents centrality information for a network node.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>NetworkNode Node</code></td><td>Property</td><td>Gets or sets the network node.</td></tr>
+      <tr><td><code>double Score</code></td><td>Property</td><td>Gets or sets the raw centrality score.</td></tr>
+      <tr><td><code>double NormalizedScore</code></td><td>Property</td><td>Gets or sets the normalized centrality score (0-1).</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-nodecluster">
+  <h2>NodeCluster <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a cluster/grouping of related network nodes. Provides visual grouping with background and border.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;NetworkNode&gt; Nodes</code></td><td>Property</td><td>Gets the collection of nodes in this cluster.</td></tr>
+      <tr><td><code>string ClusterName</code></td><td>Property</td><td>Gets or sets the cluster name/label.</td></tr>
+      <tr><td><code>SKColor ClusterBackground</code></td><td>Property</td><td>Gets or sets the background color for the cluster.</td></tr>
+      <tr><td><code>SKColor ClusterBorder</code></td><td>Property</td><td>Gets or sets the border color for the cluster.</td></tr>
+      <tr><td><code>float Padding</code></td><td>Property</td><td>Gets or sets the padding around the cluster bounds.</td></tr>
+      <tr><td><code>NodeCluster()</code></td><td>Method</td><td>Initializes a new instance of the NodeCluster class.</td></tr>
+      <tr><td><code>void AddNode(NetworkNode node)</code></td><td>Method</td><td>Adds a node to this cluster. The node to add.</td></tr>
+      <tr><td><code>void RemoveNode(NetworkNode node)</code></td><td>Method</td><td>Removes a node from this cluster. The node to remove.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-nodeselectioneventargs">
+  <h2>NodeSelectionEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Event arguments for node selection events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>NetworkNode SelectedNode</code></td><td>Property</td><td>Gets the selected node.</td></tr>
+      <tr><td><code>NodeSelectionEventArgs(NetworkNode selectedNode)</code></td><td>Method</td><td>Initializes a new instance of the NodeSelectionEventArgs class. The selected node.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-pagerankresult">
+  <h2>PageRankResult <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PageRank scores keyed by node.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Dictionary&lt;NetworkNode, double&gt; Ranks</code></td><td>Property</td><td>Gets or sets the ranks.</td></tr>
+      <tr><td><code>int Iterations</code></td><td>Property</td><td>Gets or sets the iterations.</td></tr>
+      <tr><td><code>bool Converged</code></td><td>Property</td><td>Gets or sets the converged.</td></tr>
+      <tr><td><code>List&lt;KeyValuePair&lt;NetworkNode, double&gt;&gt; Top(int count)</code></td><td>Method</td><td>Returns the highest-ranked nodes.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-pathfinder">
+  <h2>PathFinder <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Path finder component that visualizes shortest paths between network nodes. Highlights the path and displays path metrics.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>NetworkNode StartNode</code></td><td>Property</td><td>Gets or sets the start node for path finding.</td></tr>
+      <tr><td><code>NetworkNode EndNode</code></td><td>Property</td><td>Gets or sets the end node for path finding.</td></tr>
+      <tr><td><code>List&lt;NetworkNode&gt; PathNodes</code></td><td>Property</td><td>Gets the list of nodes in the current path.</td></tr>
+      <tr><td><code>List&lt;NetworkLink&gt; PathLinks</code></td><td>Property</td><td>Gets the list of links in the current path.</td></tr>
+      <tr><td><code>int PathLength</code></td><td>Property</td><td>Gets or sets the path length (number of edges).</td></tr>
+      <tr><td><code>double PathCost</code></td><td>Property</td><td>Gets or sets the path cost/distance.</td></tr>
+      <tr><td><code>bool ShowMetrics</code></td><td>Property</td><td>Gets or sets whether to show path metrics.</td></tr>
+      <tr><td><code>PathFinder()</code></td><td>Method</td><td>Initializes a new instance of the PathFinder class.</td></tr>
+      <tr><td><code>void SetPath(List&lt;NetworkNode&gt; nodes, List&lt;NetworkLink&gt; links, double cost = 0.0)</code></td><td>Method</td><td>Sets the path to visualize. The nodes in the path. The links in the path. The path cost.</td></tr>
+      <tr><td><code>void ClearPath()</code></td><td>Method</td><td>Clears the current path.</td></tr>
+      <tr><td><code>void HighlightPathInNetwork()</code></td><td>Method</td><td>Highlights the path nodes and links in the network visualization. This method should be called by the parent graph component.</td></tr>
+      <tr><td><code>void ClearPathHighlighting()</code></td><td>Method</td><td>Clears path highlighting from the network.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-viewchangedeventargs">
+  <h2>ViewChangedEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Event arguments for view change events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>float ZoomLevel</code></td><td>Property</td><td>Gets the current zoom level.</td></tr>
+      <tr><td><code>float PanOffsetX</code></td><td>Property</td><td>Gets the pan offset X.</td></tr>
+      <tr><td><code>float PanOffsetY</code></td><td>Property</td><td>Gets the pan offset Y.</td></tr>
+      <tr><td><code>ViewChangedEventArgs(float zoomLevel, float panOffsetX, float panOffsetY)</code></td><td>Method</td><td>Initializes a new instance of the ViewChangedEventArgs class. The zoom level. The pan offset X. The pan offset Y.</td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+</body></html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WinForms controls | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>WinForms controls</span></nav>
+<div class="page-header"><h1>WinForms controls</h1><p class="page-subtitle">API reference for Beep.Skia.Winform.Controls (42 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.Winform.Controls</code> assembly: 42 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-skiabutton"><code>SkiaButton</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiacard"><code>SkiaCard</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiacascadingmenu"><code>SkiaCascadingMenu</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiacheckbox"><code>SkiaCheckBox</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiacolorconverter"><code>SkiaColorConverter</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiacombobox"><code>SkiaComboBox</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiacomponentpropertywrapper"><code>SkiaComponentPropertyWrapper</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiacontextmenu"><code>SkiaContextMenu</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiacontrol"><code>SkiaControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiacontroldesigner"><code>SkiaControlDesigner</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiadatagrid"><code>SkiaDataGrid</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiadatepicker"><code>SkiaDatePicker</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiaenumconverter"><code>SkiaEnumConverter</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiafabmenu"><code>SkiaFabMenu</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiafloatingactionbutton"><code>SkiaFloatingActionButton</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiahostcontrol"><code>SkiaHostControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiahostcontrolactionlist"><code>SkiaHostControlActionList</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiahostcontroldesigner"><code>SkiaHostControlDesigner</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skialabel"><code>SkiaLabel</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skialist"><code>SkiaList</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiamenu"><code>SkiaMenu</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiamenubar"><code>SkiaMenuBar</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiamenubutton"><code>SkiaMenuButton</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiamulticomponentwrapper"><code>SkiaMultiComponentWrapper</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skianavigationbar"><code>SkiaNavigationBar</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skianavigationdrawer"><code>SkiaNavigationDrawer</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skianodepropertydescriptor"><code>SkiaNodePropertyDescriptor</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiapanel"><code>SkiaPanel</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiaprogressbar"><code>SkiaProgressBar</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiasearch"><code>SkiaSearch</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiasegmentedbuttons"><code>SkiaSegmentedButtons</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiaslider"><code>SkiaSlider</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiaspinner"><code>SkiaSpinner</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiasplitbutton"><code>SkiaSplitButton</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiastatusbar"><code>SkiaStatusBar</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiasvgimage"><code>SkiaSvgImage</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiaswitch"><code>SkiaSwitch</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiatabs"><code>SkiaTabs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiatextarea"><code>SkiaTextArea</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiatextbox"><code>SkiaTextBox</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiatogglebutton"><code>SkiaToggleButton</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiatoolbar"><code>SkiaToolBar</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+</ul>
+<section class="section" id="type-skiabutton">
+  <h2>SkiaButton <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia Button component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaButton()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiacard">
+  <h2>SkiaCard <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia Card component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaCard()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiacascadingmenu">
+  <h2>SkiaCascadingMenu <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Skia CascadingMenu wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaCascadingMenu()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiacheckbox">
+  <h2>SkiaCheckBox <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia Checkbox component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaCheckBox()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiacolorconverter">
+  <h2>SkiaColorConverter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>TypeConverter for SKColor: edits colors as "#AARRGGBB" hex strings in the PropertyGrid.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static SKColor Parse(string text)</code></td><td>Method</td><td>Parses "#AARRGGBB", "#RRGGBB", or a named color; invalid input returns transparent.</td></tr>
+      <tr><td><code>static string Format(SKColor color)</code></td><td>Method</td><td>Formats a color as "#AARRGGBB".</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiacombobox">
+  <h2>SkiaComboBox <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia Dropdown component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaComboBox()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiacomponentpropertywrapper">
+  <h2>SkiaComponentPropertyWrapper <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Wraps a SkiaComponent to expose its NodeProperties in the Visual Studio PropertyGrid. Implements ICustomTypeDescriptor so the VS designer can display editable properties. Edits are applied back to the component (public setters) and reported through the change callback.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaComponent Component</code></td><td>Property</td><td>Gets or sets the component.</td></tr>
+      <tr><td><code>string ComponentTypeName</code></td><td>Property</td><td>Gets or sets the component type name.</td></tr>
+      <tr><td><code>string ComponentName</code></td><td>Property</td><td>Gets or sets the component name.</td></tr>
+      <tr><td><code>SkiaComponentPropertyWrapper(SkiaComponent component, Action&lt;SkiaComponent&gt; onChanged = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void Dispose()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiacontextmenu">
+  <h2>SkiaContextMenu <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia ContextMenu component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaContextMenu()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiacontrol">
+  <h2>SkiaControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaComponent SkiaComponent</code></td><td>Property</td><td>Gets or sets the skia component.</td></tr>
+      <tr><td><code>SkiaControl()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiacontroldesigner">
+  <h2>SkiaControlDesigner <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override void Initialize(IComponent component)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiadatagrid">
+  <h2>SkiaDataGrid <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia DataGrid component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaDataGrid()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiadatepicker">
+  <h2>SkiaDatePicker <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia DatePicker component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaDatePicker()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiaenumconverter">
+  <h2>SkiaEnumConverter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>TypeConverter that provides a dropdown list of string choices.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaEnumConverter(string[] values)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool GetStandardValuesSupported(ITypeDescriptorContext context)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool GetStandardValuesExclusive(ITypeDescriptorContext context)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiafabmenu">
+  <h2>SkiaFabMenu <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia FabMenu component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaFabMenu()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiafloatingactionbutton">
+  <h2>SkiaFloatingActionButton <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia FloatingActionButton component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaFloatingActionButton()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiahostcontrol">
+  <h2>SkiaHostControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Host control that provides a Skia drawing surface and a DrawingManager to host Skia components.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int ReloadExtensions()</code></td><td>Method</td><td>Reloads extensions from the install root and refreshes their palette entries. Returns the number of extension components added.</td></tr>
+      <tr><td><code>Beep.Skia.DrawingManager DrawingManager</code></td><td>Property</td><td>Gets or sets the drawing manager.</td></tr>
+      <tr><td><code>SkiaHostControl()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void RebuildCommentPins()</code></td><td>Method</td><td>Rebuilds comment pins from the current components and comments.</td></tr>
+      <tr><td><code>void RefreshCommentPins()</code></td><td>Method</td><td>Rebuilds comment pins and repaints the canvas.</td></tr>
+      <tr><td><code>Beep.Skia.Collaboration.DiagramComment AddCommentToSelection(string text, string authorId = "local")</code></td><td>Method</td><td>Adds a comment anchored to the first selected component. Returns null when nothing is selected or the user cannot comment.</td></tr>
+      <tr><td><code>bool ResolveComment(string commentId, string userId = "local")</code></td><td>Method</td><td>Resolves a comment by id and repaints.</td></tr>
+      <tr><td><code>void ExportToPng(string filePath, float scale = 2f)</code></td><td>Method</td><td>Exports the current diagram to a PNG file.</td></tr>
+      <tr><td><code>void ExportToSvg(string filePath)</code></td><td>Method</td><td>Exports the current diagram to an SVG file with a white background.</td></tr>
+      <tr><td><code>void ExportToPdf(string filePath)</code></td><td>Method</td><td>Exports the current diagram to a PDF file.</td></tr>
+      <tr><td><code>void PrintWithPreview()</code></td><td>Method</td><td>Shows a print preview for the current diagram.</td></tr>
+      <tr><td><code>void BeginInit()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SkiaComponentDescriptorCollection DesignTimeComponents</code></td><td>Property</td><td>Gets or sets the design time components.</td></tr>
+      <tr><td><code>bool BlockOverlappingDrops</code></td><td>Property</td><td>If true, component creation will be blocked when the new component's bounds overlap an existing component. Default false: overlaps allowed (prevents silent disappearance when dropping in same area).</td></tr>
+      <tr><td><code>Beep.Skia.SkiaComponent CreateAndAddComponent(Type componentType, float x, float y, float width, float height, string name)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>Beep.Skia.SkiaComponent CreateAndAddComponentFromDescriptor(SkiaComponentDescriptor desc)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiahostcontrolactionlist">
+  <h2>SkiaHostControlActionList <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Smart-tag action list for SkiaHostControl providing design-time verbs.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaHostControlActionList(SkiaHostControlDesigner designer)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>bool ShowGrid</code></td><td>Property</td><td>Gets or sets the show grid.</td></tr>
+      <tr><td><code>bool SnapToGrid</code></td><td>Property</td><td>Gets or sets the snap to grid.</td></tr>
+      <tr><td><code>void ClearAllComponents()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void ResetZoom()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void ArrangeDiagram()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override DesignerActionItemCollection GetSortedActionItems()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiahostcontroldesigner">
+  <h2>SkiaHostControlDesigner <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time designer for SkiaHostControl providing smart-tag verbs.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override DesignerActionListCollection ActionLists</code></td><td>Property</td><td>Gets or sets the action lists.</td></tr>
+      <tr><td><code>SkiaHostControl HostControl</code></td><td>Property</td><td>Gets or sets the host control.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skialabel">
+  <h2>SkiaLabel <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia Label component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaLabel()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skialist">
+  <h2>SkiaList <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia List component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaList()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiamenu">
+  <h2>SkiaMenu <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia Menu component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaMenu()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiamenubar">
+  <h2>SkiaMenuBar <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Skia MenuBar wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaMenuBar()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiamenubutton">
+  <h2>SkiaMenuButton <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Skia MenuButton wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaMenuButton()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiamulticomponentwrapper">
+  <h2>SkiaMultiComponentWrapper <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PropertyGrid wrapper for multiple selected components: exposes geometry plus the NodeProperties common to every selected component; edits apply to all of them.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IReadOnlyList&lt;SkiaComponent&gt; Components</code></td><td>Property</td><td>Gets or sets the components.</td></tr>
+      <tr><td><code>int Count</code></td><td>Property</td><td>Gets or sets the count.</td></tr>
+      <tr><td><code>SkiaMultiComponentWrapper(IReadOnlyList&lt;SkiaComponent&gt; components, Action&lt;IReadOnlyList&lt;SkiaComponent&gt;&gt; onChanged = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void Dispose()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skianavigationbar">
+  <h2>SkiaNavigationBar <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia NavigationBar component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaNavigationBar()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skianavigationdrawer">
+  <h2>SkiaNavigationDrawer <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Skia NavigationDrawer wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaNavigationDrawer()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skianodepropertydescriptor">
+  <h2>SkiaNodePropertyDescriptor <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Property descriptor for a single SkiaComponent NodeProperty. Supports enum choices, simple type conversion, and SKColor hex editing.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaNodePropertyDescriptor(string name, Type type, Func&lt;object&gt; getter, Action&lt;object&gt; setter, string category, string description, string[] choices = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Type ComponentType</code></td><td>Property</td><td>Gets or sets the component type.</td></tr>
+      <tr><td><code>override bool IsReadOnly</code></td><td>Property</td><td>Gets or sets the is read only.</td></tr>
+      <tr><td><code>override Type PropertyType</code></td><td>Property</td><td>Gets or sets the property type.</td></tr>
+      <tr><td><code>override string Description</code></td><td>Property</td><td>Gets or sets the description.</td></tr>
+      <tr><td><code>override string Category</code></td><td>Property</td><td>Gets or sets the category.</td></tr>
+      <tr><td><code>override bool CanResetValue(object component)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void ResetValue(object component) { }</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool ShouldSerializeValue(object component)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override object GetValue(object component)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetValue(object component, object value)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override TypeConverter Converter</code></td><td>Property</td><td>Gets or sets the converter.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiapanel">
+  <h2>SkiaPanel <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia Panel component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaPanel()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiaprogressbar">
+  <h2>SkiaProgressBar <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Skia ProgressBar wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaProgressBar()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiasearch">
+  <h2>SkiaSearch <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Skia Search wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSearch()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiasegmentedbuttons">
+  <h2>SkiaSegmentedButtons <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Skia SegmentedButtons wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSegmentedButtons()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiaslider">
+  <h2>SkiaSlider <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia Slider component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSlider()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiaspinner">
+  <h2>SkiaSpinner <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia Spinner component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSpinner()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiasplitbutton">
+  <h2>SkiaSplitButton <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Skia SplitButton wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSplitButton()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiastatusbar">
+  <h2>SkiaStatusBar <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia StatusBar component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaStatusBar()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiasvgimage">
+  <h2>SkiaSvgImage <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Skia SvgImage wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSvgImage()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiaswitch">
+  <h2>SkiaSwitch <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia Switch component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSwitch()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiatabs">
+  <h2>SkiaTabs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia Tabs component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaTabs()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiatextarea">
+  <h2>SkiaTextArea <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Skia TextArea wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaTextArea()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiatextbox">
+  <h2>SkiaTextBox <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia TextBox component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaTextBox()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiatogglebutton">
+  <h2>SkiaToggleButton <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia ToggleButton component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaToggleButton()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiatoolbar">
+  <h2>SkiaToolBar <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Design-time wrapper that creates a Skia ToolBar component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaToolBar()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+</body></html>

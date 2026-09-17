@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beep.Skia.Model | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>Beep.Skia.Model</span></nav>
+<div class="page-header"><h1>Beep.Skia.Model</h1><p class="page-subtitle">API reference for Beep.Skia.Model (67 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.Model</code> assembly: 67 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-cachemode"><code>CacheMode</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-columndefinition"><code>ColumnDefinition</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-componentpriority"><code>ComponentPriority</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-componentshape"><code>ComponentShape</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-componentstate"><code>ComponentState</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-connectionargs"><code>ConnectionArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-connectiondefinition"><code>ConnectionDefinition</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-connectioneventargs"><code>ConnectionEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-connectionpoint"><code>ConnectionPoint</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-connectionpointtype"><code>ConnectionPointType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-dataflowdirection"><code>DataFlowDirection</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-dataqualityrule"><code>DataQualityRule</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-datatype"><code>DataType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-derivedcolumndefinition"><code>DerivedColumnDefinition</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-drawingcontext"><code>DrawingContext</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-erdmultiplicity"><code>ERDMultiplicity</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-executioncontext"><code>ExecutionContext</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-executionpriority"><code>ExecutionPriority</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-flowanimationstyle"><code>FlowAnimationStyle</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-foreignkeydefinition"><code>ForeignKeyDefinition</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-groupboxborderstyle"><code>GroupBoxBorderStyle</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-iautomationnode"><code>IAutomationNode</code></a> <span style="color:var(--color-foreground-muted)">interface</span></li>
+  <li><a href="#type-iconnectionline"><code>IConnectionLine</code></a> <span style="color:var(--color-foreground-muted)">interface</span></li>
+  <li><a href="#type-iconnectionpoint"><code>IConnectionPoint</code></a> <span style="color:var(--color-foreground-muted)">interface</span></li>
+  <li><a href="#type-idrawablecomponent"><code>IDrawableComponent</code></a> <span style="color:var(--color-foreground-muted)">interface</span></li>
+  <li><a href="#type-indexdefinition"><code>IndexDefinition</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-interactioncontext"><code>InteractionContext</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-itrigger"><code>ITrigger</code></a> <span style="color:var(--color-foreground-muted)">interface</span></li>
+  <li><a href="#type-iworkflowengine"><code>IWorkflowEngine</code></a> <span style="color:var(--color-foreground-muted)">interface</span></li>
+  <li><a href="#type-labelplacement"><code>LabelPlacement</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-lineargs"><code>LineArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-lineroutingmode"><code>LineRoutingMode</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-linestatus"><code>LineStatus</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-logicaloperator"><code>LogicalOperator</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-lookupconfiguration"><code>LookupConfiguration</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mousebutton"><code>MouseButton</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-nodedefinition"><code>NodeDefinition</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-nodeerroreventargs"><code>NodeErrorEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-nodeexecution"><code>NodeExecution</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-nodeexecutioneventargs"><code>NodeExecutionEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-noderesult"><code>NodeResult</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-nodestatus"><code>NodeStatus</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-nodetype"><code>NodeType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-parameterinfo"><code>ParameterInfo</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-pointeventargs"><code>PointEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-retrybackoffstrategy"><code>RetryBackoffStrategy</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-retrypolicy"><code>RetryPolicy</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ruletype"><code>RuleType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-scdconfiguration"><code>ScdConfiguration</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-scdtype"><code>ScdType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-schemadiff"><code>SchemaDiff</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-schemadiffutil"><code>SchemaDiffUtil</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skiamenuitem"><code>SkiaMenuItem</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-skrecteventargs"><code>SKRectEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-splitcondition"><code>SplitCondition</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-timertriggermode"><code>TimerTriggerMode</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-triggerdefinition"><code>TriggerDefinition</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-triggererroreventargs"><code>TriggerErrorEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-triggereventargs"><code>TriggerEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-triggertype"><code>TriggerType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-validationresult"><code>ValidationResult</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-workflowdefinition"><code>WorkflowDefinition</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-workflowexecution"><code>WorkflowExecution</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-workflowexecutioneventargs"><code>WorkflowExecutionEventArgs</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-workflowresult"><code>WorkflowResult</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-workflowstatus"><code>WorkflowStatus</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-workflowvariable"><code>WorkflowVariable</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+</ul>
+<section class="section" id="type-cachemode">
+  <h2>CacheMode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-columndefinition">
+  <h2>ColumnDefinition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Describes a single column/attribute for ERD entities and ETL schemas.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Guid Id</code></td><td>Property</td><td>Gets or sets the id.</td></tr>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>string DataType</code></td><td>Property</td><td>Gets or sets the data type.</td></tr>
+      <tr><td><code>bool IsPrimaryKey</code></td><td>Property</td><td>Gets or sets the is primary key.</td></tr>
+      <tr><td><code>bool IsForeignKey</code></td><td>Property</td><td>Gets or sets the is foreign key.</td></tr>
+      <tr><td><code>bool IsNullable</code></td><td>Property</td><td>Gets or sets the is nullable.</td></tr>
+      <tr><td><code>string DefaultValue</code></td><td>Property</td><td>Gets or sets the default value.</td></tr>
+      <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-componentpriority">
+  <h2>ComponentPriority <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Defines the priority levels for component rendering and updates.</p>
+</section>
+<section class="section" id="type-componentshape">
+  <h2>ComponentShape <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the shape of a workflow component.</p>
+</section>
+<section class="section" id="type-componentstate">
+  <h2>ComponentState <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Represents the different states a component can be in during its lifecycle.</p>
+</section>
+<section class="section" id="type-connectionargs">
+  <h2>ConnectionArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides event arguments for connection-related events involving a single connection point.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IConnectionPoint IConnectionPoint</code></td><td>Property</td><td>Gets the connection point involved in the event.</td></tr>
+      <tr><td><code>ConnectionArgs(IConnectionPoint iConnectionPoint)</code></td><td>Method</td><td>Initializes a new instance of the ConnectionArgs class. The connection point involved in the event.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-connectiondefinition">
+  <h2>ConnectionDefinition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a connection between two nodes in a workflow.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ConnectionDefinition(string id, string sourceNodeId, string targetNodeId)</code></td><td>Method</td><td>Initializes a new instance of the ConnectionDefinition class. The unique identifier for the connection. The ID of the source node. The ID of the target node.</td></tr>
+      <tr><td><code>string Id</code></td><td>Property</td><td>Gets the unique identifier for the connection.</td></tr>
+      <tr><td><code>string SourceNodeId</code></td><td>Property</td><td>Gets the ID of the source node.</td></tr>
+      <tr><td><code>string TargetNodeId</code></td><td>Property</td><td>Gets the ID of the target node.</td></tr>
+      <tr><td><code>string SourceOutput</code></td><td>Property</td><td>Gets or sets the name of the output from the source node.</td></tr>
+      <tr><td><code>string TargetInput</code></td><td>Property</td><td>Gets or sets the name of the input to the target node.</td></tr>
+      <tr><td><code>string Condition</code></td><td>Property</td><td>Gets or sets the condition that must be met for this connection to be followed.</td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label to display on this connection.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata about this connection.</td></tr>
+      <tr><td><code>bool IsEnabled</code></td><td>Property</td><td>Gets or sets a value indicating whether this connection is enabled.</td></tr>
+      <tr><td><code>ValidationResult Validate()</code></td><td>Method</td><td>Validates this connection definition for correctness. A validation result indicating any issues found.</td></tr>
+      <tr><td><code>ConnectionDefinition Clone(string newId = null)</code></td><td>Method</td><td>Creates a copy of this connection definition. Optional new ID for the copied connection. A new ConnectionDefinition instance that is a copy of this one.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-connectioneventargs">
+  <h2>ConnectionEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides event arguments for connection events between connection points.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IConnectionPoint SourceIConnectionPoint</code></td><td>Property</td><td>Gets the source connection point of the connection.</td></tr>
+      <tr><td><code>IConnectionPoint TargetIConnectionPoint</code></td><td>Property</td><td>Gets the target connection point of the connection.</td></tr>
+      <tr><td><code>ConnectionEventArgs(IConnectionPoint sourceIConnectionPoint, IConnectionPoint targetIConnectionPoint)</code></td><td>Method</td><td>Initializes a new instance of the ConnectionEventArgs class. The source connection point. The target connection point.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-connectionpoint">
+  <h2>ConnectionPoint <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a simple connection point for automation nodes.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ConnectionPointType Type</code></td><td>Property</td><td>Gets or sets the type of this connection point (Input or Output).</td></tr>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name of this connection point.</td></tr>
+      <tr><td><code>string DataType</code></td><td>Property</td><td>Gets or sets the data type expected/provided by this connection point.</td></tr>
+      <tr><td><code>bool IsRequired</code></td><td>Property</td><td>Gets or sets whether this connection point is required.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata for this connection point.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-connectionpointtype">
+  <h2>ConnectionPointType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the type of a connection point (input or output).</p>
+</section>
+<section class="section" id="type-dataflowdirection">
+  <h2>DataFlowDirection <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Direction of animated data flow.</p>
+</section>
+<section class="section" id="type-dataqualityrule">
+  <h2>DataQualityRule <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a data quality validation rule for ETL processing.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>string ColumnName</code></td><td>Property</td><td>Gets or sets the column name.</td></tr>
+      <tr><td><code>RuleType Type</code></td><td>Property</td><td>Gets or sets the type.</td></tr>
+      <tr><td><code>string Expression</code></td><td>Property</td><td>Gets or sets the expression.</td></tr>
+      <tr><td><code>string ErrorMessage</code></td><td>Property</td><td>Gets or sets the error message.</td></tr>
+      <tr><td><code>bool StopOnError</code></td><td>Property</td><td>Gets or sets the stop on error.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-datatype">
+  <h2>DataType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the data type for workflow variables and parameters.</p>
+</section>
+<section class="section" id="type-derivedcolumndefinition">
+  <h2>DerivedColumnDefinition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a derived column definition for ETL transformations.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>string Expression</code></td><td>Property</td><td>Gets or sets the expression.</td></tr>
+      <tr><td><code>string DataType</code></td><td>Property</td><td>Gets or sets the data type.</td></tr>
+      <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-drawingcontext">
+  <h2>DrawingContext <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides context information for drawing operations.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>float Zoom</code></td><td>Property</td><td>Gets or sets the current zoom level.</td></tr>
+      <tr><td><code>SKPoint PanOffset</code></td><td>Property</td><td>Gets or sets the current pan offset.</td></tr>
+      <tr><td><code>object Theme</code></td><td>Property</td><td>Gets or sets the current theme or style information.</td></tr>
+      <tr><td><code>SKRect Bounds</code></td><td>Property</td><td>Gets or sets the visible bounds for clipping and optimization.</td></tr>
+      <tr><td><code>SKCanvas Canvas</code></td><td>Property</td><td>Gets or sets the canvas being drawn on.</td></tr>
+      <tr><td><code>SKPoint MousePosition</code></td><td>Property</td><td>Gets or sets the current mouse position.</td></tr>
+      <tr><td><code>object Parent</code></td><td>Property</td><td>Gets or sets the parent component.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Data</code></td><td>Property</td><td>Gets or sets additional context data.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-erdmultiplicity">
+  <h2>ERDMultiplicity <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>ERD multiplicity markers to draw at each end of a connection. Unspecified means no ERD-specific markers are rendered at that end.</p>
+</section>
+<section class="section" id="type-executioncontext">
+  <h2>ExecutionContext <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides execution context for automation nodes including input data, workflow state, and execution environment.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ExecutionContext(string workflowId, string executionId)</code></td><td>Method</td><td>Initializes a new instance of the ExecutionContext class. The ID of the workflow being executed. The unique ID for this execution instance.</td></tr>
+      <tr><td><code>string WorkflowId</code></td><td>Property</td><td>Gets the ID of the workflow being executed.</td></tr>
+      <tr><td><code>string ExecutionId</code></td><td>Property</td><td>Gets the unique ID for this execution instance.</td></tr>
+      <tr><td><code>DateTime StartTime</code></td><td>Property</td><td>Gets the time when this execution context was created.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Data</code></td><td>Property</td><td>Gets or sets the input data for the current node execution.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Variables</code></td><td>Property</td><td>Gets or sets the workflow variables accessible to all nodes.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets metadata about the execution environment.</td></tr>
+      <tr><td><code>List&lt;object&gt; PreviousResults</code></td><td>Property</td><td>Gets or sets the results from previous nodes in the workflow execution.</td></tr>
+      <tr><td><code>string UserId</code></td><td>Property</td><td>Gets or sets the user ID who initiated the workflow execution.</td></tr>
+      <tr><td><code>ExecutionPriority Priority</code></td><td>Property</td><td>Gets or sets the execution priority.</td></tr>
+      <tr><td><code>bool IsDebugMode</code></td><td>Property</td><td>Gets or sets a value indicating whether the execution is in debug mode.</td></tr>
+      <tr><td><code>TimeSpan? Timeout</code></td><td>Property</td><td>Gets or sets the maximum execution timeout.</td></tr>
+      <tr><td><code>ExecutionContext CreateChild(Dictionary&lt;string, object&gt; newData = null)</code></td><td>Method</td><td>Creates a copy of the current execution context with optionally modified data. New data to replace the current data, or null to keep existing data. A new ExecutionContext instance with the specified modifications.</td></tr>
+      <tr><td><code>T GetData&lt;T&gt;(string key, T defaultValue = default)</code></td><td>Method</td><td>Gets a strongly typed value from the data dictionary. The type to cast the value to. The key to look up. The default value to return if the key is not found. The value cast to the specified type, or the default value.</td></tr>
+      <tr><td><code>void SetData(string key, object value)</code></td><td>Method</td><td>Sets a value in the data dictionary. The key to set. The value to set.</td></tr>
+      <tr><td><code>T GetVariable&lt;T&gt;(string key, T defaultValue = default)</code></td><td>Method</td><td>Gets a strongly typed variable value. The type to cast the value to. The key to look up. The default value to return if the key is not found. The variable value cast to the specified type, or the default value.</td></tr>
+      <tr><td><code>void SetVariable(string key, object value)</code></td><td>Method</td><td>Sets a workflow variable value. The key to set. The value to set.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-executionpriority">
+  <h2>ExecutionPriority <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the execution priority of a workflow or node.</p>
+</section>
+<section class="section" id="type-flowanimationstyle">
+  <h2>FlowAnimationStyle <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Animation style for data flow visualization (LinkedIn infographic style).</p>
+</section>
+<section class="section" id="type-foreignkeydefinition">
+  <h2>ForeignKeyDefinition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Describes a foreign key constraint from one ERD entity to another.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>List&lt;string&gt; Columns</code></td><td>Property</td><td>Local column names forming the FK (order matters for composites).</td></tr>
+      <tr><td><code>string ReferencedEntity</code></td><td>Property</td><td>Referenced entity/table name. Use Schema.Target for fully-qualified if needed.</td></tr>
+      <tr><td><code>List&lt;string&gt; ReferencedColumns</code></td><td>Property</td><td>Referenced column names (order must match Columns).</td></tr>
+      <tr><td><code>string OnDelete</code></td><td>Property</td><td>On delete behavior (e.g., NO ACTION, CASCADE, SET NULL). Free-form for now.</td></tr>
+      <tr><td><code>string OnUpdate</code></td><td>Property</td><td>On update behavior (e.g., NO ACTION, CASCADE, SET NULL). Free-form for now.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-groupboxborderstyle">
+  <h2>GroupBoxBorderStyle <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the border style of a group box.</p>
+</section>
+<section class="section" id="type-iautomationnode">
+  <h2>IAutomationNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(interface)</span></h2>
+  <p>Represents a node in a workflow automation system that can execute actions, validate inputs, and handle state. This interface extends the visual component system to support executable workflow logic.</p>
+</section>
+<section class="section" id="type-iconnectionline">
+  <h2>IConnectionLine <span style="font-size:0.6em;color:var(--color-foreground-muted)">(interface)</span></h2>
+  <p>Represents a connection line between two workflow components in a Skia-based diagram. Connection lines can have arrows, labels, and support animation.</p>
+</section>
+<section class="section" id="type-iconnectionpoint">
+  <h2>IConnectionPoint <span style="font-size:0.6em;color:var(--color-foreground-muted)">(interface)</span></h2>
+  <p>Represents a connection point on a workflow component that can be used to create connections between components. Connection points can be either input or output points and support different shapes.</p>
+</section>
+<section class="section" id="type-idrawablecomponent">
+  <h2>IDrawableComponent <span style="font-size:0.6em;color:var(--color-foreground-muted)">(interface)</span></h2>
+  <p>Generic interface for drawable components that can be rendered on a Skia canvas. This interface provides the basic contract for any visual component in the Beep.Skia platform.</p>
+</section>
+<section class="section" id="type-indexdefinition">
+  <h2>IndexDefinition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Describes a database index for an ERD entity/table.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>bool IsUnique</code></td><td>Property</td><td>Gets or sets the is unique.</td></tr>
+      <tr><td><code>List&lt;string&gt; Columns</code></td><td>Property</td><td>Ordered list of column names participating in the index.</td></tr>
+      <tr><td><code>string Where</code></td><td>Property</td><td>Optional free-form filter/predicate for filtered indexes (dialect-specific).</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-interactioncontext">
+  <h2>InteractionContext <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides context information for user interaction operations.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKPoint MousePosition</code></td><td>Property</td><td>Gets or sets the current mouse position.</td></tr>
+      <tr><td><code>int MouseButton</code></td><td>Property</td><td>Gets or sets the mouse button that was pressed.</td></tr>
+      <tr><td><code>int Modifiers</code></td><td>Property</td><td>Gets or sets modifier keys that were pressed during the interaction.</td></tr>
+      <tr><td><code>bool IsControlPressed</code></td><td>Property</td><td>Gets a value indicating whether the Control key was pressed during the interaction.</td></tr>
+      <tr><td><code>bool IsShiftPressed</code></td><td>Property</td><td>Gets a value indicating whether the Shift key was pressed during the interaction.</td></tr>
+      <tr><td><code>bool IsAltPressed</code></td><td>Property</td><td>Gets a value indicating whether the Alt key was pressed during the interaction.</td></tr>
+      <tr><td><code>SKRect Bounds</code></td><td>Property</td><td>Gets the visible bounds for interaction checking.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Data</code></td><td>Property</td><td>Gets or sets additional context data.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-itrigger">
+  <h2>ITrigger <span style="font-size:0.6em;color:var(--color-foreground-muted)">(interface)</span></h2>
+  <p>Represents a trigger that can initiate workflow execution based on events or conditions. Triggers monitor external systems and activate workflows when specific conditions are met.</p>
+</section>
+<section class="section" id="type-iworkflowengine">
+  <h2>IWorkflowEngine <span style="font-size:0.6em;color:var(--color-foreground-muted)">(interface)</span></h2>
+  <p>Represents a workflow engine that can execute automation workflows with nodes and connections. The engine manages workflow lifecycle, execution scheduling, and state management.</p>
+</section>
+<section class="section" id="type-labelplacement">
+  <h2>LabelPlacement <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Where to place a label relative to the line.</p>
+</section>
+<section class="section" id="type-lineargs">
+  <h2>LineArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides event arguments for line-related events involving connection points and lines.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IConnectionPoint SourceIConnectionPoint</code></td><td>Property</td><td>Gets the source connection point of the line.</td></tr>
+      <tr><td><code>IConnectionPoint TargetIConnectionPoint</code></td><td>Property</td><td>Gets the target connection point of the line.</td></tr>
+      <tr><td><code>IConnectionLine ConnectionLine</code></td><td>Property</td><td>Gets the connection line associated with the event.</td></tr>
+      <tr><td><code>LineArgs(IConnectionPoint sourceIConnectionPoint, IConnectionPoint targetIConnectionPoint, IConnectionLine connectionLine)</code></td><td>Method</td><td>Initializes a new instance of the LineArgs class. The source connection point. The target connection point. The connection line.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-lineroutingmode">
+  <h2>LineRoutingMode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Routing modes for connection lines.</p>
+</section>
+<section class="section" id="type-linestatus">
+  <h2>LineStatus <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Status indicator shown on the line (e.g., spinner at midpoint).</p>
+</section>
+<section class="section" id="type-logicaloperator">
+  <h2>LogicalOperator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Logical operator for combining conditions in ConditionalNode.</p>
+</section>
+<section class="section" id="type-lookupconfiguration">
+  <h2>LookupConfiguration <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a lookup configuration for ETL enrichment.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ReferenceSource</code></td><td>Property</td><td>Gets or sets the reference source.</td></tr>
+      <tr><td><code>List&lt;string&gt; MatchColumns</code></td><td>Property</td><td>Gets or sets the match columns.</td></tr>
+      <tr><td><code>List&lt;string&gt; ReturnColumns</code></td><td>Property</td><td>Gets or sets the return columns.</td></tr>
+      <tr><td><code>CacheMode CacheMode</code></td><td>Property</td><td>Gets or sets the cache mode.</td></tr>
+      <tr><td><code>bool FailOnNoMatch</code></td><td>Property</td><td>Gets or sets the fail on no match.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mousebutton">
+  <h2>MouseButton <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies mouse button identifiers.</p>
+</section>
+<section class="section" id="type-nodedefinition">
+  <h2>NodeDefinition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents the definition of a single node within a workflow.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>NodeDefinition(string id, string name, NodeType nodeType, string componentType)</code></td><td>Method</td><td>Initializes a new instance of the NodeDefinition class. The unique identifier for the node. The display name of the node. The type of the node. The component type for creating the automation node.</td></tr>
+      <tr><td><code>string Id</code></td><td>Property</td><td>Gets the unique identifier for the node.</td></tr>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the display name of the node.</td></tr>
+      <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description of what this node does.</td></tr>
+      <tr><td><code>NodeType NodeType</code></td><td>Property</td><td>Gets the type of this node.</td></tr>
+      <tr><td><code>string ComponentType</code></td><td>Property</td><td>Gets the component type used to create the automation node instance.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Configuration</code></td><td>Property</td><td>Gets or sets the configuration parameters for this node.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata about this node.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; InputSchema</code></td><td>Property</td><td>Gets or sets the schema defining the input parameters this node expects.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; OutputSchema</code></td><td>Property</td><td>Gets or sets the schema defining the output parameters this node produces.</td></tr>
+      <tr><td><code>SKPoint Position</code></td><td>Property</td><td>Gets or sets the position of this node on the workflow canvas.</td></tr>
+      <tr><td><code>SKSize Size</code></td><td>Property</td><td>Gets or sets the size of this node on the workflow canvas.</td></tr>
+      <tr><td><code>bool IsEnabled</code></td><td>Property</td><td>Gets or sets a value indicating whether this node is enabled for execution.</td></tr>
+      <tr><td><code>TimeSpan? ExecutionTimeout</code></td><td>Property</td><td>Gets or sets the execution timeout for this specific node.</td></tr>
+      <tr><td><code>RetryPolicy RetryPolicy</code></td><td>Property</td><td>Gets or sets the retry policy for this node if execution fails.</td></tr>
+      <tr><td><code>ValidationResult Validate()</code></td><td>Method</td><td>Validates this node definition for correctness. A validation result indicating any issues found.</td></tr>
+      <tr><td><code>NodeDefinition Clone(string newId = null)</code></td><td>Method</td><td>Creates a copy of this node definition. Optional new ID for the copied node. A new NodeDefinition instance that is a copy of this one.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-nodeerroreventargs">
+  <h2>NodeErrorEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides data for automation node error events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>NodeErrorEventArgs(string nodeId, Exception exception, string errorMessage = null)</code></td><td>Method</td><td>Initializes a new instance of the NodeErrorEventArgs class. The ID of the node where the error occurred. The exception that caused the error. A descriptive error message.</td></tr>
+      <tr><td><code>string NodeId</code></td><td>Property</td><td>Gets the ID of the automation node where the error occurred.</td></tr>
+      <tr><td><code>Exception Exception</code></td><td>Property</td><td>Gets the exception that caused the error.</td></tr>
+      <tr><td><code>string ErrorMessage</code></td><td>Property</td><td>Gets the descriptive error message.</td></tr>
+      <tr><td><code>DateTime Timestamp</code></td><td>Property</td><td>Gets the timestamp when the error occurred.</td></tr>
+      <tr><td><code>bool Handled</code></td><td>Property</td><td>Gets or sets a value indicating whether the error was handled.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; AdditionalData</code></td><td>Property</td><td>Gets or sets additional error context data.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-nodeexecution">
+  <h2>NodeExecution <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents the execution of a single node within a workflow.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>NodeExecution(string nodeId, string executionId)</code></td><td>Method</td><td>Initializes a new instance of the NodeExecution class. The ID of the node being executed. The workflow execution ID.</td></tr>
+      <tr><td><code>string NodeId</code></td><td>Property</td><td>Gets the ID of the node being executed.</td></tr>
+      <tr><td><code>string ExecutionId</code></td><td>Property</td><td>Gets the workflow execution ID.</td></tr>
+      <tr><td><code>NodeStatus Status</code></td><td>Property</td><td>Gets or sets the current status of the node execution.</td></tr>
+      <tr><td><code>DateTime CreatedTime</code></td><td>Property</td><td>Gets the time when the node execution was created.</td></tr>
+      <tr><td><code>DateTime? StartTime</code></td><td>Property</td><td>Gets or sets the time when the node execution started.</td></tr>
+      <tr><td><code>DateTime? EndTime</code></td><td>Property</td><td>Gets or sets the time when the node execution completed.</td></tr>
+      <tr><td><code>TimeSpan? ExecutionTime</code></td><td>Property</td><td>Gets the execution time for this node.</td></tr>
+      <tr><td><code>NodeResult Result</code></td><td>Property</td><td>Gets or sets the result of the node execution.</td></tr>
+      <tr><td><code>string ErrorMessage</code></td><td>Property</td><td>Gets or sets error information if the node execution failed.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata about the node execution.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-nodeexecutioneventargs">
+  <h2>NodeExecutionEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides data for automation node execution events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>NodeExecutionEventArgs(string nodeId, NodeStatus previousStatus, NodeStatus currentStatus)</code></td><td>Method</td><td>Initializes a new instance of the NodeExecutionEventArgs class. The ID of the node. The previous status of the node. The current status of the node.</td></tr>
+      <tr><td><code>string NodeId</code></td><td>Property</td><td>Gets the ID of the automation node.</td></tr>
+      <tr><td><code>NodeStatus PreviousStatus</code></td><td>Property</td><td>Gets the previous status of the node.</td></tr>
+      <tr><td><code>NodeStatus CurrentStatus</code></td><td>Property</td><td>Gets the current status of the node.</td></tr>
+      <tr><td><code>DateTime Timestamp</code></td><td>Property</td><td>Gets the timestamp when the status change occurred.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; AdditionalData</code></td><td>Property</td><td>Gets or sets additional execution context data.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-noderesult">
+  <h2>NodeResult <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents the result of executing an automation node.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>NodeResult(bool success, Dictionary&lt;string, object&gt; outputData = null, string errorMessage = null)</code></td><td>Method</td><td>Initializes a new instance of the NodeResult class. Whether the execution was successful. The output data produced by the node. Error message if execution failed.</td></tr>
+      <tr><td><code>bool Success</code></td><td>Property</td><td>Gets a value indicating whether the node execution was successful.</td></tr>
+      <tr><td><code>bool IsSuccess</code></td><td>Property</td><td>Gets a value indicating whether the node execution was successful (alias for Success).</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; OutputData</code></td><td>Property</td><td>Gets the output data produced by the node execution.</td></tr>
+      <tr><td><code>string ErrorMessage</code></td><td>Property</td><td>Gets the error message if the execution failed.</td></tr>
+      <tr><td><code>TimeSpan ExecutionTime</code></td><td>Property</td><td>Gets or sets the time taken to execute the node.</td></tr>
+      <tr><td><code>DateTime Timestamp</code></td><td>Property</td><td>Gets the timestamp when the execution completed.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata about the execution.</td></tr>
+      <tr><td><code>Exception Exception</code></td><td>Property</td><td>Gets or sets the exception that caused the failure, if any.</td></tr>
+      <tr><td><code>static NodeResult CreateSuccess(Dictionary&lt;string, object&gt; outputData = null)</code></td><td>Method</td><td>Creates a successful node result. The output data produced by the node. A NodeResult indicating successful execution.</td></tr>
+      <tr><td><code>static NodeResult CreateFailure(string errorMessage, Exception exception = null)</code></td><td>Method</td><td>Creates a failed node result. The error message describing the failure. The exception that caused the failure. A NodeResult indicating failed execution.</td></tr>
+      <tr><td><code>T GetOutput&lt;T&gt;(string key, T defaultValue = default)</code></td><td>Method</td><td>Gets a strongly typed output value. The type to cast the value to. The key to look up. The default value to return if the key is not found. The output value cast to the specified type, or the default value.</td></tr>
+      <tr><td><code>void SetOutput(string key, object value)</code></td><td>Method</td><td>Sets an output value. The key to set. The value to set.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-nodestatus">
+  <h2>NodeStatus <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Represents the execution status of an automation node.</p>
+</section>
+<section class="section" id="type-nodetype">
+  <h2>NodeType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Represents the type of automation node in a workflow.</p>
+</section>
+<section class="section" id="type-parameterinfo">
+  <h2>ParameterInfo <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Describes a configurable parameter for a component/node, including type and values.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ParameterName</code></td><td>Property</td><td>Logical parameter name (unique within the owning component's Parameters dictionary key).</td></tr>
+      <tr><td><code>Type ParameterType</code></td><td>Property</td><td>CLR type of the parameter (e.g., typeof(string), typeof(int), typeof(bool), enum types, etc.). If null, the editor will infer type based on the current/default value runtime type.</td></tr>
+      <tr><td><code>object DefaultParameterValue</code></td><td>Property</td><td>Default value used when no current value has been set.</td></tr>
+      <tr><td><code>object ParameterCurrentValue</code></td><td>Property</td><td>The current value (user-edited) for this parameter.</td></tr>
+      <tr><td><code>string Description</code></td><td>Property</td><td>Optional description/help for UI.</td></tr>
+      <tr><td><code>string[] Choices</code></td><td>Property</td><td>Optional list of allowed string choices for this parameter. When provided, the editor will render a dropdown even if ParameterType is string.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-pointeventargs">
+  <h2>PointEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides event arguments for point-related events, such as mouse interactions.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>float X</code></td><td>Property</td><td>Gets or sets the X coordinate of the point.</td></tr>
+      <tr><td><code>float Y</code></td><td>Property</td><td>Gets or sets the Y coordinate of the point.</td></tr>
+      <tr><td><code>bool IsRightButton</code></td><td>Property</td><td>Gets or sets a value indicating whether the right mouse button was used.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-retrybackoffstrategy">
+  <h2>RetryBackoffStrategy <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the backoff strategy for retry delays.</p>
+</section>
+<section class="section" id="type-retrypolicy">
+  <h2>RetryPolicy <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a retry policy for node execution failures.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>RetryPolicy(int maxRetries, TimeSpan retryDelay)</code></td><td>Method</td><td>Initializes a new instance of the RetryPolicy class. The maximum number of retry attempts. The delay between retry attempts.</td></tr>
+      <tr><td><code>int MaxRetries</code></td><td>Property</td><td>Gets or sets the maximum number of retry attempts.</td></tr>
+      <tr><td><code>TimeSpan RetryDelay</code></td><td>Property</td><td>Gets or sets the delay between retry attempts.</td></tr>
+      <tr><td><code>RetryBackoffStrategy BackoffStrategy</code></td><td>Property</td><td>Gets or sets the backoff strategy for increasing delay between retries.</td></tr>
+      <tr><td><code>TimeSpan? MaxRetryDelay</code></td><td>Property</td><td>Gets or sets the maximum delay between retries when using backoff.</td></tr>
+      <tr><td><code>RetryPolicy Clone()</code></td><td>Method</td><td>Creates a copy of this retry policy. A new RetryPolicy instance that is a copy of this one.</td></tr>
+      <tr><td><code>static RetryPolicy None()</code></td><td>Method</td><td>Creates a no-retry policy. A RetryPolicy that does not retry on failure.</td></tr>
+      <tr><td><code>static RetryPolicy Simple(int maxRetries, int delaySeconds)</code></td><td>Method</td><td>Creates a simple retry policy with fixed delay. The maximum number of retries. The delay in seconds between retries. A RetryPolicy with the specified parameters.</td></tr>
+      <tr><td><code>static RetryPolicy ExponentialBackoff(int maxRetries, int initialDelaySeconds, int maxDelaySeconds)</code></td><td>Method</td><td>Creates an exponential backoff retry policy. The maximum number of retries. The initial delay in seconds. The maximum delay in seconds. A RetryPolicy with exponential backoff.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ruletype">
+  <h2>RuleType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-scdconfiguration">
+  <h2>ScdConfiguration <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents SCD (Slowly Changing Dimension) configuration.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ScdType Type</code></td><td>Property</td><td>Gets or sets the type.</td></tr>
+      <tr><td><code>List&lt;string&gt; BusinessKeys</code></td><td>Property</td><td>Gets or sets the business keys.</td></tr>
+      <tr><td><code>List&lt;string&gt; ChangeTrackingColumns</code></td><td>Property</td><td>Gets or sets the change tracking columns.</td></tr>
+      <tr><td><code>string EffectiveFromColumn</code></td><td>Property</td><td>Gets or sets the effective from column.</td></tr>
+      <tr><td><code>string EffectiveToColumn</code></td><td>Property</td><td>Gets or sets the effective to column.</td></tr>
+      <tr><td><code>string CurrentFlagColumn</code></td><td>Property</td><td>Gets or sets the current flag column.</td></tr>
+      <tr><td><code>string VersionColumn</code></td><td>Property</td><td>Gets or sets the version column.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-scdtype">
+  <h2>ScdType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-schemadiff">
+  <h2>SchemaDiff <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Structured diff between two schemas (expected vs actual) with specific categories.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;string&gt; MissingColumns</code></td><td>Property</td><td>Gets or sets the missing columns.</td></tr>
+      <tr><td><code>List&lt;(string Name, string ExpectedType, string ActualType)&gt; TypeDifferences</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>List&lt;(string Name, bool ExpectedNullable, bool ActualNullable)&gt; NullabilityDifferences</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>List&lt;(string Name, string ExpectedDefault, string ActualDefault)&gt; DefaultDifferences</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>bool HasDifferences()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-schemadiffutil">
+  <h2>SchemaDiffUtil <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static SchemaDiff Compute(IEnumerable&lt;ColumnDefinition&gt; expected, IEnumerable&lt;ColumnDefinition&gt; actual)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skiamenuitem">
+  <h2>SkiaMenuItem <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a menu item for Skia-based user interfaces.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string MenuText</code></td><td>Property</td><td>Gets or sets the text displayed for this menu item.</td></tr>
+      <tr><td><code>string IconText</code></td><td>Property</td><td>Gets or sets the icon text or symbol for this menu item.</td></tr>
+      <tr><td><code>string ForeColor</code></td><td>Property</td><td>Gets or sets the foreground color of this menu item.</td></tr>
+      <tr><td><code>string BackColor</code></td><td>Property</td><td>Gets or sets the background color of this menu item.</td></tr>
+      <tr><td><code>Action FunctionToExecute</code></td><td>Property</td><td>Gets or sets the action to execute when this menu item is selected.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-skrecteventargs">
+  <h2>SKRectEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides event arguments for bounds change events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKRect Bounds</code></td><td>Property</td><td>Gets the new bounds of the component.</td></tr>
+      <tr><td><code>SKRectEventArgs(SKRect bounds)</code></td><td>Method</td><td>Initializes a new instance of the SKRectEventArgs class. The new bounds of the component.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-splitcondition">
+  <h2>SplitCondition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a conditional split route in ETL processing.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>string Expression</code></td><td>Property</td><td>Gets or sets the expression.</td></tr>
+      <tr><td><code>int Order</code></td><td>Property</td><td>Gets or sets the order.</td></tr>
+      <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-timertriggermode">
+  <h2>TimerTriggerMode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Timer trigger mode for TimerTriggerNode.</p>
+</section>
+<section class="section" id="type-triggerdefinition">
+  <h2>TriggerDefinition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a trigger definition that can start a workflow.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>TriggerDefinition(string id, string name, TriggerType triggerType)</code></td><td>Method</td><td>Initializes a new instance of the TriggerDefinition class. The unique identifier for the trigger. The display name of the trigger. The type of the trigger.</td></tr>
+      <tr><td><code>string Id</code></td><td>Property</td><td>Gets the unique identifier for the trigger.</td></tr>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the display name of the trigger.</td></tr>
+      <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description of what this trigger monitors.</td></tr>
+      <tr><td><code>TriggerType TriggerType</code></td><td>Property</td><td>Gets the type of this trigger.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Configuration</code></td><td>Property</td><td>Gets or sets the configuration parameters for this trigger.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata about this trigger.</td></tr>
+      <tr><td><code>bool IsEnabled</code></td><td>Property</td><td>Gets or sets a value indicating whether this trigger is enabled.</td></tr>
+      <tr><td><code>TriggerDefinition Clone(string newId = null)</code></td><td>Method</td><td>Creates a copy of this trigger definition. Optional new ID for the copied trigger. A new TriggerDefinition instance that is a copy of this one.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-triggererroreventargs">
+  <h2>TriggerErrorEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides data for trigger error events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>TriggerErrorEventArgs(string triggerId, Exception exception, string errorMessage = null)</code></td><td>Method</td><td>Initializes a new instance of the TriggerErrorEventArgs class. The ID of the trigger where the error occurred. The exception that caused the error. A descriptive error message.</td></tr>
+      <tr><td><code>string TriggerId</code></td><td>Property</td><td>Gets the ID of the trigger where the error occurred.</td></tr>
+      <tr><td><code>Exception Exception</code></td><td>Property</td><td>Gets the exception that caused the error.</td></tr>
+      <tr><td><code>string ErrorMessage</code></td><td>Property</td><td>Gets the descriptive error message.</td></tr>
+      <tr><td><code>DateTime Timestamp</code></td><td>Property</td><td>Gets the timestamp when the error occurred.</td></tr>
+      <tr><td><code>bool Handled</code></td><td>Property</td><td>Gets or sets a value indicating whether the error was handled.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-triggereventargs">
+  <h2>TriggerEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides data for trigger activation events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>TriggerEventArgs(string triggerId, TriggerType triggerType, Dictionary&lt;string, object&gt; triggerData = null)</code></td><td>Method</td><td>Initializes a new instance of the TriggerEventArgs class. The ID of the trigger. The type of the trigger. Data associated with the trigger activation.</td></tr>
+      <tr><td><code>string TriggerId</code></td><td>Property</td><td>Gets the ID of the trigger.</td></tr>
+      <tr><td><code>TriggerType TriggerType</code></td><td>Property</td><td>Gets the type of the trigger.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; TriggerData</code></td><td>Property</td><td>Gets the data associated with the trigger activation.</td></tr>
+      <tr><td><code>DateTime Timestamp</code></td><td>Property</td><td>Gets the timestamp when the trigger was activated.</td></tr>
+      <tr><td><code>bool Cancel</code></td><td>Property</td><td>Gets or sets a value indicating whether the trigger activation should be cancelled.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-triggertype">
+  <h2>TriggerType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the type of trigger that can start a workflow.</p>
+</section>
+<section class="section" id="type-validationresult">
+  <h2>ValidationResult <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents the result of validating an automation node's configuration and input data.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ValidationResult(bool isValid, IEnumerable&lt;string&gt; errors = null)</code></td><td>Method</td><td>Initializes a new instance of the ValidationResult class. Whether the validation passed. Collection of validation errors, if any.</td></tr>
+      <tr><td><code>bool IsValid</code></td><td>Property</td><td>Gets a value indicating whether the validation passed.</td></tr>
+      <tr><td><code>IList&lt;string&gt; Errors</code></td><td>Property</td><td>Gets the collection of validation errors.</td></tr>
+      <tr><td><code>IList&lt;string&gt; Warnings</code></td><td>Property</td><td>Gets or sets additional validation warnings that don't prevent execution.</td></tr>
+      <tr><td><code>static ValidationResult Success()</code></td><td>Method</td><td>Creates a successful validation result. A ValidationResult indicating successful validation.</td></tr>
+      <tr><td><code>static ValidationResult Failure(params string[] errors)</code></td><td>Method</td><td>Creates a failed validation result with the specified errors. The validation errors. A ValidationResult indicating failed validation.</td></tr>
+      <tr><td><code>static ValidationResult Failure(IEnumerable&lt;string&gt; errors)</code></td><td>Method</td><td>Creates a failed validation result with the specified errors. The validation errors. A ValidationResult indicating failed validation.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-workflowdefinition">
+  <h2>WorkflowDefinition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents the definition of a workflow including its nodes, connections, and metadata. This class provides the blueprint for executing automation workflows.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>WorkflowDefinition(string id, string name)</code></td><td>Method</td><td>Initializes a new instance of the WorkflowDefinition class. The unique identifier for the workflow. The display name of the workflow.</td></tr>
+      <tr><td><code>string Id</code></td><td>Property</td><td>Gets the unique identifier for the workflow.</td></tr>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the display name of the workflow.</td></tr>
+      <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description of what this workflow does.</td></tr>
+      <tr><td><code>string Version</code></td><td>Property</td><td>Gets or sets the version of this workflow definition.</td></tr>
+      <tr><td><code>DateTime CreatedDate</code></td><td>Property</td><td>Gets the date when this workflow was created.</td></tr>
+      <tr><td><code>DateTime? LastModifiedDate</code></td><td>Property</td><td>Gets or sets the date when this workflow was last modified.</td></tr>
+      <tr><td><code>string Author</code></td><td>Property</td><td>Gets or sets the author of this workflow.</td></tr>
+      <tr><td><code>List&lt;string&gt; Tags</code></td><td>Property</td><td>Gets or sets the category or tags for organizing workflows.</td></tr>
+      <tr><td><code>bool IsEnabled</code></td><td>Property</td><td>Gets or sets a value indicating whether this workflow is enabled for execution.</td></tr>
+      <tr><td><code>IList&lt;NodeDefinition&gt; Nodes</code></td><td>Property</td><td>Gets the collection of nodes in this workflow.</td></tr>
+      <tr><td><code>IList&lt;ConnectionDefinition&gt; Connections</code></td><td>Property</td><td>Gets the collection of connections between nodes in this workflow.</td></tr>
+      <tr><td><code>IList&lt;WorkflowVariable&gt; Variables</code></td><td>Property</td><td>Gets the collection of workflow variables.</td></tr>
+      <tr><td><code>IList&lt;TriggerDefinition&gt; Triggers</code></td><td>Property</td><td>Gets the collection of triggers that can start this workflow.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Configuration</code></td><td>Property</td><td>Gets or sets the global configuration for this workflow.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata about this workflow.</td></tr>
+      <tr><td><code>TimeSpan? MaxExecutionTime</code></td><td>Property</td><td>Gets or sets the maximum execution timeout for this workflow.</td></tr>
+      <tr><td><code>ExecutionPriority Priority</code></td><td>Property</td><td>Gets or sets the execution priority for this workflow.</td></tr>
+      <tr><td><code>void AddNode(NodeDefinition node)</code></td><td>Method</td><td>Adds a node to the workflow. The node definition to add.</td></tr>
+      <tr><td><code>bool RemoveNode(string nodeId)</code></td><td>Method</td><td>Removes a node from the workflow and all its connections. The ID of the node to remove. True if the node was removed, false if it was not found.</td></tr>
+      <tr><td><code>void AddConnection(ConnectionDefinition connection)</code></td><td>Method</td><td>Adds a connection between two nodes. The connection definition to add.</td></tr>
+      <tr><td><code>bool RemoveConnection(string connectionId)</code></td><td>Method</td><td>Removes a connection from the workflow. The ID of the connection to remove. True if the connection was removed, false if it was not found.</td></tr>
+      <tr><td><code>IEnumerable&lt;NodeDefinition&gt; GetStartingNodes()</code></td><td>Method</td><td>Gets all nodes that should execute first (nodes with no incoming connections or trigger nodes). Collection of starting node definitions.</td></tr>
+      <tr><td><code>IEnumerable&lt;NodeDefinition&gt; GetSourceNodes(string nodeId)</code></td><td>Method</td><td>Gets all nodes that connect to the specified node as input. The ID of the target node. Collection of source node definitions.</td></tr>
+      <tr><td><code>IEnumerable&lt;NodeDefinition&gt; GetTargetNodes(string nodeId)</code></td><td>Method</td><td>Gets all nodes that connect from the specified node as output. The ID of the source node. Collection of target node definitions.</td></tr>
+      <tr><td><code>ValidationResult Validate()</code></td><td>Method</td><td>Validates the workflow definition for correctness and completeness. A validation result indicating any issues found.</td></tr>
+      <tr><td><code>WorkflowDefinition Clone(string newId = null, string newName = null)</code></td><td>Method</td><td>Creates a deep copy of this workflow definition. Optional new ID for the copied workflow. Optional new name for the copied workflow. A new WorkflowDefinition instance that is a copy of this one.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-workflowexecution">
+  <h2>WorkflowExecution <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents an active workflow execution with its current state and progress.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>WorkflowExecution(string executionId, string workflowId, ExecutionContext context)</code></td><td>Method</td><td>Initializes a new instance of the WorkflowExecution class. The unique execution ID. The ID of the workflow being executed. The execution context.</td></tr>
+      <tr><td><code>string ExecutionId</code></td><td>Property</td><td>Gets the unique execution ID.</td></tr>
+      <tr><td><code>string WorkflowId</code></td><td>Property</td><td>Gets the ID of the workflow being executed.</td></tr>
+      <tr><td><code>ExecutionContext Context</code></td><td>Property</td><td>Gets the execution context.</td></tr>
+      <tr><td><code>WorkflowStatus Status</code></td><td>Property</td><td>Gets or sets the current status of the execution.</td></tr>
+      <tr><td><code>DateTime CreatedTime</code></td><td>Property</td><td>Gets the time when the execution was created.</td></tr>
+      <tr><td><code>DateTime? StartTime</code></td><td>Property</td><td>Gets or sets the time when the execution started.</td></tr>
+      <tr><td><code>DateTime? EndTime</code></td><td>Property</td><td>Gets or sets the time when the execution completed.</td></tr>
+      <tr><td><code>TimeSpan? ExecutionTime</code></td><td>Property</td><td>Gets the total execution time.</td></tr>
+      <tr><td><code>string CurrentNodeId</code></td><td>Property</td><td>Gets or sets the current node being executed.</td></tr>
+      <tr><td><code>IList&lt;NodeExecution&gt; NodeExecutions</code></td><td>Property</td><td>Gets the collection of node executions within this workflow execution.</td></tr>
+      <tr><td><code>WorkflowResult Result</code></td><td>Property</td><td>Gets or sets the final result of the workflow execution.</td></tr>
+      <tr><td><code>string ErrorMessage</code></td><td>Property</td><td>Gets or sets error information if the execution failed.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata about the execution.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-workflowexecutioneventargs">
+  <h2>WorkflowExecutionEventArgs <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Provides data for workflow execution events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>WorkflowExecutionEventArgs(string workflowId, WorkflowStatus previousStatus, WorkflowStatus currentStatus)</code></td><td>Method</td><td>Initializes a new instance of the WorkflowExecutionEventArgs class. The ID of the workflow. The previous status of the workflow. The current status of the workflow.</td></tr>
+      <tr><td><code>string WorkflowId</code></td><td>Property</td><td>Gets the ID of the workflow.</td></tr>
+      <tr><td><code>WorkflowStatus PreviousStatus</code></td><td>Property</td><td>Gets the previous status of the workflow.</td></tr>
+      <tr><td><code>WorkflowStatus CurrentStatus</code></td><td>Property</td><td>Gets the current status of the workflow.</td></tr>
+      <tr><td><code>DateTime Timestamp</code></td><td>Property</td><td>Gets the timestamp when the status change occurred.</td></tr>
+      <tr><td><code>WorkflowResult Result</code></td><td>Property</td><td>Gets or sets the execution result if the workflow has completed.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; AdditionalData</code></td><td>Property</td><td>Gets or sets additional execution context data.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-workflowresult">
+  <h2>WorkflowResult <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents the result of executing a complete workflow.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>WorkflowResult(string workflowId, string executionId, WorkflowStatus status)</code></td><td>Method</td><td>Initializes a new instance of the WorkflowResult class. The ID of the executed workflow. The unique execution ID. The final status of the workflow execution.</td></tr>
+      <tr><td><code>string WorkflowId</code></td><td>Property</td><td>Gets the ID of the executed workflow.</td></tr>
+      <tr><td><code>string ExecutionId</code></td><td>Property</td><td>Gets the unique execution ID.</td></tr>
+      <tr><td><code>WorkflowStatus Status</code></td><td>Property</td><td>Gets the final status of the workflow execution.</td></tr>
+      <tr><td><code>DateTime StartTime</code></td><td>Property</td><td>Gets the time when the workflow execution started.</td></tr>
+      <tr><td><code>DateTime? EndTime</code></td><td>Property</td><td>Gets or sets the time when the workflow execution completed.</td></tr>
+      <tr><td><code>TimeSpan? ExecutionTime</code></td><td>Property</td><td>Gets the total execution time of the workflow.</td></tr>
+      <tr><td><code>IList&lt;NodeResult&gt; NodeResults</code></td><td>Property</td><td>Gets the results of individual node executions.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; OutputData</code></td><td>Property</td><td>Gets the final output data from the workflow execution.</td></tr>
+      <tr><td><code>IList&lt;string&gt; Errors</code></td><td>Property</td><td>Gets the collection of errors that occurred during execution.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Metadata</code></td><td>Property</td><td>Gets or sets additional metadata about the workflow execution.</td></tr>
+      <tr><td><code>void SetStatus(WorkflowStatus newStatus)</code></td><td>Method</td><td>Updates the workflow status and sets the end time if the workflow is completing. The new workflow status.</td></tr>
+      <tr><td><code>void AddNodeResult(NodeResult nodeResult)</code></td><td>Method</td><td>Adds a node execution result to the workflow result. The node execution result to add.</td></tr>
+      <tr><td><code>void AddError(string error)</code></td><td>Method</td><td>Adds an error to the workflow result. The error message to add.</td></tr>
+      <tr><td><code>T GetOutput&lt;T&gt;(string key, T defaultValue = default)</code></td><td>Method</td><td>Gets a strongly typed output value. The type to cast the value to. The key to look up. The default value to return if the key is not found. The output value cast to the specified type, or the default value.</td></tr>
+      <tr><td><code>void SetOutput(string key, object value)</code></td><td>Method</td><td>Sets an output value. The key to set. The value to set.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-workflowstatus">
+  <h2>WorkflowStatus <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the execution status of a workflow.</p>
+</section>
+<section class="section" id="type-workflowvariable">
+  <h2>WorkflowVariable <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a workflow variable that can be used across nodes.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>WorkflowVariable(string name, DataType dataType)</code></td><td>Method</td><td>Initializes a new instance of the WorkflowVariable class. The name of the variable. The data type of the variable.</td></tr>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets the name of the variable.</td></tr>
+      <tr><td><code>DataType DataType</code></td><td>Property</td><td>Gets or sets the data type of the variable.</td></tr>
+      <tr><td><code>string Description</code></td><td>Property</td><td>Gets or sets the description of what this variable is used for.</td></tr>
+      <tr><td><code>object DefaultValue</code></td><td>Property</td><td>Gets or sets the default value for this variable.</td></tr>
+      <tr><td><code>bool IsRequired</code></td><td>Property</td><td>Gets or sets a value indicating whether this variable is required.</td></tr>
+      <tr><td><code>bool IsReadOnly</code></td><td>Property</td><td>Gets or sets a value indicating whether this variable is read-only.</td></tr>
+      <tr><td><code>WorkflowVariable Clone()</code></td><td>Method</td><td>Creates a copy of this workflow variable. A new WorkflowVariable instance that is a copy of this one.</td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+</body></html>

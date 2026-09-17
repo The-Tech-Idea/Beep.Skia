@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>Security family</span></nav>
+<div class="page-header"><h1>Security family</h1><p class="page-subtitle">API reference for Beep.Skia.Security (29 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.Security</code> assembly: 29 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-assetcategory"><code>AssetCategory</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-assetnode"><code>AssetNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-confidence"><code>Confidence</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-controlnode"><code>ControlNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-controlstatus"><code>ControlStatus</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-controltype"><code>ControlType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-criticality"><code>Criticality</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-dreadcalculator"><code>DreadCalculator</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dreadrating"><code>DreadRating</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-dreadscore"><code>DreadScore</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-findingnode"><code>FindingNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-findingtype"><code>FindingType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-incidentnode"><code>IncidentNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-incidentstatus"><code>IncidentStatus</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-likelihood"><code>Likelihood</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-linkstyle"><code>LinkStyle</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-mitigationlink"><code>MitigationLink</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mitreattacklibrary"><code>MitreAttackLibrary</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mitretechnique"><code>MitreTechnique</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-policynode"><code>PolicyNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-policystatus"><code>PolicyStatus</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-riskassessmentnode"><code>RiskAssessmentNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-securitycontrol"><code>SecurityControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-severity"><code>Severity</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-strideanalyzer"><code>StrideAnalyzer</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-stridecategory"><code>StrideCategory</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-threatnode"><code>ThreatNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-threatresult"><code>ThreatResult</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-vulnerabilitynode"><code>VulnerabilityNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+</ul>
+<section class="section" id="type-assetcategory">
+  <h2>AssetCategory <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-assetnode">
+  <h2>AssetNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string AssetName</code></td><td>Property</td><td>Gets or sets the asset name.</td></tr>
+      <tr><td><code>AssetCategory Category</code></td><td>Property</td><td>Gets or sets the category.</td></tr>
+      <tr><td><code>Criticality Criticality</code></td><td>Property</td><td>Gets or sets the criticality.</td></tr>
+      <tr><td><code>AssetNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-confidence">
+  <h2>Confidence <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-controlnode">
+  <h2>ControlNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ControlName</code></td><td>Property</td><td>Gets or sets the control name.</td></tr>
+      <tr><td><code>ControlType ControlType</code></td><td>Property</td><td>Gets or sets the control type.</td></tr>
+      <tr><td><code>ControlStatus Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
+      <tr><td><code>ControlNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-controlstatus">
+  <h2>ControlStatus <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-controltype">
+  <h2>ControlType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-criticality">
+  <h2>Criticality <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-dreadcalculator">
+  <h2>DreadCalculator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Computes DREAD scores from threat severity and likelihood.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static DreadScore Calculate(ThreatNode threat)</code></td><td>Method</td><td>Computes a DREAD score for a threat node.</td></tr>
+      <tr><td><code>static DreadScore Calculate(Severity severity, Likelihood likelihood)</code></td><td>Method</td><td>Computes a DREAD score from severity and likelihood ratings.</td></tr>
+      <tr><td><code>static DreadScore Calculate(string severity, string likelihood)</code></td><td>Method</td><td>Computes a DREAD score from text values (e.g., STRIDE analyzer output). Unknown values fall back to Medium/Possible.</td></tr>
+      <tr><td><code>static string RiskLevel(double average)</code></td><td>Method</td><td>Maps an average DREAD rating to a risk level.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dreadrating">
+  <h2>DreadRating <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>DREAD rating level.</p>
+</section>
+<section class="section" id="type-dreadscore">
+  <h2>DreadScore <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DREAD risk score (Damage, Reproducibility, Exploitability, Affected users, Discoverability).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DreadRating Damage</code></td><td>Property</td><td>Gets or sets the damage.</td></tr>
+      <tr><td><code>DreadRating Reproducibility</code></td><td>Property</td><td>Gets or sets the reproducibility.</td></tr>
+      <tr><td><code>DreadRating Exploitability</code></td><td>Property</td><td>Gets or sets the exploitability.</td></tr>
+      <tr><td><code>DreadRating AffectedUsers</code></td><td>Property</td><td>Gets or sets the affected users.</td></tr>
+      <tr><td><code>DreadRating Discoverability</code></td><td>Property</td><td>Gets or sets the discoverability.</td></tr>
+      <tr><td><code>double Average</code></td><td>Property</td><td>Average rating (1.0 - 3.0).</td></tr>
+      <tr><td><code>string RiskLevel</code></td><td>Property</td><td>Risk level derived from the average (Low / Medium / High).</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-findingnode">
+  <h2>FindingNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>FindingType Type</code></td><td>Property</td><td>Gets or sets the type.</td></tr>
+      <tr><td><code>Confidence Confidence</code></td><td>Property</td><td>Gets or sets the confidence.</td></tr>
+      <tr><td><code>FindingNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-findingtype">
+  <h2>FindingType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-incidentnode">
+  <h2>IncidentNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string IncidentId</code></td><td>Property</td><td>Gets or sets the incident id.</td></tr>
+      <tr><td><code>IncidentStatus Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
+      <tr><td><code>DateTime DetectedOn</code></td><td>Property</td><td>Gets or sets the detected on.</td></tr>
+      <tr><td><code>Confidence Confidence</code></td><td>Property</td><td>Gets or sets the confidence.</td></tr>
+      <tr><td><code>IncidentNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-incidentstatus">
+  <h2>IncidentStatus <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-likelihood">
+  <h2>Likelihood <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-linkstyle">
+  <h2>LinkStyle <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-mitigationlink">
+  <h2>MitigationLink <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>float Thickness</code></td><td>Property</td><td>Gets or sets the thickness.</td></tr>
+      <tr><td><code>SKColor Color</code></td><td>Property</td><td>Gets or sets the color.</td></tr>
+      <tr><td><code>LinkStyle Style</code></td><td>Property</td><td>Gets or sets the style.</td></tr>
+      <tr><td><code>MitigationLink()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mitreattacklibrary">
+  <h2>MitreAttackLibrary <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A compact MITRE ATT&amp;amp;CK technique library with STRIDE category mapping, used to enrich threat models with adversary techniques.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static IReadOnlyList&lt;MitreTechnique&gt; Techniques</code></td><td>Property</td><td>All techniques in the library.</td></tr>
+      <tr><td><code>static IEnumerable&lt;string&gt; Tactics</code></td><td>Property</td><td>Distinct tactic names present in the library.</td></tr>
+      <tr><td><code>static IReadOnlyList&lt;MitreTechnique&gt; ForStrideCategory(StrideAnalyzer.StrideCategory category)</code></td><td>Method</td><td>Gets techniques relevant to a STRIDE category.</td></tr>
+      <tr><td><code>static MitreTechnique? Find(string id)</code></td><td>Method</td><td>Finds a technique by id (case-insensitive), e.g., "T1078".</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mitretechnique">
+  <h2>MitreTechnique <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A MITRE ATT&amp;amp;CK technique entry.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Id</code></td><td>Property</td><td>Gets or sets the id.</td></tr>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>string Tactic</code></td><td>Property</td><td>Gets or sets the tactic.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-policynode">
+  <h2>PolicyNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string PolicyName</code></td><td>Property</td><td>Gets or sets the policy name.</td></tr>
+      <tr><td><code>string Version</code></td><td>Property</td><td>Gets or sets the version.</td></tr>
+      <tr><td><code>PolicyStatus Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
+      <tr><td><code>PolicyNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-policystatus">
+  <h2>PolicyStatus <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-riskassessmentnode">
+  <h2>RiskAssessmentNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string AssessmentName</code></td><td>Property</td><td>Gets or sets the assessment name.</td></tr>
+      <tr><td><code>double RiskScore</code></td><td>Property</td><td>Gets or sets the risk score.</td></tr>
+      <tr><td><code>DateTime AssessedOn</code></td><td>Property</td><td>Gets or sets the assessed on.</td></tr>
+      <tr><td><code>RiskAssessmentNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-securitycontrol">
+  <h2>SecurityControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color.</td></tr>
+      <tr><td><code>SKColor BorderColor</code></td><td>Property</td><td>Gets or sets the border color.</td></tr>
+      <tr><td><code>float BorderThickness</code></td><td>Property</td><td>Gets or sets the border thickness.</td></tr>
+      <tr><td><code>int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
+      <tr><td><code>int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-severity">
+  <h2>Severity <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-strideanalyzer">
+  <h2>StrideAnalyzer <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Analyzes a security diagram using the STRIDE threat modeling methodology. Auto-generates threat nodes per asset based on STRIDE categories.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;ThreatResult&gt; Threats</code></td><td>Property</td><td>Gets or sets the threats.</td></tr>
+      <tr><td><code>void Analyze(IReadOnlyList&lt;SkiaComponent&gt; components)</code></td><td>Method</td><td>Runs STRIDE analysis on the given components.</td></tr>
+      <tr><td><code>static int CalculateDreadScore(int damage, int reproducibility, int exploitability, int affectedUsers, int discoverability)</code></td><td>Method</td><td>Calculates a DREAD risk score (0-15) for a given threat.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-stridecategory">
+  <h2>StrideCategory <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-threatnode">
+  <h2>ThreatNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ThreatName</code></td><td>Property</td><td>Gets or sets the threat name.</td></tr>
+      <tr><td><code>Severity Severity</code></td><td>Property</td><td>Gets or sets the severity.</td></tr>
+      <tr><td><code>Likelihood Likelihood</code></td><td>Property</td><td>Gets or sets the likelihood.</td></tr>
+      <tr><td><code>ThreatNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-threatresult">
+  <h2>ThreatResult <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+</section>
+<section class="section" id="type-vulnerabilitynode">
+  <h2>VulnerabilityNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string VulnId</code></td><td>Property</td><td>Gets or sets the vuln id.</td></tr>
+      <tr><td><code>Severity Severity</code></td><td>Property</td><td>Gets or sets the severity.</td></tr>
+      <tr><td><code>double Cvss</code></td><td>Property</td><td>Gets or sets the cvss.</td></tr>
+      <tr><td><code>string AffectedAsset</code></td><td>Property</td><td>Gets or sets the affected asset.</td></tr>
+      <tr><td><code>VulnerabilityNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+</body></html>

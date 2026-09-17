@@ -438,30 +438,30 @@ New-Page (Join-Path $help 'architecture\events.html') 'Event Model' 'Architectur
 
 # ------------------------------------------------------------------ api index
 $projects = @(
-    @{ Name = 'Beep.Skia'; Dir = 'Beep.Skia'; Page = 'core-concepts/skia-component.html' }
-    @{ Name = 'Beep.Skia.Model'; Dir = 'Beep.Skia.Model'; Page = 'core-concepts/skia-component.html' }
-    @{ Name = 'Beep.Skia.FlowChart'; Dir = 'Beep.Skia.FlowChart'; Page = 'diagram-families/flowchart.html' }
-    @{ Name = 'Beep.Skia.Business'; Dir = 'Beep.Skia.Business'; Page = 'diagram-families/business-process.html' }
-    @{ Name = 'Beep.Skia.ERD'; Dir = 'Beep.Skia.ERD'; Page = 'diagram-families/erd.html' }
-    @{ Name = 'Beep.Skia.DFD'; Dir = 'Beep.Skia.DFD'; Page = 'diagram-families/dfd.html' }
-    @{ Name = 'Beep.Skia.ETL'; Dir = 'Beep.Skia.ETL'; Page = 'diagram-families/etl.html' }
-    @{ Name = 'Beep.Skia.UML'; Dir = 'Beep.Skia.UML'; Page = 'diagram-families/uml.html' }
-    @{ Name = 'Beep.Skia.Network'; Dir = 'Beep.Skia.Network'; Page = 'diagram-families/network.html' }
-    @{ Name = 'Beep.Skia.PM'; Dir = 'Beep.Skia.PM'; Page = 'diagram-families/project-management.html' }
-    @{ Name = 'Beep.Skia.MindMap'; Dir = 'Beep.Skia.MindMap'; Page = 'diagram-families/mindmap.html' }
-    @{ Name = 'Beep.Skia.StateMachine'; Dir = 'Beep.Skia.StateMachine'; Page = 'diagram-families/state-machine.html' }
-    @{ Name = 'Beep.Skia.ECAD'; Dir = 'Beep.Skia.ECAD'; Page = 'diagram-families/ecad.html' }
-    @{ Name = 'Beep.Skia.Cloud'; Dir = 'Beep.Skia.Cloud'; Page = 'diagram-families/cloud.html' }
-    @{ Name = 'Beep.Skia.Security'; Dir = 'Beep.Skia.Security'; Page = 'diagram-families/security.html' }
-    @{ Name = 'Beep.Skia.ML'; Dir = 'Beep.Skia.ML'; Page = 'diagram-families/ml.html' }
-    @{ Name = 'Beep.Ski.Quantitative'; Dir = 'Beep.Ski.Quantitative'; Page = 'diagram-families/quantitative.html' }
-    @{ Name = 'Beep.Skia.WellLogs'; Dir = 'Beep.Skia.WellLogs'; Page = 'diagram-families/welllogs.html' }
-    @{ Name = 'Beep.Skia.Winform.Controls'; Dir = 'Beep.Skia.Winform.Controls'; Page = 'hosts/winforms.html' }
-    @{ Name = 'Beep.Skia.Wpf.Controls'; Dir = 'Beep.Skia.Wpf.Controls'; Page = 'guides/platforms.html' }
-    @{ Name = 'Beep.Skia.Blazor.Controls'; Dir = 'Beep.Skia.Blazor.Controls'; Page = 'guides/platforms.html' }
-    @{ Name = 'Beep.Skia.Maui.Controls'; Dir = 'Beep.Skia.Maui.Controls'; Page = 'guides/platforms.html' }
-    @{ Name = 'Beep.Skia.Avalonia.Controls'; Dir = 'Beep.Skia.Avalonia.Controls'; Page = 'guides/platforms.html' }
-    @{ Name = 'Beep.Skia.Loader'; Dir = 'Beep.Skia.Loader'; Page = 'guides/extensibility.html' }
+    @{ Name = 'Beep.Skia'; Dir = 'Beep.Skia'; Page = 'reference/beep-skia.html' }
+    @{ Name = 'Beep.Skia.Model'; Dir = 'Beep.Skia.Model'; Page = 'reference/beep-skia-model.html' }
+    @{ Name = 'Beep.Skia.FlowChart'; Dir = 'Beep.Skia.FlowChart'; Page = 'reference/beep-skia-flowchart.html' }
+    @{ Name = 'Beep.Skia.Business'; Dir = 'Beep.Skia.Business'; Page = 'reference/beep-skia-business.html' }
+    @{ Name = 'Beep.Skia.ERD'; Dir = 'Beep.Skia.ERD'; Page = 'reference/beep-skia-erd.html' }
+    @{ Name = 'Beep.Skia.DFD'; Dir = 'Beep.Skia.DFD'; Page = 'reference/beep-skia-dfd.html' }
+    @{ Name = 'Beep.Skia.ETL'; Dir = 'Beep.Skia.ETL'; Page = 'reference/beep-skia-etl.html' }
+    @{ Name = 'Beep.Skia.UML'; Dir = 'Beep.Skia.UML'; Page = 'reference/beep-skia-uml.html' }
+    @{ Name = 'Beep.Skia.Network'; Dir = 'Beep.Skia.Network'; Page = 'reference/beep-skia-network.html' }
+    @{ Name = 'Beep.Skia.PM'; Dir = 'Beep.Skia.PM'; Page = 'reference/beep-skia-pm.html' }
+    @{ Name = 'Beep.Skia.MindMap'; Dir = 'Beep.Skia.MindMap'; Page = 'reference/beep-skia-mindmap.html' }
+    @{ Name = 'Beep.Skia.StateMachine'; Dir = 'Beep.Skia.StateMachine'; Page = 'reference/beep-skia-statemachine.html' }
+    @{ Name = 'Beep.Skia.ECAD'; Dir = 'Beep.Skia.ECAD'; Page = 'reference/beep-skia-ecad.html' }
+    @{ Name = 'Beep.Skia.Cloud'; Dir = 'Beep.Skia.Cloud'; Page = 'reference/beep-skia-cloud.html' }
+    @{ Name = 'Beep.Skia.Security'; Dir = 'Beep.Skia.Security'; Page = 'reference/beep-skia-security.html' }
+    @{ Name = 'Beep.Skia.ML'; Dir = 'Beep.Skia.ML'; Page = 'reference/beep-skia-ml.html' }
+    @{ Name = 'Beep.Ski.Quantitative'; Dir = 'Beep.Ski.Quantitative'; Page = 'reference/beep-ski-quantitative.html' }
+    @{ Name = 'Beep.Skia.WellLogs'; Dir = 'Beep.Skia.WellLogs'; Page = 'reference/beep-skia-welllogs.html' }
+    @{ Name = 'Beep.Skia.Winform.Controls'; Dir = 'Beep.Skia.Winform.Controls'; Page = 'reference/beep-skia-winform-controls.html' }
+    @{ Name = 'Beep.Skia.Wpf.Controls'; Dir = 'Beep.Skia.Wpf.Controls'; Page = 'reference/beep-skia-wpf-controls.html' }
+    @{ Name = 'Beep.Skia.Blazor.Controls'; Dir = 'Beep.Skia.Blazor.Controls'; Page = 'reference/beep-skia-blazor-controls.html' }
+    @{ Name = 'Beep.Skia.Maui.Controls'; Dir = 'Beep.Skia.Maui.Controls'; Page = 'reference/beep-skia-maui-controls.html' }
+    @{ Name = 'Beep.Skia.Avalonia.Controls'; Dir = 'Beep.Skia.Avalonia.Controls'; Page = 'reference/beep-skia-avalonia-controls.html' }
+    @{ Name = 'Beep.Skia.Loader'; Dir = 'Beep.Skia.Loader'; Page = 'reference/beep-skia-loader.html' }
 )
 
 $indexSections = @()
@@ -476,7 +476,7 @@ foreach ($p in $projects) {
     $indexSections += [pscustomobject]@{
         Id = ($p.Name -replace '[^A-Za-z0-9]', '-').ToLowerInvariant()
         Heading = $p.Name
-        Description = "<a href=`"../$($p.Page)`">Documentation page for this project</a>"
+        Description = "<a href=`"$(($p.Page -replace '^reference/',''))`">Full API reference for this assembly</a>"
         Types = $null
         Code = $null
         CodeTitle = $null

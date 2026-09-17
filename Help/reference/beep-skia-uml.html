@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UML family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>UML family</span></nav>
+<div class="page-header"><h1>UML family</h1><p class="page-subtitle">API reference for Beep.Skia.UML (27 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.UML</code> assembly: 27 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-activitynodetype"><code>ActivityNodeType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-associationtype"><code>AssociationType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-messagetype"><code>MessageType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-umlactionnode"><code>UMLActionNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlactivationbar"><code>UMLActivationBar</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlactivitynode"><code>UMLActivityNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlactor"><code>UMLActor</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlartifactnode"><code>UMLArtifactNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlassociation"><code>UMLAssociation</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlclass"><code>UMLClass</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlcombinedfragment"><code>UMLCombinedFragment</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlcomponentnode"><code>UMLComponentNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlconditionnode"><code>UMLConditionNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlcontrol"><code>UMLControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umldatasourcenode"><code>UMLDataSourceNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umldeploymentnode"><code>UMLDeploymentNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlinheritance"><code>UMLInheritance</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlinterface"><code>UMLInterface</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umllifeline"><code>UMLLifeline</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlmessage"><code>UMLMessage</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umloutputnode"><code>UMLOutputNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlpackagenode"><code>UMLPackageNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlsystemboundary"><code>UMLSystemBoundary</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umltransformnode"><code>UMLTransformNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umltriggernode"><code>UMLTriggerNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-umlusecasenode"><code>UMLUseCaseNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-xmiexporter"><code>XmiExporter</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+</ul>
+<section class="section" id="type-activitynodetype">
+  <h2>ActivityNodeType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-associationtype">
+  <h2>AssociationType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Defines the types of UML associations.</p>
+</section>
+<section class="section" id="type-messagetype">
+  <h2>MessageType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Defines the types of UML messages.</p>
+</section>
+<section class="section" id="type-umlactionnode">
+  <h2>UMLActionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML representation of an action automation node. Displays as a rectangle with action-specific visual cues.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ActionType</code></td><td>Property</td><td>Gets or sets the action type (API, Database, File, etc.).</td></tr>
+      <tr><td><code>string ActionDescription</code></td><td>Property</td><td>Gets or sets the action description.</td></tr>
+      <tr><td><code>UMLActionNode()</code></td><td>Method</td><td>Initializes a new instance of the UMLActionNode class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlactivationbar">
+  <h2>UMLActivationBar <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML sequence activation bar — a narrow vertical rectangle placed on a lifeline to represent the period during which an object is active.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>UMLActivationBar()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlactivitynode">
+  <h2>UMLActivityNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML Activity Node — a rounded rectangle representing an action in an activity diagram.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ActionName</code></td><td>Property</td><td>Gets or sets the action name.</td></tr>
+      <tr><td><code>ActivityNodeType ActionType</code></td><td>Property</td><td>Gets or sets the action type.</td></tr>
+      <tr><td><code>UMLActivityNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlactor">
+  <h2>UMLActor <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a UML actor in use case diagrams. Displays a stick figure representation with an actor name below.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ActorName</code></td><td>Property</td><td>Gets or sets the name of the actor.</td></tr>
+      <tr><td><code>UMLActor()</code></td><td>Method</td><td>Initializes a new instance of the UMLActor class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlartifactnode">
+  <h2>UMLArtifactNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML Artifact node — a deployable file/artifact with a folded-corner icon and «artifact» stereotype.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ArtifactName</code></td><td>Property</td><td>Gets or sets the artifact name.</td></tr>
+      <tr><td><code>string FileName</code></td><td>Property</td><td>Gets or sets the file name.</td></tr>
+      <tr><td><code>UMLArtifactNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlassociation">
+  <h2>UMLAssociation <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a UML association relationship between two UML elements. Can display multiplicity and role names.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string SourceMultiplicity</code></td><td>Property</td><td>Gets or sets the multiplicity at the source end.</td></tr>
+      <tr><td><code>string TargetMultiplicity</code></td><td>Property</td><td>Gets or sets the multiplicity at the target end.</td></tr>
+      <tr><td><code>string SourceRole</code></td><td>Property</td><td>Gets or sets the role name at the source end.</td></tr>
+      <tr><td><code>string TargetRole</code></td><td>Property</td><td>Gets or sets the role name at the target end.</td></tr>
+      <tr><td><code>AssociationType AssociationType</code></td><td>Property</td><td>Gets or sets the type of association.</td></tr>
+      <tr><td><code>bool ShowDataFlow</code></td><td>Property</td><td>Gets or sets whether to show animated data flow for this association. Useful for associations that represent data flow or communication relationships.</td></tr>
+      <tr><td><code>string DataType</code></td><td>Property</td><td>Gets or sets the data type for the association (used for data flow visualization).</td></tr>
+      <tr><td><code>UMLAssociation() : base(()</code></td><td>Method</td><td>Initializes a new instance of the UMLAssociation class.</td></tr>
+      <tr><td><code>new void Draw(SKCanvas canvas)</code></td><td>Method</td><td>Draws the association line with UML-specific decorations. The canvas to draw on.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlclass">
+  <h2>UMLClass <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a UML class in a class diagram. Displays class name, attributes, and operations in separate compartments.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ClassName</code></td><td>Property</td><td>Gets or sets the name of the class.</td></tr>
+      <tr><td><code>List&lt;string&gt; Attributes</code></td><td>Property</td><td>Gets or sets the list of attributes for this class.</td></tr>
+      <tr><td><code>string AttributesText</code></td><td>Property</td><td>Gets or sets the attributes text.</td></tr>
+      <tr><td><code>List&lt;string&gt; Operations</code></td><td>Property</td><td>Gets or sets the list of operations for this class.</td></tr>
+      <tr><td><code>string OperationsText</code></td><td>Property</td><td>Gets or sets the operations text.</td></tr>
+      <tr><td><code>bool IsAbstract</code></td><td>Property</td><td>Gets or sets the is abstract.</td></tr>
+      <tr><td><code>UMLClass()</code></td><td>Method</td><td>Initializes a new instance of the UMLClass class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlcombinedfragment">
+  <h2>UMLCombinedFragment <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML combined fragment (sequence diagram) — a frame with an operator tab (alt, opt, loop, par, break, critical, neg, assert, ignore, consider) and an optional guard.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static readonly string[] Operators =</code></td><td>Field</td><td>Supported interaction operators.</td></tr>
+      <tr><td><code>string Operator</code></td><td>Property</td><td>Gets or sets the operator.</td></tr>
+      <tr><td><code>string GuardCondition</code></td><td>Property</td><td>Gets or sets the guard condition.</td></tr>
+      <tr><td><code>UMLCombinedFragment()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlcomponentnode">
+  <h2>UMLComponentNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML Component node — a modular part of a system with provided and required interfaces. Rendered as a rectangle with the component icon (two tabs) and a «component» stereotype.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ComponentName</code></td><td>Property</td><td>Gets or sets the component name.</td></tr>
+      <tr><td><code>string ProvidedInterfaces</code></td><td>Property</td><td>Gets or sets the provided interfaces.</td></tr>
+      <tr><td><code>string RequiredInterfaces</code></td><td>Property</td><td>Gets or sets the required interfaces.</td></tr>
+      <tr><td><code>UMLComponentNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlconditionnode">
+  <h2>UMLConditionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML representation of a condition automation node. Displays as a diamond shape with condition-specific visual cues.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ConditionExpression</code></td><td>Property</td><td>Gets or sets the condition expression.</td></tr>
+      <tr><td><code>string ConditionType</code></td><td>Property</td><td>Gets or sets the condition type (Boolean, Comparison, Complex).</td></tr>
+      <tr><td><code>UMLConditionNode()</code></td><td>Method</td><td>Initializes a new instance of the UMLConditionNode class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlcontrol">
+  <h2>UMLControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Base class for all UML diagram elements in the Beep.Skia.UML framework. Provides common functionality for UML-specific controls.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Stereotype</code></td><td>Property</td><td>Gets or sets the stereotype of this UML element (e.g., "&gt;", "&gt;").</td></tr>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of this UML element.</td></tr>
+      <tr><td><code>SKColor BorderColor</code></td><td>Property</td><td>Gets or sets the border color of this UML element.</td></tr>
+      <tr><td><code>float BorderThickness</code></td><td>Property</td><td>Gets or sets the border thickness.</td></tr>
+      <tr><td><code>SKColor SelectionColor</code></td><td>Property</td><td>Gets or sets the selection color.</td></tr>
+      <tr><td><code>override List&lt;IConnectionPoint&gt; InConnectionPoints</code></td><td>Property</td><td>UML input connection points (persisted).</td></tr>
+      <tr><td><code>override List&lt;IConnectionPoint&gt; OutConnectionPoints</code></td><td>Property</td><td>UML output connection points (same instances, UML treats ports as bidirectional visually).</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umldatasourcenode">
+  <h2>UMLDataSourceNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML representation of a data source automation node. Displays as a cylinder shape with data source-specific visual cues.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>UMLDataSourceNode()</code></td><td>Method</td><td>Initializes a new instance of the UMLDataSourceNode class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umldeploymentnode">
+  <h2>UMLDeploymentNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML Deployment node — a physical or execution environment (device / execution environment). Rendered as a 3D box with the «node» stereotype.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string NodeName</code></td><td>Property</td><td>Gets or sets the node name.</td></tr>
+      <tr><td><code>string NodeType</code></td><td>Property</td><td>Gets or sets the node type.</td></tr>
+      <tr><td><code>UMLDeploymentNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlinheritance">
+  <h2>UMLInheritance <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a UML inheritance relationship between classes. Displays a solid line with a triangle arrowhead pointing to the parent class.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>UMLInheritance() : base(()</code></td><td>Method</td><td>Initializes a new instance of the UMLInheritance class.</td></tr>
+      <tr><td><code>new void Draw(SKCanvas canvas)</code></td><td>Method</td><td>Draws the inheritance relationship with a triangle arrowhead. The canvas to draw on.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlinterface">
+  <h2>UMLInterface <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a UML interface in a class diagram. Displays interface name and operations with interface notation.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string InterfaceName</code></td><td>Property</td><td>Gets or sets the name of the interface.</td></tr>
+      <tr><td><code>List&lt;string&gt; Operations</code></td><td>Property</td><td>Gets or sets the list of operations for this interface.</td></tr>
+      <tr><td><code>string OperationsText</code></td><td>Property</td><td>Gets or sets the operations text.</td></tr>
+      <tr><td><code>UMLInterface()</code></td><td>Method</td><td>Initializes a new instance of the UMLInterface class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umllifeline">
+  <h2>UMLLifeline <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ObjectName</code></td><td>Property</td><td>Gets or sets the object name.</td></tr>
+      <tr><td><code>string ClassName</code></td><td>Property</td><td>Gets or sets the class name.</td></tr>
+      <tr><td><code>float LifelineLength</code></td><td>Property</td><td>Gets or sets the lifeline length.</td></tr>
+      <tr><td><code>UMLLifeline()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlmessage">
+  <h2>UMLMessage <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a UML message in sequence diagrams. Displays arrows between lifelines with different styles for different message types.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string MessageText</code></td><td>Property</td><td>Gets or sets the message text/label.</td></tr>
+      <tr><td><code>MessageType MessageType</code></td><td>Property</td><td>Gets or sets the type of message.</td></tr>
+      <tr><td><code>string SequenceNumber</code></td><td>Property</td><td>Gets or sets the sequence number (optional).</td></tr>
+      <tr><td><code>bool ShowDataFlow</code></td><td>Property</td><td>Gets or sets whether to show animated data flow for this message. Useful for visualizing data flow in sequence diagrams.</td></tr>
+      <tr><td><code>string ReturnDataType</code></td><td>Property</td><td>Gets or sets the return data type for the message (used for data flow visualization).</td></tr>
+      <tr><td><code>UMLMessage() : base(()</code></td><td>Method</td><td>Initializes a new instance of the UMLMessage class.</td></tr>
+      <tr><td><code>new void Draw(SKCanvas canvas)</code></td><td>Method</td><td>Draws the message arrow with appropriate styling. The canvas to draw on.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umloutputnode">
+  <h2>UMLOutputNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML representation of an output automation node. Displays as a rounded rectangle with output-specific visual cues.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>UMLOutputNode()</code></td><td>Method</td><td>Initializes a new instance of the UMLOutputNode class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlpackagenode">
+  <h2>UMLPackageNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML Package Node — a tabbed folder shape representing a namespace or module.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string PackageName</code></td><td>Property</td><td>Gets or sets the package name.</td></tr>
+      <tr><td><code>UMLPackageNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlsystemboundary">
+  <h2>UMLSystemBoundary <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML System Boundary — a rectangle that groups related use cases. Rendered with a dashed border and optional title at the top-left.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string SystemName</code></td><td>Property</td><td>Gets or sets the system name.</td></tr>
+      <tr><td><code>UMLSystemBoundary()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umltransformnode">
+  <h2>UMLTransformNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML representation of a transform automation node. Displays as a hexagon shape with transform-specific visual cues.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>UMLTransformNode()</code></td><td>Method</td><td>Initializes a new instance of the UMLTransformNode class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umltriggernode">
+  <h2>UMLTriggerNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML representation of a trigger automation node. Displays as a rounded rectangle with trigger-specific visual cues.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string TriggerType</code></td><td>Property</td><td>Gets or sets the trigger type (Event, Schedule, Manual, etc.).</td></tr>
+      <tr><td><code>string TriggerCondition</code></td><td>Property</td><td>Gets or sets the trigger condition or schedule.</td></tr>
+      <tr><td><code>UMLTriggerNode()</code></td><td>Method</td><td>Initializes a new instance of the UMLTriggerNode class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-umlusecasenode">
+  <h2>UMLUseCaseNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>UML Use Case node — an oval representing a user goal or system function.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string UseCaseName</code></td><td>Property</td><td>Gets or sets the use case name.</td></tr>
+      <tr><td><code>UMLUseCaseNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-xmiexporter">
+  <h2>XmiExporter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Exports a UML class-style diagram to XMI 2.5 (UML 2.5) for interchange with UML tools (Enterprise Architect, Papyrus, StarUML, Visual Paradigm, etc.). Maps classes, interfaces, actors, use cases, and packages, plus associations, inheritance (generalizations), and member text.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Export(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines, string modelName = "Model")</code></td><td>Method</td><td>Exports components and lines to XMI.</td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+</body></html>

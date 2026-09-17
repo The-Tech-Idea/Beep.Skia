@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mind map family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>Mind map family</span></nav>
+<div class="page-header"><h1>Mind map family</h1><p class="page-subtitle">API reference for Beep.Skia.MindMap (9 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.MindMap</code> assembly: 9 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-centralnode"><code>CentralNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mindmapcontrol"><code>MindMapControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mindmaplayout"><code>MindMapLayout</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mindmaprichtext"><code>MindMapRichText</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mindmapvisibility"><code>MindMapVisibility</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-notenode"><code>NoteNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-richtextspan"><code>RichTextSpan</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-subtopicnode"><code>SubTopicNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-topicnode"><code>TopicNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+</ul>
+<section class="section" id="type-centralnode">
+  <h2>CentralNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>string? Notes</code></td><td>Property</td><td>Gets or sets the notes.</td></tr>
+      <tr><td><code>CentralNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mindmapcontrol">
+  <h2>MindMapControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Base control for Mind Map nodes providing Material theming and standardized port management.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color.</td></tr>
+      <tr><td><code>SKColor BorderColor</code></td><td>Property</td><td>Gets or sets the border color.</td></tr>
+      <tr><td><code>float BorderThickness</code></td><td>Property</td><td>Gets or sets the border thickness.</td></tr>
+      <tr><td><code>string Icon</code></td><td>Property</td><td>Optional icon text (emoji or short glyph) drawn at the node's top-left corner.</td></tr>
+      <tr><td><code>bool IsCollapsed</code></td><td>Property</td><td>When true, descendant nodes and their connecting lines are hidden (apply with Apply).</td></tr>
+      <tr><td><code>int InPortCount</code></td><td>Property</td><td>Number of input and output ports (exposed for persistence/editors). Setting these will resize the underlying port collections and relayout.</td></tr>
+      <tr><td><code>int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mindmaplayout">
+  <h2>MindMapLayout <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Radial mind-map auto-layout. The central node is placed at Center; level-1 topics are distributed around it, and deeper levels fan out within each parent's angular sector. Components not connected to the tree are placed in a row below.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>float LevelSpacing</code></td><td>Property</td><td>Distance from the central node to level-1 topics.</td></tr>
+      <tr><td><code>float SubLevelSpacing</code></td><td>Property</td><td>Distance from a parent to its child for levels deeper than one.</td></tr>
+      <tr><td><code>SKPoint Center</code></td><td>Property</td><td>Center point of the radial arrangement.</td></tr>
+      <tr><td><code>float UnconnectedSpacing</code></td><td>Property</td><td>Vertical gap used when parking unconnected components.</td></tr>
+      <tr><td><code>void Arrange(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mindmaprichtext">
+  <h2>MindMapRichText <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Minimal rich-text support for mind-map notes: **bold**, *italic*, bullet lines ("- item" / "* item"), automatic word wrapping, and line breaks.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static List&lt;RichTextSpan&gt; Parse(string text)</code></td><td>Method</td><td>Parses rich text into formatted spans (line breaks included).</td></tr>
+      <tr><td><code>static void Draw(SKCanvas canvas, string text, SKRect bounds, SKColor color, float fontSize = 11f, float lineHeight = 15f)</code></td><td>Method</td><td>Draws rich text inside the given bounds with word wrapping.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mindmapvisibility">
+  <h2>MindMapVisibility <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Applies collapse/expand visibility across a mind map: descendants of collapsed nodes (and their connecting lines) are hidden; everything else is restored to visible.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static int Apply(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Recomputes node and line visibility from IsCollapsed. The number of components/lines whose visibility changed.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-notenode">
+  <h2>NoteNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>string? Notes</code></td><td>Property</td><td>Gets or sets the notes.</td></tr>
+      <tr><td><code>NoteNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-richtextspan">
+  <h2>RichTextSpan <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A formatted span of mind-map note text.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text.</td></tr>
+      <tr><td><code>bool Bold</code></td><td>Property</td><td>Gets or sets the bold.</td></tr>
+      <tr><td><code>bool Italic</code></td><td>Property</td><td>Gets or sets the italic.</td></tr>
+      <tr><td><code>bool IsBullet</code></td><td>Property</td><td>Gets or sets the is bullet.</td></tr>
+      <tr><td><code>bool IsLineBreak</code></td><td>Property</td><td>Gets or sets the is line break.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-subtopicnode">
+  <h2>SubTopicNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>string? Notes</code></td><td>Property</td><td>Gets or sets the notes.</td></tr>
+      <tr><td><code>SubTopicNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-topicnode">
+  <h2>TopicNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>string? Notes</code></td><td>Property</td><td>Gets or sets the notes.</td></tr>
+      <tr><td><code>TopicNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+</body></html>

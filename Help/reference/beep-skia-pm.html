@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project management family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>Project management family</span></nav>
+<div class="page-header"><h1>Project management family</h1><p class="page-subtitle">API reference for Beep.Skia.PM (17 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.PM</code> assembly: 17 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-budgetnode"><code>BudgetNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-criticalpathcalculator"><code>CriticalPathCalculator</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-criticalpathnode"><code>CriticalPathNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-deliverablenode"><code>DeliverableNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dependencynode"><code>DependencyNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ganttbarnode"><code>GanttBarNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ganttrow"><code>GanttRow</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-gantttimelinenode"><code>GanttTimelineNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-issuenode"><code>IssueNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-milestonenode"><code>MilestoneNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-phasenode"><code>PhaseNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-pmcontrol"><code>PMControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-resourcenode"><code>ResourceNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-risknode"><code>RiskNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-summarynode"><code>SummaryNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-tasknode"><code>TaskNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-taskschedule"><code>TaskSchedule</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+</ul>
+<section class="section" id="type-budgetnode">
+  <h2>BudgetNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PM Budget node: tracks project budget and costs. Dollar sign icon with budget vs actual comparison.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string BudgetName</code></td><td>Property</td><td>Gets or sets the budget name.</td></tr>
+      <tr><td><code>decimal PlannedBudget</code></td><td>Property</td><td>Gets or sets the planned budget.</td></tr>
+      <tr><td><code>decimal ActualCost</code></td><td>Property</td><td>Gets or sets the actual cost.</td></tr>
+      <tr><td><code>string Currency</code></td><td>Property</td><td>Gets or sets the currency.</td></tr>
+      <tr><td><code>BudgetNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-criticalpathcalculator">
+  <h2>CriticalPathCalculator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Calculates the critical path for a project network diagram. Uses forward/backward pass to compute early/late dates and float (slack).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;TaskSchedule&gt; Schedules</code></td><td>Property</td><td>Gets or sets the schedules.</td></tr>
+      <tr><td><code>int ProjectDuration</code></td><td>Property</td><td>Gets or sets the project duration.</td></tr>
+      <tr><td><code>List&lt;TaskNode&gt; CriticalPath</code></td><td>Property</td><td>Gets or sets the critical path.</td></tr>
+      <tr><td><code>void Calculate(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Computes the schedule from components and connection lines. Lines represent FS (Finish-to-Start) dependencies by default. DependencyNode with LagDays adjusts the dependency timing.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-criticalpathnode">
+  <h2>CriticalPathNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PM Critical Path node: indicates tasks on the critical path (longest sequence determining project duration). Diamond shape with warning color.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string TaskName</code></td><td>Property</td><td>Gets or sets the task name.</td></tr>
+      <tr><td><code>float Slack</code></td><td>Property</td><td>Gets or sets the slack.</td></tr>
+      <tr><td><code>int Duration</code></td><td>Property</td><td>Gets or sets the duration.</td></tr>
+      <tr><td><code>CriticalPathNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-deliverablenode">
+  <h2>DeliverableNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PM Deliverable node: represents a tangible output or result from a task/phase. Hexagon shape to distinguish from regular tasks.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string DeliverableName</code></td><td>Property</td><td>Gets or sets the deliverable name.</td></tr>
+      <tr><td><code>string DeliveryDate</code></td><td>Property</td><td>Gets or sets the delivery date.</td></tr>
+      <tr><td><code>bool IsApproved</code></td><td>Property</td><td>Gets or sets the is approved.</td></tr>
+      <tr><td><code>DeliverableNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dependencynode">
+  <h2>DependencyNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PM Dependency node: represents task dependencies with relationship types (FS, SS, FF, SF). Arrow/link style with lag/lead time indication.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string DependencyType</code></td><td>Property</td><td>Gets or sets the dependency type.</td></tr>
+      <tr><td><code>int LagDays</code></td><td>Property</td><td>Gets or sets the lag days.</td></tr>
+      <tr><td><code>string FromTask</code></td><td>Property</td><td>Gets or sets the from task.</td></tr>
+      <tr><td><code>string ToTask</code></td><td>Property</td><td>Gets or sets the to task.</td></tr>
+      <tr><td><code>DependencyNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ganttbarnode">
+  <h2>GanttBarNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PM Gantt Bar node: visual timeline representation showing task duration on a timeline. Horizontal bar with date range and progress indication.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string TaskName</code></td><td>Property</td><td>Gets or sets the task name.</td></tr>
+      <tr><td><code>string StartDate</code></td><td>Property</td><td>Gets or sets the start date.</td></tr>
+      <tr><td><code>string EndDate</code></td><td>Property</td><td>Gets or sets the end date.</td></tr>
+      <tr><td><code>int PercentComplete</code></td><td>Property</td><td>Gets or sets the percent complete.</td></tr>
+      <tr><td><code>GanttBarNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ganttrow">
+  <h2>GanttRow <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A single row in the Gantt timeline (task bar).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>int StartDay</code></td><td>Property</td><td>Gets or sets the start day.</td></tr>
+      <tr><td><code>int FinishDay</code></td><td>Property</td><td>Gets or sets the finish day.</td></tr>
+      <tr><td><code>float PercentComplete</code></td><td>Property</td><td>Gets or sets the percent complete.</td></tr>
+      <tr><td><code>bool IsCritical</code></td><td>Property</td><td>Gets or sets the is critical.</td></tr>
+      <tr><td><code>int DurationDays</code></td><td>Property</td><td>Gets or sets the duration days.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-gantttimelinenode">
+  <h2>GanttTimelineNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Gantt timeline view: renders scheduled tasks as bars over a day grid, highlighting the critical path. Populate with SetSchedule.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>float RowHeight</code></td><td>Property</td><td>Gets or sets the row height.</td></tr>
+      <tr><td><code>float HeaderHeight</code></td><td>Property</td><td>Gets or sets the header height.</td></tr>
+      <tr><td><code>float DayWidth</code></td><td>Property</td><td>Gets or sets the day width.</td></tr>
+      <tr><td><code>float LabelWidth</code></td><td>Property</td><td>Gets or sets the label width.</td></tr>
+      <tr><td><code>bool ShowCriticalPath</code></td><td>Property</td><td>Highlight rows on the critical path in a distinct color.</td></tr>
+      <tr><td><code>SKColor BarColor</code></td><td>Property</td><td>Gets or sets the bar color.</td></tr>
+      <tr><td><code>SKColor CriticalBarColor</code></td><td>Property</td><td>Gets or sets the critical bar color.</td></tr>
+      <tr><td><code>SKColor ProgressColor</code></td><td>Property</td><td>Gets or sets the progress color.</td></tr>
+      <tr><td><code>SKColor GridColor</code></td><td>Property</td><td>Gets or sets the grid color.</td></tr>
+      <tr><td><code>List&lt;GanttRow&gt; Rows</code></td><td>Property</td><td>Gets or sets the rows.</td></tr>
+      <tr><td><code>string RowsJson</code></td><td>Property</td><td>JSON projection of Rows used for persistence.</td></tr>
+      <tr><td><code>GanttTimelineNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void SetSchedule(IEnumerable&lt;TaskNode&gt; tasks, CriticalPathCalculator? schedule = null)</code></td><td>Method</td><td>Populates the timeline from tasks, optionally using a computed schedule for dates/criticality. Without a schedule, tasks are laid out sequentially.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-issuenode">
+  <h2>IssueNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PM Issue node: tracks active problems and blockers in the project. Red alert style with priority indication.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string IssueTitle</code></td><td>Property</td><td>Gets or sets the issue title.</td></tr>
+      <tr><td><code>new string Priority</code></td><td>Property</td><td>Gets or sets the priority.</td></tr>
+      <tr><td><code>string Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
+      <tr><td><code>string AssignedTo</code></td><td>Property</td><td>Gets or sets the assigned to.</td></tr>
+      <tr><td><code>IssueNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-milestonenode">
+  <h2>MilestoneNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PM Milestone: diamond shape.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>MilestoneNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-phasenode">
+  <h2>PhaseNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PM Phase node: represents a major project phase containing multiple tasks. Larger container with distinct visual style.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string PhaseName</code></td><td>Property</td><td>Gets or sets the phase name.</td></tr>
+      <tr><td><code>string StartDate</code></td><td>Property</td><td>Gets or sets the start date.</td></tr>
+      <tr><td><code>string EndDate</code></td><td>Property</td><td>Gets or sets the end date.</td></tr>
+      <tr><td><code>string Status</code></td><td>Property</td><td>Gets or sets the status.</td></tr>
+      <tr><td><code>PhaseNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-pmcontrol">
+  <h2>PMControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Base class for Project Management (PM) nodes with consistent sizing and port helpers.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
+      <tr><td><code>int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-resourcenode">
+  <h2>ResourceNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PM Resource node: represents a resource (person, equipment, material) assigned to tasks. Displays resource allocation and availability.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ResourceName</code></td><td>Property</td><td>Gets or sets the resource name.</td></tr>
+      <tr><td><code>string ResourceType</code></td><td>Property</td><td>Gets or sets the resource type.</td></tr>
+      <tr><td><code>int AllocationPercent</code></td><td>Property</td><td>Gets or sets the allocation percent.</td></tr>
+      <tr><td><code>decimal CostPerHour</code></td><td>Property</td><td>Gets or sets the cost per hour.</td></tr>
+      <tr><td><code>ResourceNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-risknode">
+  <h2>RiskNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PM Risk node: tracks project risks with probability and impact assessments. Warning triangle shape with risk level color coding.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string RiskDescription</code></td><td>Property</td><td>Gets or sets the risk description.</td></tr>
+      <tr><td><code>string Probability</code></td><td>Property</td><td>Gets or sets the probability.</td></tr>
+      <tr><td><code>string Impact</code></td><td>Property</td><td>Gets or sets the impact.</td></tr>
+      <tr><td><code>string MitigationPlan</code></td><td>Property</td><td>Gets or sets the mitigation plan.</td></tr>
+      <tr><td><code>RiskNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-summarynode">
+  <h2>SummaryNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PM Summary/Phase: bracketed bar indicating a group span.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>SummaryNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-tasknode">
+  <h2>TaskNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>PM Task: rounded rectangle with optional progress bar and title.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>int PercentComplete</code></td><td>Property</td><td>Gets or sets the percent complete.</td></tr>
+      <tr><td><code>int DurationDays</code></td><td>Property</td><td>Gets or sets the duration days.</td></tr>
+      <tr><td><code>TaskNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-taskschedule">
+  <h2>TaskSchedule <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+</section>
+</div></main></div>
+</body></html>

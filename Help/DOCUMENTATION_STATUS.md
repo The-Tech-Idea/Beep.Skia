@@ -1,7 +1,7 @@
 # Beep.Skia Documentation Status
 
-**Last updated:** 2026-09-17 (round 2)
-**Total pages:** 73 | **Sections:** 13
+**Last updated:** 2026-09-17 (round 3)
+**Total pages:** 99 | **Sections:** 14
 
 ---
 
@@ -9,17 +9,17 @@
 
 | Section | Pages | Status |
 |---------|-------|--------|
-| Getting Started | 3 | Complete |
+| Getting Started | 4 | Complete |
 | Core Concepts | 6 | Complete |
 | Diagram Families | 16 | Complete |
 | UI Components | 17 | Complete |
-| Guides | 8 | Complete |
+| Guides | 9 | Complete |
 | Architecture & Internals | 8 | Complete |
 | Automation | 6 | Complete |
 | Ecosystem | 4 | Complete |
 | Editor | 1 | Complete |
 | Windows Hosts | 1 | Complete |
-| API Index | 1 | Complete |
+| API Reference | 25 | Complete |
 | Infrastructure | 2 | Complete |
 | **Total** | **63** | |
 
@@ -31,6 +31,7 @@
 - [x] `getting-started/installation.html` — NuGet install, project setup, dependencies
 - [x] `getting-started/quick-start.html` — Complete tutorial with DrawingManager and SkiaHostControl
 - [x] `getting-started/architecture-overview.html` — Solution structure, layers, patterns
+- [x] `getting-started/samples.html` — WinForms editor sample and workflow server sample
 
 ### Core Concepts (6)
 - [x] `core-concepts/skia-component.html` — SkiaComponent base class, NodeProperties, ports
@@ -94,6 +95,7 @@
 - [x] `guides/platforms.html` — Supported TFMs, Windows hosts, sample, server host
 - [x] `guides/testing-and-quality.html` — Test strategy, sweeps, hardening record
 - [x] `guides/release-notes.html` — Versioning, packaging, release history
+- [x] `guides/troubleshooting.html` — Restore/build, rendering, serialization, automation, extension and testing fixes
 
 ### Architecture & Internals (8)
 - [x] `architecture/component-registry.html`
@@ -125,8 +127,13 @@
 ### Windows Hosts (1)
 - [x] `hosts/winforms.html` — SkiaHostControl, SkiaControl base, 30+ WinForms wrapper controls, designers
 
-### API Index (1)
-- [x] `reference/api-index.html` — All 885 public classes/interfaces/enums/structs grouped by the 25 projects
+### API Reference (25)
+- [x] `reference/api-index.html` — Index of all 890 public classes/interfaces/enums/structs grouped by project
+- [x] `reference/beep-skia.html` — Core assembly (338 types, full member tables)
+- [x] `reference/beep-skia-model.html` — Shared model types (67)
+- [x] `reference/beep-skia-flowchart.html`, `beep-skia-business.html`, `beep-skia-erd.html`, `beep-skia-dfd.html`, `beep-skia-etl.html`, `beep-skia-uml.html`, `beep-skia-network.html`, `beep-skia-pm.html`, `beep-skia-mindmap.html`, `beep-skia-statemachine.html`, `beep-skia-ecad.html`, `beep-skia-cloud.html`, `beep-skia-security.html`, `beep-skia-ml.html`, `beep-ski-quantitative.html`, `beep-skia-welllogs.html` — Family assemblies
+- [x] `reference/beep-skia-winform-controls.html`, `beep-skia-wpf-controls.html`, `beep-skia-blazor-controls.html`, `beep-skia-maui-controls.html`, `beep-skia-avalonia-controls.html` — Platform hosts
+- [x] `reference/beep-skia-loader.html` — Loader extension
 
 ### Infrastructure (2)
 - [x] `index.html` — Full sidebar navigation with iframe content
@@ -136,7 +143,10 @@
 - [x] `_gen_skia_docs.py` — Python generator for diagram family + architecture pages
 - [x] `_gen_automation_docs.ps1`, `_gen_ecosystem_docs.ps1`, `_gen_editor_guides_docs.ps1`, `_gen_release_notes.ps1` — PowerShell generators for the new sections
 - [x] `_gen_component_reference.ps1` — Extracts XML summaries and public members from source and generates the component, host, events, automation-node and API-index pages
-- [x] `_check_links.ps1` — Verifies every local reference across the site (currently 324 references, 0 broken)
+- [x] `_check_links.ps1` — Verifies every local reference across the site (currently 437 references, 0 broken)
+- [x] `_gen_api_reference.ps1` — Generates the 24 per-project API reference pages from source
+- [x] `_gen_search_index.ps1` — Builds `search-index.js` (98 pages) for the site-wide search box
+- [x] `_gen_lib.ps1` — Shared extraction helpers (XML summaries, `[Description]` fallback, public members)
 
 ### Assets
 - [x] `sphinx-style.css` — Sphinx/Furo-inspired theme with dark mode
@@ -172,11 +182,11 @@ described APIs that do not exist. Highlights of the corrections:
 
 ## Remaining Opportunities
 
-- [ ] API Reference: Auto-generated from XML doc comments
+
 - [ ] Video tutorials / walkthroughs
 - [ ] Interactive playground with live SkiaSharp canvas
 - [ ] VS Code extension with IntelliSense for diagram families
-- [ ] Search index (lunr.js or similar)
+- [ ] Search index ranking/snippets (a plain-text index with scoring now ships as `search-index.js`)
 - [ ] Screenshots for each diagram family
-- [ ] Troubleshooting FAQ
+
 - [ ] Migration guide from other diagramming libraries

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine learning family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>Machine learning family</span></nav>
+<div class="page-header"><h1>Machine learning family</h1><p class="page-subtitle">API reference for Beep.Skia.ML (28 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.ML</code> assembly: 28 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-dataconnector"><code>DataConnector</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-metrickind"><code>MetricKind</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-mlbatchpredictionnode"><code>MLBatchPredictionNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlcnnnode"><code>MLCNNNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlcontrol"><code>MLControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlcrossvalidationnode"><code>MLCrossValidationNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mldataaugmentationnode"><code>MLDataAugmentationNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mldatasourcenode"><code>MLDataSourceNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mldatasplitternode"><code>MLDataSplitterNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlevaluatenode"><code>MLEvaluateNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlfeatureengineeringnode"><code>MLFeatureEngineeringNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlframework"><code>MLFramework</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-mlhyperparametertuningnode"><code>MLHyperparameterTuningNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlinferencenode"><code>MLInferenceNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlmodelexportnode"><code>MLModelExportNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlmodelloadnode"><code>MLModelLoadNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlmodelnode"><code>MLModelNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlneuralnetworknode"><code>MLNeuralNetworkNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlpipelinedefinition"><code>MLPipelineDefinition</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlpipelineedge"><code>MLPipelineEdge</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlpipelineexporter"><code>MLPipelineExporter</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlpipelinenode"><code>MLPipelineNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlpreprocessnode"><code>MLPreprocessNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mlrnnnode"><code>MLRNNNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mltrainernode"><code>MLTrainerNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-mltransformernode"><code>MLTransformerNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-modeltype"><code>ModelType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-transformkind"><code>TransformKind</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+</ul>
+<section class="section" id="type-dataconnector">
+  <h2>DataConnector <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-metrickind">
+  <h2>MetricKind <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-mlbatchpredictionnode">
+  <h2>MLBatchPredictionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int BatchSize</code></td><td>Property</td><td>Gets or sets the batch size.</td></tr>
+      <tr><td><code>bool Parallel</code></td><td>Property</td><td>Gets or sets the parallel.</td></tr>
+      <tr><td><code>int MaxWorkers</code></td><td>Property</td><td>Gets or sets the max workers.</td></tr>
+      <tr><td><code>string OutputFormat</code></td><td>Property</td><td>Gets or sets the output format.</td></tr>
+      <tr><td><code>MLBatchPredictionNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlcnnnode">
+  <h2>MLCNNNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int ConvLayers</code></td><td>Property</td><td>Gets or sets the conv layers.</td></tr>
+      <tr><td><code>string Filters</code></td><td>Property</td><td>Gets or sets the filters.</td></tr>
+      <tr><td><code>string KernelSize</code></td><td>Property</td><td>Gets or sets the kernel size.</td></tr>
+      <tr><td><code>string Pooling</code></td><td>Property</td><td>Gets or sets the pooling.</td></tr>
+      <tr><td><code>bool BatchNormalization</code></td><td>Property</td><td>Gets or sets the batch normalization.</td></tr>
+      <tr><td><code>MLCNNNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlcontrol">
+  <h2>MLControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color.</td></tr>
+      <tr><td><code>SKColor BorderColor</code></td><td>Property</td><td>Gets or sets the border color.</td></tr>
+      <tr><td><code>float BorderThickness</code></td><td>Property</td><td>Gets or sets the border thickness.</td></tr>
+      <tr><td><code>int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
+      <tr><td><code>int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlcrossvalidationnode">
+  <h2>MLCrossValidationNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Folds</code></td><td>Property</td><td>Gets or sets the folds.</td></tr>
+      <tr><td><code>string Strategy</code></td><td>Property</td><td>Gets or sets the strategy.</td></tr>
+      <tr><td><code>bool Shuffle</code></td><td>Property</td><td>Gets or sets the shuffle.</td></tr>
+      <tr><td><code>int RandomSeed</code></td><td>Property</td><td>Gets or sets the random seed.</td></tr>
+      <tr><td><code>MLCrossValidationNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mldataaugmentationnode">
+  <h2>MLDataAugmentationNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string AugmentationType</code></td><td>Property</td><td>Gets or sets the augmentation type.</td></tr>
+      <tr><td><code>double Intensity</code></td><td>Property</td><td>Gets or sets the intensity.</td></tr>
+      <tr><td><code>bool RandomFlip</code></td><td>Property</td><td>Gets or sets the random flip.</td></tr>
+      <tr><td><code>bool RandomRotation</code></td><td>Property</td><td>Gets or sets the random rotation.</td></tr>
+      <tr><td><code>bool RandomCrop</code></td><td>Property</td><td>Gets or sets the random crop.</td></tr>
+      <tr><td><code>MLDataAugmentationNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mldatasourcenode">
+  <h2>MLDataSourceNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string SourceName</code></td><td>Property</td><td>Gets or sets the source name.</td></tr>
+      <tr><td><code>DataConnector Connector</code></td><td>Property</td><td>Gets or sets the connector.</td></tr>
+      <tr><td><code>string Format</code></td><td>Property</td><td>Gets or sets the format.</td></tr>
+      <tr><td><code>MLDataSourceNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mldatasplitternode">
+  <h2>MLDataSplitterNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>double TrainRatio</code></td><td>Property</td><td>Gets or sets the train ratio.</td></tr>
+      <tr><td><code>double ValidationRatio</code></td><td>Property</td><td>Gets or sets the validation ratio.</td></tr>
+      <tr><td><code>double TestRatio</code></td><td>Property</td><td>Gets or sets the test ratio.</td></tr>
+      <tr><td><code>bool Shuffle</code></td><td>Property</td><td>Gets or sets the shuffle.</td></tr>
+      <tr><td><code>int RandomSeed</code></td><td>Property</td><td>Gets or sets the random seed.</td></tr>
+      <tr><td><code>bool Stratify</code></td><td>Property</td><td>Gets or sets the stratify.</td></tr>
+      <tr><td><code>MLDataSplitterNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlevaluatenode">
+  <h2>MLEvaluateNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string StepName</code></td><td>Property</td><td>Gets or sets the step name.</td></tr>
+      <tr><td><code>MetricKind Metric</code></td><td>Property</td><td>Gets or sets the metric.</td></tr>
+      <tr><td><code>double Threshold</code></td><td>Property</td><td>Gets or sets the threshold.</td></tr>
+      <tr><td><code>MLEvaluateNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlfeatureengineeringnode">
+  <h2>MLFeatureEngineeringNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Operation</code></td><td>Property</td><td>Gets or sets the operation.</td></tr>
+      <tr><td><code>int Degree</code></td><td>Property</td><td>Gets or sets the degree.</td></tr>
+      <tr><td><code>bool Interactions</code></td><td>Property</td><td>Gets or sets the interactions.</td></tr>
+      <tr><td><code>string Encoding</code></td><td>Property</td><td>Gets or sets the encoding.</td></tr>
+      <tr><td><code>MLFeatureEngineeringNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlframework">
+  <h2>MLFramework <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-mlhyperparametertuningnode">
+  <h2>MLHyperparameterTuningNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Method</code></td><td>Property</td><td>Gets or sets the method.</td></tr>
+      <tr><td><code>int Iterations</code></td><td>Property</td><td>Gets or sets the iterations.</td></tr>
+      <tr><td><code>string Metric</code></td><td>Property</td><td>Gets or sets the metric.</td></tr>
+      <tr><td><code>bool ParallelExecution</code></td><td>Property</td><td>Gets or sets the parallel execution.</td></tr>
+      <tr><td><code>MLHyperparameterTuningNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlinferencenode">
+  <h2>MLInferenceNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Mode</code></td><td>Property</td><td>Gets or sets the mode.</td></tr>
+      <tr><td><code>int BatchSize</code></td><td>Property</td><td>Gets or sets the batch size.</td></tr>
+      <tr><td><code>bool Optimize</code></td><td>Property</td><td>Gets or sets the optimize.</td></tr>
+      <tr><td><code>double ConfidenceThreshold</code></td><td>Property</td><td>Gets or sets the confidence threshold.</td></tr>
+      <tr><td><code>MLInferenceNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlmodelexportnode">
+  <h2>MLModelExportNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Format</code></td><td>Property</td><td>Gets or sets the format.</td></tr>
+      <tr><td><code>string OutputPath</code></td><td>Property</td><td>Gets or sets the output path.</td></tr>
+      <tr><td><code>bool Compression</code></td><td>Property</td><td>Gets or sets the compression.</td></tr>
+      <tr><td><code>bool IncludeMetadata</code></td><td>Property</td><td>Gets or sets the include metadata.</td></tr>
+      <tr><td><code>MLModelExportNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlmodelloadnode">
+  <h2>MLModelLoadNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ModelPath</code></td><td>Property</td><td>Gets or sets the model path.</td></tr>
+      <tr><td><code>string Framework</code></td><td>Property</td><td>Gets or sets the framework.</td></tr>
+      <tr><td><code>string Device</code></td><td>Property</td><td>Gets or sets the device.</td></tr>
+      <tr><td><code>bool ValidateModel</code></td><td>Property</td><td>Gets or sets the validate model.</td></tr>
+      <tr><td><code>MLModelLoadNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlmodelnode">
+  <h2>MLModelNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ModelName</code></td><td>Property</td><td>Gets or sets the model name.</td></tr>
+      <tr><td><code>MLFramework Framework</code></td><td>Property</td><td>Gets or sets the framework.</td></tr>
+      <tr><td><code>ModelType ModelType</code></td><td>Property</td><td>Gets or sets the model type.</td></tr>
+      <tr><td><code>string HyperParameters</code></td><td>Property</td><td>Gets or sets the hyper parameters.</td></tr>
+      <tr><td><code>MLModelNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlneuralnetworknode">
+  <h2>MLNeuralNetworkNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Architecture</code></td><td>Property</td><td>Gets or sets the architecture.</td></tr>
+      <tr><td><code>int Layers</code></td><td>Property</td><td>Gets or sets the layers.</td></tr>
+      <tr><td><code>string LayerSizes</code></td><td>Property</td><td>Gets or sets the layer sizes.</td></tr>
+      <tr><td><code>string Activation</code></td><td>Property</td><td>Gets or sets the activation.</td></tr>
+      <tr><td><code>double Dropout</code></td><td>Property</td><td>Gets or sets the dropout.</td></tr>
+      <tr><td><code>string Optimizer</code></td><td>Property</td><td>Gets or sets the optimizer.</td></tr>
+      <tr><td><code>MLNeuralNetworkNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlpipelinedefinition">
+  <h2>MLPipelineDefinition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Portable ML pipeline definition (nodes in execution order + edges). Consumable by external frameworks (Python, ONNX tooling, orchestration engines).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>string Version</code></td><td>Property</td><td>Gets or sets the version.</td></tr>
+      <tr><td><code>string CreatedAt</code></td><td>Property</td><td>Gets or sets the created at.</td></tr>
+      <tr><td><code>List&lt;MLPipelineNode&gt; Nodes</code></td><td>Property</td><td>Gets or sets the nodes.</td></tr>
+      <tr><td><code>List&lt;MLPipelineEdge&gt; Edges</code></td><td>Property</td><td>Gets or sets the edges.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlpipelineedge">
+  <h2>MLPipelineEdge <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A directed edge in an exported ML pipeline definition.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string From</code></td><td>Property</td><td>Gets or sets the from.</td></tr>
+      <tr><td><code>string To</code></td><td>Property</td><td>Gets or sets the to.</td></tr>
+      <tr><td><code>string? Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlpipelineexporter">
+  <h2>MLPipelineExporter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Exports ML pipeline diagrams to a portable JSON definition: nodes are topologically ordered and carry their node properties (hyperparameters), edges carry the connection labels.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>MLPipelineDefinition BuildDefinition( IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines, string pipelineName = "Pipeline")</code></td><td>Method</td><td>Builds the pipeline definition from diagram components and lines.</td></tr>
+      <tr><td><code>string ExportJson( IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines, string pipelineName = "Pipeline", bool indented = true)</code></td><td>Method</td><td>Serializes the pipeline definition to JSON.</td></tr>
+      <tr><td><code>string ExportJson(DrawingManager manager, string pipelineName = "Pipeline", bool indented = true)</code></td><td>Method</td><td>Serializes the ML pipeline held by a drawing manager.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlpipelinenode">
+  <h2>MLPipelineNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A node in an exported ML pipeline definition.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Id</code></td><td>Property</td><td>Gets or sets the id.</td></tr>
+      <tr><td><code>string Type</code></td><td>Property</td><td>Gets or sets the type.</td></tr>
+      <tr><td><code>string Name</code></td><td>Property</td><td>Gets or sets the name.</td></tr>
+      <tr><td><code>int Order</code></td><td>Property</td><td>Gets or sets the order.</td></tr>
+      <tr><td><code>Dictionary&lt;string, object&gt; Properties</code></td><td>Property</td><td>Gets or sets the properties.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlpreprocessnode">
+  <h2>MLPreprocessNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string StepName</code></td><td>Property</td><td>Gets or sets the step name.</td></tr>
+      <tr><td><code>TransformKind Transform</code></td><td>Property</td><td>Gets or sets the transform.</td></tr>
+      <tr><td><code>string Parameters</code></td><td>Property</td><td>Gets or sets the parameters.</td></tr>
+      <tr><td><code>MLPreprocessNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mlrnnnode">
+  <h2>MLRNNNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string CellType</code></td><td>Property</td><td>Gets or sets the cell type.</td></tr>
+      <tr><td><code>int Layers</code></td><td>Property</td><td>Gets or sets the layers.</td></tr>
+      <tr><td><code>int HiddenSize</code></td><td>Property</td><td>Gets or sets the hidden size.</td></tr>
+      <tr><td><code>bool Bidirectional</code></td><td>Property</td><td>Gets or sets the bidirectional.</td></tr>
+      <tr><td><code>double Dropout</code></td><td>Property</td><td>Gets or sets the dropout.</td></tr>
+      <tr><td><code>MLRNNNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mltrainernode">
+  <h2>MLTrainerNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Epochs</code></td><td>Property</td><td>Gets or sets the epochs.</td></tr>
+      <tr><td><code>int BatchSize</code></td><td>Property</td><td>Gets or sets the batch size.</td></tr>
+      <tr><td><code>double LearningRate</code></td><td>Property</td><td>Gets or sets the learning rate.</td></tr>
+      <tr><td><code>string LossFunction</code></td><td>Property</td><td>Gets or sets the loss function.</td></tr>
+      <tr><td><code>bool EarlyStopping</code></td><td>Property</td><td>Gets or sets the early stopping.</td></tr>
+      <tr><td><code>int Patience</code></td><td>Property</td><td>Gets or sets the patience.</td></tr>
+      <tr><td><code>MLTrainerNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-mltransformernode">
+  <h2>MLTransformerNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int AttentionHeads</code></td><td>Property</td><td>Gets or sets the attention heads.</td></tr>
+      <tr><td><code>int Layers</code></td><td>Property</td><td>Gets or sets the layers.</td></tr>
+      <tr><td><code>int ModelDim</code></td><td>Property</td><td>Gets or sets the model dim.</td></tr>
+      <tr><td><code>int FeedForwardDim</code></td><td>Property</td><td>Gets or sets the feed forward dim.</td></tr>
+      <tr><td><code>double Dropout</code></td><td>Property</td><td>Gets or sets the dropout.</td></tr>
+      <tr><td><code>MLTransformerNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-modeltype">
+  <h2>ModelType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-transformkind">
+  <h2>TransformKind <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+</div></main></div>
+</body></html>

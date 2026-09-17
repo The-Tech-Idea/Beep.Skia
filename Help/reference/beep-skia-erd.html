@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERD family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>ERD family</span></nav>
+<div class="page-header"><h1>ERD family</h1><p class="page-subtitle">API reference for Beep.Skia.ERD (15 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.ERD</code> assembly: 15 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-columninfo"><code>ColumnInfo</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-constraintinfo"><code>ConstraintInfo</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ddlexporter"><code>DDLExporter</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ddlimporter"><code>DDLImporter</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-erdattribute"><code>ERDAttribute</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-erdcontrol"><code>ERDControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-erdentity"><code>ERDEntity</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-erdrelationship"><code>ERDRelationship</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-migrationscriptgenerator"><code>MigrationScriptGenerator</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-schemachange"><code>SchemaChange</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-schemachangekind"><code>SchemaChangeKind</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-schemacomparer"><code>SchemaComparer</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-schemacomparisonresult"><code>SchemaComparisonResult</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-sqldialect"><code>SQLDialect</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-tableinfo"><code>TableInfo</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+</ul>
+<section class="section" id="type-columninfo">
+  <h2>ColumnInfo <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+</section>
+<section class="section" id="type-constraintinfo">
+  <h2>ConstraintInfo <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+</section>
+<section class="section" id="type-ddlexporter">
+  <h2>DDLExporter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Exports ERD entities and relationships to DDL (Data Definition Language) statements. Supports standard SQL with basic dialect hints.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DDLExporter(SQLDialect dialect = SQLDialect.ANSI)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string ExportEntity(ERDEntity entity)</code></td><td>Method</td><td>Exports a single ERDEntity to a CREATE TABLE statement.</td></tr>
+      <tr><td><code>string ExportEntities(IEnumerable&lt;ERDEntity&gt; entities)</code></td><td>Method</td><td>Exports multiple entities to a complete DDL script.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ddlimporter">
+  <h2>DDLImporter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Parses SQL CREATE TABLE statements into entity definitions. Dialect-aware parsing for SQL Server, PostgreSQL, MySQL, Oracle, and SQLite.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DDLImporter(SQLDialect dialect = SQLDialect.ANSI) { _dialect = dialect; }</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>List&lt;TableInfo&gt; Parse(string ddl)</code></td><td>Method</td><td>Parses DDL and returns table definitions.</td></tr>
+      <tr><td><code>List&lt;ERDEntity&gt; ImportToEntities(string ddl, SQLDialect dialect)</code></td><td>Method</td><td>Creates ERDEntity instances from a DDL string.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-erdattribute">
+  <h2>ERDAttribute <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ERD Attribute: ellipse with optional underline (for key) and double ellipse (for multivalued).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string NameText</code></td><td>Property</td><td>Gets or sets the name text.</td></tr>
+      <tr><td><code>bool IsKey</code></td><td>Property</td><td>Gets or sets the is key.</td></tr>
+      <tr><td><code>bool IsMultivalued</code></td><td>Property</td><td>Gets or sets the is multivalued.</td></tr>
+      <tr><td><code>ERDAttribute()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-erdcontrol">
+  <h2>ERDControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Base class for ERD nodes (entities, relationships, attributes). Inherits MaterialControl; provides common sizing and port layout helpers.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
+      <tr><td><code>int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-erdentity">
+  <h2>ERDEntity <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ERD Entity: rectangle with title band and attribute list area.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string EntityName</code></td><td>Property</td><td>Gets or sets the entity name.</td></tr>
+      <tr><td><code>string RowsText</code></td><td>Property</td><td>Gets or sets the rows text.</td></tr>
+      <tr><td><code>IReadOnlyList&lt;string&gt; Rows</code></td><td>Property</td><td>Gets or sets the rows.</td></tr>
+      <tr><td><code>string RowIdsCsv</code></td><td>Property</td><td>Gets or sets the row ids csv.</td></tr>
+      <tr><td><code>ERDEntity()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>new int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
+      <tr><td><code>new int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
+      <tr><td><code>string Columns</code></td><td>Property</td><td>Public JSON property exposing columns in a structured form for enterprise editors. On set, updates the internal rows and connection points.</td></tr>
+      <tr><td><code>string Indexes</code></td><td>Property</td><td>Public JSON property exposing table indexes. Mirrors NodeProperties["Indexes"].</td></tr>
+      <tr><td><code>string ForeignKeys</code></td><td>Property</td><td>Public JSON property exposing foreign keys. Mirrors NodeProperties["ForeignKeys"].</td></tr>
+      <tr><td><code>static ERDEntity FromTableInfo(DDLImporter.TableInfo table)</code></td><td>Method</td><td>Creates an ERDEntity from a parsed DDL table definition.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-erdrelationship">
+  <h2>ERDRelationship <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>ERD Relationship: diamond shape with ports on left/right, optional degree text.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>string Degree</code></td><td>Property</td><td>Gets or sets the degree.</td></tr>
+      <tr><td><code>bool Identifying</code></td><td>Property</td><td>Gets or sets the identifying.</td></tr>
+      <tr><td><code>ERDRelationship()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-migrationscriptgenerator">
+  <h2>MigrationScriptGenerator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Generates forward and rollback migration scripts from a SchemaComparisonResult. Dialect-aware DDL for SQL Server, PostgreSQL, MySQL, Oracle, SQLite, and ANSI.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string GenerateForward(SchemaComparisonResult diff, DDLImporter.SQLDialect dialect = DDLImporter.SQLDialect.ANSI)</code></td><td>Method</td><td>Generates the script that migrates the source schema to the target schema.</td></tr>
+      <tr><td><code>string GenerateRollback(SchemaComparisonResult diff, DDLImporter.SQLDialect dialect = DDLImporter.SQLDialect.ANSI)</code></td><td>Method</td><td>Generates the script that reverses GenerateForward (target -&gt; source).</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-schemachange">
+  <h2>SchemaChange <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A single schema difference. For altered columns, Column is the target definition and PreviousColumn is the source definition (used to build rollback scripts).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SchemaChangeKind Kind</code></td><td>Property</td><td>Gets or sets the kind.</td></tr>
+      <tr><td><code>string TableName</code></td><td>Property</td><td>Gets or sets the table name.</td></tr>
+      <tr><td><code>DDLImporter.ColumnInfo? Column</code></td><td>Property</td><td>Gets or sets the column.</td></tr>
+      <tr><td><code>DDLImporter.ColumnInfo? PreviousColumn</code></td><td>Property</td><td>Gets or sets the previous column.</td></tr>
+      <tr><td><code>DDLImporter.ConstraintInfo? Constraint</code></td><td>Property</td><td>Gets or sets the constraint.</td></tr>
+      <tr><td><code>DDLImporter.TableInfo? Table</code></td><td>Property</td><td>Gets or sets the table.</td></tr>
+      <tr><td><code>DDLImporter.TableInfo? PreviousTable</code></td><td>Property</td><td>Gets or sets the previous table.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-schemachangekind">
+  <h2>SchemaChangeKind <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Kind of schema change detected between a source (current) and target (desired) schema.</p>
+</section>
+<section class="section" id="type-schemacomparer">
+  <h2>SchemaComparer <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Compares a source schema against a target schema and reports the changes needed to migrate source to target. Tables/columns are matched case-insensitively.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SchemaComparisonResult Compare( IEnumerable&lt;DDLImporter.TableInfo&gt; source, IEnumerable&lt;DDLImporter.TableInfo&gt; target)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-schemacomparisonresult">
+  <h2>SchemaComparisonResult <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Result of comparing two schemas.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;SchemaChange&gt; Changes</code></td><td>Property</td><td>Gets or sets the changes.</td></tr>
+      <tr><td><code>bool HasChanges</code></td><td>Property</td><td>Gets or sets the has changes.</td></tr>
+      <tr><td><code>IEnumerable&lt;SchemaChange&gt; OfKind(SchemaChangeKind kind)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string Summary()</code></td><td>Method</td><td>Human-readable one-line-per-change summary.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-sqldialect">
+  <h2>SQLDialect <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-tableinfo">
+  <h2>TableInfo <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+</section>
+</div></main></div>
+</body></html>

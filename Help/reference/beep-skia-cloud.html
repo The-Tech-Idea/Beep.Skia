@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloud architecture family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>Cloud architecture family</span></nav>
+<div class="page-header"><h1>Cloud architecture family</h1><p class="page-subtitle">API reference for Beep.Skia.Cloud (28 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.Cloud</code> assembly: 28 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-apigatewaynode"><code>ApiGatewayNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-awsec2node"><code>AwsEc2Node</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-awslambdanode"><code>AwsLambdaNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-awsrdsnode"><code>AwsRdsNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-awss3node"><code>AwsS3Node</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-azureblobstoragenode"><code>AzureBlobStorageNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-azurefunctionsnode"><code>AzureFunctionsNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-azuresqlnode"><code>AzureSqlNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-azurevmnode"><code>AzureVmNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-cloudbrandnode"><code>CloudBrandNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-cloudcomputenode"><code>CloudComputeNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-cloudcontrol"><code>CloudControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-clouddatabasenode"><code>CloudDatabaseNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-cloudfunctionnode"><code>CloudFunctionNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-cloudprovider"><code>CloudProvider</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-cloudstoragenode"><code>CloudStorageNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dbengine"><code>DbEngine</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-gcpcomputenode"><code>GcpComputeNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-gcpfunctionsnode"><code>GcpFunctionsNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-gcpsqlnode"><code>GcpSqlNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-gcpstoragenode"><code>GcpStorageNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-manageddatabasenode"><code>ManagedDatabaseNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-objectstoragenode"><code>ObjectStorageNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-runtimekind"><code>RuntimeKind</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-serverlessfunctionnode"><code>ServerlessFunctionNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-storagetype"><code>StorageType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-virtualmachinenode"><code>VirtualMachineNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-virtualnetworknode"><code>VirtualNetworkNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+</ul>
+<section class="section" id="type-apigatewaynode">
+  <h2>ApiGatewayNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>AWS API Gateway / Azure API Management — API gateway.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Stage</code></td><td>Property</td><td>Gets or sets the stage.</td></tr>
+      <tr><td><code>ApiGatewayNode() { Width = 130; Height = 65; Name = "API Gateway"; EnsurePortCounts(2, 2); SetProp("Stage", _stage); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-awsec2node">
+  <h2>AwsEc2Node <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>override string ServiceName</code></td><td>Property</td><td>Gets or sets the service name.</td></tr>
+      <tr><td><code>override SKColor BrandColor</code></td><td>Property</td><td>Gets or sets the brand color.</td></tr>
+      <tr><td><code>AwsEc2Node() { Name = "AWS EC2"; SetProp("Provider", "AWS"); SetProp("ServiceName", "EC2"); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-awslambdanode">
+  <h2>AwsLambdaNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>override string ServiceName</code></td><td>Property</td><td>Gets or sets the service name.</td></tr>
+      <tr><td><code>override SKColor BrandColor</code></td><td>Property</td><td>Gets or sets the brand color.</td></tr>
+      <tr><td><code>override string IconGlyph</code></td><td>Property</td><td>Gets or sets the icon glyph.</td></tr>
+      <tr><td><code>AwsLambdaNode() { Name = "AWS Lambda"; SetProp("Provider", "AWS"); SetProp("ServiceName", "Lambda"); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-awsrdsnode">
+  <h2>AwsRdsNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>override string ServiceName</code></td><td>Property</td><td>Gets or sets the service name.</td></tr>
+      <tr><td><code>override SKColor BrandColor</code></td><td>Property</td><td>Gets or sets the brand color.</td></tr>
+      <tr><td><code>AwsRdsNode() { Name = "AWS RDS"; SetProp("Provider", "AWS"); SetProp("ServiceName", "RDS"); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-awss3node">
+  <h2>AwsS3Node <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>override string ServiceName</code></td><td>Property</td><td>Gets or sets the service name.</td></tr>
+      <tr><td><code>override SKColor BrandColor</code></td><td>Property</td><td>Gets or sets the brand color.</td></tr>
+      <tr><td><code>AwsS3Node() { Name = "AWS S3"; SetProp("Provider", "AWS"); SetProp("ServiceName", "S3"); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-azureblobstoragenode">
+  <h2>AzureBlobStorageNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>override string ServiceName</code></td><td>Property</td><td>Gets or sets the service name.</td></tr>
+      <tr><td><code>override SKColor BrandColor</code></td><td>Property</td><td>Gets or sets the brand color.</td></tr>
+      <tr><td><code>override string IconGlyph</code></td><td>Property</td><td>Gets or sets the icon glyph.</td></tr>
+      <tr><td><code>AzureBlobStorageNode() { Name = "Azure Blob"; SetProp("Provider", "Azure"); SetProp("ServiceName", "Blob Storage"); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-azurefunctionsnode">
+  <h2>AzureFunctionsNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>override string ServiceName</code></td><td>Property</td><td>Gets or sets the service name.</td></tr>
+      <tr><td><code>override SKColor BrandColor</code></td><td>Property</td><td>Gets or sets the brand color.</td></tr>
+      <tr><td><code>override string IconGlyph</code></td><td>Property</td><td>Gets or sets the icon glyph.</td></tr>
+      <tr><td><code>AzureFunctionsNode() { Name = "Azure Functions"; SetProp("Provider", "Azure"); SetProp("ServiceName", "Functions"); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-azuresqlnode">
+  <h2>AzureSqlNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>override string ServiceName</code></td><td>Property</td><td>Gets or sets the service name.</td></tr>
+      <tr><td><code>override SKColor BrandColor</code></td><td>Property</td><td>Gets or sets the brand color.</td></tr>
+      <tr><td><code>override string IconGlyph</code></td><td>Property</td><td>Gets or sets the icon glyph.</td></tr>
+      <tr><td><code>AzureSqlNode() { Name = "Azure SQL"; SetProp("Provider", "Azure"); SetProp("ServiceName", "SQL Database"); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-azurevmnode">
+  <h2>AzureVmNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>override string ServiceName</code></td><td>Property</td><td>Gets or sets the service name.</td></tr>
+      <tr><td><code>override SKColor BrandColor</code></td><td>Property</td><td>Gets or sets the brand color.</td></tr>
+      <tr><td><code>override string IconGlyph</code></td><td>Property</td><td>Gets or sets the icon glyph.</td></tr>
+      <tr><td><code>AzureVmNode() { Name = "Azure VM"; SetProp("Provider", "Azure"); SetProp("ServiceName", "Virtual Machines"); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-cloudbrandnode">
+  <h2>CloudBrandNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Base class for provider-branded cloud service nodes (AWS / Azure / GCP). Renders a brand-colored accent bar, a glyph badge, the service name, and the provider.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>abstract string Provider</code></td><td>Property</td><td>Cloud provider name (AWS, Azure, GCP).</td></tr>
+      <tr><td><code>abstract string ServiceName</code></td><td>Property</td><td>Service name (EC2, Blob Storage, ...).</td></tr>
+      <tr><td><code>abstract SKColor BrandColor</code></td><td>Property</td><td>Provider brand color used for the accent bar and badge.</td></tr>
+      <tr><td><code>virtual string IconGlyph</code></td><td>Property</td><td>Short glyph shown inside the badge (defaults to the service name).</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-cloudcomputenode">
+  <h2>CloudComputeNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string VmName</code></td><td>Property</td><td>Gets or sets the vm name.</td></tr>
+      <tr><td><code>CloudProvider Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>int CpuCores</code></td><td>Property</td><td>Gets or sets the cpu cores.</td></tr>
+      <tr><td><code>int MemoryGB</code></td><td>Property</td><td>Gets or sets the memory GB.</td></tr>
+      <tr><td><code>CloudComputeNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-cloudcontrol">
+  <h2>CloudControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Base control for Cloud family nodes. Provides style, ports, and lazy layout.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color.</td></tr>
+      <tr><td><code>SKColor BorderColor</code></td><td>Property</td><td>Gets or sets the border color.</td></tr>
+      <tr><td><code>float BorderThickness</code></td><td>Property</td><td>Gets or sets the border thickness.</td></tr>
+      <tr><td><code>int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
+      <tr><td><code>int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-clouddatabasenode">
+  <h2>CloudDatabaseNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string DatabaseName</code></td><td>Property</td><td>Gets or sets the database name.</td></tr>
+      <tr><td><code>DbEngine Engine</code></td><td>Property</td><td>Gets or sets the engine.</td></tr>
+      <tr><td><code>string Version</code></td><td>Property</td><td>Gets or sets the version.</td></tr>
+      <tr><td><code>string Region</code></td><td>Property</td><td>Gets or sets the region.</td></tr>
+      <tr><td><code>CloudDatabaseNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-cloudfunctionnode">
+  <h2>CloudFunctionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string FunctionName</code></td><td>Property</td><td>Gets or sets the function name.</td></tr>
+      <tr><td><code>RuntimeKind Runtime</code></td><td>Property</td><td>Gets or sets the runtime.</td></tr>
+      <tr><td><code>int MemoryMB</code></td><td>Property</td><td>Gets or sets the memory MB.</td></tr>
+      <tr><td><code>CloudFunctionNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-cloudprovider">
+  <h2>CloudProvider <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-cloudstoragenode">
+  <h2>CloudStorageNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ResourceName</code></td><td>Property</td><td>Gets or sets the resource name.</td></tr>
+      <tr><td><code>CloudProvider Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>StorageType StorageType</code></td><td>Property</td><td>Gets or sets the storage type.</td></tr>
+      <tr><td><code>CloudStorageNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dbengine">
+  <h2>DbEngine <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-gcpcomputenode">
+  <h2>GcpComputeNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>override string ServiceName</code></td><td>Property</td><td>Gets or sets the service name.</td></tr>
+      <tr><td><code>override SKColor BrandColor</code></td><td>Property</td><td>Gets or sets the brand color.</td></tr>
+      <tr><td><code>override string IconGlyph</code></td><td>Property</td><td>Gets or sets the icon glyph.</td></tr>
+      <tr><td><code>GcpComputeNode() { Name = "GCP Compute"; SetProp("Provider", "GCP"); SetProp("ServiceName", "Compute Engine"); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-gcpfunctionsnode">
+  <h2>GcpFunctionsNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>override string ServiceName</code></td><td>Property</td><td>Gets or sets the service name.</td></tr>
+      <tr><td><code>override SKColor BrandColor</code></td><td>Property</td><td>Gets or sets the brand color.</td></tr>
+      <tr><td><code>override string IconGlyph</code></td><td>Property</td><td>Gets or sets the icon glyph.</td></tr>
+      <tr><td><code>GcpFunctionsNode() { Name = "GCP Functions"; SetProp("Provider", "GCP"); SetProp("ServiceName", "Cloud Functions"); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-gcpsqlnode">
+  <h2>GcpSqlNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>override string ServiceName</code></td><td>Property</td><td>Gets or sets the service name.</td></tr>
+      <tr><td><code>override SKColor BrandColor</code></td><td>Property</td><td>Gets or sets the brand color.</td></tr>
+      <tr><td><code>override string IconGlyph</code></td><td>Property</td><td>Gets or sets the icon glyph.</td></tr>
+      <tr><td><code>GcpSqlNode() { Name = "GCP SQL"; SetProp("Provider", "GCP"); SetProp("ServiceName", "Cloud SQL"); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-gcpstoragenode">
+  <h2>GcpStorageNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override string Provider</code></td><td>Property</td><td>Gets or sets the provider.</td></tr>
+      <tr><td><code>override string ServiceName</code></td><td>Property</td><td>Gets or sets the service name.</td></tr>
+      <tr><td><code>override SKColor BrandColor</code></td><td>Property</td><td>Gets or sets the brand color.</td></tr>
+      <tr><td><code>override string IconGlyph</code></td><td>Property</td><td>Gets or sets the icon glyph.</td></tr>
+      <tr><td><code>GcpStorageNode() { Name = "GCP Storage"; SetProp("Provider", "GCP"); SetProp("ServiceName", "Cloud Storage"); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-manageddatabasenode">
+  <h2>ManagedDatabaseNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>AWS RDS / Azure SQL / GCP Cloud SQL — managed database service.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Engine</code></td><td>Property</td><td>Gets or sets the engine.</td></tr>
+      <tr><td><code>string Version</code></td><td>Property</td><td>Gets or sets the version.</td></tr>
+      <tr><td><code>ManagedDatabaseNode() { Width = 130; Height = 75; Name = "RDS"; EnsurePortCounts(1, 1); SetProp("Engine", _engine); SetProp("Version", _version); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-objectstoragenode">
+  <h2>ObjectStorageNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>AWS S3 / Azure Blob / GCP Cloud Storage — object storage bucket.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string StorageClass</code></td><td>Property</td><td>Gets or sets the storage class.</td></tr>
+      <tr><td><code>ObjectStorageNode() { Width = 120; Height = 70; Name = "Storage"; EnsurePortCounts(1, 1); SetProp("StorageClass", _storageClass); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-runtimekind">
+  <h2>RuntimeKind <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-serverlessfunctionnode">
+  <h2>ServerlessFunctionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>AWS Lambda / Azure Functions / GCP Cloud Functions — serverless compute.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Runtime</code></td><td>Property</td><td>Gets or sets the runtime.</td></tr>
+      <tr><td><code>int TimeoutSec</code></td><td>Property</td><td>Gets or sets the timeout sec.</td></tr>
+      <tr><td><code>ServerlessFunctionNode() { Width = 130; Height = 70; Name = "Function"; EnsurePortCounts(1, 1); SetProp("Runtime", _runtime); SetProp("TimeoutSec", _timeoutSec); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-storagetype">
+  <h2>StorageType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-virtualmachinenode">
+  <h2>VirtualMachineNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>AWS EC2 / Azure VM / GCP Compute Engine — virtual machine instance.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string InstanceType</code></td><td>Property</td><td>Gets or sets the instance type.</td></tr>
+      <tr><td><code>string OperatingSystem</code></td><td>Property</td><td>Gets or sets the operating system.</td></tr>
+      <tr><td><code>VirtualMachineNode() { Width = 120; Height = 70; Name = "VM"; EnsurePortCounts(1, 1); SetProp("InstanceType", _instanceType); SetProp("OperatingSystem", _os); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-virtualnetworknode">
+  <h2>VirtualNetworkNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>VPC / VNet — virtual network with CIDR.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Cidr</code></td><td>Property</td><td>Gets or sets the cidr.</td></tr>
+      <tr><td><code>VirtualNetworkNode() { Width = 240; Height = 160; Name = "VPC"; EnsurePortCounts(0, 0); }</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+</body></html>

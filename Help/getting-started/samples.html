@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sample Applications | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Getting Started</span><span>&rsaquo;</span> <span>Sample Applications</span></nav>
+<div class="page-header"><h1>Sample Applications</h1><p class="page-subtitle">The runnable WinForms editor and the workflow execution server</p></div>
+<p>Two sample applications ship with the solution: a full WinForms diagram editor that exercises the framework end to end, and a headless server that executes saved diagrams as queued jobs over HTTP. Both are the fastest way to see the framework working before writing code.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#winforms">WinForms Editor Sample</a></li>
+    <li><a href="#server">Workflow Server Sample</a></li>
+    <li><a href="#running">Running the Samples</a></li>
+  </ul>
+</div>
+
+<section class="section" id="winforms">
+  <h2>WinForms Editor Sample</h2>
+  <p><code>Beep.Skia.Sample.WinForms</code> hosts <code>SkiaHostControl</code> in a full editor shell. The main form wires the canvas, palette, property grid and menus together and adds family-specific analysis commands to the menu bar.</p>
+
+  <h3>Editor Features</h3>
+  <table>
+    <thead>
+      <tr><th>Area</th><th>What the sample demonstrates</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Canvas</td><td>Drag-and-drop placement from the in-canvas palette, selection, resize, zoom/pan, grid and snapping</td></tr>
+      <tr><td>Editing</td><td>Undo/redo, copy/paste, delete, arrange (bring to front/send to back) and align commands driven from the menu</td></tr>
+      <tr><td>Templates</td><td>Loading the built-in diagram templates through the Templates menu</td></tr>
+      <tr><td>Validation</td><td>Diagram validation with an error/warning report in the status bar</td></tr>
+      <tr><td>ECAD</td><td>Electrical rules check (ERC) over the diagram's ECAD components, reporting violations by severity</td></tr>
+      <tr><td>Security</td><td>STRIDE analysis over asset nodes, materializing generated threat nodes onto the canvas for inspection</td></tr>
+      <tr><td>Project management</td><td>Critical-path (CPM) calculation with project duration and critical task list, plus Gantt timeline generation</td></tr>
+      <tr><td>Automation</td><td>Running the diagram as a workflow in-process and reporting status and elapsed time</td></tr>
+      <tr><td>Property grid</td><td>Editing the selected component's <code>NodeProperties</code> with write-back to the canvas</td></tr>
+      <tr><td>Export</td><td>PNG, SVG and PDF export plus print preview from the host control</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Dialog Forms</h3>
+  <p>The sample includes focused dialogs that are useful as integration references:</p>
+  <table>
+    <thead>
+      <tr><th>Form</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>CodePreviewForm</code></td><td>Shows generated code (for example flowchart code generation) before copying it out</td></tr>
+      <tr><td><code>CommentsForm</code></td><td>Lists, adds and resolves collaboration comments anchored to components</td></tr>
+      <tr><td><code>DiagramAssistForm</code></td><td>Drives assisted generation from a description into a diagram</td></tr>
+      <tr><td><code>ExecutionServiceForm</code></td><td>Submits workflows to the execution service and watches job state</td></tr>
+      <tr><td><code>ExpressionTesterForm</code></td><td>Evaluates ETL expressions interactively against sample rows</td></tr>
+      <tr><td><code>ExtensionsForm</code></td><td>Installs, updates and removes extension packages and reloads the palette</td></tr>
+      <tr><td><code>TextPreviewForm</code></td><td>Shows generated text artifacts (DDL, XMI, BPMN XML, code) with copy support</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="server">
+  <h2>Workflow Server Sample</h2>
+  <p><code>Beep.Skia.Sample.Server</code> is a thin ASP.NET transport adapter over the execution SKU. All routing and status codes live in <code>WorkflowRequestRouter</code>, so the same facade can be hosted by anything else.</p>
+
+  <h3>Routes</h3>
+  <table>
+    <thead>
+      <tr><th>Method and path</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>GET /api/workflows</code></td><td>List published workflows</td></tr>
+      <tr><td><code>POST /api/workflows?name=...</code></td><td>Publish a diagram DTO (request body) as a workflow</td></tr>
+      <tr><td><code>GET /api/jobs?state=&amp;limit=</code></td><td>List jobs, optionally filtered by state</td></tr>
+      <tr><td><code>POST /api/jobs?workflowId=&amp;submittedBy=</code></td><td>Submit a job; the body carries the inputs JSON object</td></tr>
+      <tr><td><code>GET /api/jobs/{id}</code></td><td>Job detail including node states</td></tr>
+      <tr><td><code>POST /api/jobs/{id}/cancel</code></td><td>Cancel a running job</td></tr>
+      <tr><td><code>POST /api/jobs/{id}/pause</code></td><td>Pause a job at the next safe point</td></tr>
+      <tr><td><code>POST /api/jobs/{id}/resume</code></td><td>Resume a paused job</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Command Line</h3>
+  <div class="code-example">
+    <pre><code class="language-text">Beep.Skia.Sample.Server [options]
+
+  --url &lt;prefix&gt;      Listen URL (default http://localhost:5199)
+  --concurrency &lt;n&gt;   Max parallel jobs (default 2)
+  --demo              Publish a demo workflow at startup
+  --publish &lt;file&gt;    Publish a saved diagram (skia_layout.json) at startup
+  --help              Show this help</code></pre>
+  </div>
+
+  <div class="code-example">
+    <h3>Submitting a Job</h3>
+    <pre><code class="language-bash"># Start the server with a demo workflow published
+dotnet run --project Beep.Skia.Sample.Server -- --demo
+
+# List workflows and grab the id, then submit a job
+curl http://localhost:5199/api/workflows
+curl -X POST "http://localhost:5199/api/jobs?workflowId=&lt;id&gt;&amp;submittedBy=me" \
+     -H "Content-Type: application/json" -d "{ \"threshold\": 10 }"
+
+# Inspect and control it
+curl http://localhost:5199/api/jobs/&lt;jobId&gt;
+curl -X POST http://localhost:5199/api/jobs/&lt;jobId&gt;/pause
+curl -X POST http://localhost:5199/api/jobs/&lt;jobId&gt;/resume</code></pre>
+  </div>
+</section>
+
+<section class="section" id="running">
+  <h2>Running the Samples</h2>
+  <div class="code-example">
+    <pre><code class="language-bash"># WinForms editor (Windows, .NET 10)
+dotnet run --project Beep.Skia.Sample.WinForms
+
+# Workflow server
+dotnet run --project Beep.Skia.Sample.Server -- --demo
+
+# Both are part of the solution; a full build compiles them
+dotnet build Beep.Skia.Solution.sln</code></pre>
+  </div>
+  <p>Restoring the solution requires the private <code>TheTechIdea.Beep.*</code> feed; see <a href="../guides/troubleshooting.html">Troubleshooting</a> if restore fails. The MAUI head is excluded from the CI filter, so the samples build without MAUI workloads.</p>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

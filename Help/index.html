@@ -29,6 +29,7 @@
             </div>
             <div class="search-container">
                 <input type="text" class="search-input" id="sidebar-search" placeholder="Search documentation..." oninput="searchSidebar(this.value)">
+                <div class="search-results" id="search-results"></div>
             </div>
             <nav><ul class="nav-menu">
                 <li><a href="home.html" target="content-frame"><i class="bi bi-house"></i> Home</a></li>
@@ -38,6 +39,7 @@
                         <li><a href="getting-started/installation.html" target="content-frame">Installation Guide</a></li>
                         <li><a href="getting-started/quick-start.html" target="content-frame">Quick Start Tutorial</a></li>
                         <li><a href="getting-started/architecture-overview.html" target="content-frame">Architecture Overview</a></li>
+                        <li><a href="getting-started/samples.html" target="content-frame">Sample Applications</a></li>
                     </ul>
                 </li>
 
@@ -130,6 +132,7 @@
                         <li><a href="guides/platforms.html" target="content-frame">Platforms &amp; Hosts</a></li>
                         <li><a href="guides/testing-and-quality.html" target="content-frame">Testing &amp; Quality</a></li>
                         <li><a href="guides/release-notes.html" target="content-frame">Release Notes</a></li>
+                        <li><a href="guides/troubleshooting.html" target="content-frame">Troubleshooting</a></li>
                         <li><a href="guides/theming.html" target="content-frame">Theming Guide</a></li>
                         <li><a href="guides/extensibility.html" target="content-frame">Extensibility & Plugins</a></li>
                     </ul>
@@ -154,13 +157,42 @@
                     </ul>
                 </li>
 
-                <li><a href="reference/api-index.html" target="content-frame"><i class="bi bi-code-square"></i> API Index</a></li>
+                <li class="has-submenu"><a href="#"><i class="bi bi-code-square"></i> API Reference</a>
+                    <ul class="submenu">
+                        <li><a href="reference/api-index.html" target="content-frame">Index (all types)</a></li>
+                        <li><a href="reference/beep-skia.html" target="content-frame">Beep.Skia (core)</a></li>
+                        <li><a href="reference/beep-skia-model.html" target="content-frame">Beep.Skia.Model</a></li>
+                        <li><a href="reference/beep-skia-flowchart.html" target="content-frame">Flowchart</a></li>
+                        <li><a href="reference/beep-skia-business.html" target="content-frame">Business process</a></li>
+                        <li><a href="reference/beep-skia-erd.html" target="content-frame">ERD</a></li>
+                        <li><a href="reference/beep-skia-dfd.html" target="content-frame">DFD</a></li>
+                        <li><a href="reference/beep-skia-etl.html" target="content-frame">ETL</a></li>
+                        <li><a href="reference/beep-skia-uml.html" target="content-frame">UML</a></li>
+                        <li><a href="reference/beep-skia-network.html" target="content-frame">Network</a></li>
+                        <li><a href="reference/beep-skia-pm.html" target="content-frame">Project management</a></li>
+                        <li><a href="reference/beep-skia-mindmap.html" target="content-frame">Mind map</a></li>
+                        <li><a href="reference/beep-skia-statemachine.html" target="content-frame">State machine</a></li>
+                        <li><a href="reference/beep-skia-ecad.html" target="content-frame">ECAD</a></li>
+                        <li><a href="reference/beep-skia-cloud.html" target="content-frame">Cloud</a></li>
+                        <li><a href="reference/beep-skia-security.html" target="content-frame">Security</a></li>
+                        <li><a href="reference/beep-skia-ml.html" target="content-frame">Machine learning</a></li>
+                        <li><a href="reference/beep-ski-quantitative.html" target="content-frame">Quantitative</a></li>
+                        <li><a href="reference/beep-skia-welllogs.html" target="content-frame">Well logs</a></li>
+                        <li><a href="reference/beep-skia-winform-controls.html" target="content-frame">WinForms controls</a></li>
+                        <li><a href="reference/beep-skia-wpf-controls.html" target="content-frame">WPF controls</a></li>
+                        <li><a href="reference/beep-skia-blazor-controls.html" target="content-frame">Blazor controls</a></li>
+                        <li><a href="reference/beep-skia-maui-controls.html" target="content-frame">MAUI controls</a></li>
+                        <li><a href="reference/beep-skia-avalonia-controls.html" target="content-frame">Avalonia controls</a></li>
+                        <li><a href="reference/beep-skia-loader.html" target="content-frame">Loader extension</a></li>
+                    </ul>
+                </li>
             </ul></nav>
         </aside>
 
         <iframe name="content-frame" id="content-frame" src="home.html" class="content"></iframe>
     </div>
 
+    <script src="search-index.js"></script>
     <script>
         document.querySelectorAll('.has-submenu > a').forEach(function(a) {
             a.addEventListener('click', function(e) {
@@ -193,7 +225,58 @@
                     grp.classList.toggle('open', has);
                 });
             }
+            searchContent(q);
         }
+
+        function escapeHtml(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function searchContent(q) {
+            var box = document.getElementById('search-results');
+            if (!box) return;
+            q = q.trim();
+            if (q.length < 2) { box.style.display = 'none'; box.innerHTML = ''; return; }
+
+            var idx = window.__BEEP_SKIA_SEARCH__ || [];
+            var terms = q.split(/\s+/);
+            var hits = [];
+            idx.forEach(function(e) {
+                var title = e.t.toLowerCase();
+                var hay = (e.t + ' ' + e.h + ' ' + e.x).toLowerCase();
+                var score = 0;
+                for (var i = 0; i < terms.length; i++) {
+                    var t = terms[i];
+                    if (hay.indexOf(t) === -1) return;
+                    score += (title.indexOf(t) !== -1) ? 5 : 1;
+                }
+                hits.push({ e: e, s: score });
+            });
+            hits.sort(function(a, b) { return b.s - a.s; });
+            hits = hits.slice(0, 12);
+
+            if (!hits.length) {
+                box.innerHTML = '<div class="search-empty">No matches for "' + escapeHtml(q) + '"</div>';
+                box.style.display = 'block';
+                return;
+            }
+            box.innerHTML = hits.map(function(h) {
+                return '<a class="search-hit" href="' + h.e.p + '" target="content-frame" onclick="hideSearchResults()">'
+                     + '<span class="search-hit-title">' + escapeHtml(h.e.t) + '</span>'
+                     + '<span class="search-hit-path">' + escapeHtml(h.e.p) + '</span>'
+                     + '</a>';
+            }).join('');
+            box.style.display = 'block';
+        }
+
+        function hideSearchResults() {
+            var box = document.getElementById('search-results');
+            if (box) { box.style.display = 'none'; }
+        }
+
+        document.addEventListener('click', function(ev) {
+            if (!ev.target.closest || !ev.target.closest('.search-container')) hideSearchResults();
+        });
 
         function toggleTheme() {
             var body = document.body;

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Troubleshooting | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Guides</span><span>&rsaquo;</span> <span>Troubleshooting</span></nav>
+<div class="page-header"><h1>Troubleshooting</h1><p class="page-subtitle">Symptoms, causes and fixes for the problems reported most often</p></div>
+<p>Most issues fall into a handful of categories: restore/build configuration, rendering and interaction details, serialization of custom types, and automation or extension setup. Each entry below states the symptom, the cause and the fix.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#restore">Restore and Build</a></li>
+    <li><a href="#rendering">Rendering and Interaction</a></li>
+    <li><a href="#serialization">Serialization</a></li>
+    <li><a href="#automation">Automation</a></li>
+    <li><a href="#extensions">Extensions</a></li>
+    <li><a href="#testing">Testing</a></li>
+  </ul>
+</div>
+
+<section class="section" id="restore">
+  <h2>Restore and Build</h2>
+
+  <h3>"Unable to find package TheTechIdea.Beep.DataManagementModels 3.1.1"</h3>
+  <p><strong>Cause:</strong> the framework depends on BeepDM model packages that are not published on nuget.org at the required versions.</p>
+  <p><strong>Fix:</strong> add the private feed that hosts the <code>TheTechIdea.Beep.*</code> packages (a local folder feed or your internal server) to <code>nuget.config</code> before restoring. The same feed is required in CI.</p>
+
+  <h3>NU1701 when referencing the WinForms or WPF host packages</h3>
+  <p><strong>Cause:</strong> SkiaSharp 4.x view packages ship no <code>net8.0</code> assets, so older Windows TFMs silently fall back to .NET Framework assemblies.</p>
+  <p><strong>Fix:</strong> target <code>net10.0-windows10.0.19041.0</code> (or the matching <code>net9.0-windows10.0.19041.0</code>) for the Windows hosts. Do not suppress NU1701 &mdash; the warning is telling you the wrong assets were chosen.</p>
+
+  <h3>MAUI project fails to build on a machine without workloads</h3>
+  <p><strong>Cause:</strong> the MAUI head requires the <code>maui</code> workload, which CI agents often lack.</p>
+  <p><strong>Fix:</strong> build through the CI filter (<code>Beep.Skia.CI.slnf</code>), which excludes the MAUI project; install the workload locally if you need that head.</p>
+
+  <h3>CS1591 or documentation warnings in the build</h3>
+  <p><strong>Cause:</strong> libraries generate XML documentation, and some public members have no <code>///</code> comment.</p>
+  <p><strong>Fix:</strong> nothing to do &mdash; the repository suppresses CS1591 so the build stays warning-free while still shipping the XML file for IntelliSense. Add comments where they help; the Help site's <a href="../reference/api-index.html">API reference</a> covers the whole surface.</p>
+</section>
+
+<section class="section" id="rendering">
+  <h2>Rendering and Interaction</h2>
+
+  <h3>Connection lines detach from a custom component after it moves</h3>
+  <p><strong>Cause:</strong> the component's port layout was not marked stale, so ports kept their old coordinates.</p>
+  <p><strong>Fix:</strong> mark ports dirty whenever geometry that affects them changes, and lay them out lazily in the draw path:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+{
+    EnsurePortLayout(() =&gt; LayoutPorts());
+    // ... draw
+}</code></pre>
+  </div>
+
+  <h3>Dropped components land offset from the cursor</h3>
+  <p><strong>Cause:</strong> the pointer position was treated as world coordinates. The canvas is panned and zoomed.</p>
+  <p><strong>Fix:</strong> convert screen to world with the viewport before assigning <code>X</code>/<code>Y</code>:</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">float zoom = drawingManager.Zoom == 0 ? 1f : drawingManager.Zoom;
+component.X = (screen.X - drawingManager.PanOffset.X) / zoom;
+component.Y = (screen.Y - drawingManager.PanOffset.Y) / zoom;</code></pre>
+  </div>
+
+  <h3>Theme changes do not repaint the canvas</h3>
+  <p><strong>Cause:</strong> the theme is read while drawing, but nothing requested a frame.</p>
+  <p><strong>Fix:</strong> request a redraw after switching themes (or subscribe to <code>ThemeManager.ThemeChanged</code> and do it centrally).</p>
+  <div class="code-example">
+    <pre><code class="language-csharp">ThemeManager.ApplyTheme("Dark");
+drawingManager.RequestRedraw();</code></pre>
+  </div>
+
+  <h3>Large diagrams drop frames</h3>
+  <p><strong>Cause:</strong> per-frame allocations and shadows dominate the render loop.</p>
+  <p><strong>Fix:</strong> reuse <code>SKPaint</code> instances instead of allocating in <code>DrawContent</code>, set <code>Elevation = 0</code> on components that do not need depth, and keep viewport culling enabled (the renderer skips components outside the visible rect). See the <a href="performance.html">Performance Guide</a> for measured numbers.</p>
+</section>
+
+<section class="section" id="serialization">
+  <h2>Serialization</h2>
+
+  <h3>Saved diagrams lose custom components on load</h3>
+  <p><strong>Cause:</strong> <code>ComponentDto.Type</code> stores an assembly-qualified type name; if the assembly is not loaded, <code>LoadFromDto</code> skips the component.</p>
+  <p><strong>Fix:</strong> load the extension or assembly that defines the type before calling <code>LoadFromDto</code>, and never rename component classes after release.</p>
+
+  <h3>Complex property values come back as strings</h3>
+  <p><strong>Cause:</strong> the value was stored in <code>PropertyBag</code> (string bag) instead of <code>TypedPropertyBag</code>.</p>
+  <p><strong>Fix:</strong> <code>ToDto()</code> already routes non-convertible values into <code>TypedPropertyBag</code>. If you build DTOs by hand, do the same: simple values to <code>PropertyBag</code>, everything else through <code>JsonSerializer.SerializeToElement</code>.</p>
+
+  <h3>Loading an old file fails or drops properties</h3>
+  <p><strong>Cause:</strong> the payload uses an earlier <code>SchemaVersion</code>.</p>
+  <p><strong>Fix:</strong> loading is tolerant &mdash; missing bags are treated as empty. Check <code>dto.SchemaVersion</code> if you need custom upgrade logic; see <a href="../core-concepts/serialization.html">Serialization</a>.</p>
+</section>
+
+<section class="section" id="automation">
+  <h2>Automation</h2>
+
+  <h3>A workflow completes but nothing happened</h3>
+  <p><strong>Cause:</strong> the diagram contains components that are not automation nodes, or the nodes are not connected in dependency order.</p>
+  <p><strong>Fix:</strong> use <code>AutomationNode</code>-derived components (see <a href="../automation/nodes.html">Automation Nodes</a>) and connect them so the engine can sort them topologically. Inspect the run result for per-node states.</p>
+
+  <h3>Credentials appear in the diagram file</h3>
+  <p><strong>Cause:</strong> secrets were written into <code>NodeProperties</code>.</p>
+  <p><strong>Fix:</strong> store secrets in the credential vault and reference them by name; see <a href="../automation/credentials.html">Credentials &amp; Connections</a>.</p>
+</section>
+
+<section class="section" id="extensions">
+  <h2>Extensions</h2>
+
+  <h3>An installed extension does not appear in the palette</h3>
+  <p><strong>Cause:</strong> the extension assembly was never loaded, or the palette was not refreshed.</p>
+  <p><strong>Fix:</strong> load the directories reported by <code>ExtensionPackageManager.GetLoadDirectories()</code> through <code>SkiaExtensionHost</code>, then call <code>palette.LoadComponentsFromRegistry()</code> again.</p>
+
+  <h3>Installing a package fails</h3>
+  <p><strong>Cause:</strong> the <code>.beepkg</code> is malformed, targets an incompatible version, or was rejected by the archive safety checks (path traversal, oversized entries).</p>
+  <p><strong>Fix:</strong> read the error on the <code>ExtensionInstallResult</code>; it names the failed gate. Rebuild the package with the current packaging tooling.</p>
+</section>
+
+<section class="section" id="testing">
+  <h2>Testing</h2>
+
+  <h3>Tests pass individually but fail in a suite</h3>
+  <p><strong>Cause:</strong> Skia native state is process-wide; parallel test execution can corrupt it.</p>
+  <p><strong>Fix:</strong> the repository disables test parallelization in <code>TestAssemblyInfo.cs</code>. Keep that setting for any project that renders.</p>
+
+  <h3>Rendering a component in a test draws nothing</h3>
+  <p><strong>Cause:</strong> components cull against the drawing context bounds, and an empty viewport culls everything.</p>
+  <p><strong>Fix:</strong> draw through a <code>DrawingManager</code> with a real surface (or pass a real viewport) rather than calling the draw entry point with default bounds.</p>
+</section>
+
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business process (BPMN) family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>Business process (BPMN) family</span></nav>
+<div class="page-header"><h1>Business process (BPMN) family</h1><p class="page-subtitle">API reference for Beep.Skia.Business (46 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.Business</code> assembly: 46 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-actionnode"><code>ActionNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-actiontype"><code>ActionType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-annotation"><code>Annotation</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-annotationtype"><code>AnnotationType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-bpmnexporter"><code>BpmnExporter</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-bpmnflow"><code>BpmnFlow</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-bpmnimporter"><code>BpmnImporter</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-bpmnimportresult"><code>BpmnImportResult</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-bpmnlanenode"><code>BpmnLaneNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-bpmnmessageflow"><code>BpmnMessageFlow</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-bpmnpoolnode"><code>BpmnPoolNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-businesscomponenttype"><code>BusinessComponentType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-businesscontrol"><code>BusinessControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-businesspriority"><code>BusinessPriority</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-businessstatus"><code>BusinessStatus</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-businesssystem"><code>BusinessSystem</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-businesstask"><code>BusinessTask</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-conditionbuilder"><code>ConditionBuilder</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-conditiontype"><code>ConditionType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-connectiontype"><code>ConnectionType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-database"><code>Database</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dataobject"><code>DataObject</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-datastore"><code>DataStore</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-datatype"><code>DataType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-decision"><code>Decision</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-department"><code>Department</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-document"><code>Document</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-endevent"><code>EndEvent</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-eventnode"><code>EventNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-eventposition"><code>EventPosition</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-eventtype"><code>EventType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-externaldata"><code>ExternalData</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-flowdirection"><code>FlowDirection</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-gateway"><code>Gateway</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-gatewaytype"><code>GatewayType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-group"><code>Group</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-grouptype"><code>GroupType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-intermediateeventnode"><code>IntermediateEventNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-person"><code>Person</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-role"><code>Role</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ruleengine"><code>RuleEngine</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ruleflow"><code>RuleFlow</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-startevent"><code>StartEvent</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-subprocess"><code>SubProcess</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-tasknode"><code>TaskNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-taskstatus"><code>TaskStatus</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+</ul>
+<section class="section" id="type-actionnode">
+  <h2>ActionNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents an action node in a business rule diagram. Displayed as a lightning bolt in a rounded rectangle.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ActionText</code></td><td>Property</td><td>Gets or sets the action text.</td></tr>
+      <tr><td><code>ActionType ActionType</code></td><td>Property</td><td>Gets or sets the action type.</td></tr>
+      <tr><td><code>ActionNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-actiontype">
+  <h2>ActionType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the type of action.</p>
+</section>
+<section class="section" id="type-annotation">
+  <h2>Annotation <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a text annotation for documenting processes. Displayed as a text box with optional border and background.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string AnnotationText</code></td><td>Property</td><td>Gets or sets the annotation text.</td></tr>
+      <tr><td><code>AnnotationType AnnotationType</code></td><td>Property</td><td>Gets or sets the annotation type.</td></tr>
+      <tr><td><code>bool ShowBorder</code></td><td>Property</td><td>Gets or sets the show border.</td></tr>
+      <tr><td><code>bool ShowBackground</code></td><td>Property</td><td>Gets or sets the show background.</td></tr>
+      <tr><td><code>Annotation()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-annotationtype">
+  <h2>AnnotationType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the type of annotation.</p>
+</section>
+<section class="section" id="type-bpmnexporter">
+  <h2>BpmnExporter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Exports a Business Process diagram as BPMN 2.0 XML (semantic model + BPMN DI). Without pools, a single bpmn:process is emitted (sequence flows only). With BpmnPoolNode pools, a bpmn:collaboration is emitted with one participant + process per pool; nodes are assigned to pools by geometric containment; BpmnMessageFlow lines (or lines crossing pools) become bpmn:messageFlow. BpmnLaneNode lanes become bpmn:laneSet/bpmn:lane with flowNodeRefs.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Export(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;Model.IConnectionLine&gt; lines, string processName = "Process")</code></td><td>Method</td><td>Exports components and lines to BPMN 2.0 XML.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-bpmnflow">
+  <h2>BpmnFlow <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A flow parsed from BPMN XML, ready to be connected in a drawing manager.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaComponent Source</code></td><td>Property</td><td>Gets or sets the source.</td></tr>
+      <tr><td><code>SkiaComponent Target</code></td><td>Property</td><td>Gets or sets the target.</td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-bpmnimporter">
+  <h2>BpmnImporter <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Imports BPMN 2.0 XML into Business diagram components. Namespace-agnostic (matches by local element name) and reads BPMN DI bounds when present.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>BpmnImportResult Parse(string xml)</code></td><td>Method</td><td>Parses BPMN XML into components and flows.</td></tr>
+      <tr><td><code>BpmnImportResult LoadInto(DrawingManager manager, string xml)</code></td><td>Method</td><td>Parses and loads BPMN XML directly into a drawing manager.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-bpmnimportresult">
+  <h2>BpmnImportResult <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Result of parsing BPMN XML.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ProcessName</code></td><td>Property</td><td>Gets or sets the process name.</td></tr>
+      <tr><td><code>List&lt;SkiaComponent&gt; Components</code></td><td>Property</td><td>Gets or sets the components.</td></tr>
+      <tr><td><code>List&lt;BpmnFlow&gt; Flows</code></td><td>Property</td><td>Gets or sets the flows.</td></tr>
+      <tr><td><code>List&lt;string&gt; Warnings</code></td><td>Property</td><td>Gets or sets the warnings.</td></tr>
+      <tr><td><code>void LoadInto(DrawingManager manager)</code></td><td>Method</td><td>Adds the parsed components to a drawing manager and creates the flows.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-bpmnlanenode">
+  <h2>BpmnLaneNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>BPMN Lane container (a subdivision of a pool). Drawn as a rectangle with a header band at the top. Nodes whose center lies inside the lane belong to it.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string LaneName</code></td><td>Property</td><td>Gets or sets the lane name.</td></tr>
+      <tr><td><code>BpmnLaneNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-bpmnmessageflow">
+  <h2>BpmnMessageFlow <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>BPMN message flow — a dashed connection between participants/pools (exported as bpmn:messageFlow inside a collaboration).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string MessageName</code></td><td>Property</td><td>Optional message name (exported as the message flow name).</td></tr>
+      <tr><td><code>BpmnMessageFlow() : base(()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-bpmnpoolnode">
+  <h2>BpmnPoolNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>BPMN Pool (participant) container. Drawn as a rounded rectangle with a vertical title bar on the left. Nodes whose center lies inside the pool belong to it.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string PoolName</code></td><td>Property</td><td>Gets or sets the pool name.</td></tr>
+      <tr><td><code>BpmnPoolNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-businesscomponenttype">
+  <h2>BusinessComponentType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the type of business component.</p>
+</section>
+<section class="section" id="type-businesscontrol">
+  <h2>BusinessControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Base control for business graph components (flowcharts, organizational charts, business processes). Provides common functionality for business diagram elements with support for custom shapes.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>BusinessComponentType ComponentType</code></td><td>Property</td><td>Gets or sets the business component type.</td></tr>
+      <tr><td><code>string BusinessRole</code></td><td>Property</td><td>Gets or sets the business role or department this component represents.</td></tr>
+      <tr><td><code>BusinessPriority BusinessPriority</code></td><td>Property</td><td>Gets or sets the business priority level of this business component.</td></tr>
+      <tr><td><code>BusinessStatus Status</code></td><td>Property</td><td>Gets or sets the status of this business component.</td></tr>
+      <tr><td><code>float BorderThickness</code></td><td>Property</td><td>Gets or sets the border thickness.</td></tr>
+      <tr><td><code>int InPortCount</code></td><td>Property</td><td>Exposes input port count for editors; updates ports lazily.</td></tr>
+      <tr><td><code>int OutPortCount</code></td><td>Property</td><td>Exposes output port count for editors; updates ports lazily.</td></tr>
+      <tr><td><code>bool ShowSelectionBorder</code></td><td>Property</td><td>When true, the node draws its own dashed selection border. Defaults to false to avoid duplication since the framework already renders selection handles/highlights.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-businesspriority">
+  <h2>BusinessPriority <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the priority level of a business component.</p>
+</section>
+<section class="section" id="type-businessstatus">
+  <h2>BusinessStatus <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the status of a business component.</p>
+</section>
+<section class="section" id="type-businesssystem">
+  <h2>BusinessSystem <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a system in a business process diagram. Displayed as a server/system shape.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string SystemName</code></td><td>Property</td><td>Gets or sets the system name.</td></tr>
+      <tr><td><code>BusinessSystem()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-businesstask">
+  <h2>BusinessTask <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a task in a business process diagram. Displayed as a rounded rectangle.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static readonly string[] TaskTypes =</code></td><td>Field</td><td>Supported BPMN task types (mapped to bpmn:*Task elements on export).</td></tr>
+      <tr><td><code>string TaskType</code></td><td>Property</td><td>BPMN task type: Task, Service, User, Script, Manual, BusinessRule, Send, or Receive.</td></tr>
+      <tr><td><code>BusinessTask()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Display label for the task. Synced with Name for convenience.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-conditionbuilder">
+  <h2>ConditionBuilder <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a condition builder in a business rule diagram. Displayed as a question mark in a rounded rectangle.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ConditionText</code></td><td>Property</td><td>Gets or sets the condition text.</td></tr>
+      <tr><td><code>ConditionType ConditionType</code></td><td>Property</td><td>Gets or sets the condition type.</td></tr>
+      <tr><td><code>bool IsValid</code></td><td>Property</td><td>Gets or sets the is valid.</td></tr>
+      <tr><td><code>ConditionBuilder()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-conditiontype">
+  <h2>ConditionType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the type of condition.</p>
+</section>
+<section class="section" id="type-connectiontype">
+  <h2>ConnectionType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the type of connection or flow between workflow elements.</p>
+</section>
+<section class="section" id="type-database">
+  <h2>Database <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a database in a business process diagram. Displayed as a cylinder shape.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>Database()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dataobject">
+  <h2>DataObject <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a data object that flows through the process. Displayed as a rectangle with a data icon and type indicator.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string DataName</code></td><td>Property</td><td>Gets or sets the data name.</td></tr>
+      <tr><td><code>DataType DataType</code></td><td>Property</td><td>Gets or sets the data type.</td></tr>
+      <tr><td><code>string DataFormat</code></td><td>Property</td><td>Gets or sets the data format.</td></tr>
+      <tr><td><code>bool IsCollection</code></td><td>Property</td><td>Gets or sets the is collection.</td></tr>
+      <tr><td><code>DataObject()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-datastore">
+  <h2>DataStore <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a data store in a business process diagram. Displayed as an open box.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>DataStore()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-datatype">
+  <h2>DataType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the type of data object.</p>
+</section>
+<section class="section" id="type-decision">
+  <h2>Decision <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a decision point in a business process diagram. Displayed as a diamond shape.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>Decision()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-department">
+  <h2>Department <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a department in an organizational chart. Displayed as a rounded rectangle with department styling.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string DepartmentName</code></td><td>Property</td><td>Gets or sets the department name.</td></tr>
+      <tr><td><code>int EmployeeCount</code></td><td>Property</td><td>Gets or sets the employee count.</td></tr>
+      <tr><td><code>Department()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-document">
+  <h2>Document <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a document in a business process diagram. Displayed as a rectangle with a folded corner.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>Document()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-endevent">
+  <h2>EndEvent <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents an end event in a business process diagram. Displayed as a thick-bordered circle.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>EndEvent()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-eventnode">
+  <h2>EventNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a workflow event node that can trigger or respond to events. Displayed as a circle with event-specific icons and timing information.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string EventName</code></td><td>Property</td><td>Gets or sets the event name.</td></tr>
+      <tr><td><code>EventType EventType</code></td><td>Property</td><td>Gets or sets the event type.</td></tr>
+      <tr><td><code>string TriggerCondition</code></td><td>Property</td><td>Gets or sets the trigger condition.</td></tr>
+      <tr><td><code>bool IsTriggered</code></td><td>Property</td><td>Gets or sets the is triggered.</td></tr>
+      <tr><td><code>DateTime? TriggerTime</code></td><td>Property</td><td>Gets or sets the trigger time.</td></tr>
+      <tr><td><code>EventNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-eventposition">
+  <h2>EventPosition <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the type of event position (start, intermediate, end).</p>
+</section>
+<section class="section" id="type-eventtype">
+  <h2>EventType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the type of event.</p>
+</section>
+<section class="section" id="type-externaldata">
+  <h2>ExternalData <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents external data in a business process diagram. Displayed as a parallelogram.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>ExternalData()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-flowdirection">
+  <h2>FlowDirection <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the direction of rule flow.</p>
+</section>
+<section class="section" id="type-gateway">
+  <h2>Gateway <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a BPMN 2.0 gateway with configurable type. Exclusive (XOR) = blank diamond with X; Inclusive (OR) = diamond with circle; Parallel (AND) = diamond with +.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>GatewayType GatewayType</code></td><td>Property</td><td>Gets or sets the gateway type.</td></tr>
+      <tr><td><code>Gateway()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-gatewaytype">
+  <h2>GatewayType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the type of gateway.</p>
+</section>
+<section class="section" id="type-group">
+  <h2>Group <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a group of related process elements. Displayed as a dashed border rectangle that can contain multiple components.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;BusinessControl&gt; GroupedComponents</code></td><td>Property</td><td>Gets or sets the grouped components.</td></tr>
+      <tr><td><code>string GroupName</code></td><td>Property</td><td>Gets or sets the group name.</td></tr>
+      <tr><td><code>SKColor GroupColor</code></td><td>Property</td><td>Gets or sets the group color.</td></tr>
+      <tr><td><code>GroupType GroupType</code></td><td>Property</td><td>Gets or sets the group type.</td></tr>
+      <tr><td><code>Group()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void AddComponent(BusinessControl component)</code></td><td>Method</td><td>Adds a component to this group.</td></tr>
+      <tr><td><code>void RemoveComponent(BusinessControl component)</code></td><td>Method</td><td>Removes a component from this group.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-grouptype">
+  <h2>GroupType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the type of group.</p>
+</section>
+<section class="section" id="type-intermediateeventnode">
+  <h2>IntermediateEventNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>BPMN 2.0 Intermediate Event node. Rendered as a double-ring circle with event type icon inside the inner ring. Supports Catch (incoming flow triggers event) and Throw (event triggers outgoing flow) semantics.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>EventType EventType</code></td><td>Property</td><td>Gets or sets the event type.</td></tr>
+      <tr><td><code>EventPosition EventPosition</code></td><td>Property</td><td>Gets or sets the event position.</td></tr>
+      <tr><td><code>IntermediateEventNode()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-person">
+  <h2>Person <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a person in an organizational chart. Displayed as a circle with a person icon.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string PersonName</code></td><td>Property</td><td>Gets or sets the person name.</td></tr>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>Person()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-role">
+  <h2>Role <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a role in an organizational chart. Displayed as a badge shape.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string RoleName</code></td><td>Property</td><td>Gets or sets the role name.</td></tr>
+      <tr><td><code>Role()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ruleengine">
+  <h2>RuleEngine <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a business rule engine in a business process diagram. Displayed as a gear/cog shape with rule indicators.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string RuleSetName</code></td><td>Property</td><td>Gets or sets the rule set name.</td></tr>
+      <tr><td><code>int RuleCount</code></td><td>Property</td><td>Gets or sets the rule count.</td></tr>
+      <tr><td><code>bool IsActive</code></td><td>Property</td><td>Gets or sets the is active.</td></tr>
+      <tr><td><code>RuleEngine()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ruleflow">
+  <h2>RuleFlow <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a rule flow connector in a business rule diagram. Displayed as a curved arrow with rule evaluation indicators.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string FlowLabel</code></td><td>Property</td><td>Gets or sets the flow label.</td></tr>
+      <tr><td><code>FlowDirection Direction</code></td><td>Property</td><td>Gets or sets the direction.</td></tr>
+      <tr><td><code>bool IsActive</code></td><td>Property</td><td>Gets or sets the is active.</td></tr>
+      <tr><td><code>RuleFlow()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-startevent">
+  <h2>StartEvent <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a start event in a business process diagram. Displayed as a thin-bordered circle.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>StartEvent()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-subprocess">
+  <h2>SubProcess <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a subprocess that contains other process elements. Displayed as a rounded rectangle with collapse/expand indicator.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;BusinessControl&gt; ChildComponents</code></td><td>Property</td><td>Gets or sets the child components.</td></tr>
+      <tr><td><code>bool IsCollapsed</code></td><td>Property</td><td>Gets or sets the is collapsed.</td></tr>
+      <tr><td><code>string ProcessName</code></td><td>Property</td><td>Gets or sets the process name.</td></tr>
+      <tr><td><code>int ChildCount</code></td><td>Property</td><td>Gets or sets the child count.</td></tr>
+      <tr><td><code>SubProcess()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void AddChild(BusinessControl component)</code></td><td>Method</td><td>Adds a child component to this subprocess.</td></tr>
+      <tr><td><code>void RemoveChild(BusinessControl component)</code></td><td>Method</td><td>Removes a child component from this subprocess.</td></tr>
+      <tr><td><code>void ToggleCollapsed()</code></td><td>Method</td><td>Toggles the collapsed/expanded state of the subprocess.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-tasknode">
+  <h2>TaskNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a workflow task node with status indicators and progress tracking. Displayed as a rounded rectangle with task-specific icons and status.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string TaskDescription</code></td><td>Property</td><td>Gets or sets the task description.</td></tr>
+      <tr><td><code>TaskStatus TaskStatus</code></td><td>Property</td><td>Gets or sets the task status.</td></tr>
+      <tr><td><code>string AssignedTo</code></td><td>Property</td><td>Gets or sets the assigned to.</td></tr>
+      <tr><td><code>DateTime? DueDate</code></td><td>Property</td><td>Gets or sets the due date.</td></tr>
+      <tr><td><code>int Progress</code></td><td>Property</td><td>Gets or sets the progress.</td></tr>
+      <tr><td><code>TaskNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-taskstatus">
+  <h2>TaskStatus <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Specifies the status of a task.</p>
+</section>
+</div></main></div>
+</body></html>

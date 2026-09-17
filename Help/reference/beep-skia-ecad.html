@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECAD family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>ECAD family</span></nav>
+<div class="page-header"><h1>ECAD family</h1><p class="page-subtitle">API reference for Beep.Skia.ECAD (25 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.ECAD</code> assembly: 25 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-ecadbatterynode"><code>ECADBatteryNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadcapacitornode"><code>ECADCapacitorNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadcontrol"><code>ECADControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecaddiodenode"><code>ECADDiodeNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadfusenode"><code>ECADFuseNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadgroundnode"><code>ECADGroundNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadicnode"><code>ECADICNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadinductornode"><code>ECADInductorNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadlogicgatenode"><code>ECADLogicGateNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadmemorynode"><code>ECADMemoryNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadmicrocontrollernode"><code>ECADMicrocontrollerNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadopampnode"><code>ECADOpAmpNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadpowersupplynode"><code>ECADPowerSupplyNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadresistornode"><code>ECADResistorNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadtracenode"><code>ECADTraceNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadtransformernode"><code>ECADTransformerNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadtransistornode"><code>ECADTransistorNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-ecadvoltageregulatornode"><code>ECADVoltageRegulatorNode</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-electricalpinmodel"><code>ElectricalPinModel</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-electricalpintype"><code>ElectricalPinType</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-electricalruleschecker"><code>ElectricalRulesChecker</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-electricalruleviolation"><code>ElectricalRuleViolation</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-electricalviolationseverity"><code>ElectricalViolationSeverity</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-layer"><code>Layer</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-orientation"><code>Orientation</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+</ul>
+<section class="section" id="type-ecadbatterynode">
+  <h2>ECADBatteryNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Battery component with charge/discharge characteristics.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string BatteryType</code></td><td>Property</td><td>Gets or sets the battery type.</td></tr>
+      <tr><td><code>double Voltage</code></td><td>Property</td><td>Gets or sets the voltage.</td></tr>
+      <tr><td><code>double Capacity</code></td><td>Property</td><td>Gets or sets the capacity.</td></tr>
+      <tr><td><code>double ChargeRate</code></td><td>Property</td><td>Gets or sets the charge rate.</td></tr>
+      <tr><td><code>int Cells</code></td><td>Property</td><td>Gets or sets the cells.</td></tr>
+      <tr><td><code>ECADBatteryNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadcapacitornode">
+  <h2>ECADCapacitorNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ComponentValue</code></td><td>Property</td><td>Gets or sets the component value.</td></tr>
+      <tr><td><code>string Package</code></td><td>Property</td><td>Gets or sets the package.</td></tr>
+      <tr><td><code>Orientation Orientation</code></td><td>Property</td><td>Gets or sets the orientation.</td></tr>
+      <tr><td><code>ECADCapacitorNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadcontrol">
+  <h2>ECADControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color.</td></tr>
+      <tr><td><code>SKColor BorderColor</code></td><td>Property</td><td>Gets or sets the border color.</td></tr>
+      <tr><td><code>float BorderThickness</code></td><td>Property</td><td>Gets or sets the border thickness.</td></tr>
+      <tr><td><code>int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
+      <tr><td><code>int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecaddiodenode">
+  <h2>ECADDiodeNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Diode component for rectification and voltage regulation.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string DiodeType</code></td><td>Property</td><td>Gets or sets the diode type.</td></tr>
+      <tr><td><code>string Package</code></td><td>Property</td><td>Gets or sets the package.</td></tr>
+      <tr><td><code>double ForwardVoltage</code></td><td>Property</td><td>Gets or sets the forward voltage.</td></tr>
+      <tr><td><code>double MaxCurrent</code></td><td>Property</td><td>Gets or sets the max current.</td></tr>
+      <tr><td><code>ECADDiodeNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadfusenode">
+  <h2>ECADFuseNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Fuse or circuit breaker for overcurrent protection.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string FuseType</code></td><td>Property</td><td>Gets or sets the fuse type.</td></tr>
+      <tr><td><code>double Rating</code></td><td>Property</td><td>Gets or sets the rating.</td></tr>
+      <tr><td><code>double BreakingCapacity</code></td><td>Property</td><td>Gets or sets the breaking capacity.</td></tr>
+      <tr><td><code>string Package</code></td><td>Property</td><td>Gets or sets the package.</td></tr>
+      <tr><td><code>ECADFuseNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadgroundnode">
+  <h2>ECADGroundNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Ground/Earth connection symbol.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string GroundType</code></td><td>Property</td><td>Gets or sets the ground type.</td></tr>
+      <tr><td><code>ECADGroundNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadicnode">
+  <h2>ECADICNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Reference</code></td><td>Property</td><td>Gets or sets the reference.</td></tr>
+      <tr><td><code>string Footprint</code></td><td>Property</td><td>Gets or sets the footprint.</td></tr>
+      <tr><td><code>int PinCount</code></td><td>Property</td><td>Gets or sets the pin count.</td></tr>
+      <tr><td><code>ECADICNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadinductornode">
+  <h2>ECADInductorNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Inductor component for storing energy in magnetic fields.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ComponentValue</code></td><td>Property</td><td>Gets or sets the component value.</td></tr>
+      <tr><td><code>string Package</code></td><td>Property</td><td>Gets or sets the package.</td></tr>
+      <tr><td><code>double Tolerance</code></td><td>Property</td><td>Gets or sets the tolerance.</td></tr>
+      <tr><td><code>double RatedCurrent</code></td><td>Property</td><td>Gets or sets the rated current.</td></tr>
+      <tr><td><code>ECADInductorNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadlogicgatenode">
+  <h2>ECADLogicGateNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Logic gate component (AND, OR, NOT, NAND, NOR, XOR, XNOR).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string GateType</code></td><td>Property</td><td>Gets or sets the gate type.</td></tr>
+      <tr><td><code>string LogicFamily</code></td><td>Property</td><td>Gets or sets the logic family.</td></tr>
+      <tr><td><code>int NumInputs</code></td><td>Property</td><td>Gets or sets the num inputs.</td></tr>
+      <tr><td><code>double PropagationDelay</code></td><td>Property</td><td>Gets or sets the propagation delay.</td></tr>
+      <tr><td><code>ECADLogicGateNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadmemorynode">
+  <h2>ECADMemoryNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Memory IC (RAM, ROM, EEPROM, Flash).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string MemoryType</code></td><td>Property</td><td>Gets or sets the memory type.</td></tr>
+      <tr><td><code>string Model</code></td><td>Property</td><td>Gets or sets the model.</td></tr>
+      <tr><td><code>int Capacity</code></td><td>Property</td><td>Gets or sets the capacity.</td></tr>
+      <tr><td><code>string Interface</code></td><td>Property</td><td>Gets or sets the interface.</td></tr>
+      <tr><td><code>double AccessTime</code></td><td>Property</td><td>Gets or sets the access time.</td></tr>
+      <tr><td><code>ECADMemoryNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadmicrocontrollernode">
+  <h2>ECADMicrocontrollerNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Microcontroller/Microprocessor component.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Model</code></td><td>Property</td><td>Gets or sets the model.</td></tr>
+      <tr><td><code>string Package</code></td><td>Property</td><td>Gets or sets the package.</td></tr>
+      <tr><td><code>int IOPins</code></td><td>Property</td><td>Gets or sets the IO pins.</td></tr>
+      <tr><td><code>double ClockSpeed</code></td><td>Property</td><td>Gets or sets the clock speed.</td></tr>
+      <tr><td><code>int FlashMemory</code></td><td>Property</td><td>Gets or sets the flash memory.</td></tr>
+      <tr><td><code>int SRAMMemory</code></td><td>Property</td><td>Gets or sets the SRAM memory.</td></tr>
+      <tr><td><code>ECADMicrocontrollerNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadopampnode">
+  <h2>ECADOpAmpNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Operational Amplifier (Op-Amp).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Model</code></td><td>Property</td><td>Gets or sets the model.</td></tr>
+      <tr><td><code>string Package</code></td><td>Property</td><td>Gets or sets the package.</td></tr>
+      <tr><td><code>double GainBandwidth</code></td><td>Property</td><td>Gets or sets the gain bandwidth.</td></tr>
+      <tr><td><code>double SupplyVoltage</code></td><td>Property</td><td>Gets or sets the supply voltage.</td></tr>
+      <tr><td><code>double SlewRate</code></td><td>Property</td><td>Gets or sets the slew rate.</td></tr>
+      <tr><td><code>ECADOpAmpNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadpowersupplynode">
+  <h2>ECADPowerSupplyNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Power supply component (AC/DC, DC/DC converter).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string SupplyType</code></td><td>Property</td><td>Gets or sets the supply type.</td></tr>
+      <tr><td><code>double InputVoltage</code></td><td>Property</td><td>Gets or sets the input voltage.</td></tr>
+      <tr><td><code>double OutputVoltage</code></td><td>Property</td><td>Gets or sets the output voltage.</td></tr>
+      <tr><td><code>double OutputCurrent</code></td><td>Property</td><td>Gets or sets the output current.</td></tr>
+      <tr><td><code>double Efficiency</code></td><td>Property</td><td>Gets or sets the efficiency.</td></tr>
+      <tr><td><code>ECADPowerSupplyNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadresistornode">
+  <h2>ECADResistorNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ComponentValue</code></td><td>Property</td><td>Gets or sets the component value.</td></tr>
+      <tr><td><code>string Package</code></td><td>Property</td><td>Gets or sets the package.</td></tr>
+      <tr><td><code>Orientation Orientation</code></td><td>Property</td><td>Gets or sets the orientation.</td></tr>
+      <tr><td><code>ECADResistorNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadtracenode">
+  <h2>ECADTraceNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>float WidthPx</code></td><td>Property</td><td>Gets or sets the width px.</td></tr>
+      <tr><td><code>Layer Layer</code></td><td>Property</td><td>Gets or sets the layer.</td></tr>
+      <tr><td><code>SKPoint Start</code></td><td>Property</td><td>Gets or sets the start.</td></tr>
+      <tr><td><code>SKPoint End</code></td><td>Property</td><td>Gets or sets the end.</td></tr>
+      <tr><td><code>ECADTraceNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadtransformernode">
+  <h2>ECADTransformerNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Transformer for AC voltage conversion.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>double PrimaryVoltage</code></td><td>Property</td><td>Gets or sets the primary voltage.</td></tr>
+      <tr><td><code>double SecondaryVoltage</code></td><td>Property</td><td>Gets or sets the secondary voltage.</td></tr>
+      <tr><td><code>double PowerRating</code></td><td>Property</td><td>Gets or sets the power rating.</td></tr>
+      <tr><td><code>double TurnsRatio</code></td><td>Property</td><td>Gets or sets the turns ratio.</td></tr>
+      <tr><td><code>ECADTransformerNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadtransistornode">
+  <h2>ECADTransistorNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Transistor component (BJT or MOSFET).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string TransistorType</code></td><td>Property</td><td>Gets or sets the transistor type.</td></tr>
+      <tr><td><code>string Package</code></td><td>Property</td><td>Gets or sets the package.</td></tr>
+      <tr><td><code>double MaxVoltage</code></td><td>Property</td><td>Gets or sets the max voltage.</td></tr>
+      <tr><td><code>double MaxCurrent</code></td><td>Property</td><td>Gets or sets the max current.</td></tr>
+      <tr><td><code>double PowerDissipation</code></td><td>Property</td><td>Gets or sets the power dissipation.</td></tr>
+      <tr><td><code>ECADTransistorNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-ecadvoltageregulatornode">
+  <h2>ECADVoltageRegulatorNode <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Voltage Regulator (linear or switching).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string RegulatorType</code></td><td>Property</td><td>Gets or sets the regulator type.</td></tr>
+      <tr><td><code>string Model</code></td><td>Property</td><td>Gets or sets the model.</td></tr>
+      <tr><td><code>double InputVoltage</code></td><td>Property</td><td>Gets or sets the input voltage.</td></tr>
+      <tr><td><code>double OutputVoltage</code></td><td>Property</td><td>Gets or sets the output voltage.</td></tr>
+      <tr><td><code>double MaxCurrent</code></td><td>Property</td><td>Gets or sets the max current.</td></tr>
+      <tr><td><code>double Efficiency</code></td><td>Property</td><td>Gets or sets the efficiency.</td></tr>
+      <tr><td><code>ECADVoltageRegulatorNode()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-electricalpinmodel">
+  <h2>ElectricalPinModel <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Infers electrical pin types for ECAD components from their class and port direction. Used by the electrical rules checker for compatibility and short-circuit analysis.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>static ElectricalPinType GetPinType(SkiaComponent component, IConnectionPoint port)</code></td><td>Method</td><td>Gets the electrical pin type for a component port.</td></tr>
+      <tr><td><code>static bool IsPower(ElectricalPinType type)</code></td><td>Method</td><td>True when the pin supplies power.</td></tr>
+      <tr><td><code>static bool IsGround(ElectricalPinType type)</code></td><td>Method</td><td>True when the pin is a ground reference.</td></tr>
+      <tr><td><code>static bool IsShortCircuit(ElectricalPinType a, ElectricalPinType b)</code></td><td>Method</td><td>True when a direct connection between the two pin types is a short circuit.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-electricalpintype">
+  <h2>ElectricalPinType <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+  <p>Electrical role of a connection point (pin) on an ECAD component.</p>
+</section>
+<section class="section" id="type-electricalruleschecker">
+  <h2>ElectricalRulesChecker <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Electrical Rules Checker for ECAD schematic diagrams. Validates pin compatibility, floating nets, output conflicts, and missing power connections.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;ElectricalRuleViolation&gt; Violations</code></td><td>Property</td><td>Gets or sets the violations.</td></tr>
+      <tr><td><code>void RunChecks(IReadOnlyList&lt;SkiaComponent&gt; components, IReadOnlyList&lt;IConnectionLine&gt; lines)</code></td><td>Method</td><td>Runs all ERC checks on the given components and connections.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-electricalruleviolation">
+  <h2>ElectricalRuleViolation <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Represents a single ERC violation.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Message</code></td><td>Property</td><td>Gets or sets the message.</td></tr>
+      <tr><td><code>ElectricalViolationSeverity Severity</code></td><td>Property</td><td>Gets or sets the severity.</td></tr>
+      <tr><td><code>string Category</code></td><td>Property</td><td>Gets or sets the category.</td></tr>
+      <tr><td><code>string? FixSuggestion</code></td><td>Property</td><td>Gets or sets the fix suggestion.</td></tr>
+      <tr><td><code>SkiaComponent? Component</code></td><td>Property</td><td>Gets or sets the component.</td></tr>
+      <tr><td><code>IConnectionPoint? Port</code></td><td>Property</td><td>Gets or sets the port.</td></tr>
+      <tr><td><code>IConnectionLine? Line</code></td><td>Property</td><td>Gets or sets the line.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-electricalviolationseverity">
+  <h2>ElectricalViolationSeverity <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-layer">
+  <h2>Layer <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-orientation">
+  <h2>Orientation <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+</div></main></div>
+</body></html>

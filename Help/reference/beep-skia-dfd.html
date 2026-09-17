@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DFD family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important} .type-list{columns:3;column-gap:2rem;list-style:none;padding-left:0} .type-list li{margin:0.15rem 0} @media(max-width:900px){.type-list{columns:1}}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <a href="api-index.html">API Reference</a><span>&rsaquo;</span> <span>DFD family</span></nav>
+<div class="page-header"><h1>DFD family</h1><p class="page-subtitle">API reference for Beep.Skia.DFD (23 public types)</p></div>
+<p>Complete API surface of the <code>Beep.Skia.DFD</code> assembly: 23 public types with their documented members. Follow the family guide for usage patterns.</p>
+<h2>Types in this assembly</h2>
+<ul class="type-list">
+  <li><a href="#type-dfdbalanceissue"><code>DFDBalanceIssue</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdbalanceseverity"><code>DFDBalanceSeverity</code></a> <span style="color:var(--color-foreground-muted)">enum</span></li>
+  <li><a href="#type-dfdbalancingvalidator"><code>DFDBalancingValidator</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdcontrol"><code>DFDControl</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfddatastore"><code>DFDDataStore</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfddatastorecylinder"><code>DFDDataStoreCylinder</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfddatastoreopenended"><code>DFDDataStoreOpenEnded</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfddatastoreparallel"><code>DFDDataStoreParallel</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfddatastoreshared"><code>DFDDataStoreShared</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdexternalentity"><code>DFDExternalEntity</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdexternalentityganesarson"><code>DFDExternalEntityGaneSarson</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdlevelframe"><code>DFDLevelFrame</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdlevelnavigator"><code>DFDLevelNavigator</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdnote"><code>DFDNote</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdprocess"><code>DFDProcess</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdprocesscircle"><code>DFDProcessCircle</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdprocessganesarson"><code>DFDProcessGaneSarson</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdprocessgroupboundary"><code>DFDProcessGroupBoundary</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdprocessmultiio"><code>DFDProcessMultiIO</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdprocessnumbered"><code>DFDProcessNumbered</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdprocessoval"><code>DFDProcessOval</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdsubsystemcontainer"><code>DFDSubsystemContainer</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+  <li><a href="#type-dfdtrustboundary"><code>DFDTrustBoundary</code></a> <span style="color:var(--color-foreground-muted)">class</span></li>
+</ul>
+<section class="section" id="type-dfdbalanceissue">
+  <h2>DFDBalanceIssue <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Message</code></td><td>Property</td><td>Gets or sets the message.</td></tr>
+      <tr><td><code>DFDBalanceSeverity Severity</code></td><td>Property</td><td>Gets or sets the severity.</td></tr>
+      <tr><td><code>string? FixSuggestion</code></td><td>Property</td><td>Gets or sets the fix suggestion.</td></tr>
+      <tr><td><code>SkiaComponent? Component</code></td><td>Property</td><td>Gets or sets the component.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdbalanceseverity">
+  <h2>DFDBalanceSeverity <span style="font-size:0.6em;color:var(--color-foreground-muted)">(enum)</span></h2>
+</section>
+<section class="section" id="type-dfdbalancingvalidator">
+  <h2>DFDBalancingValidator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Balancing Validator — checks consistency between parent and child DFD levels. Validates that data flows entering/exiting a child diagram match the parent process's inputs/outputs.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>List&lt;DFDBalanceIssue&gt; Issues</code></td><td>Property</td><td>Gets or sets the issues.</td></tr>
+      <tr><td><code>bool Validate(SkiaComponent parentProcess, IReadOnlyList&lt;SkiaComponent&gt; childComponents, IReadOnlyList&lt;IConnectionLine&gt; childLines)</code></td><td>Method</td><td>Validates that a child DFD diagram balances with its parent process definition. The parent DFDProcess being decomposed. Components in the child diagram. Connection lines in the child diagram. True if the diagram is balanced.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdcontrol">
+  <h2>DFDControl <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Base class for DFD visual nodes. Pure component (no editor), registers ports and draws label/ports.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int InPortCount</code></td><td>Property</td><td>Gets or sets the in port count.</td></tr>
+      <tr><td><code>int OutPortCount</code></td><td>Property</td><td>Gets or sets the out port count.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfddatastore">
+  <h2>DFDDataStore <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Data Store: rectangle with double vertical line on the left.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>DFDDataStore()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfddatastorecylinder">
+  <h2>DFDDataStoreCylinder <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Data Store (Database): cylindrical shape with top ellipse.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DFDDataStoreCylinder()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfddatastoreopenended">
+  <h2>DFDDataStoreOpenEnded <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Data Store: open-ended rectangle (no right border) variant.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DFDDataStoreOpenEnded()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfddatastoreparallel">
+  <h2>DFDDataStoreParallel <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Data Store (Yourdon/DeMarco): two parallel horizontal lines.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DFDDataStoreParallel()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfddatastoreshared">
+  <h2>DFDDataStoreShared <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Shared Data Store: rectangle with double vertical lines on both left and right sides.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DFDDataStoreShared()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdexternalentity">
+  <h2>DFDExternalEntity <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD External Entity: rectangle node.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>DFDExternalEntity()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdexternalentityganesarson">
+  <h2>DFDExternalEntityGaneSarson <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD External Entity (Gane &amp; Sarson): rectangle with a header band.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DFDExternalEntityGaneSarson()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdlevelframe">
+  <h2>DFDLevelFrame <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>A level in the DFD decomposition hierarchy.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ProcessName</code></td><td>Property</td><td>Gets or sets the process name.</td></tr>
+      <tr><td><code>DiagramDto? Diagram</code></td><td>Property</td><td>Gets or sets the diagram.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdlevelnavigator">
+  <h2>DFDLevelNavigator <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Manages drill-down navigation across DFD decomposition levels. The caller captures the current diagram as a DiagramDto before drilling in, and restores frames when navigating up.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DFDLevelFrame? Current</code></td><td>Property</td><td>Gets the currently displayed level.</td></tr>
+      <tr><td><code>bool CanGoUp</code></td><td>Property</td><td>Gets a value indicating whether there is a parent level to return to.</td></tr>
+      <tr><td><code>int Depth</code></td><td>Property</td><td>Gets the current decomposition depth (0 = top level).</td></tr>
+      <tr><td><code>string Breadcrumb</code></td><td>Property</td><td>Gets a breadcrumb like "Level 0 &amp;gt; Process 1 &amp;gt; Process 1.1".</td></tr>
+      <tr><td><code>void Reset(DiagramDto? rootDiagram = null)</code></td><td>Method</td><td>Resets navigation to the top-level diagram.</td></tr>
+      <tr><td><code>bool DrillDown(string processName, DiagramDto currentDiagram, DiagramDto childDiagram)</code></td><td>Method</td><td>Drills into a process's child decomposition diagram. Display name of the process being decomposed. Live snapshot of the currently displayed diagram (pushed as the parent frame). The child diagram to display. True when the drill-down started.</td></tr>
+      <tr><td><code>DFDLevelFrame? GoUp()</code></td><td>Method</td><td>Returns to the parent level. The frame now displayed, or null when already at the top level.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdnote">
+  <h2>DFDNote <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Note: informational sticky-note; no ports.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DFDNote()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdprocess">
+  <h2>DFDProcess <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Process: rounded rectangle node with one input and one output. Supports drill-down decomposition via ChildDiagramData.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Label</code></td><td>Property</td><td>Gets or sets the label.</td></tr>
+      <tr><td><code>string ProcessId</code></td><td>Property</td><td>Gets or sets a unique process identifier (e.g., "1.0", "2.1") for DFD decomposition numbering.</td></tr>
+      <tr><td><code>Beep.Skia.Serialization.DiagramDto? ChildDiagramData</code></td><td>Property</td><td>Child diagram DTO for this process's decomposition (Level N+1). Set this when a child diagram exists.</td></tr>
+      <tr><td><code>bool HasChildDiagram</code></td><td>Property</td><td>Whether a child decomposition diagram exists for this process.</td></tr>
+      <tr><td><code>DFDProcess()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdprocesscircle">
+  <h2>DFDProcessCircle <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Process (Yourdon/DeMarco): circular process node with one input and one output.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DFDProcessCircle()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdprocessganesarson">
+  <h2>DFDProcessGaneSarson <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Process (Gane &amp; Sarson): rectangular process with header band for ID/numbering.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DFDProcessGaneSarson()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdprocessgroupboundary">
+  <h2>DFDProcessGroupBoundary <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Process grouping boundary with a distinctive dash pattern; no ports.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DFDProcessGroupBoundary()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdprocessmultiio">
+  <h2>DFDProcessMultiIO <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Process supporting configurable multiple inputs and outputs.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Inputs</code></td><td>Property</td><td>Gets or sets the inputs.</td></tr>
+      <tr><td><code>int Outputs</code></td><td>Property</td><td>Gets or sets the outputs.</td></tr>
+      <tr><td><code>DFDProcessMultiIO()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdprocessnumbered">
+  <h2>DFDProcessNumbered <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Process with an ID bubble inside.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string ProcessId</code></td><td>Property</td><td>Gets or sets the process id.</td></tr>
+      <tr><td><code>DFDProcessNumbered()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdprocessoval">
+  <h2>DFDProcessOval <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Process (SSADM): ellipse process node with one input and one output.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DFDProcessOval()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdsubsystemcontainer">
+  <h2>DFDSubsystemContainer <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>Subsystem/Package container with title bar; no ports.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title.</td></tr>
+      <tr><td><code>DFDSubsystemContainer()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="type-dfdtrustboundary">
+  <h2>DFDTrustBoundary <span style="font-size:0.6em;color:var(--color-foreground-muted)">(class)</span></h2>
+  <p>DFD Trust Boundary: dashed rounded rectangle container; no ports.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DFDTrustBoundary()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+</body></html>
