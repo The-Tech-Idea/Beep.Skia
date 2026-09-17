@@ -2,6 +2,8 @@
 
 **Created:** 2026-07-15 | **Status:** In Progress | **Total ideas:** 42 | **Implemented:** 6
 
+> **Re-baselined 2026-09-13 — this document is stale relative to the code.** Many items listed as missing are already implemented (WorkflowEngine, auto-layout engines, swimlanes, PropertyGrid wrapper, design-time preview, export, validation, alignment, templates, themes), and several items marked "Done" had functional gaps that are now fixed. See `FEATURE_ROADMAP.md` for live status and the active plan. At re-baseline time: the full solution builds with 0 errors (previously ~100+ across core and families) and 18 tests pass; undo/redo redo was a no-op for every action and is now implemented; the WinForms drag path teleported components and is fixed; the four experimental platform hosts are excluded from the solution.
+
 ---
 
 ## Implementation Log
