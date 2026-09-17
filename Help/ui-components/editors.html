@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Property Editors | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>UI Components</span><span>&rsaquo;</span> <span>Property Editors</span></nav>
+<div class="page-header"><h1>Property Editors</h1><p class="page-subtitle">NodePropertyEditor, ComponentPropertyEditor and the grid that backs them</p></div>
+<p>Property editors render the editable surface for components and connection lines. They read <code>NodeProperties</code> and write values back through <code>SetProperties</code>, which is the same path used by serialization.</p>
+<div class="toc">
+  <h3>On this page</h3>
+  <ul>
+    <li><a href="#node">NodePropertyEditor</a></li>
+    <li><a href="#component">ComponentPropertyEditor</a></li>
+  </ul>
+</div>
+<section class="section" id="node">
+  <h2>NodePropertyEditor</h2>
+  <p>Editor for a single component.</p>
+  <h3 id="type-nodepropertyeditor">NodePropertyEditor</h3>
+  <p>Visual property editor for automation nodes, similar to n8n/Make.com node configuration panels. Provides a comprehensive interface for editing node properties, data input, and configuration.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override bool ShowInPalette</code></td><td>Property</td><td>Gets or sets the show in palette.</td></tr>
+      <tr><td><code>event EventHandler&lt;NodePropertiesSavedEventArgs&gt; PropertiesSaved</code></td><td>Event</td><td>Event raised when properties are saved.</td></tr>
+      <tr><td><code>event EventHandler&lt;NodePropertiesCancelledEventArgs&gt; PropertiesCancelled</code></td><td>Event</td><td>Event raised when editing is cancelled.</td></tr>
+      <tr><td><code>AutomationNode SelectedNode</code></td><td>Property</td><td>Gets or sets the currently selected node for editing.</td></tr>
+      <tr><td><code>bool IsDirty</code></td><td>Property</td><td>Gets whether the current properties have unsaved changes.</td></tr>
+      <tr><td><code>NodePropertyEditor()</code></td><td>Method</td><td>Initializes a new instance of the NodePropertyEditor class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="component">
+  <h2>ComponentPropertyEditor</h2>
+  <p>Editor for components and connection lines, with type-specific editors.</p>
+  <h3 id="type-componentpropertyeditor">ComponentPropertyEditor</h3>
+  <p>Generic property editor for any SkiaComponent, providing a comprehensive interface for editing component properties, configuration, and display settings.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DrawingManager Manager</code></td><td>Property</td><td>Gets or sets the manager.</td></tr>
+      <tr><td><code>override bool ShowInPalette</code></td><td>Property</td><td>Gets or sets the show in palette.</td></tr>
+      <tr><td><code>event EventHandler&lt;ComponentPropertiesSavedEventArgs&gt; PropertiesSaved</code></td><td>Event</td><td>Event raised when properties are saved.</td></tr>
+      <tr><td><code>event EventHandler&lt;ComponentPropertiesCancelledEventArgs&gt; PropertiesCancelled</code></td><td>Event</td><td>Event raised when editing is cancelled.</td></tr>
+      <tr><td><code>event EventHandler PropertyValueChanged</code></td><td>Event</td><td>Event raised whenever a property value changes via the editor controls.</td></tr>
+      <tr><td><code>SkiaComponent SelectedComponent</code></td><td>Property</td><td>Gets or sets the currently selected component for editing.</td></tr>
+      <tr><td><code>Beep.Skia.Model.IConnectionLine SelectedLine</code></td><td>Property</td><td>Gets or sets the currently selected line for editing.</td></tr>
+      <tr><td><code>bool IsDirty</code></td><td>Property</td><td>Gets whether the current properties have unsaved changes.</td></tr>
+      <tr><td><code>ComponentPropertyEditor()</code></td><td>Method</td><td>Initializes a new instance of the ComponentPropertyEditor class.</td></tr>
+      <tr><td><code>override bool HandleMouseDown(SKPoint point, InteractionContext context)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool HandleMouseMove(SKPoint point, InteractionContext context)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool HandleMouseUp(SKPoint point, InteractionContext context)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void HandleKeyChar(char ch)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void HandleKeyDown(PropertyEditorKey key)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiacomponentgrid">SkiaComponentGrid</h3>
+  <p>A very lightweight grid-like component rendering rows of ColumnDefinition with inline editing using TextBoxes and Dropdowns.</p>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

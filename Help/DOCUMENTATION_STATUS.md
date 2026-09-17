@@ -1,7 +1,7 @@
 # Beep.Skia Documentation Status
 
-**Last updated:** 2026-09-17
-**Total pages:** 63 | **Sections:** 11
+**Last updated:** 2026-09-17 (round 2)
+**Total pages:** 73 | **Sections:** 13
 
 ---
 
@@ -12,12 +12,14 @@
 | Getting Started | 3 | Complete |
 | Core Concepts | 6 | Complete |
 | Diagram Families | 16 | Complete |
-| UI Components | 11 | Complete |
+| UI Components | 17 | Complete |
 | Guides | 8 | Complete |
-| Architecture & Internals | 7 | Complete |
-| Automation | 5 | Complete |
+| Architecture & Internals | 8 | Complete |
+| Automation | 6 | Complete |
 | Ecosystem | 4 | Complete |
 | Editor | 1 | Complete |
+| Windows Hosts | 1 | Complete |
+| API Index | 1 | Complete |
 | Infrastructure | 2 | Complete |
 | **Total** | **63** | |
 
@@ -64,17 +66,23 @@
 - [x] `diagram-families/quantitative.html` — 6 node types, trading/finance
 - [x] `diagram-families/welllogs.html` — 6 components, LAS/DLIS
 
-### UI Components (11)
+### UI Components (17)
 - [x] `ui-components/button.html`
+- [x] `ui-components/buttons.html` — ButtonGroup, FAB/FabMenu, SplitButton, MenuButton
 - [x] `ui-components/card.html`
 - [x] `ui-components/menu.html`
+- [x] `ui-components/navigation.html` — MenuBar, CascadingMenu, ContextMenu, NavigationBar/Drawer/Item, StatusBar, Panel, Swimlane
 - [x] `ui-components/tabs.html`
 - [x] `ui-components/datagrid.html`
+- [x] `ui-components/lists.html` — List, ListBoxItem, ListItem, ComboBoxItem
 - [x] `ui-components/textbox.html`
+- [x] `ui-components/inputs.html` — ColorPicker, DatePicker, TimePicker, Search, Switch, Spinner, ProgressBar, TextArea, CheckBoxGroup, RadioGroup, SegmentedButtons
 - [x] `ui-components/dropdown.html`
 - [x] `ui-components/checkbox.html`
 - [x] `ui-components/slider.html`
+- [x] `ui-components/display.html` — Label, SvgImage, MinimapControl
 - [x] `ui-components/notifications.html`
+- [x] `ui-components/editors.html` — NodePropertyEditor, ComponentPropertyEditor, SkiaComponentGrid
 - [x] `ui-components/palette.html`
 
 ### Guides (8)
@@ -87,7 +95,7 @@
 - [x] `guides/testing-and-quality.html` — Test strategy, sweeps, hardening record
 - [x] `guides/release-notes.html` — Versioning, packaging, release history
 
-### Architecture & Internals (7)
+### Architecture & Internals (8)
 - [x] `architecture/component-registry.html`
 - [x] `architecture/rendering-pipeline.html`
 - [x] `architecture/interaction-system.html`
@@ -95,9 +103,11 @@
 - [x] `architecture/material-design-system.html`
 - [x] `architecture/layout-engines.html`
 - [x] `architecture/history-undo-system.html`
+- [x] `architecture/events.html` — ComponentClickEventArgs, LineClickEventArgs, HoverChangedEventArgs, ComponentDropEventArgs
 
-### Automation (5)
+### Automation (6)
 - [x] `automation/workflow-engine.html` — Execution engine, retries, variables, pause/resume/cancel
+- [x] `automation/nodes.html` — AutomationNode base, trigger/data/logic node types
 - [x] `automation/triggers.html` — Trigger types and dispatch
 - [x] `automation/credentials.html` — Credential vault and connection manager
 - [x] `automation/server-sku.html` — WorkflowExecutionService, API, HTTP router, server sample
@@ -112,13 +122,21 @@
 ### Editor (1)
 - [x] `editor/editor-ux.html` — Palette search, minimap, property grid write-back, templates, accessibility
 
+### Windows Hosts (1)
+- [x] `hosts/winforms.html` — SkiaHostControl, SkiaControl base, 30+ WinForms wrapper controls, designers
+
+### API Index (1)
+- [x] `reference/api-index.html` — All 885 public classes/interfaces/enums/structs grouped by the 25 projects
+
 ### Infrastructure (2)
 - [x] `index.html` — Full sidebar navigation with iframe content
 - [x] `home.html` — Landing page with stats, features, quick start
 
-### Generators (not counted as pages)
+### Tooling (not counted as pages)
 - [x] `_gen_skia_docs.py` — Python generator for diagram family + architecture pages
 - [x] `_gen_automation_docs.ps1`, `_gen_ecosystem_docs.ps1`, `_gen_editor_guides_docs.ps1`, `_gen_release_notes.ps1` — PowerShell generators for the new sections
+- [x] `_gen_component_reference.ps1` — Extracts XML summaries and public members from source and generates the component, host, events, automation-node and API-index pages
+- [x] `_check_links.ps1` — Verifies every local reference across the site (currently 324 references, 0 broken)
 
 ### Assets
 - [x] `sphinx-style.css` — Sphinx/Furo-inspired theme with dark mode

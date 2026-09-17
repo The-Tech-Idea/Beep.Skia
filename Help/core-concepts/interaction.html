@@ -239,71 +239,47 @@ drawingManager.RequestRedraw();</code></pre>
   <p>Beep.Skia supports two distinct drag-and-drop workflows:</p>
 
   <h3>1. Component Palette Drag-Drop</h3>
-  <p>Users drag a component type from the <code>ComponentPalette</code> UI control and drop it onto the canvas. The palette serializes the component type name into the drag data; the canvas deserializes it, instantiates the component via <code>SkiaComponentRegistry</code>, and places it at the drop location:</p>
+  <p>The palette raises <code>ComponentDragEnded</code> with the dragged <code>ComponentItem</code> and the pointer position. The host creates the instance through the registry and converts the screen point to world coordinates using the manager's viewport (<code>PanOffset</code> and <code>Zoom</code>):</p>
 
   <div class="code-example">
     <h3>Palette-to-Canvas Drag-Drop</h3>
-    <pre><code class="language-csharp">void OnDragOver(DragEventArgs e)
+    <pre><code class="language-csharp">palette.ComponentDragEnded += (s, args) =&gt;
 {
-    if (e.Data.GetDataPresent("Beep.ComponentType"))
-    {
-        e.Effects = DragDropEffects.Copy;
-        e.Handled = true;
-    }
-}
+    if (args.State != ComponentDragState.Ended) return;
 
-void OnDrop(DragEventArgs e)
-{
-    var typeName = (string)e.Data.GetData("Beep.ComponentType");
-    var worldPoint = drawingManager.ScreenToWorld(
-        new SKPoint((float)e.GetPosition(canvas).X,
-                    (float)e.GetPosition(canvas).Y));
+    var component = SkiaComponentRegistry.CreateComponentInstance(args.Component.ClassDefinition);
+    if (component == null) return;
 
-    var type = SkiaComponentRegistry.ResolveType(typeName);
-    var component = (SkiaComponent)Activator.CreateInstance(type);
-    component.Initialize();
-    component.X = SnapToGrid(worldPoint.X);
-    component.Y = SnapToGrid(worldPoint.Y);
+    // Screen -> world: subtract the pan offset, then divide by zoom
+    float zoom = drawingManager.Zoom == 0 ? 1f : drawingManager.Zoom;
+    component.X = (args.MousePosition.X - drawingManager.PanOffset.X) / zoom;
+    component.Y = (args.MousePosition.Y - drawingManager.PanOffset.Y) / zoom;
 
-    drawingManager.AddComponent(component);
-    HistoryManager.Push(new AddComponentAction(component));
-}</code></pre>
+    drawingManager.AddComponent(component);   // pushed onto the undo stack
+    drawingManager.RequestRedraw();
+};</code></pre>
   </div>
 
   <h3>2. Within-Canvas Repositioning</h3>
-  <p>Drag to reposition existing components uses the <code>DragMode.ComponentMove</code> state machine. During drag, the component position updates in real-time. On mouse up, the final position is committed and a <code>MoveComponentAction</code> is pushed onto the undo stack:</p>
+  <p>Dragging existing components is handled by <code>InteractionHelper</code>. While a component drag is in progress, <code>IsDragging</code> and <code>DraggingComponent</code> report the state; when the drag ends, the manager raises <code>ComponentDropped</code> with the final canvas and screen positions:</p>
 
   <div class="code-example">
-    <h3>Within-Canvas Component Drag</h3>
-    <pre><code class="language-csharp">public void OnMouseMove(SKPoint screenPoint)
+    <h3>Observing Component Drops</h3>
+    <pre><code class="language-csharp">drawingManager.ComponentDropped += (s, e) =&gt;
 {
-    if (_dragMode != DragMode.ComponentMove) return;
+    // e.Component     - the dropped component
+    // e.CanvasPosition - final position in world space (e.Location is an alias)
+    // e.ScreenPosition - final position in screen space
+    // e.Bounds         - final bounds in world space
+    Console.WriteLine($"Dropped {e.Component.Name} at {e.CanvasPosition}");
+};
 
-    var worldPoint = drawingManager.ScreenToWorld(screenPoint);
-    var deltaX = worldPoint.X - _dragStart.X;
-    var deltaY = worldPoint.Y - _dragStart.Y;
+// Programmatic move of the current selection (undoable)
+drawingManager.MoveSelectedComponents(new SKPoint(dx: 20, dy: 0));
 
-    foreach (var comp in drawingManager.SelectedComponents)
-    {
-        comp.X += deltaX;
-        comp.Y += deltaY;
-        comp.MarkPortsDirty();
-    }
-
-    _dragStart = worldPoint;
-    drawingManager.Invalidate();
-}
-
-public void OnMouseUp(SKPoint screenPoint)
-{
-    if (_dragMode == DragMode.ComponentMove)
-    {
-        var actions = drawingManager.SelectedComponents
-            .Select(c => new MoveComponentAction(c, _originalPositions[c]));
-        HistoryManager.Push(new CompositeAction(actions));
-    }
-    _dragMode = DragMode.None;
-}</code></pre>
+// Undo/redo is exposed directly on the manager
+if (drawingManager.CanUndo)
+    drawingManager.Undo();</code></pre>
   </div>
 </section>
 

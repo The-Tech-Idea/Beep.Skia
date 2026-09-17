@@ -152,21 +152,24 @@ public void RenderBackground(SKCanvas canvas, SKRect viewport)
   <h2>Port Layout</h2>
 
   <h3>Lazy Computation with Dirty Flags</h3>
-  <p>Port positions are only recomputed when a component signals that its port layout is stale. <code>MarkPortsDirty()</code> raises the flag; the component's <code>LayoutPorts()</code> override recomputes positions only when needed:</p>
+  <p>Port positions are only recomputed when a component signals that its port layout is stale. <code>MarkPortsDirty()</code> raises the flag; <code>EnsurePortLayout(() =&gt; LayoutPorts())</code> inside <code>DrawContent</code> runs the layout exactly once while the flag is set, then clears it:</p>
 
   <div class="code-example">
     <h3>Lazy Port Layout Sequence</h3>
-    <pre><code class="language-csharp">// During drag: positions change and the layout is marked stale,
-// but no port geometry is recomputed
-component.X = newX;   // bounds change calls MarkPortsDirty() internally
-component.Y = newY;
+    <pre><code class="language-csharp">// During a drag, bounds changes only mark the layout stale
+component.X = newX;   // OnBoundsChanged() calls MarkPortsDirty()
+component.Y = newY;   // no port geometry is computed yet
 
-// Ports are recomputed lazily on the next layout pass, once per change
-// (LayoutPorts() is a protected override inside the component)</code></pre>
+// The next draw recomputes ports once, then clears the dirty flag
+protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+{
+    EnsurePortLayout(() =&gt; LayoutPorts());
+    DrawFlowchartContent(canvas, context);
+}</code></pre>
   </div>
 
   <h3>Batch Recompute on Move Operations</h3>
-  <p>When moving multiple components simultaneously (e.g., marquee selection drag), update all positions first and let the layout pass recompute ports once, instead of recomputing per component:</p>
+  <p>When moving multiple components simultaneously (e.g., marquee selection drag), update all positions first and let a single redraw recompute the stale layouts, instead of laying out ports per component:</p>
 
   <div class="code-example">
     <h3>Batched Port Recompute</h3>

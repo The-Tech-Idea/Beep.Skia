@@ -126,6 +126,27 @@ foreach (var name in ThemeManager.BuiltInThemes)
     Console.WriteLine(name);</code></pre>
   </div>
 
+  <h3>Static Color Tokens</h3>
+  <p><code>MaterialDesignColors</code> exposes the default Material Design 3.0 palette as static readonly <code>SKColor</code> fields. It is useful for fixed brand colors and for drawing custom content where no themed control is available:</p>
+
+  <div class="code-example">
+    <h3>Reading Static Tokens</h3>
+    <pre><code class="language-csharp">using Beep.Skia.Components;
+
+var primary = MaterialDesignColors.Primary;
+var surface = MaterialDesignColors.Surface;
+var outline = MaterialDesignColors.Outline;
+var error = MaterialDesignColors.Error;
+
+// The full token set is available:
+// Primary/OnPrimary/PrimaryContainer/OnPrimaryContainer,
+// Secondary/Tertiary families, Error family,
+// Surface/OnSurface/SurfaceVariant/OnSurfaceVariant/SurfaceContainerHigh,
+// Outline/OutlineVariant</code></pre>
+  </div>
+
+  <p>Inside components, prefer <code>ThemeManager.Current</code> so drawing follows the active theme; use <code>MaterialDesignColors</code> when a color must stay fixed regardless of the theme.</p>
+
   <div class="code-example">
     <h3>Defining a Custom Color Scheme</h3>
     <pre><code class="language-csharp">var corporate = new SkiaTheme

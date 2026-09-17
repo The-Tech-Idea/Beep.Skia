@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Display Components | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>UI Components</span><span>&rsaquo;</span> <span>Display Components</span></nav>
+<div class="page-header"><h1>Display Components</h1><p class="page-subtitle">Labels, SVG images and the minimap overview control</p></div>
+<p>Display components render static or derived content: text labels, vector artwork and the minimap overview used by large diagrams.</p>
+<div class="toc">
+  <h3>On this page</h3>
+  <ul>
+    <li><a href="#label">Label</a></li>
+    <li><a href="#svg">SVG Image</a></li>
+    <li><a href="#minimap">Minimap</a></li>
+  </ul>
+</div>
+<section class="section" id="label">
+  <h2>Label</h2>
+  <p>Simple text display.</p>
+  <h3 id="type-label">Label</h3>
+  <p>A Material Design 3.0 text label component with typography support and optional SVG icons.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text displayed by the label.</td></tr>
+      <tr><td><code>LabelStyle Style</code></td><td>Property</td><td>Gets or sets the Material Design 3.0 typography style.</td></tr>
+      <tr><td><code>SKTextAlign TextAlign</code></td><td>Property</td><td>Gets or sets the text alignment.</td></tr>
+      <tr><td><code>float FontSize</code></td><td>Property</td><td>Gets or sets the font size (for backward compatibility).</td></tr>
+      <tr><td><code>SKFontStyleWeight FontWeight</code></td><td>Property</td><td>Gets the font weight based on the current typography style.</td></tr>
+      <tr><td><code>new SKColor TextColor</code></td><td>Property</td><td>Gets or sets the text color (for backward compatibility).</td></tr>
+      <tr><td><code>string LeadingIcon</code></td><td>Property</td><td>Gets or sets the leading SVG icon path or URL.</td></tr>
+      <tr><td><code>string TrailingIcon</code></td><td>Property</td><td>Gets or sets the trailing SVG icon path or URL.</td></tr>
+      <tr><td><code>string ErrorMessage</code></td><td>Property</td><td>Gets or sets the error message to display below the label.</td></tr>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title text to display above the label.</td></tr>
+      <tr><td><code>Label()</code></td><td>Method</td><td>Initializes a new instance of the Label class.</td></tr>
+      <tr><td><code>Label(string text) : this()</code></td><td>Method</td><td>Initializes a new instance of the Label class with specified text.</td></tr>
+      <tr><td><code>Label(string text, LabelStyle style) : this(text)</code></td><td>Method</td><td>Initializes a new instance of the Label class with specified text and style.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="svg">
+  <h2>SVG Image</h2>
+  <p>Vector artwork rendered from SVG markup.</p>
+  <h3 id="type-svgimage">SvgImage</h3>
+  <p>A component that displays SVG images with support for scaling and positioning.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string SvgSource</code></td><td>Property</td><td>Gets or sets the SVG source. Can be a file path, embedded resource, or SVG content string. Supported formats: - File path: "C:\path\to\file.svg" or "relative\path\file.svg" - Embedded resource: "AssemblyName.ResourceName" (e.g., "Beep.Skia.svg.door.svg") - SVG content: Raw SVG XML string</td></tr>
+      <tr><td><code>SvgScaleMode ScaleMode</code></td><td>Property</td><td>Gets or sets the scaling mode for the SVG.</td></tr>
+      <tr><td><code>SKSize OriginalSize</code></td><td>Property</td><td>Gets the original SVG size.</td></tr>
+      <tr><td><code>SvgImage()</code></td><td>Method</td><td>Initializes a new instance of the SvgImage class.</td></tr>
+      <tr><td><code>void LoadEmbeddedResource(string resourceName)</code></td><td>Method</td><td>Loads an embedded SVG resource from the current assembly. The name of the embedded resource.</td></tr>
+      <tr><td><code>void LoadEmbeddedResource(string assemblyName, string resourceName)</code></td><td>Method</td><td>Loads an embedded SVG resource from the specified assembly. The name of the assembly containing the resource. The name of the embedded resource.</td></tr>
+      <tr><td><code>void LoadEmbeddedResource(Assembly assembly, string resourceName)</code></td><td>Method</td><td>Loads an embedded SVG resource from the specified assembly. The assembly containing the resource. The name of the embedded resource.</td></tr>
+      <tr><td><code>SvgImage(string resourceName, bool isEmbedded) : this()</code></td><td>Method</td><td>Initializes a new instance of the SvgImage class with an embedded resource from the current assembly. The name of the embedded resource. True if the resource is embedded; false if it's a file path.</td></tr>
+      <tr><td><code>SvgImage(string assemblyName, string resourceName) : this()</code></td><td>Method</td><td>Initializes a new instance of the SvgImage class with an embedded resource from the specified assembly. The name of the assembly containing the resource. The name of the embedded resource.</td></tr>
+      <tr><td><code>SvgImage(string svgContent) : this()</code></td><td>Method</td><td>Initializes a new instance of the SvgImage class with SVG content. The SVG content as a string.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="minimap">
+  <h2>Minimap</h2>
+  <p>Scaled overview of the diagram with a viewport rectangle.</p>
+  <h3 id="type-minimapcontrol">MinimapControl</h3>
+  <p>Diagram minimap: a scaled overview of all components and connection lines with a viewport rectangle showing the currently visible world area (from pan/zoom). Intended to be added as a static overlay component.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DrawingManager Manager</code></td><td>Property</td><td>Drawing manager providing the diagram content and viewport.</td></tr>
+      <tr><td><code>float MinimapPadding</code></td><td>Property</td><td>Padding inside the minimap frame.</td></tr>
+      <tr><td><code>bool ShowViewport</code></td><td>Property</td><td>Draws the viewport rectangle when true.</td></tr>
+      <tr><td><code>SKColor MinimapBackground</code></td><td>Property</td><td>Gets or sets the minimap background.</td></tr>
+      <tr><td><code>SKColor ComponentFill</code></td><td>Property</td><td>Gets or sets the component fill.</td></tr>
+      <tr><td><code>SKColor ComponentStroke</code></td><td>Property</td><td>Gets or sets the component stroke.</td></tr>
+      <tr><td><code>SKColor ViewportStroke</code></td><td>Property</td><td>Gets or sets the viewport stroke.</td></tr>
+      <tr><td><code>MinimapControl()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SKRect CalculateWorldBounds()</code></td><td>Method</td><td>World-space bounds of the diagram content (minimum 1x1).</td></tr>
+      <tr><td><code>float CalculateScale()</code></td><td>Method</td><td>Scale factor mapping world units to minimap pixels.</td></tr>
+      <tr><td><code>SKPoint MapWorldToMinimap(SKPoint world)</code></td><td>Method</td><td>Maps a world-space point to canvas coordinates inside the minimap.</td></tr>
+      <tr><td><code>SKRect CalculateViewportWorldRect()</code></td><td>Method</td><td>World-space rectangle currently visible, derived from pan/zoom and the bound canvas. Returns an empty rect when no canvas is attached.</td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

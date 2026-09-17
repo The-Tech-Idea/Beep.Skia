@@ -193,11 +193,17 @@ private void EnsurePath()
   </div>
 
   <h3>Use Lazy Port Layout</h3>
-  <p>Port geometry is recomputed by <code>LayoutPorts()</code> only when the layout is stale &mdash; typically during the next draw after a move or resize, never on every frame during a drag:</p>
+  <p>Port geometry is recomputed only when the layout is stale. <code>EnsurePortLayout(() =&gt; LayoutPorts())</code> is the gate: it runs your layout action only while <code>ArePortsDirty</code> is true, then clears the flag. Call it at the top of <code>DrawContent</code>:</p>
 
   <div class="code-example">
     <h3>Lazy Port Layout Pattern</h3>
-    <pre><code class="language-csharp">protected override void LayoutPorts()
+    <pre><code class="language-csharp">protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+{
+    EnsurePortLayout(() =&gt; LayoutPorts());
+    // ... draw the node
+}
+
+protected override void LayoutPorts()
 {
     var b = Bounds;
     float midY = b.MidY;
@@ -227,9 +233,11 @@ private void EnsurePath()
 }</code></pre>
   </div>
 
+  <p>Flowchart nodes get this for free: <code>FlowchartControl.DrawContent</code> already calls <code>EnsurePortLayout(() =&gt; LayoutPorts())</code> and then delegates to <code>DrawFlowchartContent</code>, so derived nodes only override <code>LayoutPorts()</code> and <code>DrawFlowchartContent()</code>.</p>
+
   <div class="admonition warning">
     <p class="admonition-title">Critical</p>
-    <p>Failing to call <code>MarkPortsDirty()</code> after a geometry change results in connection lines detaching from ports or rendering at stale positions. This is the most common bug in custom component implementations.</p>
+    <p>Failing to mark ports dirty after a geometry change results in connection lines detaching from ports or rendering at stale positions. <code>OnBoundsChanged()</code> marks them dirty for moves and resizes; call <code>MarkPortsDirty()</code> yourself when your own properties change port geometry.</p>
   </div>
 
   <h3>Port Count Guidelines</h3>

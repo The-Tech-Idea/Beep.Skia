@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Input Components | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>UI Components</span><span>&rsaquo;</span> <span>Input Components</span></nav>
+<div class="page-header"><h1>Input Components</h1><p class="page-subtitle">Color, date and time pickers, search, switch, spinner, text area and grouped choice controls</p></div>
+<p>Beyond the basic <a href="textbox.html">TextBox</a>, <a href="checkbox.html">Checkbox</a> and <a href="dropdown.html">Dropdown</a> controls, Beep.Skia ships pickers, search, switches and grouped selection controls. All of them are <code>MaterialControl</code> components, so they participate in theming, hit testing and the property grid.</p>
+<div class="toc">
+  <h3>On this page</h3>
+  <ul>
+    <li><a href="#pickers">Pickers</a></li>
+    <li><a href="#search">Search</a></li>
+    <li><a href="#toggles">Toggles and Progress</a></li>
+    <li><a href="#text">Text Input</a></li>
+    <li><a href="#groups">Grouped Choices</a></li>
+  </ul>
+</div>
+<section class="section" id="pickers">
+  <h2>Pickers</h2>
+  <p>Color, date and time selection controls.</p>
+  <h3 id="type-colorpicker">ColorPicker</h3>
+  <p>A Material Design 3.0 color picker component</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKColor SelectedColor</code></td><td>Property</td><td>Gets or sets the selected color</td></tr>
+      <tr><td><code>float Hue</code></td><td>Property</td><td>Gets or sets the hue component (0-360)</td></tr>
+      <tr><td><code>float Saturation</code></td><td>Property</td><td>Gets or sets the saturation component (0-1)</td></tr>
+      <tr><td><code>float Value</code></td><td>Property</td><td>Gets or sets the value/brightness component (0-1)</td></tr>
+      <tr><td><code>float Alpha</code></td><td>Property</td><td>Gets or sets the alpha component (0-1)</td></tr>
+      <tr><td><code>bool ShowAlpha</code></td><td>Property</td><td>Gets or sets whether to show the alpha slider</td></tr>
+      <tr><td><code>float ColorWheelRadius</code></td><td>Property</td><td>Gets or sets the color wheel radius</td></tr>
+      <tr><td><code>float BrightnessBarWidth</code></td><td>Property</td><td>Gets or sets the brightness bar width</td></tr>
+      <tr><td><code>event EventHandler ColorChanged</code></td><td>Event</td><td>Occurs when the selected color changes</td></tr>
+      <tr><td><code>ColorPicker()</code></td><td>Method</td><td>Initializes a new instance of the ColorPicker class</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-datepicker">DatePicker</h3>
+  <p>A Material Design 3.0 Date Picker component that allows users to select dates.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>event EventHandler&lt;DateTime&gt; DateSelected</code></td><td>Event</td><td>Occurs when the selected date changes.</td></tr>
+      <tr><td><code>event EventHandler DialogOpened</code></td><td>Event</td><td>Occurs when the date picker dialog opens.</td></tr>
+      <tr><td><code>event EventHandler DialogClosed</code></td><td>Event</td><td>Occurs when the date picker dialog closes.</td></tr>
+      <tr><td><code>DateTime SelectedDate</code></td><td>Property</td><td>Gets or sets the currently selected date.</td></tr>
+      <tr><td><code>string DateFormat</code></td><td>Property</td><td>Gets or sets the date format string.</td></tr>
+      <tr><td><code>new SKColor TextColor</code></td><td>Property</td><td>Gets or sets the text color.</td></tr>
+      <tr><td><code>SKColor AccentColor</code></td><td>Property</td><td>Gets or sets the accent color for selected dates.</td></tr>
+      <tr><td><code>bool ShowTodayButton</code></td><td>Property</td><td>Gets or sets whether to show the "Today" button.</td></tr>
+      <tr><td><code>DateTime? MinDate</code></td><td>Property</td><td>Gets or sets the minimum selectable date.</td></tr>
+      <tr><td><code>DateTime? MaxDate</code></td><td>Property</td><td>Gets or sets the maximum selectable date.</td></tr>
+      <tr><td><code>DatePicker()</code></td><td>Method</td><td>Initializes a new instance of the DatePicker class.</td></tr>
+      <tr><td><code>DatePicker(float width, float height) : this()</code></td><td>Method</td><td>Initializes a new instance of the DatePicker class with specified dimensions. The width of the date picker. The height of the date picker.</td></tr>
+      <tr><td><code>void ToggleCalendar()</code></td><td>Method</td><td>Toggles the calendar dialog visibility.</td></tr>
+      <tr><td><code>void OpenCalendar()</code></td><td>Method</td><td>Opens the calendar dialog.</td></tr>
+      <tr><td><code>void CloseCalendar()</code></td><td>Method</td><td>Closes the calendar dialog.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-timepicker">TimePicker</h3>
+  <p>A Material Design 3.0 Time Picker component that allows users to select times.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>event EventHandler&lt;DateTime&gt; TimeSelected</code></td><td>Event</td><td>Occurs when the selected time changes.</td></tr>
+      <tr><td><code>event EventHandler DialogOpened</code></td><td>Event</td><td>Occurs when the time picker dialog opens.</td></tr>
+      <tr><td><code>event EventHandler DialogClosed</code></td><td>Event</td><td>Occurs when the time picker dialog closes.</td></tr>
+      <tr><td><code>DateTime SelectedTime</code></td><td>Property</td><td>Gets or sets the currently selected time.</td></tr>
+      <tr><td><code>bool Use24HourFormat</code></td><td>Property</td><td>Gets or sets whether to use 24-hour format.</td></tr>
+      <tr><td><code>new SKColor TextColor</code></td><td>Property</td><td>Gets or sets the text color.</td></tr>
+      <tr><td><code>SKColor AccentColor</code></td><td>Property</td><td>Gets or sets the accent color for selected times.</td></tr>
+      <tr><td><code>TimePickerMode Mode</code></td><td>Property</td><td>Gets or sets the time picker mode.</td></tr>
+      <tr><td><code>TimePicker()</code></td><td>Method</td><td>Initializes a new instance of the TimePicker class.</td></tr>
+      <tr><td><code>TimePicker(float width, float height) : this()</code></td><td>Method</td><td>Initializes a new instance of the TimePicker class with specified dimensions. The width of the time picker. The height of the time picker.</td></tr>
+      <tr><td><code>void ToggleTimePicker()</code></td><td>Method</td><td>Toggles the time picker dialog visibility.</td></tr>
+      <tr><td><code>void OpenTimePicker()</code></td><td>Method</td><td>Opens the time picker dialog.</td></tr>
+      <tr><td><code>void CloseTimePicker()</code></td><td>Method</td><td>Closes the time picker dialog.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="search">
+  <h2>Search</h2>
+  <p>Search box with suggestions.</p>
+  <h3 id="type-search">Search</h3>
+  <p>A Material Design 3.0 Search component that provides search functionality with expandable search view.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string PlaceholderText</code></td><td>Property</td><td>Gets or sets the placeholder text displayed when the search field is empty.</td></tr>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the current search text.</td></tr>
+      <tr><td><code>bool IsActive</code></td><td>Property</td><td>Gets or sets whether the search is in active (expanded) state.</td></tr>
+      <tr><td><code>bool IsFocused</code></td><td>Property</td><td>Gets or sets whether the search field is focused.</td></tr>
+      <tr><td><code>IReadOnlyList&lt;SearchSuggestion&gt; Suggestions</code></td><td>Property</td><td>Gets the list of search suggestions.</td></tr>
+      <tr><td><code>float SearchBarHeight</code></td><td>Property</td><td>Gets or sets the height of the search bar when inactive.</td></tr>
+      <tr><td><code>float SearchViewHeight</code></td><td>Property</td><td>Gets or sets the height of the search view when active.</td></tr>
+      <tr><td><code>event EventHandler TextChanged</code></td><td>Event</td><td>Occurs when the search text changes.</td></tr>
+      <tr><td><code>event EventHandler ActiveStateChanged</code></td><td>Event</td><td>Occurs when the active state changes.</td></tr>
+      <tr><td><code>event EventHandler&lt;SearchEventArgs&gt; SearchPerformed</code></td><td>Event</td><td>Occurs when a search is performed.</td></tr>
+      <tr><td><code>event EventHandler&lt;SearchSuggestionEventArgs&gt; SuggestionSelected</code></td><td>Event</td><td>Occurs when a suggestion is selected.</td></tr>
+      <tr><td><code>Search()</code></td><td>Method</td><td>Initializes a new instance of the Search class.</td></tr>
+      <tr><td><code>void AddSuggestion(SearchSuggestion suggestion)</code></td><td>Method</td><td>Adds a search suggestion. The search suggestion to add.</td></tr>
+      <tr><td><code>void AddSuggestion(string text, string icon = null, object tag = null)</code></td><td>Method</td><td>Adds a search suggestion with the specified text. The suggestion text. Optional icon for the suggestion. Optional tag object.</td></tr>
+      <tr><td><code>void ClearSuggestions()</code></td><td>Method</td><td>Clears all search suggestions.</td></tr>
+      <tr><td><code>void PerformSearch()</code></td><td>Method</td><td>Performs a search with the current text.</td></tr>
+      <tr><td><code>void ClearText()</code></td><td>Method</td><td>Clears the search text.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-searchsuggestion">SearchSuggestion</h3>
+  <p>Represents a search suggestion item.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets the text of the suggestion.</td></tr>
+      <tr><td><code>string Icon</code></td><td>Property</td><td>Gets the icon of the suggestion.</td></tr>
+      <tr><td><code>object Tag</code></td><td>Property</td><td>Gets the tag object associated with the suggestion.</td></tr>
+      <tr><td><code>SearchSuggestion(string text, string icon = null, object tag = null)</code></td><td>Method</td><td>Initializes a new instance of the SearchSuggestion class. The suggestion text. The suggestion icon. The tag object.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-searcheventargs">SearchEventArgs</h3>
+  <p>Provides data for the SearchPerformed event.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Query</code></td><td>Property</td><td>Gets the search query.</td></tr>
+      <tr><td><code>SearchEventArgs(string query)</code></td><td>Method</td><td>Initializes a new instance of the SearchEventArgs class. The search query.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="toggles">
+  <h2>Toggles and Progress</h2>
+  <p>Switch, spinner and progress indicators.</p>
+  <h3 id="type-switch">Switch</h3>
+  <p>A Material Design 3.0 Switch component that provides a toggle between on and off states.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>new event EventHandler&lt;SwitchStateChangedEventArgs&gt; StateChanged</code></td><td>Property</td><td>Occurs when the switch state changes.</td></tr>
+      <tr><td><code>bool IsChecked</code></td><td>Property</td><td>Gets or sets whether the switch is in the checked (on) state.</td></tr>
+      <tr><td><code>bool IsHovered</code></td><td>Property</td><td>Gets or sets whether the switch is hovered.</td></tr>
+      <tr><td><code>bool IsPressed</code></td><td>Property</td><td>Gets or sets whether the switch is pressed.</td></tr>
+      <tr><td><code>Switch()</code></td><td>Method</td><td>Initializes a new instance of the Switch class.</td></tr>
+      <tr><td><code>void Toggle()</code></td><td>Method</td><td>Toggles the switch state.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-spinner">Spinner</h3>
+  <p>A spinner component for indicating loading or processing.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SpinnerStyle Style</code></td><td>Property</td><td>Gets or sets the spinner style.</td></tr>
+      <tr><td><code>SKColor Color</code></td><td>Property</td><td>Gets or sets the spinner color.</td></tr>
+      <tr><td><code>float Thickness</code></td><td>Property</td><td>Gets or sets the thickness of the spinner lines.</td></tr>
+      <tr><td><code>int Segments</code></td><td>Property</td><td>Gets or sets the number of segments in the spinner.</td></tr>
+      <tr><td><code>float Speed</code></td><td>Property</td><td>Gets or sets the rotation speed in degrees per frame.</td></tr>
+      <tr><td><code>Spinner()</code></td><td>Method</td><td>Initializes a new instance of the Spinner class.</td></tr>
+      <tr><td><code>void Start()</code></td><td>Method</td><td>Starts the spinner animation.</td></tr>
+      <tr><td><code>void Stop()</code></td><td>Method</td><td>Stops the spinner animation.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-progressbar">ProgressBar</h3>
+  <p>A Material Design 3.0 progress bar component.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>float Progress</code></td><td>Property</td><td>Gets or sets the progress value (0.0 to 1.0).</td></tr>
+      <tr><td><code>bool IsIndeterminate</code></td><td>Property</td><td>Gets or sets whether the progress bar is in indeterminate state.</td></tr>
+      <tr><td><code>ProgressBarVariant Variant</code></td><td>Property</td><td>Gets or sets the progress bar variant.</td></tr>
+      <tr><td><code>float StrokeWidth</code></td><td>Property</td><td>Gets or sets the stroke width for the progress bar.</td></tr>
+      <tr><td><code>SKColor ProgressColor</code></td><td>Property</td><td>Gets or sets the progress color.</td></tr>
+      <tr><td><code>SKColor TrackColor</code></td><td>Property</td><td>Gets or sets the track color.</td></tr>
+      <tr><td><code>ProgressBar()</code></td><td>Method</td><td>Initializes a new instance of the ProgressBar class.</td></tr>
+      <tr><td><code>ProgressBar(float width, float height) : this()</code></td><td>Method</td><td>Initializes a new instance of the ProgressBar class with specified dimensions.</td></tr>
+      <tr><td><code>void SetProgressPercent(float percent)</code></td><td>Method</td><td>Sets the progress as a percentage (0-100).</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="text">
+  <h2>Text Input</h2>
+  <p>Multi-line text input.</p>
+  <h3 id="type-textarea">TextArea</h3>
+  <p>A multi-line text input control.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text in the text area.</td></tr>
+      <tr><td><code>string Placeholder</code></td><td>Property</td><td>Gets or sets the placeholder text.</td></tr>
+      <tr><td><code>TextAlignment TextAlignment</code></td><td>Property</td><td>Gets or sets the text alignment.</td></tr>
+      <tr><td><code>bool Multiline</code></td><td>Property</td><td>Gets or sets whether the text area supports multiple lines.</td></tr>
+      <tr><td><code>bool ReadOnly</code></td><td>Property</td><td>Gets or sets whether the text area is read-only.</td></tr>
+      <tr><td><code>int MaxLength</code></td><td>Property</td><td>Gets or sets the maximum length of text.</td></tr>
+      <tr><td><code>TextArea()</code></td><td>Method</td><td>Initializes a new instance of the TextArea class.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="groups">
+  <h2>Grouped Choices</h2>
+  <p>Checkbox, radio and segmented button groups.</p>
+  <h3 id="type-checkboxgroup">CheckBoxGroup</h3>
+  <p>A group of check box controls.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>CheckBoxGroupItemCollection Items</code></td><td>Property</td><td>Gets the collection of items in the check box group.</td></tr>
+      <tr><td><code>CheckBoxGroupStyle Style</code></td><td>Property</td><td>Gets or sets the style of the check box group.</td></tr>
+      <tr><td><code>Orientation Orientation</code></td><td>Property</td><td>Gets or sets the orientation of the check box group.</td></tr>
+      <tr><td><code>BorderStyle BorderStyle</code></td><td>Property</td><td>Gets or sets the border style of the check box group.</td></tr>
+      <tr><td><code>int ItemHeight</code></td><td>Property</td><td>Gets or sets the height of each item.</td></tr>
+      <tr><td><code>int Spacing</code></td><td>Property</td><td>Gets or sets the spacing between items.</td></tr>
+      <tr><td><code>CheckBoxGroup()</code></td><td>Method</td><td>Initializes a new instance of the CheckBoxGroup class.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-radiogroup">RadioGroup</h3>
+  <p>A group of radio button controls where only one can be selected at a time.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>RadioGroupItemCollection Items</code></td><td>Property</td><td>Gets the collection of items in the radio group.</td></tr>
+      <tr><td><code>RadioGroupStyle Style</code></td><td>Property</td><td>Gets or sets the style of the radio group.</td></tr>
+      <tr><td><code>Orientation Orientation</code></td><td>Property</td><td>Gets or sets the orientation of the radio group.</td></tr>
+      <tr><td><code>BorderStyle BorderStyle</code></td><td>Property</td><td>Gets or sets the border style of the radio group.</td></tr>
+      <tr><td><code>int ItemHeight</code></td><td>Property</td><td>Gets or sets the height of each item.</td></tr>
+      <tr><td><code>int Spacing</code></td><td>Property</td><td>Gets or sets the spacing between items.</td></tr>
+      <tr><td><code>RadioGroupItem SelectedItem</code></td><td>Property</td><td>Gets or sets the selected item.</td></tr>
+      <tr><td><code>RadioGroup()</code></td><td>Method</td><td>Initializes a new instance of the RadioGroup class.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-segmentedbuttons">SegmentedButtons</h3>
+  <p>A Material Design 3.0 Segmented Buttons component that allows users to select one or more options from a set.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SegmentedButtonSelectionMode SelectionMode</code></td><td>Property</td><td>Gets or sets the selection mode for the segmented buttons.</td></tr>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of the segmented buttons container.</td></tr>
+      <tr><td><code>SKColor SelectedBackgroundColor</code></td><td>Property</td><td>Gets or sets the background color for selected segments.</td></tr>
+      <tr><td><code>SKColor DividerColor</code></td><td>Property</td><td>Gets or sets the color of the dividers between segments.</td></tr>
+      <tr><td><code>SKColor SelectedTextColor</code></td><td>Property</td><td>Gets or sets the text color for selected segments.</td></tr>
+      <tr><td><code>SKColor UnselectedTextColor</code></td><td>Property</td><td>Gets or sets the text color for unselected segments.</td></tr>
+      <tr><td><code>float CornerRadius</code></td><td>Property</td><td>Gets or sets the corner radius of the segmented buttons container.</td></tr>
+      <tr><td><code>float DividerWidth</code></td><td>Property</td><td>Gets or sets the width of the dividers between segments.</td></tr>
+      <tr><td><code>float SegmentHeight</code></td><td>Property</td><td>Gets or sets the height of each segment.</td></tr>
+      <tr><td><code>bool ShowDividers</code></td><td>Property</td><td>Gets or sets whether to show dividers between segments.</td></tr>
+      <tr><td><code>IReadOnlyList&lt;SegmentedButtonItem&gt; Items</code></td><td>Property</td><td>Gets the collection of segments in the segmented buttons control.</td></tr>
+      <tr><td><code>IEnumerable&lt;int&gt; SelectedIndices</code></td><td>Property</td><td>Gets the indices of currently selected segments.</td></tr>
+      <tr><td><code>event EventHandler&lt;SelectionChangedEventArgs&gt; SelectionChanged</code></td><td>Event</td><td>Occurs when the selection changes.</td></tr>
+      <tr><td><code>SegmentedButtons()</code></td><td>Method</td><td>Initializes a new instance of the SegmentedButtons class.</td></tr>
+      <tr><td><code>SegmentedButtonItem AddSegment(string text, string icon = null)</code></td><td>Method</td><td>Adds a new segment to the segmented buttons control. The text to display on the segment. The icon for the segment (optional). The created SegmentedButtonItem.</td></tr>
+      <tr><td><code>bool RemoveSegment(SegmentedButtonItem item)</code></td><td>Method</td><td>Removes a segment from the segmented buttons control. The segment to remove. True if the segment was removed successfully.</td></tr>
+      <tr><td><code>bool RemoveSegmentAt(int index)</code></td><td>Method</td><td>Removes a segment at the specified index. The index of the segment to remove. True if the segment was removed successfully.</td></tr>
+      <tr><td><code>void ClearSegments()</code></td><td>Method</td><td>Clears all segments from the segmented buttons control.</td></tr>
+      <tr><td><code>void SelectSegment(int index)</code></td><td>Method</td><td>Selects a segment at the specified index. The index of the segment to select.</td></tr>
+      <tr><td><code>void DeselectSegment(int index)</code></td><td>Method</td><td>Deselects a segment at the specified index. The index of the segment to deselect.</td></tr>
+      <tr><td><code>void ToggleSegment(int index)</code></td><td>Method</td><td>Toggles the selection state of a segment at the specified index. The index of the segment to toggle.</td></tr>
+      <tr><td><code>static SegmentedButtons Create(params string[] segments)</code></td><td>Method</td><td>Creates a new SegmentedButtons instance with the specified segments. The text for each segment. A new SegmentedButtons instance.</td></tr>
+      <tr><td><code>static SegmentedButtons CreateSingleSelect(params string[] segments)</code></td><td>Method</td><td>Creates a new SegmentedButtons instance with single selection mode. The text for each segment. A new SegmentedButtons instance.</td></tr>
+      <tr><td><code>static SegmentedButtons CreateMultiSelect(params string[] segments)</code></td><td>Method</td><td>Creates a new SegmentedButtons instance with multiple selection mode. The text for each segment. A new SegmentedButtons instance.</td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

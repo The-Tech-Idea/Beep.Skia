@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Model | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Architecture &amp; Internals</span><span>&rsaquo;</span> <span>Event Model</span></nav>
+<div class="page-header"><h1>Event Model</h1><p class="page-subtitle">The event argument types raised by the manager, the interaction helper and the host</p></div>
+<p>Beep.Skia reports activity through plain .NET events. The manager raises diagram-level events (<code>ComponentDropped</code>, <code>DrawSurface</code>, <code>SelectionChanged</code> and theme changes), while the interaction helper raises pointer and hover events. The event argument types below carry the payloads.</p>
+<div class="toc">
+  <h3>On this page</h3>
+  <ul>
+    <li><a href="#pointer">Pointer Events</a></li>
+    <li><a href="#drop">Drag and Drop Events</a></li>
+  </ul>
+</div>
+<section class="section" id="pointer">
+  <h2>Pointer Events</h2>
+  <p>Click and hover payloads.</p>
+  <h3 id="type-componentclickeventargs">ComponentClickEventArgs</h3>
+  <p>Event args for component (node) click events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IDrawableComponent Component</code></td><td>Property</td><td>Gets or sets the component.</td></tr>
+      <tr><td><code>SKPoint ClickPosition</code></td><td>Property</td><td>Gets or sets the click position.</td></tr>
+      <tr><td><code>MouseButton Button</code></td><td>Property</td><td>Gets or sets the button.</td></tr>
+      <tr><td><code>bool IsDoubleClick</code></td><td>Property</td><td>Gets or sets the is double click.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-diagramclickeventargs">DiagramClickEventArgs</h3>
+  <p>Event args for diagram canvas click events (clicking empty space).</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKPoint ClickPosition</code></td><td>Property</td><td>Gets or sets the click position.</td></tr>
+      <tr><td><code>MouseButton Button</code></td><td>Property</td><td>Gets or sets the button.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-lineclickeventargs">LineClickEventArgs</h3>
+  <p>Event args for connection line click events.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IConnectionLine Line</code></td><td>Property</td><td>Gets or sets the line.</td></tr>
+      <tr><td><code>SKPoint ClickPosition</code></td><td>Property</td><td>Gets or sets the click position.</td></tr>
+      <tr><td><code>MouseButton Button</code></td><td>Property</td><td>Gets or sets the button.</td></tr>
+      <tr><td><code>bool IsDoubleClick</code></td><td>Property</td><td>Gets or sets the is double click.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-hoverchangedeventargs">HoverChangedEventArgs</h3>
+  <p>Event args for hover state changes.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IDrawableComponent Component</code></td><td>Property</td><td>Gets or sets the component.</td></tr>
+      <tr><td><code>IConnectionLine Line</code></td><td>Property</td><td>Gets or sets the line.</td></tr>
+      <tr><td><code>bool IsHovered</code></td><td>Property</td><td>Gets or sets the is hovered.</td></tr>
+      <tr><td><code>SKPoint Position</code></td><td>Property</td><td>Gets or sets the position.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="drop">
+  <h2>Drag and Drop Events</h2>
+  <p>Payload raised when a component drag ends.</p>
+  <h3 id="type-componentdropeventargs">ComponentDropEventArgs</h3>
+  <p>Event args for when a component is dropped after a drag operation. Provides final positions in canvas and screen space along with final bounds.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaComponent Component</code></td><td>Property</td><td>Gets or sets the component.</td></tr>
+      <tr><td><code>SKPoint CanvasPosition</code></td><td>Property</td><td>Gets or sets the canvas position.</td></tr>
+      <tr><td><code>SKPoint ScreenPosition</code></td><td>Property</td><td>Gets or sets the screen position.</td></tr>
+      <tr><td><code>SKRect Bounds</code></td><td>Property</td><td>Gets or sets the bounds.</td></tr>
+      <tr><td><code>SKPoint Location</code></td><td>Property</td><td>Gets or sets the location.</td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

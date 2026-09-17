@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Navigation &amp; Menus | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>UI Components</span><span>&rsaquo;</span> <span>Navigation &amp; Menus</span></nav>
+<div class="page-header"><h1>Navigation &amp; Menus</h1><p class="page-subtitle">Menu bars, cascading menus, context menus, navigation bars and drawers, status bars, panels and swimlanes</p></div>
+<p>Navigation controls arrange the application shell and diagram structure. The <a href="menu.html">Menu</a> and <a href="tabs.html">Tabs</a> pages cover those controls; this page documents the surrounding family.</p>
+<div class="toc">
+  <h3>On this page</h3>
+  <ul>
+    <li><a href="#menus">Menus</a></li>
+    <li><a href="#drawer">Navigation Bars and Drawers</a></li>
+    <li><a href="#status">Status Bars</a></li>
+    <li><a href="#containers">Containers</a></li>
+  </ul>
+</div>
+<section class="section" id="menus">
+  <h2>Menus</h2>
+  <p>Menu bars, cascading menus and context menus.</p>
+  <h3 id="type-menubar">MenuBar</h3>
+  <p>A Material Design 3.0 Menu Bar component that displays horizontal menu items.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IReadOnlyList&lt;MenuBarItem&gt; Items</code></td><td>Property</td><td>Gets the list of menu bar items.</td></tr>
+      <tr><td><code>MenuBarItem ActiveItem</code></td><td>Property</td><td>Gets or sets the currently active menu bar item.</td></tr>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of the menu bar.</td></tr>
+      <tr><td><code>SKColor ItemHoverColor</code></td><td>Property</td><td>Gets or sets the hover color for menu items.</td></tr>
+      <tr><td><code>SKColor ItemActiveColor</code></td><td>Property</td><td>Gets or sets the active color for menu items.</td></tr>
+      <tr><td><code>float ItemHeight</code></td><td>Property</td><td>Gets or sets the height of menu items.</td></tr>
+      <tr><td><code>float ItemSpacing</code></td><td>Property</td><td>Gets or sets the spacing between menu items.</td></tr>
+      <tr><td><code>event EventHandler&lt;MenuBarItemEventArgs&gt; ItemClicked</code></td><td>Event</td><td>Occurs when a menu item is clicked.</td></tr>
+      <tr><td><code>event EventHandler&lt;MenuBarItemEventArgs&gt; ItemActivated</code></td><td>Event</td><td>Occurs when a menu item is activated (submenu shown).</td></tr>
+      <tr><td><code>event EventHandler&lt;MenuBarItemEventArgs&gt; ItemDeactivated</code></td><td>Event</td><td>Occurs when a menu item is deactivated (submenu hidden).</td></tr>
+      <tr><td><code>MenuBar()</code></td><td>Method</td><td>Initializes a new instance of the MenuBar class.</td></tr>
+      <tr><td><code>void AddItem(MenuBarItem item)</code></td><td>Method</td><td>Adds a menu bar item. The menu bar item to add.</td></tr>
+      <tr><td><code>MenuBarItem AddItem(string text, Menu submenu = null)</code></td><td>Method</td><td>Adds a menu bar item with the specified text and submenu. The text for the menu item. The submenu to display when activated.</td></tr>
+      <tr><td><code>void RemoveItem(MenuBarItem item)</code></td><td>Method</td><td>Removes a menu bar item. The menu bar item to remove.</td></tr>
+      <tr><td><code>void ClearItems()</code></td><td>Method</td><td>Clears all menu bar items.</td></tr>
+      <tr><td><code>void ActivateItem(MenuBarItem item)</code></td><td>Method</td><td>Activates the specified menu item. The menu item to activate.</td></tr>
+      <tr><td><code>void DeactivateActiveItem()</code></td><td>Method</td><td>Deactivates the currently active menu item.</td></tr>
+      <tr><td><code>new void HandleMouseDown(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Public wrapper for mouse down events (used by demos).</td></tr>
+      <tr><td><code>new void HandleMouseMove(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Public wrapper for mouse move events (used by demos).</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-cascadingmenu">CascadingMenu</h3>
+  <p>A Material Design 3.0 Cascading Menu component that supports nested submenus.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int SubmenuDelay</code></td><td>Property</td><td>Gets or sets the delay before showing submenus (in milliseconds).</td></tr>
+      <tr><td><code>event EventHandler&lt;CascadingMenuEventArgs&gt; SubmenuShowing</code></td><td>Event</td><td>Occurs when a submenu is about to be shown.</td></tr>
+      <tr><td><code>event EventHandler&lt;CascadingMenuEventArgs&gt; SubmenuHidden</code></td><td>Event</td><td>Occurs when a submenu is hidden.</td></tr>
+      <tr><td><code>CascadingMenu()</code></td><td>Method</td><td>Initializes a new instance of the CascadingMenu class.</td></tr>
+      <tr><td><code>void AddItem(CascadingMenuItem item)</code></td><td>Method</td><td>Adds a cascading menu item. The cascading menu item to add.</td></tr>
+      <tr><td><code>CascadingMenuItem AddItem(string text, CascadingMenu submenu = null, string icon = "", string shortcut = "")</code></td><td>Method</td><td>Adds a cascading menu item with the specified text and submenu. The text for the menu item. The submenu to display when hovered. The icon for the menu item. The keyboard shortcut.</td></tr>
+      <tr><td><code>void RemoveItem(CascadingMenuItem item)</code></td><td>Method</td><td>Removes a cascading menu item. The cascading menu item to remove.</td></tr>
+      <tr><td><code>void ShowSubmenu(CascadingMenuItem item)</code></td><td>Method</td><td>Shows the submenu for the specified item. The menu item whose submenu to show.</td></tr>
+      <tr><td><code>void HideSubmenu()</code></td><td>Method</td><td>Hides the currently shown submenu.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-contextmenu">ContextMenu</h3>
+  <p>A Material Design 3.0 Context Menu component that appears on right-click.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SKPoint TriggerPoint</code></td><td>Property</td><td>Gets or sets the point where the context menu was triggered.</td></tr>
+      <tr><td><code>object ContextObject</code></td><td>Property</td><td>Gets or sets the context object associated with this menu.</td></tr>
+      <tr><td><code>event EventHandler&lt;ContextMenuEventArgs&gt; Showing</code></td><td>Event</td><td>Occurs when the context menu is about to be shown.</td></tr>
+      <tr><td><code>ContextMenu()</code></td><td>Method</td><td>Initializes a new instance of the ContextMenu class.</td></tr>
+      <tr><td><code>void Show(SKPoint triggerPoint, object contextObject = null)</code></td><td>Method</td><td>Shows the context menu at the specified position with the given context object. The point where the context menu was triggered. The context object associated with the menu.</td></tr>
+      <tr><td><code>void AddContextItem(string text, EventHandler action, bool autoIcon = true)</code></td><td>Method</td><td>Adds a context menu item with automatic icon assignment based on common actions. The menu item text. The action to perform. Whether to automatically assign an icon based on the text.</td></tr>
+      <tr><td><code>void AddStandardItems( bool includeCopy = true, bool includeCut = true, bool includePaste = true, bool includeDelete = true, bool includeSelectAll = false)</code></td><td>Method</td><td>Adds standard context menu items for common operations. Whether to include copy operation. Whether to include cut operation. Whether to include paste operation. Whether to include delete operation. Whether to include select all operation.</td></tr>
+      <tr><td><code>void AddStandardItems( DrawingManager manager, bool includeCopy = true, bool includeCut = true, bool includePaste = true, bool includeDelete = true, bool includeSelectAll = true)</code></td><td>Method</td><td>Adds standard context menu items wired to DrawingManager commands. The menu hides itself after a command is invoked. The drawing manager that provides the commands. Whether to include copy operation. Whether to include cut operation. Whether to include paste operation. Whether to include delete operation. Whether to include select all operation.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="drawer">
+  <h2>Navigation Bars and Drawers</h2>
+  <p>Primary navigation surfaces.</p>
+  <h3 id="type-navigationbar">NavigationBar</h3>
+  <p>A Material Design 3.0 Navigation Bar component for bottom navigation.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IReadOnlyList&lt;NavigationBarItem&gt; Items</code></td><td>Property</td><td>Gets the list of navigation bar items.</td></tr>
+      <tr><td><code>NavigationBarItem SelectedItem</code></td><td>Property</td><td>Gets or sets the currently selected navigation bar item.</td></tr>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of the navigation bar.</td></tr>
+      <tr><td><code>SKColor ActiveColor</code></td><td>Property</td><td>Gets or sets the active/selected color for navigation items.</td></tr>
+      <tr><td><code>SKColor InactiveColor</code></td><td>Property</td><td>Gets or sets the inactive color for navigation items.</td></tr>
+      <tr><td><code>float ItemHeight</code></td><td>Property</td><td>Gets or sets the height of navigation items.</td></tr>
+      <tr><td><code>float IconSize</code></td><td>Property</td><td>Gets or sets the size of icons in navigation items.</td></tr>
+      <tr><td><code>float LabelFontSize</code></td><td>Property</td><td>Gets or sets the font size for item labels.</td></tr>
+      <tr><td><code>bool ShowLabels</code></td><td>Property</td><td>Gets or sets whether to show labels for navigation items.</td></tr>
+      <tr><td><code>event EventHandler&lt;NavigationBarItemEventArgs&gt; ItemSelected</code></td><td>Event</td><td>Occurs when a navigation item is selected.</td></tr>
+      <tr><td><code>NavigationBar()</code></td><td>Method</td><td>Initializes a new instance of the NavigationBar class.</td></tr>
+      <tr><td><code>void AddItem(NavigationBarItem item)</code></td><td>Method</td><td>Adds a navigation bar item. The navigation bar item to add.</td></tr>
+      <tr><td><code>NavigationBarItem AddItem(string icon, string label, object tag = null)</code></td><td>Method</td><td>Adds a navigation bar item with the specified icon and label. The icon for the navigation item. The label text for the navigation item. Optional tag object for the item.</td></tr>
+      <tr><td><code>void RemoveItem(NavigationBarItem item)</code></td><td>Method</td><td>Removes a navigation bar item. The navigation bar item to remove.</td></tr>
+      <tr><td><code>void ClearItems()</code></td><td>Method</td><td>Clears all navigation bar items.</td></tr>
+      <tr><td><code>void SelectItem(int index)</code></td><td>Method</td><td>Selects the item at the specified index. The index of the item to select.</td></tr>
+      <tr><td><code>new void HandleMouseDown(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Public wrapper for mouse down events (used by demos).</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-navigationdrawer">NavigationDrawer</h3>
+  <p>A Material Design 3.0 Navigation Drawer component that slides in from the edge of the screen.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IReadOnlyList&lt;NavigationDrawerBaseItem&gt; Items</code></td><td>Property</td><td>Gets the list of navigation drawer items.</td></tr>
+      <tr><td><code>NavigationDrawerItem SelectedItem</code></td><td>Property</td><td>Gets or sets the currently selected navigation drawer item.</td></tr>
+      <tr><td><code>NavigationDrawerHeader Header</code></td><td>Property</td><td>Gets or sets the header of the navigation drawer.</td></tr>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of the navigation drawer.</td></tr>
+      <tr><td><code>SKColor SurfaceTintColor</code></td><td>Property</td><td>Gets or sets the surface tint color of the navigation drawer.</td></tr>
+      <tr><td><code>SKColor SelectedItemColor</code></td><td>Property</td><td>Gets or sets the color for selected navigation items.</td></tr>
+      <tr><td><code>SKColor UnselectedItemColor</code></td><td>Property</td><td>Gets or sets the color for unselected navigation items.</td></tr>
+      <tr><td><code>float ItemHeight</code></td><td>Property</td><td>Gets or sets the height of navigation items.</td></tr>
+      <tr><td><code>float DividerHeight</code></td><td>Property</td><td>Gets or sets the height of dividers.</td></tr>
+      <tr><td><code>float HeaderHeight</code></td><td>Property</td><td>Gets or sets the height of the header.</td></tr>
+      <tr><td><code>bool IsOpen</code></td><td>Property</td><td>Gets or sets whether the navigation drawer is open.</td></tr>
+      <tr><td><code>float DrawerWidth</code></td><td>Property</td><td>Gets or sets the width of the navigation drawer.</td></tr>
+      <tr><td><code>DrawerPosition Position</code></td><td>Property</td><td>Gets or sets the position of the navigation drawer.</td></tr>
+      <tr><td><code>DrawerType DrawerType</code></td><td>Property</td><td>Gets or sets the type of the navigation drawer.</td></tr>
+      <tr><td><code>event EventHandler&lt;NavigationDrawerItemEventArgs&gt; ItemSelected</code></td><td>Event</td><td>Occurs when a navigation item is selected.</td></tr>
+      <tr><td><code>event EventHandler DrawerOpened</code></td><td>Event</td><td>Occurs when the navigation drawer is opened.</td></tr>
+      <tr><td><code>event EventHandler DrawerClosed</code></td><td>Event</td><td>Occurs when the navigation drawer is closed.</td></tr>
+      <tr><td><code>NavigationDrawer()</code></td><td>Method</td><td>Initializes a new instance of the NavigationDrawer class.</td></tr>
+      <tr><td><code>void AddItem(NavigationDrawerBaseItem item)</code></td><td>Method</td><td>Adds a navigation drawer item. The navigation drawer item to add.</td></tr>
+      <tr><td><code>NavigationDrawerItem AddItem(string icon, string label, string badge = null, object tag = null)</code></td><td>Method</td><td>Adds a navigation drawer item with the specified icon, label, and badge. The icon for the navigation item. The label text for the navigation item. The badge text for the navigation item. Optional tag object for the item.</td></tr>
+      <tr><td><code>void AddDivider()</code></td><td>Method</td><td>Adds a divider to the navigation drawer.</td></tr>
+      <tr><td><code>void RemoveItem(NavigationDrawerBaseItem item)</code></td><td>Method</td><td>Removes a navigation drawer item. The navigation drawer item to remove.</td></tr>
+      <tr><td><code>void ClearItems()</code></td><td>Method</td><td>Clears all navigation drawer items.</td></tr>
+      <tr><td><code>void Open()</code></td><td>Method</td><td>Opens the navigation drawer.</td></tr>
+      <tr><td><code>void Close()</code></td><td>Method</td><td>Closes the navigation drawer.</td></tr>
+      <tr><td><code>void Toggle()</code></td><td>Method</td><td>Toggles the navigation drawer open/closed state.</td></tr>
+      <tr><td><code>new void HandleMouseDown(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Public wrapper for mouse down events (used by demos).</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-navigationitem">NavigationItem</h3>
+  <p>Represents an item in a navigation component</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the item text</td></tr>
+      <tr><td><code>string Icon</code></td><td>Property</td><td>Gets or sets the icon name or path</td></tr>
+      <tr><td><code>SKColor TextColor</code></td><td>Property</td><td>Gets or sets the text color</td></tr>
+      <tr><td><code>SKColor IconColor</code></td><td>Property</td><td>Gets or sets the icon color</td></tr>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color</td></tr>
+      <tr><td><code>SKColor SelectedBackgroundColor</code></td><td>Property</td><td>Gets or sets the selected background color</td></tr>
+      <tr><td><code>SKColor HoverBackgroundColor</code></td><td>Property</td><td>Gets or sets the hover background color</td></tr>
+      <tr><td><code>float Height</code></td><td>Property</td><td>Gets or sets the item height</td></tr>
+      <tr><td><code>bool IsVisible</code></td><td>Property</td><td>Gets or sets whether the item is visible</td></tr>
+      <tr><td><code>bool IsEnabled</code></td><td>Property</td><td>Gets or sets whether the item is enabled</td></tr>
+      <tr><td><code>bool IsSelected</code></td><td>Property</td><td>Gets or sets whether the item is selected</td></tr>
+      <tr><td><code>object Tag</code></td><td>Property</td><td>Gets or sets the tag object</td></tr>
+      <tr><td><code>bool IsHovered</code></td><td>Property</td><td>Gets whether the item is currently hovered</td></tr>
+      <tr><td><code>bool IsPressed</code></td><td>Property</td><td>Gets whether the item is currently pressed</td></tr>
+      <tr><td><code>NavigationBar ParentNavigationBar</code></td><td>Property</td><td>Gets the parent NavigationBar</td></tr>
+      <tr><td><code>event EventHandler Click</code></td><td>Event</td><td>Occurs when the item is clicked</td></tr>
+      <tr><td><code>NavigationItem()</code></td><td>Method</td><td>Initializes a new instance of the NavigationItem class</td></tr>
+      <tr><td><code>NavigationItem(string text)</code></td><td>Method</td><td>Initializes a new instance of the NavigationItem class with text</td></tr>
+      <tr><td><code>NavigationItem(string text, string icon)</code></td><td>Method</td><td>Initializes a new instance of the NavigationItem class with text and icon</td></tr>
+      <tr><td><code>virtual void PerformClick()</code></td><td>Method</td><td>Raises the Click event</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="status">
+  <h2>Status Bars</h2>
+  <p>Status reporting along the bottom edge.</p>
+  <h3 id="type-statusbar">StatusBar</h3>
+  <p>A Material Design 3.0 status bar component</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>StatusBarItemCollection Items</code></td><td>Property</td><td>Gets the collection of status bar items</td></tr>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color</td></tr>
+      <tr><td><code>SKColor BorderColor</code></td><td>Property</td><td>Gets or sets the border color</td></tr>
+      <tr><td><code>float BorderWidth</code></td><td>Property</td><td>Gets or sets the border width</td></tr>
+      <tr><td><code>float ItemSpacing</code></td><td>Property</td><td>Gets or sets the spacing between items</td></tr>
+      <tr><td><code>bool ShowBorder</code></td><td>Property</td><td>Gets or sets whether to show the border</td></tr>
+      <tr><td><code>StatusBar()</code></td><td>Method</td><td>Initializes a new instance of the StatusBar class</td></tr>
+      <tr><td><code>StatusBarItem AddItem(string text)</code></td><td>Method</td><td>Adds a status bar item with the specified text</td></tr>
+      <tr><td><code>StatusBarItem AddItem(string text, float width)</code></td><td>Method</td><td>Adds a status bar item with the specified text and width</td></tr>
+      <tr><td><code>void RemoveItem(StatusBarItem item)</code></td><td>Method</td><td>Removes a status bar item</td></tr>
+      <tr><td><code>void ClearItems()</code></td><td>Method</td><td>Clears all items from the status bar</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-statusbaritem">StatusBarItem</h3>
+  <p>Represents an item in a status bar</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the item text</td></tr>
+      <tr><td><code>SKColor TextColor</code></td><td>Property</td><td>Gets or sets the text color</td></tr>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color</td></tr>
+      <tr><td><code>float Width</code></td><td>Property</td><td>Gets or sets the item width</td></tr>
+      <tr><td><code>TextAlignment TextAlignment</code></td><td>Property</td><td>Gets or sets the text alignment</td></tr>
+      <tr><td><code>bool IsVisible</code></td><td>Property</td><td>Gets or sets whether the item is visible</td></tr>
+      <tr><td><code>object Tag</code></td><td>Property</td><td>Gets or sets the tag object</td></tr>
+      <tr><td><code>StatusBar ParentStatusBar</code></td><td>Property</td><td>Gets the parent StatusBar</td></tr>
+      <tr><td><code>StatusBarItem()</code></td><td>Method</td><td>Initializes a new instance of the StatusBarItem class</td></tr>
+      <tr><td><code>StatusBarItem(string text)</code></td><td>Method</td><td>Initializes a new instance of the StatusBarItem class with text</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="containers">
+  <h2>Containers</h2>
+  <p>Panels and swimlanes for grouping components.</p>
+  <h3 id="type-panel">Panel</h3>
+  <p>A Material Design 3.0 surface container component that can hold other components.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>PanelVariant Variant</code></td><td>Property</td><td>Gets or sets the panel variant (Material Design 3.0).</td></tr>
+      <tr><td><code>float CornerRadius</code></td><td>Property</td><td>Gets or sets the corner radius of the panel.</td></tr>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of the panel (for backward compatibility).</td></tr>
+      <tr><td><code>SKColor BorderColor</code></td><td>Property</td><td>Gets or sets the border color of the panel (for backward compatibility).</td></tr>
+      <tr><td><code>float BorderWidth</code></td><td>Property</td><td>Gets or sets the border width of the panel (for backward compatibility).</td></tr>
+      <tr><td><code>string Title</code></td><td>Property</td><td>Gets or sets the title text displayed above the panel.</td></tr>
+      <tr><td><code>Panel()</code></td><td>Method</td><td>Initializes a new instance of the Panel class.</td></tr>
+      <tr><td><code>Panel(float width, float height) : this()</code></td><td>Method</td><td>Initializes a new instance of the Panel class with specified dimensions.</td></tr>
+      <tr><td><code>void AddChild(SkiaComponent child, float x, float y)</code></td><td>Method</td><td>Adds a child component to this panel.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-swimlanecontainer">SwimlaneContainer</h3>
+  <p>A swimlane / pool / lane container for diagramming. Supports horizontal (row) and vertical (column) layouts with resizable header areas. Components added as children are automatically positioned within their assigned lane.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>bool OrientationHorizontal</code></td><td>Property</td><td>Gets or sets the orientation of the lanes. True = horizontal rows, false = vertical columns.</td></tr>
+      <tr><td><code>float HeaderSize</code></td><td>Property</td><td>Gets or sets the header size (height for horizontal, width for vertical).</td></tr>
+      <tr><td><code>IReadOnlyList&lt;Swimlane&gt; Lanes</code></td><td>Property</td><td>Gets the list of lanes in this container.</td></tr>
+      <tr><td><code>bool AllowCollapse</code></td><td>Property</td><td>Gets or sets whether lane headers are collapsible.</td></tr>
+      <tr><td><code>float LaneSpacing</code></td><td>Property</td><td>Gets or sets the separation between lanes in pixels.</td></tr>
+      <tr><td><code>SwimlaneContainer()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>Swimlane AddLane(string title)</code></td><td>Method</td><td>Adds a new lane with the given title.</td></tr>
+      <tr><td><code>void RemoveLane(Swimlane lane)</code></td><td>Method</td><td>Removes a lane and all its children.</td></tr>
+      <tr><td><code>void AddToLane(SkiaComponent component, Swimlane lane)</code></td><td>Method</td><td>Adds a component to a specific lane.</td></tr>
+      <tr><td><code>Swimlane GetLaneAtPoint(SKPoint localPoint)</code></td><td>Method</td><td>Gets the lane that contains the given point (in component-local coordinates).</td></tr>
+      <tr><td><code>override Dictionary&lt;string, object&gt; GetProperties(bool includeCommon = true, bool includeNodeProperties = true)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetPropperties(IDictionary&lt;string, object&gt; properties, bool updateNodeProperties = true, bool applyToPublicSetters = true)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

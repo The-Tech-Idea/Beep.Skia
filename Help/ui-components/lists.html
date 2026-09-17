@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>List Controls | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>UI Components</span><span>&rsaquo;</span> <span>List Controls</span></nav>
+<div class="page-header"><h1>List Controls</h1><p class="page-subtitle">List, ListBoxItem, ListItem and ComboBoxItem</p></div>
+<p>List controls present selectable rows. The <a href="dropdown.html">Dropdown</a> and <a href="datagrid.html">DataGrid</a> pages cover those controls; this page documents the list primitives.</p>
+<div class="toc">
+  <h3>On this page</h3>
+  <ul>
+    <li><a href="#list">List</a></li>
+    <li><a href="#items">List Items</a></li>
+  </ul>
+</div>
+<section class="section" id="list">
+  <h2>List</h2>
+  <p>Scrollable list of items.</p>
+  <h3 id="type-list">List</h3>
+  <p>A Material Design 3.0 List component with support for single-line, two-line, and three-line items.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>event EventHandler&lt;ListItem&gt; ItemSelected</code></td><td>Event</td><td>Occurs when an item is selected.</td></tr>
+      <tr><td><code>event EventHandler&lt;ListItem&gt; ItemClicked</code></td><td>Event</td><td>Occurs when an item is clicked.</td></tr>
+      <tr><td><code>ObservableCollection&lt;ListItem&gt; Items</code></td><td>Property</td><td>Gets or sets the collection of list items.</td></tr>
+      <tr><td><code>ListItem SelectedItem</code></td><td>Property</td><td>Gets or sets the currently selected item (for single selection mode).</td></tr>
+      <tr><td><code>ListType Type</code></td><td>Property</td><td>Gets or sets the list type (single-line, two-line, or three-line).</td></tr>
+      <tr><td><code>bool ShowDividers</code></td><td>Property</td><td>Gets or sets whether to show dividers between items.</td></tr>
+      <tr><td><code>bool AllowSelection</code></td><td>Property</td><td>Gets or sets whether items can be selected.</td></tr>
+      <tr><td><code>SelectionMode Mode</code></td><td>Property</td><td>Gets or sets the selection mode.</td></tr>
+      <tr><td><code>float ItemHeight</code></td><td>Property</td><td>Gets or sets the height of each list item.</td></tr>
+      <tr><td><code>float DividerThickness</code></td><td>Property</td><td>Gets or sets the thickness of dividers.</td></tr>
+      <tr><td><code>SKColor DividerColor</code></td><td>Property</td><td>Gets or sets the color of dividers.</td></tr>
+      <tr><td><code>float FontSize</code></td><td>Property</td><td>Gets or sets the font size for list items.</td></tr>
+      <tr><td><code>List()</code></td><td>Method</td><td>Initializes a new instance of the List class.</td></tr>
+      <tr><td><code>void AddItem(string primaryText, string secondaryText = null, string tertiaryText = null, string leadingIcon = null, string trailingIcon = null, object tag = null)</code></td><td>Method</td><td>Adds an item to the list.</td></tr>
+      <tr><td><code>void AddItem(ListItem item)</code></td><td>Method</td><td>Adds a ListItem to the list.</td></tr>
+      <tr><td><code>void RemoveItem(ListItem item)</code></td><td>Method</td><td>Removes an item from the list.</td></tr>
+      <tr><td><code>void ClearItems()</code></td><td>Method</td><td>Clears all items from the list.</td></tr>
+      <tr><td><code>void SelectItem(ListItem item)</code></td><td>Method</td><td>Selects an item in the list.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="items">
+  <h2>List Items</h2>
+  <p>Row primitives used by lists, dropdowns and combo boxes.</p>
+  <h3 id="type-listboxitem">ListBoxItem</h3>
+  <p>Represents an item in a list box.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text of the item.</td></tr>
+      <tr><td><code>object Value</code></td><td>Property</td><td>Gets or sets the value associated with the item.</td></tr>
+      <tr><td><code>bool Selected</code></td><td>Property</td><td>Gets or sets whether the item is selected.</td></tr>
+      <tr><td><code>ListBoxItem()</code></td><td>Method</td><td>Initializes a new instance of the ListBoxItem class.</td></tr>
+      <tr><td><code>ListBoxItem(string text)</code></td><td>Method</td><td>Initializes a new instance of the ListBoxItem class with the specified text.</td></tr>
+      <tr><td><code>ListBoxItem(string text, object value)</code></td><td>Method</td><td>Initializes a new instance of the ListBoxItem class with the specified text and value.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Returns a string representation of the item.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-listitem">ListItem</h3>
+  <p>Represents an item in a list component</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the item text</td></tr>
+      <tr><td><code>string SubText</code></td><td>Property</td><td>Gets or sets the item sub-text</td></tr>
+      <tr><td><code>string Icon</code></td><td>Property</td><td>Gets or sets the icon name or path</td></tr>
+      <tr><td><code>SKColor TextColor</code></td><td>Property</td><td>Gets or sets the text color</td></tr>
+      <tr><td><code>SKColor SubTextColor</code></td><td>Property</td><td>Gets or sets the sub-text color</td></tr>
+      <tr><td><code>SKColor IconColor</code></td><td>Property</td><td>Gets or sets the icon color</td></tr>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color</td></tr>
+      <tr><td><code>SKColor SelectedBackgroundColor</code></td><td>Property</td><td>Gets or sets the selected background color</td></tr>
+      <tr><td><code>SKColor HoverBackgroundColor</code></td><td>Property</td><td>Gets or sets the hover background color</td></tr>
+      <tr><td><code>float Height</code></td><td>Property</td><td>Gets or sets the item height</td></tr>
+      <tr><td><code>bool IsVisible</code></td><td>Property</td><td>Gets or sets whether the item is visible</td></tr>
+      <tr><td><code>bool IsEnabled</code></td><td>Property</td><td>Gets or sets whether the item is enabled</td></tr>
+      <tr><td><code>bool IsSelected</code></td><td>Property</td><td>Gets or sets whether the item is selected</td></tr>
+      <tr><td><code>object Tag</code></td><td>Property</td><td>Gets or sets the tag object</td></tr>
+      <tr><td><code>bool IsHovered</code></td><td>Property</td><td>Gets whether the item is currently hovered</td></tr>
+      <tr><td><code>bool IsPressed</code></td><td>Property</td><td>Gets whether the item is currently pressed</td></tr>
+      <tr><td><code>List ParentList</code></td><td>Property</td><td>Gets the parent List</td></tr>
+      <tr><td><code>event EventHandler Click</code></td><td>Event</td><td>Occurs when the item is clicked</td></tr>
+      <tr><td><code>ListItem()</code></td><td>Method</td><td>Initializes a new instance of the ListItem class</td></tr>
+      <tr><td><code>ListItem(string text)</code></td><td>Method</td><td>Initializes a new instance of the ListItem class with text</td></tr>
+      <tr><td><code>ListItem(string text, string subText)</code></td><td>Method</td><td>Initializes a new instance of the ListItem class with text and sub-text</td></tr>
+      <tr><td><code>virtual void PerformClick()</code></td><td>Method</td><td>Raises the Click event</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-comboboxitem">ComboBoxItem</h3>
+  <p>Represents an item in a combo box.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text of the item.</td></tr>
+      <tr><td><code>object Value</code></td><td>Property</td><td>Gets or sets the value associated with the item.</td></tr>
+      <tr><td><code>bool Enabled</code></td><td>Property</td><td>Gets or sets whether the item is enabled.</td></tr>
+      <tr><td><code>ComboBoxItem()</code></td><td>Method</td><td>Initializes a new instance of the ComboBoxItem class.</td></tr>
+      <tr><td><code>ComboBoxItem(string text)</code></td><td>Method</td><td>Initializes a new instance of the ComboBoxItem class with the specified text.</td></tr>
+      <tr><td><code>ComboBoxItem(string text, object value)</code></td><td>Method</td><td>Initializes a new instance of the ComboBoxItem class with the specified text and value.</td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td>Returns a string representation of the item.</td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

@@ -132,53 +132,38 @@
   <h2>Component Discovery</h2>
   <p>The <code>ComponentPalette</code> discovers components exclusively through the <code>SkiaComponentRegistry</code>. This registry holds metadata for every component type available in the system, organized by category. The palette reads this data at initialization and builds its internal category/item structure.</p>
 
-  <h3>SkiaComponentRegistry Entries</h3>
-  <p>Each registry entry contains:</p>
+  <h3>Registry Entries</h3>
+  <p>Each registry entry is an <code>AssemblyClassDefinition</code> (the shared BeepDM metadata type). The palette and the registry use these members:</p>
 
   <table>
     <thead>
-      <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+      <tr><th>Member</th><th>Type</th><th>Description</th></tr>
     </thead>
     <tbody>
       <tr>
-        <td><code>ComponentType</code></td>
+        <td><code>className</code></td>
+        <td><code>string</code></td>
+        <td>The component class name; the palette converts it to a display label (for example <code>ProcessNode</code> becomes "Process Node").</td>
+      </tr>
+      <tr>
+        <td><code>dllname</code></td>
+        <td><code>string</code></td>
+        <td>Assembly that contains the component; used together with <code>className</code> as the registry's duplicate key.</td>
+      </tr>
+      <tr>
+        <td><code>GuidID</code></td>
+        <td><code>string</code></td>
+        <td>Stable identifier used by the registry lookups (<code>GetComponentByGuid</code>).</td>
+      </tr>
+      <tr>
+        <td><code>type</code></td>
         <td><code>Type</code></td>
-        <td>The CLR type that implements the component. Must inherit from <code>SkiaComponent</code>.</td>
+        <td>Resolved CLR type used for instantiation and namespace grouping.</td>
       </tr>
       <tr>
-        <td><code>DisplayName</code></td>
-        <td><code>string</code></td>
-        <td>Human-readable name shown in the palette tile (e.g., <code>"Process Node"</code>, <code>"Decision Diamond"</code>).</td>
-      </tr>
-      <tr>
-        <td><code>Description</code></td>
-        <td><code>string</code></td>
-        <td>Hover tooltip text describing the component's purpose. Also searched by <code>FilterText</code>.</td>
-      </tr>
-      <tr>
-        <td><code>Category</code></td>
-        <td><code>string</code></td>
-        <td>Grouping category (e.g., <code>"Flowchart"</code>, <code>"ERD"</code>, <code>"Network"</code>, <code>"UI Controls"</code>). Components with the same category are grouped together in the palette.</td>
-      </tr>
-      <tr>
-        <td><code>Icon</code></td>
-        <td><code>SKPath</code></td>
-        <td>Vector icon drawn in each palette tile. Sized to fit within the tile with appropriate padding.</td>
-      </tr>
-      <tr>
-        <td><code>Factory</code></td>
-        <td><code>Func&lt;SkiaComponent&gt;</code></td>
-        <td>Delegate that creates a new instance of the component. The palette uses this for the drag-ghost preview and the canvas uses it when the drop is accepted.</td>
-      </tr>
-      <tr>
-        <td><code>DefaultWidth</code></td>
-        <td><code>float</code></td>
-        <td>Default width assigned to the component when dropped on the canvas. Default is <code>120f</code>.</td>
-      </tr>
-      <tr>
-        <td><code>DefaultHeight</code></td>
-        <td><code>float</code></td>
-        <td>Default height assigned to the component when dropped on the canvas. Default is <code>60f</code>.</td>
+        <td><code>Methods</code></td>
+        <td><code>List&lt;MethodsClass&gt;</code></td>
+        <td>Optional command methods surfaced as child items in the palette and exposed through <code>GetComponentsWithMethods()</code>.</td>
       </tr>
     </tbody>
   </table>

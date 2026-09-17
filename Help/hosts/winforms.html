@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WinForms Controls | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>Windows Hosts</span><span>&rsaquo;</span> <span>WinForms Controls</span></nav>
+<div class="page-header"><h1>WinForms Controls</h1><p class="page-subtitle">The SkiaHostControl canvas host plus a WinForms wrapper for every Material control</p></div>
+<p>The WinForms package ships two layers: <code>SkiaHostControl</code>, the full diagram editor surface (canvas, palette, property grid, export), and a wrapper control for every Material component so the same visuals can be used in ordinary WinForms layouts. All wrappers derive from <code>SkiaControl</code>.</p>
+<div class="toc">
+  <h3>On this page</h3>
+  <ul>
+    <li><a href="#host">Canvas Host</a></li>
+    <li><a href="#base">Control Base</a></li>
+    <li><a href="#input">Input Wrappers</a></li>
+    <li><a href="#actions">Action Wrappers</a></li>
+    <li><a href="#navigation">Navigation Wrappers</a></li>
+    <li><a href="#display">Display Wrappers</a></li>
+    <li><a href="#designer">Designer Support</a></li>
+  </ul>
+</div>
+<section class="section" id="host">
+  <h2>Canvas Host</h2>
+  <p>The complete diagram editing surface.</p>
+  <h3 id="type-skiahostcontrol">SkiaHostControl</h3>
+  <p>Host control that provides a Skia drawing surface and a DrawingManager to host Skia components.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>int ReloadExtensions()</code></td><td>Method</td><td>Reloads extensions from the install root and refreshes their palette entries. Returns the number of extension components added.</td></tr>
+      <tr><td><code>Beep.Skia.DrawingManager DrawingManager</code></td><td>Property</td><td>Gets or sets the drawing manager.</td></tr>
+      <tr><td><code>SkiaHostControl()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void RebuildCommentPins()</code></td><td>Method</td><td>Rebuilds comment pins from the current components and comments.</td></tr>
+      <tr><td><code>void RefreshCommentPins()</code></td><td>Method</td><td>Rebuilds comment pins and repaints the canvas.</td></tr>
+      <tr><td><code>Beep.Skia.Collaboration.DiagramComment AddCommentToSelection(string text, string authorId = "local")</code></td><td>Method</td><td>Adds a comment anchored to the first selected component. Returns null when nothing is selected or the user cannot comment.</td></tr>
+      <tr><td><code>bool ResolveComment(string commentId, string userId = "local")</code></td><td>Method</td><td>Resolves a comment by id and repaints.</td></tr>
+      <tr><td><code>void ExportToPng(string filePath, float scale = 2f)</code></td><td>Method</td><td>Exports the current diagram to a PNG file.</td></tr>
+      <tr><td><code>void ExportToSvg(string filePath)</code></td><td>Method</td><td>Exports the current diagram to an SVG file with a white background.</td></tr>
+      <tr><td><code>void ExportToPdf(string filePath)</code></td><td>Method</td><td>Exports the current diagram to a PDF file.</td></tr>
+      <tr><td><code>void PrintWithPreview()</code></td><td>Method</td><td>Shows a print preview for the current diagram.</td></tr>
+      <tr><td><code>void BeginInit()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>SkiaComponentDescriptorCollection DesignTimeComponents</code></td><td>Property</td><td>Gets or sets the design time components.</td></tr>
+      <tr><td><code>bool BlockOverlappingDrops</code></td><td>Property</td><td>If true, component creation will be blocked when the new component's bounds overlap an existing component. Default false: overlaps allowed (prevents silent disappearance when dropping in same area).</td></tr>
+      <tr><td><code>Beep.Skia.SkiaComponent CreateAndAddComponent(Type componentType, float x, float y, float width, float height, string name)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>Beep.Skia.SkiaComponent CreateAndAddComponentFromDescriptor(SkiaComponentDescriptor desc)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="base">
+  <h2>Control Base</h2>
+  <p>Common base for every wrapper control.</p>
+  <h3 id="type-skiacontrol">SkiaControl</h3>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaComponent SkiaComponent</code></td><td>Property</td><td>Gets or sets the skia component.</td></tr>
+      <tr><td><code>SkiaControl()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="input">
+  <h2>Input Wrappers</h2>
+  <p>WinForms wrappers for the input components.</p>
+  <h3 id="type-skiatextbox">SkiaTextBox</h3>
+  <p>Design-time wrapper that creates a Skia TextBox component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaTextBox()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiatextarea">SkiaTextArea</h3>
+  <p>Skia TextArea wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaTextArea()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiacheckbox">SkiaCheckBox</h3>
+  <p>Design-time wrapper that creates a Skia Checkbox component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaCheckBox()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiacombobox">SkiaComboBox</h3>
+  <p>Design-time wrapper that creates a Skia Dropdown component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaComboBox()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiadatepicker">SkiaDatePicker</h3>
+  <p>Design-time wrapper that creates a Skia DatePicker component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaDatePicker()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiasearch">SkiaSearch</h3>
+  <p>Skia Search wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSearch()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiaslider">SkiaSlider</h3>
+  <p>Design-time wrapper that creates a Skia Slider component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSlider()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiaswitch">SkiaSwitch</h3>
+  <p>Design-time wrapper that creates a Skia Switch component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSwitch()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiatogglebutton">SkiaToggleButton</h3>
+  <p>Design-time wrapper that creates a Skia ToggleButton component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaToggleButton()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="actions">
+  <h2>Action Wrappers</h2>
+  <p>Buttons and button groups.</p>
+  <h3 id="type-skiabutton">SkiaButton</h3>
+  <p>Design-time wrapper that creates a Skia Button component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaButton()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiasplitbutton">SkiaSplitButton</h3>
+  <p>Skia SplitButton wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSplitButton()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiafloatingactionbutton">SkiaFloatingActionButton</h3>
+  <p>Design-time wrapper that creates a Skia FloatingActionButton component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaFloatingActionButton()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiafabmenu">SkiaFabMenu</h3>
+  <p>Design-time wrapper that creates a Skia FabMenu component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaFabMenu()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiasegmentedbuttons">SkiaSegmentedButtons</h3>
+  <p>Skia SegmentedButtons wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSegmentedButtons()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiamenubutton">SkiaMenuButton</h3>
+  <p>Skia MenuButton wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaMenuButton()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="navigation">
+  <h2>Navigation Wrappers</h2>
+  <p>Menus, drawers and status bars.</p>
+  <h3 id="type-skiamenu">SkiaMenu</h3>
+  <p>Design-time wrapper that creates a Skia Menu component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaMenu()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiamenubar">SkiaMenuBar</h3>
+  <p>Skia MenuBar wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaMenuBar()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiacascadingmenu">SkiaCascadingMenu</h3>
+  <p>Skia CascadingMenu wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaCascadingMenu()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiacontextmenu">SkiaContextMenu</h3>
+  <p>Design-time wrapper that creates a Skia ContextMenu component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaContextMenu()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skianavigationbar">SkiaNavigationBar</h3>
+  <p>Design-time wrapper that creates a Skia NavigationBar component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaNavigationBar()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skianavigationdrawer">SkiaNavigationDrawer</h3>
+  <p>Skia NavigationDrawer wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaNavigationDrawer()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiastatusbar">SkiaStatusBar</h3>
+  <p>Design-time wrapper that creates a Skia StatusBar component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaStatusBar()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiatoolbar">SkiaToolBar</h3>
+  <p>Design-time wrapper that creates a Skia ToolBar component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaToolBar()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="display">
+  <h2>Display Wrappers</h2>
+  <p>Cards, panels, labels and indicators.</p>
+  <h3 id="type-skiacard">SkiaCard</h3>
+  <p>Design-time wrapper that creates a Skia Card component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaCard()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiapanel">SkiaPanel</h3>
+  <p>Design-time wrapper that creates a Skia Panel component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaPanel()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skialabel">SkiaLabel</h3>
+  <p>Design-time wrapper that creates a Skia Label component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaLabel()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiaprogressbar">SkiaProgressBar</h3>
+  <p>Skia ProgressBar wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaProgressBar()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiaspinner">SkiaSpinner</h3>
+  <p>Design-time wrapper that creates a Skia Spinner component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSpinner()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiasvgimage">SkiaSvgImage</h3>
+  <p>Skia SvgImage wrapper (minimal)</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaSvgImage()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skialist">SkiaList</h3>
+  <p>Design-time wrapper that creates a Skia List component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaList()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiadatagrid">SkiaDataGrid</h3>
+  <p>Design-time wrapper that creates a Skia DataGrid component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaDataGrid()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiatabs">SkiaTabs</h3>
+  <p>Design-time wrapper that creates a Skia Tabs component on the Skia host</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaTabs()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="designer">
+  <h2>Designer Support</h2>
+  <p>Design-time integration and property wrappers.</p>
+  <h3 id="type-skiacontroldesigner">SkiaControlDesigner</h3>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override void Initialize(IComponent component)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiahostcontroldesigner">SkiaHostControlDesigner</h3>
+  <p>Design-time designer for SkiaHostControl providing smart-tag verbs.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override DesignerActionListCollection ActionLists</code></td><td>Property</td><td>Gets or sets the action lists.</td></tr>
+      <tr><td><code>SkiaHostControl HostControl</code></td><td>Property</td><td>Gets or sets the host control.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiacomponentpropertywrapper">SkiaComponentPropertyWrapper</h3>
+  <p>Wraps a SkiaComponent to expose its NodeProperties in the Visual Studio PropertyGrid. Implements ICustomTypeDescriptor so the VS designer can display editable properties. Edits are applied back to the component (public setters) and reported through the change callback.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaComponent Component</code></td><td>Property</td><td>Gets or sets the component.</td></tr>
+      <tr><td><code>string ComponentTypeName</code></td><td>Property</td><td>Gets or sets the component type name.</td></tr>
+      <tr><td><code>string ComponentName</code></td><td>Property</td><td>Gets or sets the component name.</td></tr>
+      <tr><td><code>SkiaComponentPropertyWrapper(SkiaComponent component, Action&lt;SkiaComponent&gt; onChanged = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void Dispose()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiamulticomponentwrapper">SkiaMultiComponentWrapper</h3>
+  <p>PropertyGrid wrapper for multiple selected components: exposes geometry plus the NodeProperties common to every selected component; edits apply to all of them.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>IReadOnlyList&lt;SkiaComponent&gt; Components</code></td><td>Property</td><td>Gets or sets the components.</td></tr>
+      <tr><td><code>int Count</code></td><td>Property</td><td>Gets or sets the count.</td></tr>
+      <tr><td><code>SkiaMultiComponentWrapper(IReadOnlyList&lt;SkiaComponent&gt; components, Action&lt;IReadOnlyList&lt;SkiaComponent&gt;&gt; onChanged = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override string ToString()</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>void Dispose()</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skianodepropertydescriptor">SkiaNodePropertyDescriptor</h3>
+  <p>Property descriptor for a single SkiaComponent NodeProperty. Supports enum choices, simple type conversion, and SKColor hex editing.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaNodePropertyDescriptor(string name, Type type, Func&lt;object&gt; getter, Action&lt;object&gt; setter, string category, string description, string[] choices = null)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override Type ComponentType</code></td><td>Property</td><td>Gets or sets the component type.</td></tr>
+      <tr><td><code>override bool IsReadOnly</code></td><td>Property</td><td>Gets or sets the is read only.</td></tr>
+      <tr><td><code>override Type PropertyType</code></td><td>Property</td><td>Gets or sets the property type.</td></tr>
+      <tr><td><code>override string Description</code></td><td>Property</td><td>Gets or sets the description.</td></tr>
+      <tr><td><code>override string Category</code></td><td>Property</td><td>Gets or sets the category.</td></tr>
+      <tr><td><code>override bool CanResetValue(object component)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void ResetValue(object component) { }</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool ShouldSerializeValue(object component)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override object GetValue(object component)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override void SetValue(object component, object value)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override TypeConverter Converter</code></td><td>Property</td><td>Gets or sets the converter.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiacolorconverter">SkiaColorConverter</h3>
+  <p>TypeConverter for SKColor: edits colors as "#AARRGGBB" hex strings in the PropertyGrid.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>static SKColor Parse(string text)</code></td><td>Method</td><td>Parses "#AARRGGBB", "#RRGGBB", or a named color; invalid input returns transparent.</td></tr>
+      <tr><td><code>static string Format(SKColor color)</code></td><td>Method</td><td>Formats a color as "#AARRGGBB".</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-skiaenumconverter">SkiaEnumConverter</h3>
+  <p>TypeConverter that provides a dropdown list of string choices.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>SkiaEnumConverter(string[] values)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool GetStandardValuesSupported(ITypeDescriptorContext context)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override bool GetStandardValuesExclusive(ITypeDescriptorContext context)</code></td><td>Method</td><td></td></tr>
+      <tr><td><code>override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)</code></td><td>Method</td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

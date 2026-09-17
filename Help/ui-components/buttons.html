@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Button Family | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../sphinx-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../index.html">Home</a><span>&rsaquo;</span> <span>UI Components</span><span>&rsaquo;</span> <span>Button Family</span></nav>
+<div class="page-header"><h1>Button Family</h1><p class="page-subtitle">ButtonGroup, floating action button, FAB menu, split button and menu button</p></div>
+<p>The <a href="button.html">Button</a> page covers the base control. This page documents the rest of the button family: grouped buttons, floating action buttons with expandable menus, split buttons and menu buttons.</p>
+<div class="toc">
+  <h3>On this page</h3>
+  <ul>
+    <li><a href="#groups">Button Groups</a></li>
+    <li><a href="#fab">Floating Action Buttons</a></li>
+    <li><a href="#split">Split and Menu Buttons</a></li>
+  </ul>
+</div>
+<section class="section" id="groups">
+  <h2>Button Groups</h2>
+  <p>Segmented rows of related actions.</p>
+  <h3 id="type-buttongroup">ButtonGroup</h3>
+  <p>A Material Design 3.0 Button Group component that arranges buttons in horizontal, vertical, or grid layouts.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ButtonGroupLayout Layout</code></td><td>Property</td><td>Gets or sets the layout direction of the button group.</td></tr>
+      <tr><td><code>ButtonGroupVariant Variant</code></td><td>Property</td><td>Gets or sets the button group variant (Material Design 3.0).</td></tr>
+      <tr><td><code>float Spacing</code></td><td>Property</td><td>Gets or sets the spacing between buttons in pixels.</td></tr>
+      <tr><td><code>float ButtonWidth</code></td><td>Property</td><td>Gets or sets the default width for buttons in the group.</td></tr>
+      <tr><td><code>float ButtonHeight</code></td><td>Property</td><td>Gets or sets the default height for buttons in the group.</td></tr>
+      <tr><td><code>bool EqualWidth</code></td><td>Property</td><td>Gets or sets whether all buttons should have equal width.</td></tr>
+      <tr><td><code>SKColor GroupBackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of the button group.</td></tr>
+      <tr><td><code>float CornerRadius</code></td><td>Property</td><td>Gets or sets the corner radius of the button group.</td></tr>
+      <tr><td><code>IReadOnlyList&lt;Button&gt; Buttons</code></td><td>Property</td><td>Gets the collection of buttons in the group.</td></tr>
+      <tr><td><code>ButtonGroup()</code></td><td>Method</td><td>Initializes a new instance of the ButtonGroup class.</td></tr>
+      <tr><td><code>void AddButton(Button button)</code></td><td>Method</td><td>Adds a button to the group. The button to add.</td></tr>
+      <tr><td><code>bool RemoveButton(Button button)</code></td><td>Method</td><td>Removes a button from the group. The button to remove. True if the button was removed; otherwise, false.</td></tr>
+      <tr><td><code>static ButtonGroup CreateHorizontalGroup(params string[] buttonTexts)</code></td><td>Method</td><td>Creates a simple horizontal button group with the specified button texts. The texts for the buttons. A configured ButtonGroup instance.</td></tr>
+      <tr><td><code>static ButtonGroup CreateVerticalGroup(params string[] buttonTexts)</code></td><td>Method</td><td>Creates a vertical button group with the specified button texts. The texts for the buttons. A configured ButtonGroup instance.</td></tr>
+      <tr><td><code>static ButtonGroup CreateButtonGrid(string[] buttonTexts, int columns)</code></td><td>Method</td><td>Creates a button grid with the specified button texts and grid dimensions. The texts for the buttons. The number of columns in the grid. A configured ButtonGroup instance.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="section" id="fab">
+  <h2>Floating Action Buttons</h2>
+  <p>Primary action buttons with expandable menus.</p>
+  <h3 id="type-floatingactionbutton">FloatingActionButton</h3>
+  <p>A Material Design 3.0 Floating Action Button (FAB) component.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Icon</code></td><td>Property</td><td>Gets or sets the icon displayed on the FAB (SVG path or Unicode character).</td></tr>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of the FAB.</td></tr>
+      <tr><td><code>SKColor IconColor</code></td><td>Property</td><td>Gets or sets the icon color of the FAB.</td></tr>
+      <tr><td><code>FabSize Size</code></td><td>Property</td><td>Gets or sets the size of the FAB.</td></tr>
+      <tr><td><code>FabType Type</code></td><td>Property</td><td>Gets or sets the type of the FAB.</td></tr>
+      <tr><td><code>string ExtendedText</code></td><td>Property</td><td>Gets or sets the extended text for extended FAB.</td></tr>
+      <tr><td><code>FloatingActionButton()</code></td><td>Method</td><td>Initializes a new instance of the FloatingActionButton class.</td></tr>
+      <tr><td><code>FloatingActionButton(string icon)</code></td><td>Method</td><td>Initializes a new instance of the FloatingActionButton class with an icon. The icon to display.</td></tr>
+      <tr><td><code>override bool ContainsPoint(SKPoint point)</code></td><td>Method</td><td>Determines whether the specified point is contained within the FAB. The point to test. True if the point is contained within the FAB.</td></tr>
+      <tr><td><code>new bool HandleMouseDown(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Public wrapper for mouse down events (used by demos).</td></tr>
+      <tr><td><code>new bool HandleMouseMove(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Public wrapper for mouse move events (used by demos).</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-fabmenu">FabMenu</h3>
+  <p>A Material Design 3.0 Floating Action Button Menu component. Provides a main FAB that opens a menu with multiple action items.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>event EventHandler&lt;FabMenuItemEventArgs&gt; MenuItemClicked</code></td><td>Event</td><td>Occurs when a menu item is clicked.</td></tr>
+      <tr><td><code>event EventHandler MenuOpened</code></td><td>Event</td><td>Occurs when the menu is opened.</td></tr>
+      <tr><td><code>event EventHandler MenuClosed</code></td><td>Event</td><td>Occurs when the menu is closed.</td></tr>
+      <tr><td><code>FabMenu()</code></td><td>Method</td><td>Initializes a new instance of the FabMenu class.</td></tr>
+      <tr><td><code>string MainIcon</code></td><td>Property</td><td>Gets or sets the main FAB icon.</td></tr>
+      <tr><td><code>FloatingActionButton.FabType MainFabType</code></td><td>Property</td><td>Gets or sets the main FAB type.</td></tr>
+      <tr><td><code>FabMenuDirection Direction</code></td><td>Property</td><td>Gets or sets the menu direction.</td></tr>
+      <tr><td><code>float ItemSpacing</code></td><td>Property</td><td>Gets or sets the spacing between menu items.</td></tr>
+      <tr><td><code>SKColor OverlayColor</code></td><td>Property</td><td>Gets or sets the overlay color when the menu is open.</td></tr>
+      <tr><td><code>bool IsOpen</code></td><td>Property</td><td>Gets whether the menu is currently open.</td></tr>
+      <tr><td><code>bool IsAnimating</code></td><td>Property</td><td>Gets whether the menu is currently animating.</td></tr>
+      <tr><td><code>void AddMenuItem(FabMenuItem item)</code></td><td>Method</td><td>Adds a menu item to the FAB menu. The menu item to add.</td></tr>
+      <tr><td><code>void RemoveMenuItem(FabMenuItem item)</code></td><td>Method</td><td>Removes a menu item from the FAB menu. The menu item to remove.</td></tr>
+      <tr><td><code>void ClearMenuItems()</code></td><td>Method</td><td>Clears all menu items.</td></tr>
+      <tr><td><code>void OpenMenu()</code></td><td>Method</td><td>Opens the FAB menu.</td></tr>
+      <tr><td><code>void CloseMenu()</code></td><td>Method</td><td>Closes the FAB menu.</td></tr>
+      <tr><td><code>void ToggleMenu()</code></td><td>Method</td><td>Toggles the FAB menu open/closed state.</td></tr>
+      <tr><td><code>override bool ContainsPoint(SKPoint point)</code></td><td>Method</td><td>Determines whether the specified point is contained within the FAB menu. The point to test. True if the point is contained within the FAB menu.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-fabmenuitem">FabMenuItem</h3>
+  <p>Represents a menu item in the FAB menu.</p>
+</section>
+<section class="section" id="split">
+  <h2>Split and Menu Buttons</h2>
+  <p>Buttons that combine a primary action with a menu.</p>
+  <h3 id="type-splitbutton">SplitButton</h3>
+  <p>A Material Design 3.0 Split Button component that combines a primary action with a dropdown menu of additional options.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text displayed on the primary button.</td></tr>
+      <tr><td><code>string SelectedText</code></td><td>Property</td><td>Gets the text of the currently selected menu item.</td></tr>
+      <tr><td><code>SKColor BackgroundColor</code></td><td>Property</td><td>Gets or sets the background color of the primary button.</td></tr>
+      <tr><td><code>new SKColor TextColor</code></td><td>Property</td><td>Gets or sets the text color of the primary button.</td></tr>
+      <tr><td><code>SKColor DropdownButtonColor</code></td><td>Property</td><td>Gets or sets the background color of the dropdown button.</td></tr>
+      <tr><td><code>SKColor DropdownTextColor</code></td><td>Property</td><td>Gets or sets the text color of the dropdown button.</td></tr>
+      <tr><td><code>float CornerRadius</code></td><td>Property</td><td>Gets or sets the corner radius of the split button.</td></tr>
+      <tr><td><code>ButtonVariant Variant</code></td><td>Property</td><td>Gets or sets the button variant (Material Design 3.0).</td></tr>
+      <tr><td><code>string LeadingIcon</code></td><td>Property</td><td>Gets or sets the leading icon (SVG path or resource name).</td></tr>
+      <tr><td><code>string DropdownIcon</code></td><td>Property</td><td>Gets or sets the dropdown icon.</td></tr>
+      <tr><td><code>bool IsDropdownOpen</code></td><td>Property</td><td>Gets or sets whether the dropdown menu is open.</td></tr>
+      <tr><td><code>float SeparatorWidth</code></td><td>Property</td><td>Gets or sets the width of the separator between the primary and dropdown buttons.</td></tr>
+      <tr><td><code>SKColor SeparatorColor</code></td><td>Property</td><td>Gets or sets the color of the separator between the primary and dropdown buttons.</td></tr>
+      <tr><td><code>SplitButtonItem SelectedItem</code></td><td>Property</td><td>Gets the currently selected menu item.</td></tr>
+      <tr><td><code>IReadOnlyList&lt;SplitButtonItem&gt; MenuItems</code></td><td>Property</td><td>Gets the collection of menu items.</td></tr>
+      <tr><td><code>event EventHandler&lt;EventArgs&gt; PrimaryButtonClicked</code></td><td>Event</td><td>Occurs when the primary button is clicked.</td></tr>
+      <tr><td><code>event EventHandler&lt;EventArgs&gt; DropdownButtonClicked</code></td><td>Event</td><td>Occurs when the dropdown button is clicked.</td></tr>
+      <tr><td><code>event EventHandler&lt;SplitButtonItemSelectedEventArgs&gt; ItemSelected</code></td><td>Event</td><td>Occurs when a menu item is selected.</td></tr>
+      <tr><td><code>event EventHandler&lt;EventArgs&gt; DropdownStateChanged</code></td><td>Event</td><td>Occurs when the dropdown state changes.</td></tr>
+      <tr><td><code>SplitButton()</code></td><td>Method</td><td>Initializes a new instance of the SplitButton class.</td></tr>
+      <tr><td><code>SplitButtonItem AddMenuItem(string text, string icon = null)</code></td><td>Method</td><td>Adds a menu item to the dropdown. The text for the menu item. The icon for the menu item (optional). The created SplitButtonItem.</td></tr>
+      <tr><td><code>bool RemoveMenuItem(SplitButtonItem item)</code></td><td>Method</td><td>Removes a menu item from the dropdown. The menu item to remove. True if the item was removed successfully.</td></tr>
+      <tr><td><code>void ClearMenuItems()</code></td><td>Method</td><td>Clears all menu items from the dropdown.</td></tr>
+      <tr><td><code>void SelectItem(SplitButtonItem item)</code></td><td>Method</td><td>Selects a menu item. The menu item to select.</td></tr>
+      <tr><td><code>void SelectItem(int index)</code></td><td>Method</td><td>Selects a menu item by index. The index of the menu item to select.</td></tr>
+      <tr><td><code>static SplitButton Create(string primaryText, params string[] menuItems)</code></td><td>Method</td><td>Creates a new SplitButton instance with the specified menu items. The text for the primary button. The menu items for the dropdown. A new SplitButton instance.</td></tr>
+      <tr><td><code>static SplitButton CreateFilled(string primaryText, params string[] menuItems)</code></td><td>Method</td><td>Creates a new SplitButton instance with filled variant. The text for the primary button. The menu items for the dropdown. A new SplitButton instance.</td></tr>
+      <tr><td><code>static SplitButton CreateOutlined(string primaryText, params string[] menuItems)</code></td><td>Method</td><td>Creates a new SplitButton instance with outlined variant. The text for the primary button. The menu items for the dropdown. A new SplitButton instance.</td></tr>
+    </tbody>
+  </table>
+  <h3 id="type-menubutton">MenuButton</h3>
+  <p>A Material Design 3.0 Menu Button component that combines a button with a dropdown menu.</p>
+  <table class="property-table">
+    <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>string Text</code></td><td>Property</td><td>Gets or sets the text displayed on the button.</td></tr>
+      <tr><td><code>string Icon</code></td><td>Property</td><td>Gets or sets the icon displayed on the button.</td></tr>
+      <tr><td><code>Menu Menu</code></td><td>Property</td><td>Gets or sets the dropdown menu.</td></tr>
+      <tr><td><code>bool IsMenuOpen</code></td><td>Property</td><td>Gets whether the dropdown menu is currently open.</td></tr>
+      <tr><td><code>SKColor ButtonColor</code></td><td>Property</td><td>Gets or sets the button color.</td></tr>
+      <tr><td><code>SKColor HoverColor</code></td><td>Property</td><td>Gets or sets the hover color.</td></tr>
+      <tr><td><code>SKColor PressedColor</code></td><td>Property</td><td>Gets or sets the pressed color.</td></tr>
+      <tr><td><code>float CornerRadius</code></td><td>Property</td><td>Gets or sets the corner radius of the button.</td></tr>
+      <tr><td><code>ButtonVariant Variant</code></td><td>Property</td><td>Gets or sets the button variant.</td></tr>
+      <tr><td><code>event EventHandler ButtonClicked</code></td><td>Event</td><td>Occurs when the button is clicked.</td></tr>
+      <tr><td><code>event EventHandler MenuOpened</code></td><td>Event</td><td>Occurs when the menu is opened.</td></tr>
+      <tr><td><code>event EventHandler MenuClosed</code></td><td>Event</td><td>Occurs when the menu is closed.</td></tr>
+      <tr><td><code>MenuButton()</code></td><td>Method</td><td>Initializes a new instance of the MenuButton class.</td></tr>
+      <tr><td><code>MenuButton(string text) : this()</code></td><td>Method</td><td>Initializes a new instance of the MenuButton class with the specified text. The text to display on the button.</td></tr>
+      <tr><td><code>MenuButton(string text, Menu menu) : this(text)</code></td><td>Method</td><td>Initializes a new instance of the MenuButton class with the specified text and menu. The text to display on the button. The dropdown menu.</td></tr>
+      <tr><td><code>void OpenMenu()</code></td><td>Method</td><td>Opens the dropdown menu.</td></tr>
+      <tr><td><code>void CloseMenu()</code></td><td>Method</td><td>Closes the dropdown menu.</td></tr>
+      <tr><td><code>void ToggleMenu()</code></td><td>Method</td><td>Toggles the dropdown menu open/closed state.</td></tr>
+      <tr><td><code>new bool HandleMouseDown(SKPoint point, InteractionContext context)</code></td><td>Method</td><td>Public wrapper for mouse down events (used by demos).</td></tr>
+    </tbody>
+  </table>
+</section>
+</div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body></html>

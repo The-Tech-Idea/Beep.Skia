@@ -145,10 +145,16 @@ drawingManager.RequestRedraw();</code></pre>
 
 <section class="section" id="connection-points">
   <h2>Connection Points</h2>
-  <p>Connection points (ports) are the anchor locations where <code>ConnectionLine</code> segments attach to a component. Each point is an instance of <code>IConnectionPoint</code> stored in either <code>InPoints</code> (input) or <code>OutPoints</code> (output) collections.</p>
+  <p>Connection points (ports) are the anchor locations where <code>ConnectionLine</code> segments attach to a component. Each point is an instance of <code>IConnectionPoint</code> stored in the component's <code>InConnectionPoints</code> (input) or <code>OutConnectionPoints</code> (output) collections.</p>
 
   <h3>Lazy Port Layout</h3>
-  <p>Port positions are recomputed only when the component moves, resizes, or explicitly marks ports as dirty via <code>MarkPortsDirty()</code>. The <code>LayoutPorts()</code> method recalculates the screen positions of all ports when needed. This lazy-evaluation approach avoids unnecessary computation during rapid drag operations.</p>
+  <p>Port positions are recomputed only when needed. The flow is:</p>
+  <ol>
+    <li><code>MarkPortsDirty()</code> (protected, on <code>SkiaComponent</code>) sets the dirty flag. <code>OnBoundsChanged()</code> calls it automatically, so moves and resizes always mark the layout stale.</li>
+    <li>Inside <code>DrawContent</code>, call <code>EnsurePortLayout(() =&gt; LayoutPorts())</code> (protected, on <code>MaterialControl</code>). It invokes your layout action only when <code>ArePortsDirty</code> is true, then clears the flag.</li>
+    <li><code>LayoutPorts()</code> recomputes port centers, positions and bounds from the current <code>Bounds</code>.</li>
+  </ol>
+  <p>This keeps rapid drags cheap: geometry changes only set a flag, and the expensive layout runs once, on the next draw.</p>
 
   <h3>ConnectionPoint Properties</h3>
   <table>
@@ -159,15 +165,25 @@ drawingManager.RequestRedraw();</code></pre>
       <tr><td><code>Type</code></td><td><code>ConnectionPointType</code></td><td><code>In</code> or <code>Out</code>. Determines which side of a component the port appears on.</td></tr>
       <tr><td><code>DataType</code></td><td><code>string</code></td><td>Descriptive data type of the values flowing through this port (for example <code>"string"</code>, <code>"number"</code>). Used for data-flow visualization and connection validation.</td></tr>
       <tr><td><code>Position</code> / <code>Center</code></td><td><code>SKPoint</code></td><td>Absolute world-space position of the port anchor. Updated by <code>LayoutPorts()</code>.</td></tr>
+      <tr><td><code>Bounds</code> / <code>Rect</code></td><td><code>SKRect</code></td><td>Hit-test rectangle around the port, recomputed with the position.</td></tr>
       <tr><td><code>RowId</code></td><td><code>Guid?</code></td><td>Optional identifier for ERD row-level connections. Enables per-field linking in entity diagrams.</td></tr>
       <tr><td><code>Id</code></td><td><code>Guid</code></td><td>Unique identifier used for serialization and connection restoration.</td></tr>
+      <tr><td><code>IsAvailable</code></td><td><code>bool</code></td><td>Whether the port can accept a new connection.</td></tr>
       <tr><td><code>Connection</code></td><td><code>IConnectionPoint</code></td><td>The port this one is connected to, or <code>null</code> when free.</td></tr>
     </tbody>
   </table>
 
   <div class="code-example">
     <h3>Creating and Layouting Ports</h3>
-    <pre><code class="language-csharp">protected override void LayoutPorts()
+    <pre><code class="language-csharp">protected override void DrawContent(SKCanvas canvas, DrawingContext context)
+{
+    // Re-layout ports only when the dirty flag is set
+    EnsurePortLayout(() =&gt; LayoutPorts());
+
+    // ... draw the component content
+}
+
+protected override void LayoutPorts()
 {
     var b = Bounds;
     float midY = b.MidY;
@@ -207,19 +223,19 @@ drawingManager.RequestRedraw();</code></pre>
       <tr><th>Phase</th><th>Method</th><th>Description</th></tr>
     </thead>
     <tbody>
-      <tr><td><strong>Construction</strong></td><td><code>SkiaComponent()</code></td><td>Sets default values for X, Y, Width, Height, ZOrder. Initializes empty connection-point collections and the NodeProperties dictionary. Assigns a new <code>Guid</code>.</td></tr>
-      <tr><td><strong>Initialization</strong></td><td><code>Initialize()</code></td><td>Virtual method called once after construction. Subclasses populate NodeProperties, create initial ports, set up paints, and define default visual parameters. Call <code>base.Initialize()</code> to ensure ports are marked dirty.</td></tr>
-      <tr><td><strong>Render</strong></td><td><code>DrawContent(SKCanvas)</code></td><td>Abstract/virtual method called every frame. Renders the component&#39;s visual representation. The canvas already has pan/zoom transforms applied. Subclasses should use <code>canvas.Save()</code> / <code>canvas.Restore()</code> for local transformations.</td></tr>
-      <tr><td><strong>Invalidation</strong></td><td><code>Invalidate()</code></td><td>Marks the component region as needing redraw. Triggers <code>Canvas.Invalidate()</code> on the attached canvas.</td></tr>
-      <tr><td><strong>Hit Testing</strong></td><td><code>HitTest(SKPoint)</code></td><td>Returns <code>true</code> if the point falls within the component&#39;s bounds. Override for precise per-shape hit testing.</td></tr>
-      <tr><td><strong>Disposal</strong></td><td><code>Dispose()</code></td><td>Releases all <code>SKPaint</code>, <code>SKPath</code>, <code>SKBitmap</code>, and other unmanaged SkiaSharp resources. Sets disposed flag to prevent use-after-free.</td></tr>
+      <tr><td><strong>Construction</strong></td><td><code>SkiaComponent()</code></td><td>Sets default values for X, Y, Width, Height, Opacity and visibility. Initializes the connection-point collections and the NodeProperties dictionary, and assigns a new <code>Guid</code>.</td></tr>
+      <tr><td><strong>Initialization</strong></td><td><code>InitializeComponent()</code></td><td>Protected virtual, called by the constructor. Subclasses populate NodeProperties, create initial ports and set default sizes. Always call <code>base.InitializeComponent()</code>.</td></tr>
+      <tr><td><strong>Render</strong></td><td><code>DrawContent(SKCanvas, DrawingContext)</code></td><td>Abstract on <code>SkiaComponent</code>; every component renders here. The canvas already has pan/zoom transforms applied, and the <code>DrawingContext</code> carries zoom and viewport state.</td></tr>
+      <tr><td><strong>Update</strong></td><td><code>Update(DrawingContext)</code></td><td>Virtual, called once per frame by the render loop before drawing. Use it for time-based state (animations, hover easing).</td></tr>
+      <tr><td><strong>Invalidation</strong></td><td><code>InvalidateVisual()</code></td><td>Public virtual on <code>MaterialControl</code>. Marks the component as needing a redraw; the host schedules the next frame.</td></tr>
+      <tr><td><strong>Hit Testing</strong></td><td><code>HitTest(SKPoint)</code></td><td>Public virtual. Returns <code>true</code> if the point falls within the component. Override for precise per-shape hit testing.</td></tr>
+      <tr><td><strong>Disposal</strong></td><td><code>Dispose()</code> / <code>Dispose(bool)</code></td><td>Breaks incoming and outgoing connections, then releases <code>SKPaint</code>, <code>SKPath</code>, <code>SKBitmap</code> and other SkiaSharp resources. Sets <code>State = ComponentState.Disposing</code> to prevent use-after-free.</td></tr>
     </tbody>
   </table>
 
   <div class="code-example">
     <h3>Typical Component Lifecycle Usage</h3>
     <pre><code class="language-csharp">var node = new ProcessNode { Name = "Process Step" };
-node.Initialize();
 node.X = 100;
 node.Y = 200;
 
