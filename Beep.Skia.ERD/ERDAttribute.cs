@@ -67,7 +67,7 @@ namespace Beep.Skia.ERD
             using var stroke = new SKPaint { Color = MaterialControl.MaterialColors.Outline, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
             using var fill = new SKPaint { Color = MaterialControl.MaterialColors.Surface, IsAntialias = true };
             using var text = new SKPaint { Color = MaterialControl.MaterialColors.OnSurface, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
 
             canvas.DrawOval(b, fill);
             canvas.DrawOval(b, stroke);

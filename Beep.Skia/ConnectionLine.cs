@@ -16,6 +16,10 @@ namespace Beep.Skia
         private readonly Action invalidateVisualAction;
         private SKPaint _textPaint;
         private SKFont _textFont;
+        private string _resolvedRequiredLabelFamily;
+
+        /// <summary>Trusted host configuration for portable label outlines. Null keeps platform text rendering.</summary>
+        public string RequiredLabelFontFamily { get; set; }
 
         // Reused across frames: lines are redrawn every frame, so creating paints/path effects per
         // draw would allocate a managed wrapper and a native Skia object for every line.
@@ -358,6 +362,7 @@ namespace Beep.Skia
             // Prefer actual connection points; fall back to EndPoint when End is not connected (preview/drag)
             var lineStart = Start != null ? Start.Position : EndPoint;
             var lineEnd = (End != null) ? End.Position : EndPoint;
+            ResolveLabelFont();
             Paint.Color = LineColor;
 
             // Determine if this is an identifying relationship (check endpoints)
@@ -426,33 +431,49 @@ namespace Beep.Skia
             }
 
             // Draw ERD multiplicity markers or arrows
+            var startToward = lineEnd; var endToward = lineStart;
+            if (RoutingMode == LineRoutingMode.Orthogonal)
+            {
+                var midX = (lineStart.X + lineEnd.X) / 2;
+                startToward = new SKPoint(midX, lineStart.Y);
+                if (startToward == lineStart) startToward = new SKPoint(midX, lineEnd.Y);
+                endToward = new SKPoint(midX, lineEnd.Y);
+                if (endToward == lineEnd) endToward = new SKPoint(midX, lineStart.Y);
+            }
+            else if (RoutingMode == LineRoutingMode.Curved)
+            {
+                startToward = new SKPoint((lineStart.X * 2 + lineEnd.X) / 3, lineStart.Y);
+                endToward = new SKPoint((lineEnd.X * 2 + lineStart.X) / 3, lineEnd.Y);
+            }
+            if (startToward == lineStart) startToward = lineEnd;
+            if (endToward == lineEnd) endToward = lineStart;
             if (Start != null && StartMultiplicity != ERDMultiplicity.Unspecified)
-                DrawErdMultiplicity(canvas, stroke, atPoint: lineStart, toward: lineEnd, StartMultiplicity);
+                DrawErdMultiplicity(canvas, stroke, atPoint: lineStart, toward: startToward, StartMultiplicity);
             else if (ShowStartArrow && Start != null)
-                DrawArrow(canvas, Paint, lineStart, lineEnd);
+                DrawArrow(canvas, Paint, lineStart, startToward);
 
             if (EndMultiplicity != ERDMultiplicity.Unspecified)
-                DrawErdMultiplicity(canvas, stroke, atPoint: lineEnd, toward: lineStart, EndMultiplicity);
+                DrawErdMultiplicity(canvas, stroke, atPoint: lineEnd, toward: endToward, EndMultiplicity);
             else if (ShowEndArrow)
-                DrawArrow(canvas, Paint, lineEnd, lineStart);
+                DrawArrow(canvas, Paint, lineEnd, endToward);
 
             // Draw optional labels
             if (!string.IsNullOrEmpty(Label1))
             {
                 var labelPosition = GetLabelPosition(lineStart, lineEnd, Label1Placement, atStart: true, text: Label1);
-                canvas.DrawText(Label1, labelPosition.X, labelPosition.Y, SKTextAlign.Center, _textFont, _textPaint);
+                DrawLineLabel(canvas, Label1, labelPosition);
             }
 
             if (!string.IsNullOrEmpty(Label2))
             {
                 var labelPosition = GetLabelPosition(lineStart, lineEnd, Label2Placement, atStart: false, text: Label2);
-                canvas.DrawText(Label2, labelPosition.X, labelPosition.Y, SKTextAlign.Center, _textFont, _textPaint);
+                DrawLineLabel(canvas, Label2, labelPosition);
             }
 
             if (!string.IsNullOrEmpty(Label3))
             {
                 var labelPosition = GetMidLabelPosition(lineStart, lineEnd, Label3Placement, Label3);
-                canvas.DrawText(Label3, labelPosition.X, labelPosition.Y, SKTextAlign.Center, _textFont, _textPaint);
+                DrawLineLabel(canvas, Label3, labelPosition);
             }
 
             // Draw data type label
@@ -460,7 +481,7 @@ namespace Beep.Skia
             if (!string.IsNullOrEmpty(dataTypeText))
             {
                 var labelPosition = GetMidLabelPosition(lineStart, lineEnd, DataLabelPlacement, dataTypeText);
-                canvas.DrawText(dataTypeText, labelPosition.X, labelPosition.Y, SKTextAlign.Center, _textFont, _textPaint);
+                DrawLineLabel(canvas, dataTypeText, labelPosition);
             }
 
             // Draw data flow animation particles
@@ -1152,7 +1173,7 @@ namespace Beep.Skia
                 LabelPlacement.Below => 20,
                 _ => -5,
             };
-            return pos + new SKPoint(-_textFont.MeasureText(text) / 2, yOffset);
+            return pos + new SKPoint(0, yOffset);
         }
 
         private SKPoint GetMidLabelPosition(SKPoint start, SKPoint end, LabelPlacement placement, string text)
@@ -1164,7 +1185,49 @@ namespace Beep.Skia
                 LabelPlacement.Below => 20,
                 _ => 4,
             };
-            return mid + new SKPoint(-_textFont.MeasureText(text) / 2, yOffset);
+            return mid + new SKPoint(0, yOffset);
+        }
+
+        private void ResolveLabelFont()
+        {
+            if (_resolvedRequiredLabelFamily == RequiredLabelFontFamily) return;
+            _textFont.Typeface = RequiredLabelFontFamily == null ? SKTypeface.Default : TypefaceCache.GetRequired(RequiredLabelFontFamily);
+            _resolvedRequiredLabelFamily = RequiredLabelFontFamily;
+        }
+
+        private void DrawLineLabel(SKCanvas canvas, string text, SKPoint centerBaseline)
+        {
+            if (RequiredLabelFontFamily == null)
+                canvas.DrawText(text, centerBaseline.X, centerBaseline.Y, SKTextAlign.Center, _textFont, _textPaint);
+            else
+                TypefaceCache.DrawGlyphRun(canvas, _textFont, text,
+                    new SKPoint(centerBaseline.X - _textFont.MeasureText(text) / 2, centerBaseline.Y), _textPaint);
+        }
+
+        /// <summary>Bounds of the routed stroke, arrows, and four ordinary labels. Does not include ERD markers,
+        /// animated particles, status indicators, schema badges, or hover tooltips.</summary>
+        public SKRect GetPathAndLabelBounds()
+        {
+            ResolveLabelFont();
+            var start = Start?.Position ?? EndPoint; var end = End?.Position ?? EndPoint;
+            var bounds = new SKRect(Math.Min(start.X, end.X), Math.Min(start.Y, end.Y), Math.Max(start.X, end.X), Math.Max(start.Y, end.Y));
+            // The current routing control points lie inside the endpoint rectangle. ArrowSize conservatively
+            // contains the two arrow strokes for any orientation, with paint width and antialiasing margin.
+            bounds.Inflate(Math.Max(ShowStartArrow || ShowEndArrow ? ArrowSize : 0, 0) + Paint.StrokeWidth / 2 + 2,
+                Math.Max(ShowStartArrow || ShowEndArrow ? ArrowSize : 0, 0) + Paint.StrokeWidth / 2 + 2);
+            void Include(string text, SKPoint centerBaseline)
+            {
+                if (string.IsNullOrEmpty(text)) return;
+                var advance = _textFont.MeasureText(text, out SKRect ink);
+                ink.Offset(centerBaseline.X - advance / 2, centerBaseline.Y); ink.Inflate(2, 2);
+                bounds = SKRect.Union(bounds, ink);
+            }
+            Include(Label1, GetLabelPosition(start, end, Label1Placement, true, Label1));
+            Include(Label2, GetLabelPosition(start, end, Label2Placement, false, Label2));
+            Include(Label3, GetMidLabelPosition(start, end, Label3Placement, Label3));
+            var data = DataTypeLabel ?? Start?.DataType;
+            Include(data, GetMidLabelPosition(start, end, DataLabelPlacement, data));
+            return bounds;
         }
 
         private void DrawStatusIndicator(SKCanvas canvas, SKPoint start, SKPoint end)

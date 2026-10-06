@@ -102,14 +102,14 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xFC, 0xE4, 0xEC), IsAntialias = true }; // Light pink
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0xE9, 0x1E, 0x63), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Pink
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 16);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 16);
 
             // Draw circle
             canvas.DrawCircle(center, radius, fill);
             canvas.DrawCircle(center, radius, stroke);
 
             // Draw OR symbol (≥1)
-            using var symbolFont = new SKFont(SKTypeface.Default, 18) { Embolden = true };
+            using var symbolFont = new SKFont(Beep.Skia.TypefaceCache.Default, 18) { Embolden = true };
             using var boldText = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
             string orSymbol = "≥1";
             float symbolWidth = symbolFont.MeasureText(orSymbol, boldText);
@@ -118,7 +118,7 @@ namespace Beep.Skia.Flowchart
             // Draw label below if provided
             if (!string.IsNullOrWhiteSpace(Label) && Label != "OR")
             {
-                using var labelFont = new SKFont(SKTypeface.Default, 10);
+                using var labelFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
                 using var grayText = new SKPaint { Color = new SKColor(0x60, 0x60, 0x60), IsAntialias = true };
                 float labelWidth = labelFont.MeasureText(Label, grayText);
                 canvas.DrawText(Label, center.X - labelWidth / 2, r.Bottom - 5, SKTextAlign.Left, labelFont, grayText);

@@ -420,7 +420,7 @@ namespace Beep.Skia.ERD
             using var titleFill = new SKPaint { Color = MaterialControl.MaterialColors.PrimaryContainer, IsAntialias = true };
             using var titleTextPaint = new SKPaint { Color = MaterialControl.MaterialColors.OnPrimaryContainer, IsAntialias = true };
             using var textPaint = new SKPaint { Color = MaterialControl.MaterialColors.OnSurface, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
 
             // Body and border
             canvas.DrawRoundRect(rect, CornerRadius, CornerRadius, bodyFill);
@@ -542,6 +542,7 @@ namespace Beep.Skia.ERD
                         {
                             e = new RowEntry { Id = c.Id != Guid.Empty ? c.Id : Guid.NewGuid() };
                         }
+                        if (c.Id != Guid.Empty) e.Id = c.Id;
                         e.Text = c.Name ?? string.Empty;
                         e.DataType = c.DataType ?? (e.DataType ?? "string");
                         e.IsPrimaryKey = c.IsPrimaryKey;

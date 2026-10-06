@@ -66,7 +66,7 @@ namespace Beep.Skia.UML
             // Draw stereotype
             if (!string.IsNullOrEmpty(Stereotype))
             {
-                using var font = new SKFont(SKTypeface.Default, 9);
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 canvas.DrawText(Stereotype, Width / 2 - 25, 18, SKTextAlign.Left, font, textPaint);
             }
@@ -80,7 +80,7 @@ namespace Beep.Skia.UML
             // Draw condition expression if present
             if (!string.IsNullOrEmpty(ConditionExpression))
             {
-                using var exprFont = new SKFont(SKTypeface.Default, 8);
+                using var exprFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
                 using var exprPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 var exprWidth = exprFont.MeasureText(ConditionExpression);
                 if (exprWidth > Width - 10)

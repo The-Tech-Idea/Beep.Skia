@@ -47,11 +47,9 @@ namespace Beep.Skia
                 return;
             }
 
-            component1.ConnectTo(component2);
-            component2.ConnectTo(component1);
-
-            IConnectionPoint connectionPoint1 = component1.OutConnectionPoints.FirstOrDefault();
-            IConnectionPoint connectionPoint2 = component2.InConnectionPoints.FirstOrDefault();
+            if (!_components.Contains(component1) || !_components.Contains(component2)) return;
+            IConnectionPoint connectionPoint1 = component1.OutConnectionPoints.FirstOrDefault(p => p.IsAvailable && p.Connection == null);
+            IConnectionPoint connectionPoint2 = component2.InConnectionPoints.FirstOrDefault(p => p.IsAvailable && p.Connection == null);
             if (connectionPoint1 != null && connectionPoint2 != null)
             {
                 var line = new ConnectionLine(connectionPoint1, connectionPoint2, () => RequestRedraw());
@@ -92,7 +90,7 @@ namespace Beep.Skia
                 try { TryInferTransformSchema(component1); TryInferTransformSchema(component2); } catch { }
                 // Default line behavior
                 line.FlowDirection = DataFlowDirection.Forward;
-                _lines.Add(line);
+                AddLine(line);
                 _historyManager.ExecuteAction(new ConnectComponentsAction(this, component1, component2, line));
             }
             DrawSurface?.Invoke(this, null);
@@ -105,6 +103,7 @@ namespace Beep.Skia
         /// <param name="node2">The second automation node.</param>
         private void ConnectAutomationNodes(AutomationNode node1, AutomationNode node2)
         {
+            if (!_components.Contains(node1) || !_components.Contains(node2)) return;
             // Find available connection points
             var outputPoint = node1.OutputConnections.FirstOrDefault(cp => cp.IsAvailable);
             var inputPoint = node2.InputConnections.FirstOrDefault(cp => cp.IsAvailable);
@@ -156,7 +155,7 @@ namespace Beep.Skia
             catch { }
             // Auto-infer transform output when applicable
             try { TryInferTransformSchema(node1); TryInferTransformSchema(node2); } catch { }
-            _lines.Add(line);
+            AddLine(line);
 
             // Mark points as connected
             outputPoint.IsAvailable = false;
@@ -604,19 +603,32 @@ namespace Beep.Skia
             var inPoint = inPoints[inPortIndex];
             if (outPoint == null || inPoint == null) return false;
 
-            component1.ConnectTo(component2);
-            component2.ConnectTo(component1);
-
             var line = new ConnectionLine(outPoint, inPoint, () => RequestRedraw());
-            outPoint.Connection = inPoint;
-            inPoint.Connection = outPoint;
-            outPoint.IsAvailable = false;
-            inPoint.IsAvailable = false;
-            _lines.Add(line);
+            if (ConnectComponents(line)) return true;
+            line.Dispose();
+            return false;
+        }
 
-            _historyManager.ExecuteAction(new ConnectComponentsAction(this, component1, component2, line));
-            DrawSurface?.Invoke(this, null);
+        /// <summary>Attaches a configured line using its exact ports as one undoable operation.
+        /// Both owners must be in this scene and each endpoint must be an unused directional port.</summary>
+        public bool ConnectComponents(ConnectionLine line)
+        {
+            if (line == null || _lines.Contains(line) || !CanAttachLine(line)) return false;
+            AddLine(line);
+            _historyManager.ExecuteAction(new ConnectComponentsAction(this,
+                (SkiaComponent)line.Start.Component, (SkiaComponent)line.End.Component, line));
             return true;
+        }
+
+        /// <summary>Removes this exact line as one undoable operation.</summary>
+        public void DisconnectComponents(IConnectionLine line)
+        {
+            if (line == null || !_lines.Contains(line)) return;
+            var source = line.Start.Component as SkiaComponent;
+            var target = line.End.Component as SkiaComponent;
+            var index = _lines.IndexOf(line);
+            RemoveLine(line);
+            _historyManager.ExecuteAction(new DisconnectComponentsAction(this, source, target, line, index));
         }
 
         /// <summary>
@@ -626,14 +638,11 @@ namespace Beep.Skia
         /// <param name="component2">The second component to disconnect.</param>
         public void DisconnectComponents(SkiaComponent component1, SkiaComponent component2)
         {
-            component1.DisconnectFrom(component2);
-            component2.DisconnectFrom(component1);
-
-            var lineToRemove = _lines.FirstOrDefault(line => (line.Start.Component == component1 && line.End.Component == component2) || (line.Start.Component == component2 && line.End.Component == component1));
+            if (component1 == null || component2 == null) return;
+            var lineToRemove = _lines.FirstOrDefault(line => (line.Start?.Component == component1 && line.End?.Component == component2) || (line.Start?.Component == component2 && line.End?.Component == component1));
             if (lineToRemove != null)
             {
-                _lines.Remove(lineToRemove);
-                _historyManager.ExecuteAction(new DisconnectComponentsAction(this, component1, component2, lineToRemove));
+                DisconnectComponents(lineToRemove);
             }
             // Re-infer on both endpoints if they support inference
             try { TryInferTransformSchema(component1); TryInferTransformSchema(component2); } catch { }
@@ -648,42 +657,19 @@ namespace Beep.Skia
         /// <param name="newEndPoint">The new end connection point (optional).</param>
         public void MoveConnectionLine(IConnectionLine line, IConnectionPoint newStartPoint = null, IConnectionPoint newEndPoint = null)
         {
-            if (line == null) return;
+            if (line == null || !_lines.Contains(line)) return;
 
             var oldStartPoint = line.Start;
             var oldEndPoint = line.End;
-
-            if (newStartPoint != null)
-            {
-                // Disconnect from old start point
-                if (oldStartPoint != null)
-                {
-                    oldStartPoint.Connection = null;
-                    oldStartPoint.IsAvailable = true;
-                }
-
-                // Connect to new start point
-                line.Start = newStartPoint;
-                newStartPoint.Connection = line.End;
-                newStartPoint.IsAvailable = false;
-            }
-
-            if (newEndPoint != null)
-            {
-                // Disconnect from old end point
-                if (oldEndPoint != null)
-                {
-                    oldEndPoint.Connection = null;
-                    oldEndPoint.IsAvailable = true;
-                }
-
-                // Connect to new end point
-                line.End = newEndPoint;
-                newEndPoint.Connection = line.Start;
-                newEndPoint.IsAvailable = false;
-            }
-
-            _historyManager.ExecuteAction(new MoveLineAction(this, line, oldStartPoint, oldEndPoint, newStartPoint, newEndPoint));
+            var nextStart = newStartPoint ?? oldStartPoint;
+            var nextEnd = newEndPoint ?? oldEndPoint;
+            if (nextStart == oldStartPoint && nextEnd == oldEndPoint) return;
+            if (!CanAttachPorts(nextStart, nextEnd, line)) return;
+            var index = _lines.IndexOf(line);
+            RemoveLine(line);
+            line.Start = nextStart; line.End = nextEnd;
+            AddLine(line, index);
+            _historyManager.ExecuteAction(new MoveLineAction(this, line, oldStartPoint, oldEndPoint, nextStart, nextEnd));
             // Re-infer on components connected to this line
             try { TryInferTransformSchema(line.Start?.Component as SkiaComponent); TryInferTransformSchema(line.End?.Component as SkiaComponent); } catch { }
             DrawSurface?.Invoke(this, null);
@@ -693,11 +679,20 @@ namespace Beep.Skia
         /// Adds a connection line to the drawing manager.
         /// </summary>
         /// <param name="line">The line to add.</param>
-        internal void AddLine(IConnectionLine line)
+        /// <param name="index">Captured paint position, or -1 to append.</param>
+        internal void AddLine(IConnectionLine line, int index = -1)
         {
             if (line != null && !_lines.Contains(line))
             {
-                _lines.Add(line);
+                if (!CanAttachLine(line)) throw new InvalidOperationException("Connection endpoints must be unused ports owned by this scene.");
+                var source = (SkiaComponent)line.Start.Component;
+                var target = (SkiaComponent)line.End.Component;
+                source.RefreshPortLayout(); target.RefreshPortLayout();
+                if (index < 0) _lines.Add(line); else _lines.Insert(Math.Min(index, _lines.Count), line);
+                line.Start.Connection = line.End; line.End.Connection = line.Start;
+                line.Start.IsAvailable = false; line.End.IsAvailable = false;
+                line.IsConnected = true;
+                source.ConnectTo(target); target.ConnectTo(source);
                 // Ensure the surface redraws so the newly added line appears immediately
                 DrawSurface?.Invoke(this, null);
             }
@@ -712,9 +707,40 @@ namespace Beep.Skia
             if (line == null) return;
             if (_lines.Remove(line))
             {
+                var source = line.Start?.Component as SkiaComponent;
+                var target = line.End?.Component as SkiaComponent;
+                foreach (var port in new[] { line.Start, line.End }.Where(p => p != null))
+                    if (!_lines.Any(l => l.Start == port || l.End == port))
+                    { port.Connection = null; port.IsAvailable = true; }
+                line.IsConnected = false;
+                if (source != null && target != null && !_lines.Any(l =>
+                    (l.Start?.Component == source && l.End?.Component == target) ||
+                    (l.Start?.Component == target && l.End?.Component == source)))
+                { source.DisconnectFrom(target); target.DisconnectFrom(source); }
                 // Redraw to reflect the removal right away
                 DrawSurface?.Invoke(this, null);
             }
+        }
+
+        private bool CanAttachLine(IConnectionLine line)
+            => line != null && CanAttachPorts(line.Start, line.End);
+
+        private bool CanAttachPorts(IConnectionPoint start, IConnectionPoint end, IConnectionLine replacing = null)
+        {
+            if (!(start?.Component is SkiaComponent source) || !(end?.Component is SkiaComponent target)
+                || source == target || !_components.Contains(source) || !_components.Contains(target)
+                || !source.OutConnectionPoints.Contains(start) || !target.InConnectionPoints.Contains(end)) return false;
+            bool ReplacedPort(IConnectionPoint port) => replacing != null && (replacing.Start == port || replacing.End == port);
+            return !_lines.Any(l => l != replacing && (l.Start == start || l.End == start || l.Start == end || l.End == end))
+                && (start.Connection == null || start.Connection == end || ReplacedPort(start))
+                && (end.Connection == null || end.Connection == start || ReplacedPort(end));
+        }
+
+        internal void RestoreLineOrder(IEnumerable<IConnectionLine> order)
+        {
+            var restored = order.Where(l => _lines.Contains(l)).Distinct().ToList();
+            restored.AddRange(_lines.Where(l => !restored.Contains(l)));
+            _lines.Clear(); _lines.AddRange(restored); RequestRedraw();
         }
 
         /// <summary>

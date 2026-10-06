@@ -54,8 +54,8 @@ namespace Beep.Skia.Security
             canvas.DrawRoundRect(fgRect, 3, 3, meterFg);
 
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var nameFont = new SKFont(SKTypeface.Default, 11) { Embolden = true };
-            using var metaFont = new SKFont(SKTypeface.Default, 8);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
+            using var metaFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             canvas.DrawText(AssessmentName, r.MidX, r.MidY - 6, SKTextAlign.Center, nameFont, text);
             canvas.DrawText($"Score: {RiskScore:0.00} · {AssessedOn:yyyy-MM-dd}", r.MidX, r.Bottom - 6, SKTextAlign.Center, metaFont, text);
 

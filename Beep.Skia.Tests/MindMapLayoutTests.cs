@@ -30,9 +30,10 @@ namespace Beep.Skia.Tests
             var t2 = new TopicNode { Width = 100, Height = 40, Name = "t2" };
             var t3 = new TopicNode { Width = 100, Height = 40, Name = "t3" };
             foreach (var c in new SkiaComponent[] { central, t1, t2, t3 }) manager.AddComponent(c);
-            manager.ConnectComponents(central, t1, 0, 0);
-            manager.ConnectComponents(central, t2, 0, 0);
-            manager.ConnectComponents(central, t3, 0, 0);
+            Assert.True(manager.ConnectComponents(central, t1, 0, 0));
+            Assert.True(manager.ConnectComponents(central, t2, 1, 0));
+            Assert.True(manager.ConnectComponents(central, t3, 2, 0));
+            Assert.Equal(3, manager.GetLines().Count);
 
             var center = new SKPoint(400, 300);
             manager.ArrangeDiagram(new MindMapLayout { Center = center, LevelSpacing = 200f });
@@ -58,8 +59,9 @@ namespace Beep.Skia.Tests
             var topic = new TopicNode { Width = 100, Height = 40 };
             var sub = new SubTopicNode { Width = 90, Height = 36 };
             foreach (var c in new SkiaComponent[] { central, topic, sub }) manager.AddComponent(c);
-            manager.ConnectComponents(central, topic, 0, 0);
-            manager.ConnectComponents(topic, sub, 0, 0);
+            Assert.True(manager.ConnectComponents(central, topic, 0, 0));
+            Assert.True(manager.ConnectComponents(topic, sub, 0, 0));
+            Assert.Equal(2, manager.GetLines().Count);
 
             manager.ArrangeDiagram(new MindMapLayout
             {
@@ -94,8 +96,9 @@ namespace Beep.Skia.Tests
             var t1 = new TopicNode { Width = 100, Height = 40 };
             var t2 = new TopicNode { Width = 100, Height = 40 };
             foreach (var c in new SkiaComponent[] { central, t1, t2 }) manager.AddComponent(c);
-            manager.ConnectComponents(central, t1, 0, 0);
-            manager.ConnectComponents(central, t2, 0, 0);
+            Assert.True(manager.ConnectComponents(central, t1, 0, 0));
+            Assert.True(manager.ConnectComponents(central, t2, 1, 0));
+            Assert.Equal(2, manager.GetLines().Count);
 
             var layout = new MindMapLayout();
             manager.ArrangeDiagram(layout);

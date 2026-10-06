@@ -63,7 +63,7 @@ namespace Beep.Skia.ECAD
             }
 
             using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 9) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9) { Embolden = true };
             canvas.DrawText(ComponentValue + " " + Package, r.MidX, r.Bottom + 12, SKTextAlign.Center, font, textPaint);
 
             DrawPorts(canvas);

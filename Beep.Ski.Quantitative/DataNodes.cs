@@ -300,8 +300,8 @@ namespace Beep.Ski.Quantitative
             using var border = new SKPaint { Color = Stroke, Style = SKPaintStyle.Stroke, StrokeWidth = StrokeWidth, IsAntialias = true };
             canvas.DrawRoundRect(bounds, CornerRadius, CornerRadius, border);
 
-            using var titleFont = new SKFont(SKTypeface.Default, 11) { Embolden = true };
-            using var labelFont = new SKFont(SKTypeface.Default, 8);
+            using var titleFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
+            using var labelFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
 
             const float pad = 8f;

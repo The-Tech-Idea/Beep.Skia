@@ -105,7 +105,7 @@ namespace Beep.Skia.Business
             if (string.IsNullOrEmpty(ConditionText))
                 return;
 
-            using var font = new SKFont(SKTypeface.Default, 9);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
             using var paint = new SKPaint
             {
                 Color = TextColor,
@@ -121,7 +121,6 @@ namespace Beep.Skia.Business
         protected override void LayoutPorts()
         {
             // Rect-like shape: 1 in / 1 out
-            EnsurePortCounts(1, 1);
             LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
         }
     }

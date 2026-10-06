@@ -238,8 +238,8 @@ namespace Beep.Skia.Business
 
         protected override void DrawComponentText(SKCanvas canvas)
         {
-            using var nameFont = new SKFont(SKTypeface.Default, 10) { Embolden = true };
-            using var descFont = new SKFont(SKTypeface.Default, 8);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10) { Embolden = true };
+            using var descFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             using var paint = new SKPaint
             {
                 Color = TextColor,

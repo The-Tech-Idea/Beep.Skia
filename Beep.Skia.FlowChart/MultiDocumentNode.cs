@@ -65,7 +65,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? SKColors.White, IsAntialias = true };
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x42, 0x42, 0x42), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Dark gray
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
 
             // Draw 3 stacked documents (back to front)
             for (int i = 2; i >= 0; i--)

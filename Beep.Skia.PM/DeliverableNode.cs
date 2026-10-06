@@ -173,14 +173,14 @@ namespace Beep.Skia.PM
             canvas.DrawLine(iconX, iconY + iconSize / 2, iconX + iconSize, iconY + iconSize / 2, iconPaint);
 
             // Draw deliverable name
-            using var nameFont = new SKFont(SKTypeface.Default, 12);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
             float nameWidth = nameFont.MeasureText(DeliverableName, text);
             canvas.DrawText(DeliverableName, r.MidX - nameWidth / 2, r.MidY - 2, SKTextAlign.Left, nameFont, text);
 
             // Draw delivery date
             if (!string.IsNullOrWhiteSpace(DeliveryDate))
             {
-                using var dateFont = new SKFont(SKTypeface.Default, 9);
+                using var dateFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
                 using var grayText = new SKPaint { Color = new SKColor(0x70, 0x70, 0x70), IsAntialias = true };
                 float dateWidth = dateFont.MeasureText(DeliveryDate, grayText);
                 canvas.DrawText(DeliveryDate, r.MidX - dateWidth / 2, r.MidY + 12, SKTextAlign.Left, dateFont, grayText);

@@ -89,7 +89,7 @@ namespace Beep.Skia.UML
 
             if (_actionType == ActivityNodeType.Action || _actionType == ActivityNodeType.Object)
             {
-                using var font = new SKFont(SKTypeface.Default, 11);
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 11);
                 using var text = new SKPaint { Color = TextColor, IsAntialias = true };
                 canvas.DrawText(_actionName, X + Width / 2f, Y + Height / 2f + 4, SKTextAlign.Center, font, text);
             }

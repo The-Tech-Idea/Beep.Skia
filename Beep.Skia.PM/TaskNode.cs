@@ -141,7 +141,7 @@ namespace Beep.Skia.PM
 
             // Title centered
             using var text = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             float tx = r.MidX;
             float ty = r.MidY + 8;
             canvas.DrawText(Title, tx, ty, SKTextAlign.Center, font, text);

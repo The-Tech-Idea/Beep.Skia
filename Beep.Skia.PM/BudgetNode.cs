@@ -159,16 +159,16 @@ namespace Beep.Skia.PM
             // Draw dollar sign icon
             float iconX = r.Left + 12;
             float iconY = r.Top + 18;
-            using var iconFont = new SKFont(SKTypeface.Default, 20) { Embolden = true };
+            using var iconFont = new SKFont(Beep.Skia.TypefaceCache.Default, 20) { Embolden = true };
             using var iconPaint = new SKPaint { Color = isOverBudget ? new SKColor(0xE5, 0x39, 0x35) : new SKColor(0x43, 0xA0, 0x47), IsAntialias = true };
             canvas.DrawText("$", iconX, iconY, SKTextAlign.Left, iconFont, iconPaint);
 
             // Draw budget name
-            using var nameFont = new SKFont(SKTypeface.Default, 12);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
             canvas.DrawText(BudgetName, r.Left + 38, r.Top + 18, SKTextAlign.Left, nameFont, text);
 
             // Draw planned budget
-            using var detailFont = new SKFont(SKTypeface.Default, 10);
+            using var detailFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
             using var grayText = new SKPaint { Color = new SKColor(0x60, 0x60, 0x60), IsAntialias = true };
             string plannedStr = $"Planned: {FormatCurrency(_plannedBudget)}";
             canvas.DrawText(plannedStr, r.Left + 12, r.Top + 40, SKTextAlign.Left, detailFont, grayText);
@@ -195,7 +195,7 @@ namespace Beep.Skia.PM
                 canvas.DrawRoundRect(fillRect, 3f, 3f, barFill);
 
                 // Draw variance percentage
-                using var varianceFont = new SKFont(SKTypeface.Default, 8);
+                using var varianceFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
                 string varianceStr = variance >= 0 ? $"+{variance:F1}%" : $"{variance:F1}%";
                 canvas.DrawText(varianceStr, r.MidX, r.Bottom - 20, SKTextAlign.Center, varianceFont, actualPaint);
             }

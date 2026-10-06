@@ -55,7 +55,7 @@ namespace Beep.Skia.ETL
             using var hand = new SKPaint { Color = new SKColor(0xFF, 0xA0, 0x00), StrokeWidth = 1.5f, Style = SKPaintStyle.Stroke, IsAntialias = true };
             canvas.DrawLine(r.MidX, r.MidY - 8, r.MidX + 6, r.MidY - 8, hand);
             canvas.DrawLine(r.MidX, r.MidY - 8, r.MidX, r.MidY - 14, hand);
-            using var font = new SKFont(SKTypeface.Default, 9);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
             using var text = new SKPaint { Color = new SKColor(0x33, 0x33, 0x33), IsAntialias = true };
             canvas.DrawText("CDC", r.MidX, r.MidY + 12, SKTextAlign.Center, font, text);
             DrawPorts(canvas);

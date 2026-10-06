@@ -390,7 +390,7 @@ namespace Beep.Skia.MindMap
         {
             if (!string.IsNullOrWhiteSpace(_icon))
             {
-                using var iconFont = new SKFont(SKTypeface.Default, 12);
+                using var iconFont = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
                 using var iconPaint = new SKPaint { Color = TextColor, IsAntialias = true };
                 canvas.DrawText(_icon, X + 6f, Y + 16f, SKTextAlign.Left, iconFont, iconPaint);
             }
@@ -402,7 +402,7 @@ namespace Beep.Skia.MindMap
             float cy = Y + Height - 8f;
             using var badgePaint = new SKPaint { Color = MaterialColors.Primary, Style = SKPaintStyle.Fill, IsAntialias = true };
             using var badgeTextPaint = new SKPaint { Color = SKColors.White, IsAntialias = true };
-            using var badgeFont = new SKFont(SKTypeface.Default, 10) { Embolden = true };
+            using var badgeFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10) { Embolden = true };
             canvas.DrawCircle(cx, cy, 7f, badgePaint);
             canvas.DrawText(_isCollapsed ? "+" : "−", cx, cy + 4f, SKTextAlign.Center, badgeFont, badgeTextPaint);
         }

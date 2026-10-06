@@ -57,7 +57,7 @@ namespace Beep.Skia.Business
             canvas.DrawRect(header, headerFill);
             canvas.DrawLine(header.Left, header.Bottom, header.Right, header.Bottom, stroke);
 
-            using var font = new SKFont(SKTypeface.Default, 11) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
             using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
             canvas.DrawText(_laneName, X + 8f, Y + 15f, SKTextAlign.Left, font, textPaint);
         }

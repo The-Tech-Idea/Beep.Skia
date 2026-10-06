@@ -88,7 +88,6 @@ namespace Beep.Skia.Business
         protected override void LayoutPorts()
         {
             // Rectangle with folded corner: vertical segments, 1 in / 1 out
-            EnsurePortCounts(1, 1);
             LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
         }
     }

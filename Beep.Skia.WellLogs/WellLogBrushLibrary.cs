@@ -197,77 +197,83 @@ namespace Beep.Skia.WellLogs
         /// </summary>
         public static void DrawPattern(SKCanvas canvas, SKRect bounds, string key, byte alpha = 96)
         {
-            var definition = Get(key);
-            using var fillPaint = CreateFillPaint(key, bounds, alpha);
-            canvas.DrawRect(bounds, fillPaint);
-
-            if (definition.Pattern == WellLogBrushPattern.Solid)
+            canvas.Save();
+            try
             {
-                return;
-            }
-
-            using var linePaint = new SKPaint
-            {
-                IsAntialias = true,
-                Style = SKPaintStyle.Stroke,
-                StrokeWidth = definition.StrokeWidth,
-                Color = definition.SecondaryColor.WithAlpha((byte)Math.Min(255, alpha + 40))
-            };
-
-            var spacing = Math.Max(4f, definition.Spacing);
-
-            switch (definition.Pattern)
-            {
-                case WellLogBrushPattern.Horizontal:
-                    for (float y = bounds.Top; y <= bounds.Bottom; y += spacing)
-                    {
-                        canvas.DrawLine(bounds.Left, y, bounds.Right, y, linePaint);
-                    }
-                    break;
-
-                case WellLogBrushPattern.DiagonalLeft:
-                    for (float x = bounds.Left - bounds.Height; x <= bounds.Right; x += spacing)
-                    {
-                        canvas.DrawLine(x, bounds.Bottom, x + bounds.Height, bounds.Top, linePaint);
-                    }
-                    break;
-
-                case WellLogBrushPattern.DiagonalRight:
-                    for (float x = bounds.Left; x <= bounds.Right + bounds.Height; x += spacing)
-                    {
-                        canvas.DrawLine(x, bounds.Top, x - bounds.Height, bounds.Bottom, linePaint);
-                    }
-                    break;
-
-                case WellLogBrushPattern.CrossHatch:
-                    for (float x = bounds.Left - bounds.Height; x <= bounds.Right; x += spacing)
-                    {
-                        canvas.DrawLine(x, bounds.Bottom, x + bounds.Height, bounds.Top, linePaint);
-                    }
-                    for (float x = bounds.Left; x <= bounds.Right + bounds.Height; x += spacing)
-                    {
-                        canvas.DrawLine(x, bounds.Top, x - bounds.Height, bounds.Bottom, linePaint);
-                    }
-                    break;
-
-                case WellLogBrushPattern.Dots:
-                    using (var dotPaint = new SKPaint
-                    {
-                        IsAntialias = true,
-                        Style = SKPaintStyle.Fill,
-                        Color = definition.SecondaryColor.WithAlpha((byte)Math.Min(255, alpha + 30))
-                    })
-                    {
-                        for (float y = bounds.Top + spacing * 0.5f; y <= bounds.Bottom; y += spacing)
+                canvas.ClipRect(bounds);
+                var definition = Get(key);
+                using var fillPaint = CreateFillPaint(key, bounds, alpha);
+                canvas.DrawRect(bounds, fillPaint);
+    
+                if (definition.Pattern == WellLogBrushPattern.Solid)
+                {
+                    return;
+                }
+    
+                using var linePaint = new SKPaint
+                {
+                    IsAntialias = true,
+                    Style = SKPaintStyle.Stroke,
+                    StrokeWidth = definition.StrokeWidth,
+                    Color = definition.SecondaryColor.WithAlpha((byte)Math.Min(255, alpha + 40))
+                };
+    
+                var spacing = Math.Max(4f, definition.Spacing);
+    
+                switch (definition.Pattern)
+                {
+                    case WellLogBrushPattern.Horizontal:
+                        for (float y = bounds.Top; y <= bounds.Bottom; y += spacing)
                         {
-                            for (float x = bounds.Left + spacing * 0.5f; x <= bounds.Right; x += spacing)
+                            canvas.DrawLine(bounds.Left, y, bounds.Right, y, linePaint);
+                        }
+                        break;
+    
+                    case WellLogBrushPattern.DiagonalLeft:
+                        for (float x = bounds.Left - bounds.Height; x <= bounds.Right; x += spacing)
+                        {
+                            canvas.DrawLine(x, bounds.Bottom, x + bounds.Height, bounds.Top, linePaint);
+                        }
+                        break;
+    
+                    case WellLogBrushPattern.DiagonalRight:
+                        for (float x = bounds.Left; x <= bounds.Right + bounds.Height; x += spacing)
+                        {
+                            canvas.DrawLine(x, bounds.Top, x - bounds.Height, bounds.Bottom, linePaint);
+                        }
+                        break;
+    
+                    case WellLogBrushPattern.CrossHatch:
+                        for (float x = bounds.Left - bounds.Height; x <= bounds.Right; x += spacing)
+                        {
+                            canvas.DrawLine(x, bounds.Bottom, x + bounds.Height, bounds.Top, linePaint);
+                        }
+                        for (float x = bounds.Left; x <= bounds.Right + bounds.Height; x += spacing)
+                        {
+                            canvas.DrawLine(x, bounds.Top, x - bounds.Height, bounds.Bottom, linePaint);
+                        }
+                        break;
+    
+                    case WellLogBrushPattern.Dots:
+                        using (var dotPaint = new SKPaint
+                        {
+                            IsAntialias = true,
+                            Style = SKPaintStyle.Fill,
+                            Color = definition.SecondaryColor.WithAlpha((byte)Math.Min(255, alpha + 30))
+                        })
+                        {
+                            for (float y = bounds.Top + spacing * 0.5f; y <= bounds.Bottom; y += spacing)
                             {
-                                canvas.DrawCircle(x, y, Math.Max(1.5f, definition.StrokeWidth + 0.5f), dotPaint);
+                                for (float x = bounds.Left + spacing * 0.5f; x <= bounds.Right; x += spacing)
+                                {
+                                    canvas.DrawCircle(x, y, Math.Max(1.5f, definition.StrokeWidth + 0.5f), dotPaint);
+                                }
                             }
                         }
-                    }
-                    break;
+                        break;
+                }
             }
+            finally { canvas.Restore(); }
         }
     }
 }

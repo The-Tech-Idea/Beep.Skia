@@ -71,7 +71,7 @@ namespace Beep.Skia.UML
             // Draw stereotype
             if (!string.IsNullOrEmpty(Stereotype))
             {
-                using var font = new SKFont(SKTypeface.Default, 9);
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 canvas.DrawText(Stereotype, 10, 18, SKTextAlign.Left, font, textPaint);
             }
@@ -84,7 +84,7 @@ namespace Beep.Skia.UML
             // Draw transform description if present
             if (!string.IsNullOrEmpty(TransformDescription))
             {
-                using var descFont = new SKFont(SKTypeface.Default, 8);
+                using var descFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
                 using var descPaint = new SKPaint { IsAntialias = true, Color = TextColor };
 
                 // Truncate long descriptions

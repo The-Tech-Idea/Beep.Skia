@@ -48,7 +48,7 @@ namespace Beep.Skia.UML
             canvas.DrawOval(r, fill);
             canvas.DrawOval(r, stroke);
 
-            using var font = new SKFont(SKTypeface.Default, 12);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
             canvas.DrawText(_useCaseName, X + Width / 2f, Y + Height / 2f + 4, SKTextAlign.Center, font, text);
 

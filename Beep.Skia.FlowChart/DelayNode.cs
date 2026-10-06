@@ -120,7 +120,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xFF, 0xF8, 0xE1), IsAntialias = true }; // Light amber
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0xFF, 0xA0, 0x00), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Orange
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
             // D-shape: straight left edge, curved right edge
@@ -154,7 +154,7 @@ namespace Beep.Skia.Flowchart
             // Draw duration if provided
             if (!string.IsNullOrWhiteSpace(Duration))
             {
-                using var smallFont = new SKFont(SKTypeface.Default, 11);
+                using var smallFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11);
                 using var grayText = new SKPaint { Color = new SKColor(0x60, 0x60, 0x60), IsAntialias = true };
                 canvas.DrawText(Duration, tx, r.MidY + 10, SKTextAlign.Left, smallFont, grayText);
             }

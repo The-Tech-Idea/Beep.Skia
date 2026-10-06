@@ -77,6 +77,10 @@ namespace Beep.Skia.Flowchart
             };
         }
 
+        /// <summary>Creates a detached terminator from validated component and ordered port identities.</summary>
+        public StartEndNode(System.Guid id, System.Collections.Generic.IReadOnlyList<System.Guid> inputs,
+            System.Collections.Generic.IReadOnlyList<System.Guid> outputs) : this() => RestoreDefinitionIdentity(id, inputs, outputs);
+
         protected override void LayoutPorts()
         {
             var r = Bounds;
@@ -117,17 +121,13 @@ namespace Beep.Skia.Flowchart
             var r = Bounds;
             float radius = Math.Min(r.Height / 2f, CornerRadius * 2f);
 
-            using var fill = new SKPaint { Color = new SKColor(0xE8, 0xF5, 0xE9), IsAntialias = true };
-            using var stroke = new SKPaint { Color = new SKColor(0x2E, 0x7D, 0x32), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
-            using var text = new SKPaint { Color = SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xE8, 0xF5, 0xE9), IsAntialias = true };
+            using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x2E, 0x7D, 0x32), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = NodeStrokeWidth };
 
             canvas.DrawRoundRect(r, radius, radius, fill);
             canvas.DrawRoundRect(r, radius, radius, stroke);
 
-            var tx = r.MidX - font.MeasureText(Label, text) / 2;
-            var ty = r.MidY + 5;
-            canvas.DrawText(Label, tx, ty, SKTextAlign.Left, font, text);
+            DrawCenteredLabel(canvas, r, Label);
 
             DrawPorts(canvas);
         }

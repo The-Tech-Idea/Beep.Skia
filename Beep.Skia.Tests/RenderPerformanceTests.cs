@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using Beep.Skia;
 using Beep.Skia.Model;
 using SkiaSharp;
@@ -56,11 +57,21 @@ namespace Beep.Skia.Tests
             {
                 for (var i = 0; i + 1 < created.Count; i++)
                 {
-                    manager.ConnectComponents(created[i], created[i + 1]);
+                    Assert.True(manager.ConnectComponents(created[i], created[i + 1], 0, 0));
                 }
             }
 
             return manager;
+        }
+
+        private static byte[] RenderPixels(DrawingManager manager)
+        {
+            using var surface = SKSurface.Create(new SKImageInfo(1600, 1000));
+            surface.Canvas.Clear(SKColors.White);
+            manager.Draw(surface.Canvas);
+            using var image = surface.Snapshot();
+            using var bitmap = SKBitmap.FromImage(image);
+            return bitmap.Bytes;
         }
 
         private static (double MsPerFrame, double KbPerFrame) Measure(DrawingManager manager, int frames, int repetitions = 5)
@@ -157,13 +168,14 @@ namespace Beep.Skia.Tests
             _output.WriteLine($"nodes only ({nodesOnly.GetComponents().Count} nodes, {nodesOnly.GetLines().Count} lines): {msNodes:F2} ms/frame, {kbNodes:F2} KB/frame");
             _output.WriteLine($"nodes+lines ({nodesAndLines.GetComponents().Count} nodes, {nodesAndLines.GetLines().Count} lines): {msLines:F2} ms/frame, {kbLines:F2} KB/frame");
 
-            // Guard the benchmark itself: the two configurations must actually differ, otherwise the
-            // measurement is comparing a workload against itself. Allocations are deterministic, so
-            // they are asserted; frame *time* ordering is not asserted because parallel test
-            // execution makes wall-clock comparisons flaky.
+            // Verify the graph and actual pixels differ. Retained connection paints may add no
+            // managed allocations; wall-clock ordering is also noisy under parallel execution.
+            Assert.Equal(nodeCount, nodesOnly.GetComponents().Count);
+            Assert.Equal(nodeCount, nodesAndLines.GetComponents().Count);
             Assert.Empty(nodesOnly.GetLines());
-            Assert.NotEmpty(nodesAndLines.GetLines());
-            Assert.True(kbLines > kbNodes, "drawing connection lines must allocate more than drawing nodes alone");
+            Assert.Equal(nodeCount - 1, nodesAndLines.GetLines().Count);
+            Assert.False(RenderPixels(nodesOnly).SequenceEqual(RenderPixels(nodesAndLines)),
+                "the connected workload must render different pixels from nodes alone");
 
             Assert.True(msLines < 100, $"frame time regressed: {msLines:F2} ms/frame");
             Assert.True(kbLines < 512, $"per-frame allocations regressed: {kbLines:F1} KB/frame");

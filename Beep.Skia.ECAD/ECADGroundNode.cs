@@ -71,7 +71,7 @@ namespace Beep.Skia.ECAD
 
             // Label
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var textFont = new SKFont(SKTypeface.Default, 9);
+            using var textFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
             canvas.DrawText(_groundType, r.MidX - textFont.MeasureText(_groundType) / 2, r.Bottom - 4, SKTextAlign.Left, textFont, text);
 
             DrawPorts(canvas);

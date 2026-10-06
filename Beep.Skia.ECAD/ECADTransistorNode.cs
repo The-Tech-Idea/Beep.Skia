@@ -89,7 +89,7 @@ namespace Beep.Skia.ECAD
             }
 
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var textFont = new SKFont(SKTypeface.Default, 10);
+            using var textFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
             canvas.DrawText(_type, r.MidX - textFont.MeasureText(_type) / 2, r.Bottom - 4, SKTextAlign.Left, textFont, text);
 
             DrawPorts(canvas);

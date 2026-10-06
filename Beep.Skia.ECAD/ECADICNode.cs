@@ -45,9 +45,9 @@ namespace Beep.Skia.ECAD
             canvas.DrawRect(r, border);
 
             using var namePaint = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var nameFont = new SKFont(SKTypeface.Default, 11) { Embolden = true };
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
             using var metaPaint = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var metaFont = new SKFont(SKTypeface.Default, 8);
+            using var metaFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             canvas.DrawText(Reference, r.MidX, r.MidY - 6, SKTextAlign.Center, nameFont, namePaint);
             canvas.DrawText(Footprint, r.MidX, r.Bottom - 6, SKTextAlign.Center, metaFont, metaPaint);
 

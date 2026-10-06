@@ -116,7 +116,7 @@ namespace Beep.Skia.StateMachine
 
             if (!string.IsNullOrWhiteSpace(_title))
             {
-                using var font = new SKFont(SKTypeface.Default, 9);
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
                 using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
                 canvas.DrawText(_title, b.MidX, b.MidY + 3, SKTextAlign.Center, font, textPaint);
             }

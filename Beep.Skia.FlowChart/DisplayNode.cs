@@ -62,7 +62,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xE0, 0xF7, 0xFA), IsAntialias = true }; // Light cyan
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x00, 0xBC, 0xD4), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Cyan
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
             // Monitor shape: straight top and sides, curved bottom

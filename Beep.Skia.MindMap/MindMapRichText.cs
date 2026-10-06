@@ -73,8 +73,8 @@ namespace Beep.Skia.MindMap
             if (canvas == null || string.IsNullOrWhiteSpace(text)) return;
 
             var spans = Parse(text);
-            using var regularFont = new SKFont(SKTypeface.Default, fontSize);
-            using var boldFont = new SKFont(SKTypeface.Default, fontSize) { Embolden = true };
+            using var regularFont = new SKFont(Beep.Skia.TypefaceCache.Default, fontSize);
+            using var boldFont = new SKFont(Beep.Skia.TypefaceCache.Default, fontSize) { Embolden = true };
             using var italicFont = new SKFont(TypefaceCache.Get("Segoe UI", SKFontStyle.Italic), fontSize);
             using var paint = new SKPaint { Color = color, IsAntialias = true };
 

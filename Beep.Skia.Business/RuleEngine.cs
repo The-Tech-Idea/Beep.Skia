@@ -172,8 +172,8 @@ namespace Beep.Skia.Business
 
         protected override void DrawComponentText(SKCanvas canvas)
         {
-            using var nameFont = new SKFont(SKTypeface.Default, 10) { Embolden = true };
-            using var countFont = new SKFont(SKTypeface.Default, 8);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10) { Embolden = true };
+            using var countFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             using var paint = new SKPaint
             {
                 Color = TextColor,
@@ -195,7 +195,6 @@ namespace Beep.Skia.Business
         protected override void LayoutPorts()
         {
             // Gear-like circular control: treat as ellipse; default 1 in / 1 out
-            EnsurePortCounts(1, 1);
             LayoutPortsOnEllipse(topInset: 6f, bottomInset: 6f, outwardOffset: 2f);
         }
     }

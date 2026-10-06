@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0;net8.0;net10.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(BeepSkiaPortableTargetFramework)' != 'net10.0'">net9.0;net8.0;net10.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(BeepSkiaPortableTargetFramework)' == 'net10.0'">net10.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>Latest</LangVersion>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -20,10 +21,10 @@
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
-	<Target Name="CopyPackage" AfterTargets="Pack">
+	<Target Name="CopyPackage" AfterTargets="Pack" Condition="'$(BeepSkiaLocalBuildCopies)' != 'false'">
 		<Copy SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="..\..\..\LocalNugetFiles" />
 	</Target>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BeepSkiaLocalBuildCopies)' != 'false'">
 		<Copy SourceFiles="$(TargetDir)$(PackageId).dll" DestinationFolder="$(ProjectDir)..\..\outputDLL\$(PackageId)\$(TargetFramework)" SkipUnchangedFiles="false" />
 	</Target>
   <ItemGroup>

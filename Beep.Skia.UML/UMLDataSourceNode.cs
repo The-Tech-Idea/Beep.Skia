@@ -87,7 +87,7 @@ namespace Beep.Skia.UML
             // Draw stereotype
             if (!string.IsNullOrEmpty(Stereotype))
             {
-                using var font = new SKFont(SKTypeface.Default, 9);
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 canvas.DrawText(Stereotype, left + 10, top + 18, SKTextAlign.Left, font, textPaint);
             }
@@ -100,7 +100,7 @@ namespace Beep.Skia.UML
             // Draw data source name if present
             if (!string.IsNullOrEmpty(DataSourceName))
             {
-                using var nameFont = new SKFont(SKTypeface.Default, 9);
+                using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
                 using var namePaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 canvas.DrawText(DataSourceName, left + 10, top + 58, SKTextAlign.Left, nameFont, namePaint);
             }

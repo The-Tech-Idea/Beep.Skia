@@ -59,7 +59,7 @@ namespace Beep.Skia.UML
             // Draw stereotype
             if (!string.IsNullOrEmpty(Stereotype))
             {
-                using var font = new SKFont(SKTypeface.Default, 10);
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 var stereotypeWidth = font.MeasureText(Stereotype);
                 canvas.DrawText(Stereotype, (Width - stereotypeWidth) / 2, 18, SKTextAlign.Left, font, textPaint);
@@ -73,7 +73,7 @@ namespace Beep.Skia.UML
             // Draw action description if present
             if (!string.IsNullOrEmpty(ActionDescription))
             {
-                using var descFont = new SKFont(SKTypeface.Default, 10);
+                using var descFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
                 using var descPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 canvas.DrawText(ActionDescription, 8, 55, SKTextAlign.Left, descFont, descPaint);
             }

@@ -162,7 +162,7 @@ namespace Beep.Skia.Business
                 case EventType.Conditional:
                     var cr = new SKRect(cx - size * 0.3f, cy - size * 0.3f, cx + size * 0.3f, cy + size * 0.3f);
                     canvas.DrawRoundRect(cr, 4, 4, iconPaint);
-                    using (var textFont = new SKFont(SKTypeface.Default, size * 0.5f))
+                    using (var textFont = new SKFont(Beep.Skia.TypefaceCache.Default, size * 0.5f))
                     using (var textP = new SKPaint { Color = BorderColor, IsAntialias = true })
                         canvas.DrawText("?", cx, cy + size * 0.18f, SKTextAlign.Center, textFont, textP);
                     break;
@@ -204,14 +204,13 @@ namespace Beep.Skia.Business
 
         protected override void LayoutPorts()
         {
-            EnsurePortCounts(1, 1);
             LayoutPortsOnEllipse(topInset: 4f, bottomInset: 4f, outwardOffset: 2f);
         }
 
         protected override void DrawComponentText(SKCanvas canvas)
         {
             if (string.IsNullOrWhiteSpace(_label)) return;
-            using var font = new SKFont(SKTypeface.Default, 8);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             using var paint = new SKPaint { Color = TextColor, IsAntialias = true };
             canvas.DrawText(_label, X + Width / 2f, Y + Height + 12f, SKTextAlign.Center, font, paint);
         }

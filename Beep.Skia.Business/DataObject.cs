@@ -196,7 +196,7 @@ namespace Beep.Skia.Business
                             Color = BorderColor,
                             IsAntialias = true
                         };
-                        using var font = new SKFont(SKTypeface.Default, 8);
+                        using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
                         canvas.DrawText("<>", iconX, iconY + 12, SKTextAlign.Left, font, xmlPaint);
                     }
                     break;
@@ -230,8 +230,8 @@ namespace Beep.Skia.Business
 
         protected override void DrawComponentText(SKCanvas canvas)
         {
-            using var nameFont = new SKFont(SKTypeface.Default, 9) { Embolden = true };
-            using var typeFont = new SKFont(SKTypeface.Default, 7);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9) { Embolden = true };
+            using var typeFont = new SKFont(Beep.Skia.TypefaceCache.Default, 7);
             using var paint = new SKPaint
             {
                 Color = TextColor,

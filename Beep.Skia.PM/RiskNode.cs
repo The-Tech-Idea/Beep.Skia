@@ -213,12 +213,12 @@ namespace Beep.Skia.PM
             canvas.DrawCircle(warnX, warnY + 28, 2.5f, warnPaint);
 
             // Draw risk description
-            using var nameFont = new SKFont(SKTypeface.Default, 11);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11);
             float descY = triTop + triHeight + 12;
             canvas.DrawText(RiskDescription, r.MidX, descY, SKTextAlign.Center, nameFont, text);
 
             // Draw probability x impact
-            using var detailFont = new SKFont(SKTypeface.Default, 9);
+            using var detailFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
             using var grayText = new SKPaint { Color = new SKColor(0x60, 0x60, 0x60), IsAntialias = true };
             string details = $"P: {Probability} | I: {Impact}";
             canvas.DrawText(details, r.MidX, descY + 14, SKTextAlign.Center, detailFont, grayText);

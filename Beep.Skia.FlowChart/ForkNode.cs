@@ -96,7 +96,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0x42, 0x42, 0x42), IsAntialias = true }; // Dark gray
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? SKColors.Black, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 10);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
 
             canvas.DrawRect(barRect, fill);
             canvas.DrawRect(barRect, stroke);

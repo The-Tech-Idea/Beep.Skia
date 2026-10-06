@@ -64,14 +64,14 @@ namespace Beep.Skia.UML
             canvas.DrawLine(tab.Right, body.Top, body.Right, body.Top, stroke);
 
             // Package name in the tab
-            using var font = new SKFont(SKTypeface.Default, 10) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 10) { Embolden = true };
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
             canvas.DrawText(_packageName, tab.Left + 6, tab.Top + _tabHeight / 2f + 4, SKTextAlign.Left, font, text);
 
             // Stereotype if set
             if (!string.IsNullOrWhiteSpace(Stereotype))
             {
-                using var smallFont = new SKFont(SKTypeface.Default, 8);
+                using var smallFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
                 using var smallText = new SKPaint { Color = BorderColor, IsAntialias = true };
                 canvas.DrawText(Stereotype, body.Left + 6, body.Top + 14, SKTextAlign.Left, smallFont, smallText);
             }

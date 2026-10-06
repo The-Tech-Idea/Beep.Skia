@@ -5,6 +5,35 @@ using System.IO;
 using Beep.Skia.Model;
 namespace Beep.Skia
 {
+    /// <summary>Opt-in CPU scopes. Attempts count draws; skipped attempts count known noncontributors. Neither measures GPU work.</summary>
+    public sealed class SceneRenderProfile
+    {
+        public double TotalMs { get; internal set; }
+        public double PreparationMs { get; internal set; }
+        public double GridMs { get; internal set; }
+        public double ConnectionsMs { get; internal set; }
+        public double AdornersMs { get; internal set; }
+        public double StaticMs { get; internal set; }
+        public System.Collections.Generic.Dictionary<string, SceneRenderGroup> Groups { get; } = new();
+        internal void Record(SkiaComponent component, double milliseconds)
+        {
+            var name = component is Components.SketchShape sketch ? "Sketch." + sketch.Kind : component.GetType().FullName;
+            if (!Groups.TryGetValue(name, out var group)) Groups[name] = group = new SceneRenderGroup();
+            group.Attempts++; group.Milliseconds += milliseconds;
+        }
+        internal void Skip(SkiaComponent component)
+        {
+            var name = component is Components.SketchShape sketch ? "Sketch." + sketch.Kind : component.GetType().FullName;
+            if (!Groups.TryGetValue(name, out var group)) Groups[name] = group = new SceneRenderGroup();
+            group.SkippedAttempts++;
+        }
+    }
+    public sealed class SceneRenderGroup
+    {
+        public int Attempts { get; internal set; }
+        public int SkippedAttempts { get; internal set; }
+        public double Milliseconds { get; internal set; }
+    }
     /// <summary>
     /// Helper class for rendering operations in the drawing manager.
     /// </summary>
@@ -19,6 +48,9 @@ namespace Beep.Skia
         private readonly DrawingContext _preContext = new DrawingContext();
         private readonly DrawingContext _drawingContext = new DrawingContext();
         private readonly DrawingContext _staticContext = new DrawingContext();
+        /// <summary>Optional synchronous CPU profiling callback. Ordinary drawing does not allocate a profile or read the clock.</summary>
+        public Action<SceneRenderProfile> FrameMeasured { get; set; }
+        private static double ElapsedMs(long started) => (Stopwatch.GetTimestamp() - started) * 1000d / Stopwatch.Frequency;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderingHelper"/> class.
@@ -94,6 +126,7 @@ namespace Beep.Skia
         /// <param name="canvas">The canvas to draw on.</param>
         public void DrawSelectionHandles(SKCanvas canvas)
         {
+            if (!_drawingManager.ShowSelectionHandles) return;
             // Show handles/highlights if ANY selection exists (components, lines, or connection points)
             bool anySelection =
                 _drawingManager.SelectionManager.SelectedComponents.Count > 0 ||
@@ -101,7 +134,7 @@ namespace Beep.Skia
                 _drawingManager.SelectionManager.SelectedConnectionPoints.Count > 0;
             if (!anySelection) return;
 
-            var handlePaint = new SKPaint
+            using var handlePaint = new SKPaint
             {
                 Color = SKColors.CornflowerBlue,
                 Style = SKPaintStyle.Fill
@@ -172,8 +205,57 @@ namespace Beep.Skia
                 pan: new SKPoint(0, 0));
         }
 
-        private void DrawAll(SKCanvas canvas, bool applyPanZoom, bool includeStatic, bool includeGrid, bool includeSelection, float zoom, SKPoint pan)
+        /// <summary>Renders through the same scene path with host-owned retained pixels.
+        /// Overlay ink is in host/CSS coordinates, before the incoming device matrix; null means unknown.
+        /// Unknown scene effects or unsupported raster/clip/matrix contexts require ordinary full repaint.</summary>
+        public void DrawFrame(SKSurface target, SKColor background, SceneFrameCache cache, Action<SKCanvas> overlay = null,
+            Func<SKRect?> overlayInk = null, Action<double> sceneMeasured = null)
         {
+            if (target == null || cache == null) throw new ArgumentNullException(target == null ? nameof(target) : nameof(cache));
+            var started = sceneMeasured == null ? 0 : Stopwatch.GetTimestamp();
+            var canvas = target.Canvas;
+            using var pixels = target.PeekPixels();
+            var info = pixels?.Info ?? new SKImageInfo(canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height);
+            var matrix = canvas.TotalMatrix;
+            SKRect? bounds;
+            try { bounds = overlay == null ? SKRect.Empty : overlayInk?.Invoke(); }
+            catch { cache.Reset(); throw; }
+            var supported = pixels != null && info.BytesPerPixel == 4 && canvas.IsClipRect
+                && canvas.DeviceClipBounds == new SKRectI(0, 0, info.Width, info.Height)
+                && matrix.ScaleX > 0 && matrix.ScaleY > 0 && matrix.SkewX == 0 && matrix.SkewY == 0
+                && matrix.Persp0 == 0 && matrix.Persp1 == 0 && matrix.Persp2 == 1
+                && float.IsFinite(matrix.ScaleX) && float.IsFinite(matrix.ScaleY) && float.IsFinite(matrix.TransX) && float.IsFinite(matrix.TransY)
+                && bounds.HasValue && SceneFrameCache.Finite(bounds.Value)
+                && _drawingManager.Lines.Count == 0 && _drawingManager.WorldOverlay == null
+                && !_drawingManager.InteractionHelper.IsDrawingLine && !_drawingManager.InteractionHelper.IsSelecting
+                && !_drawingManager.ShowSelectionHandles;
+            if (supported) foreach (var component in _drawingManager.Components)
+                if (component is not Components.SketchShape shape || shape.IsStatic || shape.Children.Count != 0) { supported = false; break; }
+            try
+            {
+                if (!supported)
+                {
+                    cache.Uncached(info); canvas.Clear(background); DrawAll(canvas);
+                    if (sceneMeasured != null) sceneMeasured(ElapsedMs(started));
+                    overlay?.Invoke(canvas); return;
+                }
+                cache.Begin(_drawingManager, info, matrix, background, bounds.Value);
+                using var scratch = SKSurface.Create(info, cache.Scratch.GetPixels(), cache.Scratch.RowBytes);
+                var drawing = scratch.Canvas; drawing.SetMatrix(matrix);
+                for (var i = 1; i < canvas.SaveCount; i++) drawing.Save();
+                drawing.Clear(background);
+                DrawAll(drawing, true, true, true, true, _drawingManager.Zoom, _drawingManager.PanOffset, cache);
+                if (sceneMeasured != null) sceneMeasured(ElapsedMs(started));
+                overlay?.Invoke(drawing); cache.Present(pixels);
+            }
+            catch { cache.Reset(); throw; }
+        }
+
+        private void DrawAll(SKCanvas canvas, bool applyPanZoom, bool includeStatic, bool includeGrid, bool includeSelection, float zoom, SKPoint pan, SceneFrameCache frame = null)
+        {
+            var measured = FrameMeasured;
+            var profile = measured == null ? null : new SceneRenderProfile();
+            var frameStart = profile == null ? 0 : Stopwatch.GetTimestamp();
             canvas.Save();
 
             // Ensure components have up-to-date Bounds and state before drawing, and partition
@@ -205,6 +287,8 @@ namespace Beep.Skia
             }
 
             var staticComponents = _staticComponents;
+            frame?.PrepareAfterUpdate(components);
+            if (profile != null) profile.PreparationMs = ElapsedMs(frameStart);
 
             // Apply world transform for dynamic content
             if (applyPanZoom)
@@ -214,22 +298,32 @@ namespace Beep.Skia
             }
 
             // Draw grid if enabled (grid lives in world space)
+            var scopeStart = profile == null ? 0 : Stopwatch.GetTimestamp();
             if (includeGrid)
                 DrawGrid(canvas);
+            if (profile != null) profile.GridMs = ElapsedMs(scopeStart);
 
             // Create a single, correct context to be passed to all components
             _drawingContext.PanOffset = pan;
             _drawingContext.Zoom = zoom;
-            _drawingContext.Bounds = canvas.DeviceClipBounds;
+            _drawingContext.IncludeSelection = includeSelection;
+            // Components use world coordinates. Respect the active pan/zoom or export transform.
+            _drawingContext.Bounds = canvas.LocalClipBounds;
             var drawingContext = _drawingContext;
 
             // Draw dynamic (world-space) components only
             foreach (var component in _dynamicComponents)
             {
+                if (frame != null && !frame.Contributes(component))
+                { frame.LastSkippedComponents++; profile?.Skip(component); continue; }
+                if (frame != null) frame.LastDrawnComponents++;
+                scopeStart = profile == null ? 0 : Stopwatch.GetTimestamp();
                 try { component.Draw(canvas, drawingContext); } catch { }
+                if (profile != null) profile.Record(component, ElapsedMs(scopeStart));
             }
 
             // Draw connection lines
+            scopeStart = profile == null ? 0 : Stopwatch.GetTimestamp();
             foreach (var line in _drawingManager.Lines)
             {
                 if (line is ConnectionLine hidden && !hidden.IsVisible) continue;
@@ -241,7 +335,9 @@ namespace Beep.Skia
             {
                 DrawConnectionLineWithZoom(canvas, _drawingManager.CurrentLine, zoom, isPreview: true);
             }
+            if (profile != null) profile.ConnectionsMs = ElapsedMs(scopeStart);
 
+            scopeStart = profile == null ? 0 : Stopwatch.GetTimestamp();
             if (includeSelection)
             {
                 // Draw selection rectangle
@@ -259,8 +355,10 @@ namespace Beep.Skia
                     try { _drawingManager.WorldOverlay(canvas); } catch { }
                 }
             }
+            if (profile != null) profile.AdornersMs = ElapsedMs(scopeStart);
 
             // Restore the canvas state
+            scopeStart = profile == null ? 0 : Stopwatch.GetTimestamp();
             canvas.Restore();
 
             // Draw static (screen-space) overlay components without world transforms
@@ -274,6 +372,12 @@ namespace Beep.Skia
                 {
                     try { component.Draw(canvas, _staticContext); } catch { }
                 }
+            }
+            if (profile != null)
+            {
+                profile.StaticMs = ElapsedMs(scopeStart);
+                profile.TotalMs = ElapsedMs(frameStart);
+                measured(profile);
             }
         }
 

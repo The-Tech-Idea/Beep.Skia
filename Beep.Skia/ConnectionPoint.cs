@@ -27,6 +27,13 @@ namespace Beep.Skia
 
         }
 
+        /// <summary>Constructs a detached port with a validated persisted identity.</summary>
+        public ConnectionPoint(Guid id)
+        {
+            if (id == Guid.Empty) throw new ArgumentException("Port identity cannot be empty.", nameof(id));
+            Id = id;
+        }
+
         /// <summary>
         /// Assigns a specific identifier to this connection point. Intended for restoring from persistence.
         /// </summary>

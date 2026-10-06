@@ -132,8 +132,8 @@ namespace Beep.Skia.Business
 
         protected override void DrawComponentText(SKCanvas canvas)
         {
-            using var nameFont = new SKFont(SKTypeface.Default, 12) { Embolden = true };
-            using var countFont = new SKFont(SKTypeface.Default, 10);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 12) { Embolden = true };
+            using var countFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
             using var paint = new SKPaint
             {
                 Color = TextColor,
@@ -154,7 +154,6 @@ namespace Beep.Skia.Business
 
         protected override void LayoutPorts()
         {
-            EnsurePortCounts(1, 1);
             LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
         }
     }

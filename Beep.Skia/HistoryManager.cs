@@ -14,6 +14,40 @@ namespace Beep.Skia
         private readonly List<DrawingAction> _undoStack = new List<DrawingAction>();
         private readonly List<DrawingAction> _redoStack = new List<DrawingAction>();
         private bool _isApplyingHistory;
+        private Batch _batch;
+        /// <summary>Collects already-applied actions into one entry. Disposing without Commit rolls back.</summary>
+        public Batch BeginBatch()
+        {
+            if (_batch != null || _isApplyingHistory) throw new InvalidOperationException("A history operation is already active.");
+            return _batch = new Batch(this);
+        }
+        public sealed class Batch : IDisposable
+        {
+            private readonly HistoryManager _owner;
+            internal readonly List<DrawingAction> Actions = new();
+            private bool _finished;
+            internal Batch(HistoryManager owner) => _owner = owner;
+            public void Commit()
+            {
+                if (_finished) throw new InvalidOperationException("Batch already finished.");
+                _finished = true; _owner._batch = null;
+                if (Actions.Count > 0) _owner.ExecuteAction(new GroupAction(Actions.ToArray()));
+            }
+            public void Dispose()
+            {
+                if (_finished) return;
+                _finished = true; _owner._batch = null; _owner._isApplyingHistory = true;
+                try { for (int i = Actions.Count - 1; i >= 0; i--) Actions[i].Undo(); }
+                finally { _owner._isApplyingHistory = false; }
+            }
+        }
+        private sealed class GroupAction : DrawingAction
+        {
+            private readonly DrawingAction[] _actions;
+            public GroupAction(DrawingAction[] actions) => _actions = actions;
+            public override void Execute() { foreach (var action in _actions) action.Execute(); }
+            public override void Undo() { for (int i = _actions.Length - 1; i >= 0; i--) _actions[i].Undo(); }
+        }
 
         /// <summary>
         /// Gets or sets the maximum number of undo steps retained. 0 means unlimited.
@@ -58,6 +92,7 @@ namespace Beep.Skia
         {
             if (action == null) return;
             if (_isApplyingHistory) return; // mutations made while undoing/redoing are not new history
+            if (_batch != null) { _batch.Actions.Add(action); return; }
 
             _undoStack.Add(action);
             TrimHistory();
@@ -70,6 +105,7 @@ namespace Beep.Skia
         /// </summary>
         public void Undo()
         {
+            if (_batch != null) throw new InvalidOperationException("Finish the active history batch first.");
             if (_undoStack.Count == 0) return;
 
             var action = _undoStack[_undoStack.Count - 1];
@@ -95,6 +131,7 @@ namespace Beep.Skia
         /// </summary>
         public void Redo()
         {
+            if (_batch != null) throw new InvalidOperationException("Finish the active history batch first.");
             if (_redoStack.Count == 0) return;
 
             var action = _redoStack[_redoStack.Count - 1];
@@ -130,6 +167,7 @@ namespace Beep.Skia
         /// </summary>
         public void Clear()
         {
+            if (_batch != null) throw new InvalidOperationException("Finish the active history batch first.");
             _undoStack.Clear();
             _redoStack.Clear();
             HistoryChanged?.Invoke(this, EventArgs.Empty);

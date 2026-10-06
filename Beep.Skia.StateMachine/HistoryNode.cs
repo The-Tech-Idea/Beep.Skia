@@ -105,7 +105,7 @@ namespace Beep.Skia.StateMachine
 
             // Draw H or H* character
             float fontSize = _isDeep ? 13f : 14f;
-            using var font = new SKFont(SKTypeface.Default, fontSize) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, fontSize) { Embolden = true };
             using var textPaint = new SKPaint { Color = BorderColor, IsAntialias = true };
             canvas.DrawText(_isDeep ? "H*" : "H", cx, cy + fontSize / 3f, SKTextAlign.Center, font, textPaint);
 

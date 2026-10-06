@@ -99,11 +99,45 @@ namespace Beep.Skia
         /// </summary>
         public string Name { get; set; }
 
+    private Guid _id = Guid.NewGuid();
     /// <summary>
-    /// Globally unique identifier for this component instance. Assigned at construction.
+    /// Globally unique identifier for this component instance. Assigned at construction or restored before scene registration.
     /// </summary>
     [System.ComponentModel.Browsable(false)]
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id => _id;
+    private Guid _groupId;
+    /// <summary>Optional editor grouping identity shared by component families.</summary>
+    public Guid GroupId
+    {
+        get => _groupId;
+        set { _groupId = value; UpsertNodeProperty(nameof(GroupId), typeof(string), currentValue: value.ToString("D")); }
+    }
+    /// <summary>Restores persisted identity during construction/loading, before scene registration.</summary>
+    protected internal void RestoreIdentity(Guid id)
+    {
+        if (id == Guid.Empty) throw new ArgumentException("Component identity cannot be empty.", nameof(id));
+        _id = id;
+    }
+
+    /// <summary>Restores a detached component and its physical port identities before scene registration.</summary>
+    public void RestorePersistentIdentity(Guid id, IReadOnlyList<Guid> inputs, IReadOnlyList<Guid> outputs)
+    {
+        if (id == Guid.Empty || inputs == null || outputs == null) throw new ArgumentException("Persisted identities are required.");
+        var incoming = InConnectionPoints.ToArray(); var outgoing = OutConnectionPoints.ToArray();
+        if (inputs.Count != incoming.Length || outputs.Count != outgoing.Length) throw new ArgumentException("Persisted port counts differ from the component.");
+        var assignments = new Dictionary<ConnectionPoint, Guid>();
+        foreach (var pair in incoming.Zip(inputs).Concat(outgoing.Zip(outputs)))
+        {
+            if (pair.First is not ConnectionPoint port || port.Connection != null || !port.IsAvailable || pair.Second == Guid.Empty || pair.Second == id)
+                throw new ArgumentException("Only detached ports with valid identities can be restored.");
+            if (assignments.TryGetValue(port, out var previous) && previous != pair.Second)
+                throw new ArgumentException("A shared physical port must retain one identity.");
+            assignments[port] = pair.Second;
+        }
+        if (assignments.Values.Distinct().Count() != assignments.Count) throw new ArgumentException("Distinct physical ports need distinct identities.");
+        RestoreIdentity(id);
+        foreach (var pair in assignments) pair.Key.SetId(pair.Value);
+    }
 
     /// <summary>
     /// Indicates whether this component should be shown in an editor palette/toolbox.
@@ -706,6 +740,9 @@ namespace Beep.Skia
         /// <param name="context">The drawing context.</param>
         protected virtual void DrawChildren(SKCanvas canvas, DrawingContext context)
         {
+            // Leaf components dominate sketch boards. Avoid constructing an ordered
+            // LINQ iterator on every leaf paint; keep child priority ordering intact.
+            if (Children.Count == 0) return;
             foreach (var child in Children.OrderBy(c => c.Priority))
             {
                 child.Draw(canvas, context);
@@ -1131,9 +1168,11 @@ namespace Beep.Skia
     public event EventHandler<ConnectionChangedEventArgs> ConnectionRemoved;
 
         /// <summary>
-        /// Connects this component to another component.
+        /// Updates directional port geometry before connections are attached or rendered.
         /// </summary>
-        /// <param name="other">The component to connect to.</param>
+        public virtual void RefreshPortLayout() { }
+
+        /// <summary>Connects this component to another component.</summary>
         public virtual void ConnectTo(IDrawableComponent other)
         {
             if (other == null || other == (IDrawableComponent)this)

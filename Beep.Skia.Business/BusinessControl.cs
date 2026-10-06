@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using Beep.Skia;
 using Beep.Skia.Model;
 using Beep.Skia.Components;
@@ -528,7 +528,7 @@ namespace Beep.Skia.Business
             if (string.IsNullOrEmpty(Name))
                 return;
 
-            using var font = new SKFont(SKTypeface.Default, 12) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 12) { Embolden = true };
             using var paint = new SKPaint
             {
                 Color = TextColor,

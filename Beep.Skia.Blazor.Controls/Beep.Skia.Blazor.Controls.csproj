@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks Condition="'$(BeepSkiaPortableTargetFramework)' != 'net10.0'">net8.0;net10.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(BeepSkiaPortableTargetFramework)' == 'net10.0'">net10.0</TargetFrameworks>
 		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
@@ -19,11 +20,16 @@
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" Version="4.150.1" />
 		<PackageReference Include="SkiaSharp.Views.Blazor" Version="4.150.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" Condition="'$(TargetFramework)' == 'net8.0'" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.12" Condition="'$(TargetFramework)' == 'net10.0'" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Beep.Skia\Beep.Skia.csproj" />
 		<ProjectReference Include="..\Beep.Skia.Model\Beep.Skia.Model.csproj" />
 	</ItemGroup>
+  <!-- Named per-framework restore metadata is a build input, never a static/runtime asset. -->
+  <ItemGroup>
+    <Content Remove="packages.net10.lock.json" />
+  </ItemGroup>
 </Project>

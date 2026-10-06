@@ -167,11 +167,11 @@ namespace Beep.Skia.PM
             canvas.DrawLine(iconX, iconY, iconX + 3, iconY, iconPaint);  // Minute hand
 
             // Draw task name
-            using var nameFont = new SKFont(SKTypeface.Default, 11);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11);
             canvas.DrawText(TaskName, r.MidX, r.MidY + 4, SKTextAlign.Center, nameFont, text);
 
             // Draw duration and slack
-            using var detailFont = new SKFont(SKTypeface.Default, 9);
+            using var detailFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
             using var grayText = new SKPaint { Color = new SKColor(0x60, 0x60, 0x60), IsAntialias = true };
             string details = _slack <= 0 ? $"{_duration}d (CRITICAL)" : $"{_duration}d (Slack: {_slack}d)";
             canvas.DrawText(details, r.MidX, r.Bottom - 8, SKTextAlign.Center, detailFont, grayText);

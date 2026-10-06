@@ -140,14 +140,14 @@ namespace Beep.Skia.UML
         {
             DrawBackground(canvas, context);
             DrawObjectName(canvas);
-            DrawStereotype(canvas, context, new SKFont(SKTypeface.Default, 10));
+            DrawStereotype(canvas, context, new SKFont(Beep.Skia.TypefaceCache.Default, 10));
             DrawConnectionPoints(canvas, context);
             DrawSelection(canvas, context);
         }
 
         private void DrawObjectName(SKCanvas canvas)
         {
-            using var font = new SKFont(SKTypeface.Default, 12) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 12) { Embolden = true };
             using var paint = new SKPaint
             {
                 Color = TextColor,

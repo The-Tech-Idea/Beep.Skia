@@ -371,7 +371,7 @@ namespace Beep.Skia.Network
                 var midX = omt * omt * omt * Start.X + 3 * omt * omt * t * c1.X + 3 * omt * t * t * c2.X + t * t * t * End.X;
                 var midY = omt * omt * omt * Start.Y + 3 * omt * omt * t * c1.Y + 3 * omt * t * t * c2.Y + t * t * t * End.Y;
                 using var labelPaint = new SKPaint { Color = LabelColor, IsAntialias = true };
-                using var labelFont = new SKFont(SKTypeface.Default, LabelTextSize);
+                using var labelFont = new SKFont(Beep.Skia.TypefaceCache.Default, LabelTextSize);
                 canvas.DrawText(Label, midX, midY - 6, SKTextAlign.Center, labelFont, labelPaint);
             }
         }

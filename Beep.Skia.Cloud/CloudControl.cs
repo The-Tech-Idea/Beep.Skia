@@ -124,7 +124,7 @@ namespace Beep.Skia.Cloud
 
             if (!string.IsNullOrEmpty(Name))
             {
-                using var font = new SKFont(SKTypeface.Default, 12) { Embolden = true };
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 12) { Embolden = true };
                 using var paint = new SKPaint { Color = TextColor, IsAntialias = true };
                 canvas.DrawText(Name, rect.MidX, rect.MidY + 4, SKTextAlign.Center, font, paint);
             }

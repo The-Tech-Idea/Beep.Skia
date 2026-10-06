@@ -72,6 +72,8 @@ namespace Beep.Skia.Model
     /// </summary>
     public class DrawingContext
     {
+        /// <summary>Whether components may render selection adorners; exports disable them without mutating selection.</summary>
+        public bool IncludeSelection { get; set; } = true;
         /// <summary>
         /// Gets or sets the current zoom level.
         /// </summary>

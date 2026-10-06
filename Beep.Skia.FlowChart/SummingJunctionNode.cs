@@ -126,7 +126,7 @@ namespace Beep.Skia.Flowchart
             // Draw label below if provided
             if (!string.IsNullOrWhiteSpace(Label))
             {
-                using var labelFont = new SKFont(SKTypeface.Default, 10);
+                using var labelFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
                 using var grayText = new SKPaint { Color = new SKColor(0x60, 0x60, 0x60), IsAntialias = true };
                 float labelWidth = labelFont.MeasureText(Label, grayText);
                 canvas.DrawText(Label, center.X - labelWidth / 2, r.Bottom + 12, SKTextAlign.Left, labelFont, grayText);

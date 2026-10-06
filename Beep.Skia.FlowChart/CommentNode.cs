@@ -64,7 +64,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xFF, 0xFF, 0xE0), IsAntialias = true }; // Light yellow
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0xE0, 0xE0, 0xE0), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1 }; // Light gray
             using var text = new SKPaint { Color = CustomTextColor ?? new SKColor(0x60, 0x60, 0x60), IsAntialias = true }; // Gray text
-            using var font = new SKFont(SKTypeface.Default, 12);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
 
             // Main rectangle body
             using var bodyPathBuilder = new SKPathBuilder();

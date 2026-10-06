@@ -168,7 +168,7 @@ namespace Beep.Skia.UML
         /// <param name="context">The drawing context.</param>
         protected virtual void DrawSelection(SKCanvas canvas, DrawingContext context)
         {
-            if (!IsSelected) return;
+            if (!IsSelected || !context.IncludeSelection) return;
 
             using var paint = new SKPaint
             {

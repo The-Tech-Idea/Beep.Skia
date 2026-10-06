@@ -73,6 +73,7 @@ namespace Beep.Skia.Business
             Height = 40;
             Name = "Rule Flow";
             ComponentType = BusinessComponentType.Task;
+            EnsurePortCounts(0, 0);
             NodeProperties["FlowLabel"] = new ParameterInfo { ParameterName = "FlowLabel", ParameterType = typeof(string), DefaultParameterValue = _flowLabel, ParameterCurrentValue = _flowLabel, Description = "Flow label" };
             NodeProperties["Direction"] = new ParameterInfo { ParameterName = "Direction", ParameterType = typeof(FlowDirection), DefaultParameterValue = _direction, ParameterCurrentValue = _direction, Description = "Flow direction", Choices = Enum.GetNames(typeof(FlowDirection)) };
             NodeProperties["IsActive"] = new ParameterInfo { ParameterName = "IsActive", ParameterType = typeof(bool), DefaultParameterValue = _isActive, ParameterCurrentValue = _isActive, Description = "Active state" };
@@ -149,7 +150,7 @@ namespace Beep.Skia.Business
             if (string.IsNullOrEmpty(FlowLabel))
                 return;
 
-            using var font = new SKFont(SKTypeface.Default, 8);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             using var paint = new SKPaint
             {
                 Color = TextColor,
@@ -165,8 +166,8 @@ namespace Beep.Skia.Business
 
         protected override void LayoutPorts()
         {
+            base.LayoutPorts();
             // RuleFlow is a visual connector; no ports by default.
-            EnsurePortCounts(0, 0);
         }
     }
 }

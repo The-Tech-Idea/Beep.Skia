@@ -10,6 +10,23 @@ namespace Beep.Skia
     /// </summary>
     public partial class DrawingManager
     {
+        /// <summary>Sets the complete paint order of current components as one undoable operation.</summary>
+        public void SetComponentOrder(IReadOnlyList<SkiaComponent> order)
+        {
+            if (order == null || order.Count != _components.Count || order.Distinct().Count() != order.Count
+                || order.Any(c => !_components.Contains(c))) throw new ArgumentException("Order must contain each current component once.", nameof(order));
+            if (_components.SequenceEqual(order)) return;
+            var before = _components.ToArray(); var after = order.ToArray();
+            RestoreComponentOrder(after); _historyManager.ExecuteAction(new ComponentOrderAction(this, before, after));
+        }
+        /// <summary>Restores a captured component order without changing scene membership or history.</summary>
+        internal void RestoreComponentOrder(IEnumerable<SkiaComponent> order)
+        {
+            var restored = order.Where(c => _components.Contains(c)).Distinct().ToList();
+            restored.AddRange(_components.Where(c => !restored.Contains(c)));
+            _components.Clear(); _components.AddRange(restored);
+            DrawSurface?.Invoke(this, null);
+        }
         /// <summary>
         /// Brings the specified component to the front of the draw order without removing it or its lines.
         /// </summary>
@@ -51,6 +68,9 @@ namespace Beep.Skia
         {
             if (component == null)
                 throw new ArgumentNullException(nameof(component), "Component cannot be null.");
+            if (!_components.Contains(component)) return;
+            var previousOrder = _components.ToList();
+            var previousLineOrder = _lines.ToList();
 
             // Remove all connections to/from this component
             var linesToRemove = _lines.Where(line =>
@@ -58,7 +78,7 @@ namespace Beep.Skia
 
             foreach (var line in linesToRemove)
             {
-                _lines.Remove(line);
+                RemoveLine(line);
             }
 
             _components.Remove(component);
@@ -67,7 +87,7 @@ namespace Beep.Skia
             // Unregister its connection points
             UnregisterConnectionPoints(component);
             _selectionManager.RemoveFromSelection(component);
-            _historyManager.ExecuteAction(new RemoveComponentAction(this, component, linesToRemove));
+            _historyManager.ExecuteAction(new RemoveComponentAction(this, component, linesToRemove, previousOrder, previousLineOrder));
             DrawSurface?.Invoke(this, null);
         }
 
@@ -86,11 +106,13 @@ namespace Beep.Skia
                 linesToDelete.AddRange(componentLines);
             }
 
+            linesToDelete = linesToDelete.Distinct().ToList();
+            if (componentsToDelete.Count == 0) return;
             _historyManager.ExecuteAction(new DeleteComponentsAction(this, componentsToDelete, linesToDelete));
 
             foreach (var line in linesToDelete)
             {
-                _lines.Remove(line);
+                RemoveLine(line);
             }
 
             foreach (var component in componentsToDelete)
@@ -459,7 +481,7 @@ namespace Beep.Skia
         public void ClearComponents()
         {
             // Remove all lines
-            _lines.Clear();
+            foreach (var line in _lines.ToList()) RemoveLine(line);
 
             // Remove all components
             // Unsubscribe events before clearing
@@ -778,6 +800,7 @@ namespace Beep.Skia
         private void RegisterConnectionPoints(SkiaComponent component)
         {
             if (component == null) return;
+            component.RefreshPortLayout();
             foreach (var cp in component.InConnectionPoints.Concat(component.OutConnectionPoints).Where(p => p != null))
             {
                 // Ensure component reference is set

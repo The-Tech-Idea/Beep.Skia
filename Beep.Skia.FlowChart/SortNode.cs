@@ -90,7 +90,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xED, 0xE7, 0xF6), IsAntialias = true }; // Light deep purple
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x67, 0x3A, 0xB7), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Deep purple
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
 
             // Two overlapping triangles (diamond shape)
             float midY = r.MidY;
@@ -130,7 +130,7 @@ namespace Beep.Skia.Flowchart
             // Draw sort key if provided
             if (!string.IsNullOrWhiteSpace(SortKey))
             {
-                using var smallFont = new SKFont(SKTypeface.Default, 10);
+                using var smallFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
                 using var grayText = new SKPaint { Color = new SKColor(0x60, 0x60, 0x60), IsAntialias = true };
                 float keyWidth = smallFont.MeasureText(SortKey, grayText);
                 canvas.DrawText(SortKey, r.MidX - keyWidth / 2, r.MidY + 10, SKTextAlign.Left, smallFont, grayText);

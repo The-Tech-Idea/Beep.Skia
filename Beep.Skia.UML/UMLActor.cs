@@ -80,7 +80,7 @@ namespace Beep.Skia.UML
             DrawActorName(canvas);
 
             // Draw stereotype if present
-            DrawStereotype(canvas, context, new SKFont(SKTypeface.Default, 10));
+            DrawStereotype(canvas, context, new SKFont(Beep.Skia.TypefaceCache.Default, 10));
 
             // Draw connection points
             DrawConnectionPoints(canvas, context);
@@ -169,7 +169,7 @@ namespace Beep.Skia.UML
         /// </summary>
         private void DrawActorName(SKCanvas canvas)
         {
-            using var font = new SKFont(SKTypeface.Default, 12);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
             using var paint = new SKPaint
             {
                 Color = TextColor,

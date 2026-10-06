@@ -63,7 +63,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xE1, 0xF5, 0xFE), IsAntialias = true }; // Light blue
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x03, 0xA9, 0xF4), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Blue
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
 
             // Elongated oval (rounded rectangle with large corner radius)
             float radius = r.Height / 2;

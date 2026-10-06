@@ -95,8 +95,8 @@ namespace Beep.Skia.UML
             canvas.DrawRect(tab2, fill);
             canvas.DrawRect(tab2, stroke);
 
-            using var stereotypeFont = new SKFont(SKTypeface.Default, 9);
-            using var nameFont = new SKFont(SKTypeface.Default, 12) { Embolden = true };
+            using var stereotypeFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 12) { Embolden = true };
             using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
 
             canvas.DrawText("«component»", X + Width / 2f, Y + 20f, SKTextAlign.Center, stereotypeFont, textPaint);

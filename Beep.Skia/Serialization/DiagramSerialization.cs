@@ -16,7 +16,7 @@ namespace Beep.Skia.Serialization
         /// <summary>
         /// Schema version of the serialized payload. Increment when the DTO shape changes.
         /// </summary>
-        public const int CurrentSchemaVersion = 2;
+        public const int CurrentSchemaVersion = 3;
 
         /// <summary>
         /// Gets or sets the schema version of this payload.
@@ -40,6 +40,9 @@ namespace Beep.Skia.Serialization
 
     public class ComponentDto
     {
+        /// <summary>Persisted component identity. Empty for older schemas and templates; copied instances receive new IDs.</summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public Guid Id { get; set; }
         /// <summary>
         /// Gets or sets the type.
         /// </summary>

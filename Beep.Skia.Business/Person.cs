@@ -121,7 +121,6 @@ namespace Beep.Skia.Business
         protected override void LayoutPorts()
         {
             // Circle profile: use ellipse perimeter placement, 1 in / 1 out
-            EnsurePortCounts(1, 1);
             LayoutPortsOnEllipse(topInset: 4f, bottomInset: 4f, outwardOffset: 2f);
         }
 
@@ -130,8 +129,8 @@ namespace Beep.Skia.Business
             if (string.IsNullOrEmpty(PersonName))
                 return;
 
-            using var nameFont = new SKFont(SKTypeface.Default, 11) { Embolden = true };
-            using var titleFont = new SKFont(SKTypeface.Default, 9);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
+            using var titleFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
             using var paint = new SKPaint
             {
                 Color = TextColor,

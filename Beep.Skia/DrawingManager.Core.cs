@@ -90,6 +90,8 @@ namespace Beep.Skia
         /// Gets a value indicating whether the grid is visible.
         /// </summary>
         public bool ShowGrid { get; set; } = true;
+        /// <summary>Allows hosts with custom tool handles to suppress the standard selection adorners.</summary>
+        public bool ShowSelectionHandles { get; set; } = true;
 
         /// <summary>
         /// Gets or sets the grid spacing.
@@ -390,6 +392,7 @@ namespace Beep.Skia
             {
                 var comp = new Beep.Skia.Serialization.ComponentDto
                 {
+                    Id = c.Id,
                     Type = c.GetType().AssemblyQualifiedName,
                     X = SanitizeCoordinate(c.X),
                     Y = SanitizeCoordinate(c.Y),
@@ -522,6 +525,7 @@ namespace Beep.Skia
                     }
                     if (Activator.CreateInstance(type) is SkiaComponent instance)
                     {
+                        if (comp.Id != Guid.Empty) instance.RestoreIdentity(comp.Id);
                         instance.X = comp.X;
                         instance.Y = comp.Y;
                         instance.Width = comp.Width;

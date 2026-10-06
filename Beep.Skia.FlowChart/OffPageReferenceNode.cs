@@ -132,7 +132,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xE8, 0xF5, 0xE9), IsAntialias = true }; // Light green
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x43, 0xA0, 0x47), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Green
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
             pathBuilder.MoveTo(points[0]);
@@ -147,7 +147,7 @@ namespace Beep.Skia.Flowchart
             // Draw reference ID in bold
             if (!string.IsNullOrWhiteSpace(ReferenceId))
             {
-                using var boldFont = new SKFont(SKTypeface.Default, 14) { Embolden = true };
+                using var boldFont = new SKFont(Beep.Skia.TypefaceCache.Default, 14) { Embolden = true };
                 float refWidth = boldFont.MeasureText(ReferenceId, text);
                 canvas.DrawText(ReferenceId, r.MidX - refWidth / 2, r.Top + 25, SKTextAlign.Left, boldFont, text);
             }
@@ -155,7 +155,7 @@ namespace Beep.Skia.Flowchart
             // Draw page number below
             if (!string.IsNullOrWhiteSpace(PageNumber))
             {
-                using var smallFont = new SKFont(SKTypeface.Default, 10);
+                using var smallFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
                 using var grayText = new SKPaint { Color = new SKColor(0x60, 0x60, 0x60), IsAntialias = true };
                 float pageWidth = smallFont.MeasureText($"→ {PageNumber}", grayText);
                 canvas.DrawText($"→ {PageNumber}", r.MidX - pageWidth / 2, r.Top + 45, SKTextAlign.Left, smallFont, grayText);
