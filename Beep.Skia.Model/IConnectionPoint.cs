@@ -40,9 +40,10 @@ namespace Beep.Skia.Model
         int Index { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this connection point is available for connection.
+        /// Gets whether this connection point can take a connection: true exactly when it has none. The connection is
+        /// the one owner of that fact, so laying out ports again (which every redraw may do) cannot make a connected port look free.
         /// </summary>
-        bool IsAvailable { get; set; }
+        bool IsAvailable { get; }
 
         /// <summary>
         /// Gets or sets the offset of this connection point from its component's origin.

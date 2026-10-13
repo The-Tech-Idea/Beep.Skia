@@ -119,7 +119,6 @@ namespace Beep.Skia.Business
         protected override void LayoutPorts()
         {
             // Rounded rect: 1 in / 1 out, vertical segments
-            EnsurePortCounts(1, 1);
             LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
         }
     }

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(BeepSkiaPortableTargetFramework)' == 'net10.0'">net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(BeepSkiaPortableTargetFramework)' != 'net10.0'">net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>Latest</LangVersion>
     <Description>Quantitative chart components (bar, line, pie, scatter, area) for Beep.Skia diagrams</Description>
@@ -22,10 +23,10 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-  <Target Name="CopyPackage" AfterTargets="Pack">
+  <Target Condition="'$(BeepSkiaLocalBuildCopies)' != 'false'" Name="CopyPackage" AfterTargets="Pack">
     <Copy SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="..\..\..\LocalNugetFiles" />
   </Target>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Condition="'$(BeepSkiaLocalBuildCopies)' != 'false'" Name="PostBuild" AfterTargets="PostBuildEvent">
     <Copy SourceFiles="$(TargetDir)$(PackageId).dll" DestinationFolder="$(ProjectDir)..\..\outputDLL\$(PackageId)\$(TargetFramework)" SkipUnchangedFiles="false" />
   </Target>
   <ItemGroup>

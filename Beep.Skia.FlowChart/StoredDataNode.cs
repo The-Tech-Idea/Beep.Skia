@@ -7,7 +7,7 @@ namespace Beep.Skia.Flowchart
     /// Stored data node: parallelogram tilted to the right for data storage (tape, disk).
     /// Different from InputOutput which tilts both sides.
     /// </summary>
-    public class StoredDataNode : FlowchartControl
+    public class StoredDataNode : DirectedFlowchartControl
     {
         private string _label = "Stored Data";
         /// <summary>
@@ -49,9 +49,21 @@ namespace Beep.Skia.Flowchart
             };
         }
 
-        protected override void LayoutPorts()
+        protected override void LayoutSidePorts()
         {
             LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
+        }
+
+        /// <summary>How far the curved left end leans.</summary>
+        private static float Slant(SKRect r) => r.Height * 0.2f;
+
+        /// <summary>Inputs along the flat top, outputs along the flat bottom, from just past the curved left end.</summary>
+        protected override void LayoutTopBottomPorts()
+        {
+            var r = Bounds;
+            var from = r.Left + Slant(r) * 0.3f + FlowInset;
+            PlaceAlongEdge(InConnectionPoints, from, r.Right - FlowInset, _ => r.Top, -1f);
+            PlaceAlongEdge(OutConnectionPoints, from, r.Right - FlowInset, _ => r.Bottom, +1f);
         }
 
         protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
@@ -59,13 +71,13 @@ namespace Beep.Skia.Flowchart
             if (!context.Bounds.IntersectsWith(Bounds)) return;
 
             var r = Bounds;
-            float slant = r.Height * 0.2f;
+            var slant = Slant(r);
 
             // Parallelogram tilted right (curved left edge for tape/disk appearance)
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xF1, 0xF8, 0xE9), IsAntialias = true }; // Light green
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x66, 0x9B, 0x00), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Olive green
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
             // Left edge is curved (like tape reel)

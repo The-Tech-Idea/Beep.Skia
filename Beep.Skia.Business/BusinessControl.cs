@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using Beep.Skia;
 using Beep.Skia.Model;
 using Beep.Skia.Components;
@@ -246,12 +246,12 @@ namespace Beep.Skia.Business
         protected void EnsurePortCounts(int inputs, int outputs)
         {
             while (InConnectionPoints.Count < inputs)
-                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
+                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius });
             while (InConnectionPoints.Count > inputs)
                 InConnectionPoints.RemoveAt(InConnectionPoints.Count - 1);
 
             while (OutConnectionPoints.Count < outputs)
-                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
+                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius });
             while (OutConnectionPoints.Count > outputs)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
@@ -267,7 +267,7 @@ namespace Beep.Skia.Business
         // Legacy helpers retained for compatibility, but EnsurePortCounts is preferred
         protected void AddInputConnectionPoint()
         {
-            InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, IsAvailable = true, DataType = "link" });
+            InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "link" });
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace Beep.Skia.Business
         /// </summary>
         protected void AddOutputConnectionPoint()
         {
-            OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, IsAvailable = true, DataType = "link" });
+            OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "link" });
         }
 
         /// <summary>
@@ -306,7 +306,6 @@ namespace Beep.Skia.Business
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
 
             int nOut = Math.Max(OutConnectionPoints.Count, 1);
@@ -322,7 +321,6 @@ namespace Beep.Skia.Business
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
         }
 
@@ -365,7 +363,6 @@ namespace Beep.Skia.Business
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
 
             int nOut = Math.Max(OutConnectionPoints.Count, 1);
@@ -395,7 +392,6 @@ namespace Beep.Skia.Business
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
         }
 
@@ -528,7 +524,7 @@ namespace Beep.Skia.Business
             if (string.IsNullOrEmpty(Name))
                 return;
 
-            using var font = new SKFont(SKTypeface.Default, 12) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 12) { Embolden = true };
             using var paint = new SKPaint
             {
                 Color = TextColor,

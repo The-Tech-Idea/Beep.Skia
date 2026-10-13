@@ -138,7 +138,6 @@ namespace Beep.Skia.ETL
                 p.Rect = p.Bounds;
                 p.Index = i;
                 p.Component = this;
-                p.IsAvailable = true;
             }
         }
     }

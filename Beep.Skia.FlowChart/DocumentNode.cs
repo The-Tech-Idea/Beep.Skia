@@ -6,7 +6,7 @@ namespace Beep.Skia.Flowchart
     /// <summary>
     /// Document: rectangle with a curved bottom edge and centered label.
     /// </summary>
-    public class DocumentNode : FlowchartControl
+    public class DocumentNode : DirectedFlowchartControl
     {
         private string _label = "Document";
         /// <summary>
@@ -78,7 +78,7 @@ namespace Beep.Skia.Flowchart
             };
         }
 
-        protected override void LayoutPorts()
+        protected override void LayoutSidePorts()
         {
             var b = Bounds;
             // Favor straight edges for stable attachment: left and right verticals excluding curved bottom area
@@ -93,6 +93,21 @@ namespace Beep.Skia.Flowchart
             }
         }
 
+        /// <summary>The wavy bottom edge, from its right end to its left end: both ends and the two control points.</summary>
+        private static (SKPoint End, SKPoint Control1, SKPoint Control2, SKPoint Start) BottomCurve(SKRect b) =>
+            (new(b.Right, b.Bottom - 12f), new(b.Right - 30f, b.Bottom + 12f), new(b.Left + 30f, b.Bottom + 12f), new(b.Left, b.Bottom - 12f));
+
+        /// <summary>Inputs along the flat top, outputs along the wavy bottom (or along the top, with
+        /// <see cref="OutPortsOnTop"/>).</summary>
+        protected override void LayoutTopBottomPorts()
+        {
+            var b = Bounds;
+            var (right, toRight, toLeft, left) = BottomCurve(b);
+            PlaceAlongEdge(InConnectionPoints, b.Left + FlowInset, b.Right - FlowInset, _ => b.Top, -1f);
+            if (OutPortsOnTop) PlaceAlongEdge(OutConnectionPoints, b.Left + FlowInset, b.Right - FlowInset, _ => b.Top, -1f);
+            else PlaceAlongEdge(OutConnectionPoints, b.Left + FlowInset, b.Right - FlowInset, x => CubicYAt(right, toRight, toLeft, left, x), +1f);
+        }
+
         protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
         {
             if (!context.Bounds.IntersectsWith(Bounds)) return;
@@ -101,14 +116,14 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = new SKColor(0xFF, 0xEB, 0xEE), IsAntialias = true };
             using var stroke = new SKPaint { Color = new SKColor(0xC2, 0x18, 0x5B), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
             using var text = new SKPaint { Color = SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
-            float curve = 12f;
             pathBuilder.MoveTo(b.Left, b.Top);
             pathBuilder.LineTo(b.Right, b.Top);
-            pathBuilder.LineTo(b.Right, b.Bottom - curve);
-            pathBuilder.CubicTo(b.Right - 30, b.Bottom + curve, b.Left + 30, b.Bottom + curve, b.Left, b.Bottom - curve);
+            var (right, toRight, toLeft, left) = BottomCurve(b);
+            pathBuilder.LineTo(right);
+            pathBuilder.CubicTo(toRight, toLeft, left);
             pathBuilder.Close();
 
             using var path = pathBuilder.Detach();

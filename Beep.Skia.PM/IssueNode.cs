@@ -187,11 +187,11 @@ namespace Beep.Skia.PM
             canvas.DrawCircle(iconX, iconY + 18, 2f, iconPaint);
 
             // Draw issue title
-            using var titleFont = new SKFont(SKTypeface.Default, 12);
+            using var titleFont = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
             canvas.DrawText(IssueTitle, r.Left + 32, r.Top + 20, SKTextAlign.Left, titleFont, text);
 
             // Draw priority
-            using var detailFont = new SKFont(SKTypeface.Default, 9);
+            using var detailFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
             using var grayText = new SKPaint { Color = new SKColor(0x60, 0x60, 0x60), IsAntialias = true };
             canvas.DrawText($"Priority: {Priority}", r.Left + 12, r.Top + 40, SKTextAlign.Left, detailFont, grayText);
 
@@ -200,7 +200,7 @@ namespace Beep.Skia.PM
             SKColor statusColor = isResolved ? new SKColor(0x43, 0xA0, 0x47) : new SKColor(0x75, 0x75, 0x75);
             using var badgeFill = new SKPaint { Color = statusColor, IsAntialias = true };
             using var badgeText = new SKPaint { Color = SKColors.White, IsAntialias = true };
-            using var badgeFont = new SKFont(SKTypeface.Default, 8);
+            using var badgeFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
 
             float badgeWidth = badgeFont.MeasureText(Status, badgeText) + 8;
             var badgeRect = new SKRect(r.Left + 12, badgeY, r.Left + 12 + badgeWidth, badgeY + 12);
@@ -210,7 +210,7 @@ namespace Beep.Skia.PM
             // Draw assigned indicator if assigned
             if (!string.IsNullOrWhiteSpace(AssignedTo))
             {
-                using var assignFont = new SKFont(SKTypeface.Default, 8);
+                using var assignFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
                 string assignText = $"→ {AssignedTo}";
                 canvas.DrawText(assignText, r.Left + 18 + badgeWidth, badgeY + 10, SKTextAlign.Left, assignFont, grayText);
             }

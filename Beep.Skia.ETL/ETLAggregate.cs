@@ -86,7 +86,6 @@ namespace Beep.Skia.ETL
                 inputPoint.Rect = inputPoint.Bounds;
                 inputPoint.Index = 0;
                 inputPoint.Component = this;
-                inputPoint.IsAvailable = true;
             }
 
             // Position output at the middle of the right flat side
@@ -102,7 +101,6 @@ namespace Beep.Skia.ETL
                 outputPoint.Rect = outputPoint.Bounds;
                 outputPoint.Index = 0;
                 outputPoint.Component = this;
-                outputPoint.IsAvailable = true;
             }
         }
     }

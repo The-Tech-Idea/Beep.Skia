@@ -71,12 +71,12 @@ namespace Beep.Skia.ECAD
             
             // Label inside
             using var text = new SKPaint { Color = BorderColor, IsAntialias = true };
-            using var regFont = new SKFont(SKTypeface.Default, 10);
+            using var regFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
             canvas.DrawText("REG", cx, cy + 3, SKTextAlign.Center, regFont, text);
 
             // Voltage labels
             using var label = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var labelFont = new SKFont(SKTypeface.Default, 9);
+            using var labelFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
             canvas.DrawText($"{_outputVoltage}V", r.MidX - labelFont.MeasureText($"{_outputVoltage}V") / 2, r.Bottom - 4, SKTextAlign.Left, labelFont, label);
 
             DrawPorts(canvas);

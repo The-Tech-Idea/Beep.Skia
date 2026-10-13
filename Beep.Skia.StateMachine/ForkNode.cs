@@ -76,7 +76,6 @@ namespace Beep.Skia.StateMachine
                 cp.Rect = cp.Bounds;
                 cp.Index = 0;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
 
             // Multiple outputs on the right, evenly spaced
@@ -91,7 +90,6 @@ namespace Beep.Skia.StateMachine
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
         }
 

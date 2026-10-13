@@ -125,7 +125,6 @@ namespace Beep.Skia.ETL
                     );
                     pt.Rect = pt.Bounds;
                     pt.Component = this;
-                    pt.IsAvailable = true;
                 }
             }
 
@@ -143,7 +142,6 @@ namespace Beep.Skia.ETL
                 );
                 pt.Rect = pt.Bounds;
                 pt.Component = this;
-                pt.IsAvailable = true;
             }
         }
     }

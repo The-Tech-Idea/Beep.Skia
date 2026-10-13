@@ -61,7 +61,7 @@ namespace Beep.Skia.UML
             // Title at top-left
             if (!string.IsNullOrWhiteSpace(_systemName))
             {
-                using var font = new SKFont(SKTypeface.Default, 11) { Embolden = true };
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
                 using var text = new SKPaint { Color = BorderColor, IsAntialias = true };
                 canvas.DrawText(_systemName, X + 8, Y + 16, SKTextAlign.Left, font, text);
             }

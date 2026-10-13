@@ -1,77 +1,35 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Beep.Skia.Helpers;
 using SkiaSharp;
-using Beep.Skia.Model;
+
 namespace Beep.Skia
 {
-  
-
-    /// <summary>
-    /// Partial class for TableDrawer containing all mouse interaction methods
-    /// </summary>
-    public partial class TableDrawer 
+    public partial class TableDrawer
     {
-        /// <summary>
-        /// Handles mouse down events to initiate drag operations on table cells.
-        /// </summary>
-        /// <param name="mouseLocation">The location of the mouse pointer when the button was pressed.</param>
-        public void HandleMouseDown(SKPoint mouseLocation)
+        /// <summary>The cell under <paramref name="point"/> (relative to the table's top-left corner): the top-left cell of
+        /// the merged cell it falls in, or the cell itself; null outside the table.</summary>
+        public (int Row, int Column)? CellAt(SKPoint point)
         {
-            if (TableDrawerHelper.TryGetCellIndexContainingPoint(mouseLocation, CellRects, out int rowIndex, out int columnIndex))
-            {
-                IsDragging = true;
-                DraggedRowIndex = rowIndex;
-                DraggedColumnIndex = columnIndex;
-                (DragOffsetX, DragOffsetY) = TableDrawerHelper.CalculateDragOffset(CellRects[rowIndex, columnIndex], mouseLocation);
-            }
+            var row = TableDrawerHelper.IndexAt(_tops, point.Y);
+            var column = TableDrawerHelper.IndexAt(_lefts, Content.RightToLeft ? Size.Width - point.X : point.X);
+            if (row is null || column is null) return null;
+            return Content.Anchor(row.Value, column.Value);
         }
 
-        /// <summary>
-        /// Handles mouse move events to update the position of dragged cells.
-        /// </summary>
-        /// <param name="mouseLocation">The current location of the mouse pointer.</param>
-        public void HandleMouseMove(SKPoint mouseLocation)
+        /// <summary>The column whose trailing edge (its right edge; its left edge in a right-to-left table) is within
+        /// <paramref name="tolerance"/> of <paramref name="point"/>, along the table's height; null when none is. Dragging
+        /// that edge sets the column's width.</summary>
+        public int? ColumnEdgeAt(SKPoint point, float tolerance)
         {
-            if (IsDragging && DraggedRowIndex != -1 && DraggedColumnIndex != -1)
-            {
-                SKRect originalRect = CellRects[DraggedRowIndex, DraggedColumnIndex];
-                CellRects[DraggedRowIndex, DraggedColumnIndex] = TableDrawerHelper.UpdateDraggedRectPosition(originalRect, mouseLocation, DragOffsetX, DragOffsetY);
-            }
+            if (point.Y < 0 || point.Y > Size.Height) return null;
+            return TableDrawerHelper.EdgeAt(DrawnEdges(), point.X, tolerance);
         }
 
-        /// <summary>
-        /// Handles mouse up events to complete drag operations and potentially swap cell positions.
-        /// </summary>
-        /// <param name="mouseLocation">The location of the mouse pointer when the button was released.</param>
-        public void HandleMouseUp(SKPoint mouseLocation)
+        /// <summary>The row whose bottom edge is within <paramref name="tolerance"/> of <paramref name="point"/>, across the
+        /// table's width; null when none is. Dragging that edge sets the row's minimum height.</summary>
+        public int? RowEdgeAt(SKPoint point, float tolerance)
         {
-            if (IsDragging && DraggedRowIndex != -1 && DraggedColumnIndex != -1)
-            {
-                // Find the target cell
-                if (TableDrawerHelper.TryGetCellIndexContainingPoint(mouseLocation, CellRects, out int targetRowIndex, out int targetColumnIndex))
-                {
-                    // Only swap if it's a different cell
-                    if (targetRowIndex != DraggedRowIndex || targetColumnIndex != DraggedColumnIndex)
-                    {
-                        // Swap the cell contents (you would need to implement this based on your data model)
-                        // For now, we'll just swap the rectangles
-                        var tempRect = CellRects[DraggedRowIndex, DraggedColumnIndex];
-                        CellRects[DraggedRowIndex, DraggedColumnIndex] = CellRects[targetRowIndex, targetColumnIndex];
-                        CellRects[targetRowIndex, targetColumnIndex] = tempRect;
-                    }
-                }
-
-                // Reset drag state
-                IsDragging = false;
-                DraggedRowIndex = -1;
-                DraggedColumnIndex = -1;
-                DragOffsetX = 0;
-                DragOffsetY = 0;
-            }
+            if (point.X < 0 || point.X > Size.Width) return null;
+            return TableDrawerHelper.EdgeAt(_tops, point.Y, tolerance);
         }
     }
 }

@@ -125,7 +125,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xE0, 0xF2, 0xF1), IsAntialias = true }; // Light teal
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x00, 0x96, 0x88), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Teal
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
 
             // Draw outer rectangle
             canvas.DrawRoundRect(r, CornerRadius, CornerRadius, fill);
@@ -156,7 +156,7 @@ namespace Beep.Skia.Flowchart
             // Draw subprocess ID in smaller text if provided
             if (!string.IsNullOrWhiteSpace(SubProcessId))
             {
-                using var smallFont = new SKFont(SKTypeface.Default, 10);
+                using var smallFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
                 using var grayText = new SKPaint { Color = new SKColor(0x60, 0x60, 0x60), IsAntialias = true };
                 float idWidth = smallFont.MeasureText(SubProcessId, grayText);
                 canvas.DrawText(SubProcessId, r.MidX - idWidth / 2, r.Bottom - 10, SKTextAlign.Left, smallFont, grayText);

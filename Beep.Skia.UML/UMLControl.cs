@@ -168,7 +168,7 @@ namespace Beep.Skia.UML
         /// <param name="context">The drawing context.</param>
         protected virtual void DrawSelection(SKCanvas canvas, DrawingContext context)
         {
-            if (!IsSelected) return;
+            if (!IsSelected || !context.IncludeSelection) return;
 
             using var paint = new SKPaint
             {
@@ -283,10 +283,10 @@ namespace Beep.Skia.UML
         {
             _points.Clear();
             // top, right, bottom, left
-            _points.Add(new ConnectionPoint { Component = this, Type = ConnectionPointType.In, Radius = 6, Shape = ComponentShape.Circle, IsAvailable = true });
-            _points.Add(new ConnectionPoint { Component = this, Type = ConnectionPointType.In, Radius = 6, Shape = ComponentShape.Circle, IsAvailable = true });
-            _points.Add(new ConnectionPoint { Component = this, Type = ConnectionPointType.In, Radius = 6, Shape = ComponentShape.Circle, IsAvailable = true });
-            _points.Add(new ConnectionPoint { Component = this, Type = ConnectionPointType.In, Radius = 6, Shape = ComponentShape.Circle, IsAvailable = true });
+            _points.Add(new ConnectionPoint { Component = this, Type = ConnectionPointType.In, Radius = 6, Shape = ComponentShape.Circle });
+            _points.Add(new ConnectionPoint { Component = this, Type = ConnectionPointType.In, Radius = 6, Shape = ComponentShape.Circle });
+            _points.Add(new ConnectionPoint { Component = this, Type = ConnectionPointType.In, Radius = 6, Shape = ComponentShape.Circle });
+            _points.Add(new ConnectionPoint { Component = this, Type = ConnectionPointType.In, Radius = 6, Shape = ComponentShape.Circle });
         }
 
         /// <summary>

@@ -182,7 +182,6 @@ namespace Beep.Skia.ETL
                 outputPoint.Rect = outputPoint.Bounds;
                 outputPoint.Index = 0;
                 outputPoint.Component = this;
-                outputPoint.IsAvailable = true;
             }
         }
     }

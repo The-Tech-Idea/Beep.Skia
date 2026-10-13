@@ -93,7 +93,6 @@ namespace Beep.Skia.ETL
                 inputPoint.Rect = inputPoint.Bounds;
                 inputPoint.Index = 0;
                 inputPoint.Component = this;
-                inputPoint.IsAvailable = true;
             }
 
             // Position output at bottom point of diamond
@@ -108,7 +107,6 @@ namespace Beep.Skia.ETL
                 outputPoint.Rect = outputPoint.Bounds;
                 outputPoint.Index = 0;
                 outputPoint.Component = this;
-                outputPoint.IsAvailable = true;
             }
         }
     }

@@ -6,7 +6,7 @@ namespace Beep.Skia.Flowchart
     /// <summary>
     /// Delay node: half-circle or rounded shape indicating a pause/wait in the process.
     /// </summary>
-    public class DelayNode : FlowchartControl
+    public class DelayNode : DirectedFlowchartControl
     {
         private string _label = "Delay";
         /// <summary>
@@ -76,39 +76,27 @@ namespace Beep.Skia.Flowchart
             };
         }
 
-        protected override void LayoutPorts()
+        /// <summary>The input on the straight left edge, the output on the curve at the right; more of either spread along them.</summary>
+        protected override void LayoutSidePorts()
         {
             var r = Bounds;
-
-            // Input port: left side
-            if (InConnectionPoints.Count > 0)
+            PlaceStackBeside(InConnectionPoints, r.Left, -PortRadius, float.MaxValue);
+            var count = OutConnectionPoints.Count;
+            for (int i = 0; i < count; i++)
             {
-                var inPt = InConnectionPoints[0];
-                inPt.Center = new SKPoint(r.Left, r.MidY);
-                inPt.Position = new SKPoint(r.Left - PortRadius, r.MidY);
-                inPt.Bounds = new SKRect(
-                    inPt.Center.X - PortRadius,
-                    inPt.Center.Y - PortRadius,
-                    inPt.Center.X + PortRadius,
-                    inPt.Center.Y + PortRadius
-                );
-                inPt.Rect = inPt.Bounds;
+                // One output sits at the tip of the curve; more spread over its middle 100 degrees.
+                var angle = count == 1 ? 0f : (-50f + 100f * i / (count - 1)) * MathF.PI / 180f;
+                var at = new SKPoint(r.MidX + r.Width / 2 * MathF.Cos(angle), r.MidY + r.Height / 2 * MathF.Sin(angle));
+                SetPortBeside(OutConnectionPoints[i], at, PortRadius, i);
             }
+        }
 
-            // Output port: right side
-            if (OutConnectionPoints.Count > 0)
-            {
-                var outPt = OutConnectionPoints[0];
-                outPt.Center = new SKPoint(r.Right, r.MidY);
-                outPt.Position = new SKPoint(r.Right + PortRadius, r.MidY);
-                outPt.Bounds = new SKRect(
-                    outPt.Center.X - PortRadius,
-                    outPt.Center.Y - PortRadius,
-                    outPt.Center.X + PortRadius,
-                    outPt.Center.Y + PortRadius
-                );
-                outPt.Rect = outPt.Bounds;
-            }
+        /// <summary>Inputs and outputs along the flat top and bottom, which run from the left edge to the middle.</summary>
+        protected override void LayoutTopBottomPorts()
+        {
+            var r = Bounds;
+            PlaceAlongEdge(InConnectionPoints, r.Left + 8f, r.MidX - 8f, _ => r.Top, -1f);
+            PlaceAlongEdge(OutConnectionPoints, r.Left + 8f, r.MidX - 8f, _ => r.Bottom, +1f);
         }
 
         protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
@@ -120,21 +108,14 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xFF, 0xF8, 0xE1), IsAntialias = true }; // Light amber
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0xFF, 0xA0, 0x00), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Orange
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
-            // D-shape: straight left edge, curved right edge
+            // D-shape: straight left edge, flat top and bottom to the middle, then the right half of the ellipse in the bounds
             pathBuilder.MoveTo(r.Left, r.Top);
+            pathBuilder.LineTo(r.MidX, r.Top);
+            pathBuilder.ArcTo(new SKRect(r.Left, r.Top, r.Right, r.Bottom), -90, 180, false);
             pathBuilder.LineTo(r.Left, r.Bottom);
-            
-            // Arc on the right side (half circle)
-            pathBuilder.ArcTo(
-                new SKRect(r.Left, r.Top, r.Right, r.Bottom),
-                90,  // Start angle
-                180, // Sweep angle
-                false
-            );
-            
             pathBuilder.Close();
 
             using var path = pathBuilder.Detach();
@@ -154,7 +135,7 @@ namespace Beep.Skia.Flowchart
             // Draw duration if provided
             if (!string.IsNullOrWhiteSpace(Duration))
             {
-                using var smallFont = new SKFont(SKTypeface.Default, 11);
+                using var smallFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11);
                 using var grayText = new SKPaint { Color = new SKColor(0x60, 0x60, 0x60), IsAntialias = true };
                 canvas.DrawText(Duration, tx, r.MidY + 10, SKTextAlign.Left, smallFont, grayText);
             }

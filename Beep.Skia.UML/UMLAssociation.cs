@@ -91,7 +91,7 @@ namespace Beep.Skia.UML
             if (Start == null || End == null)
                 return;
 
-            using var font = new SKFont(SKTypeface.Default, 10);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
             using var paint = new SKPaint
             {
                 Color = SKColors.Black,

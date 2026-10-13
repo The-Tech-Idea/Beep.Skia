@@ -212,8 +212,8 @@ namespace Beep.Skia.PM
             var bounds = new SKRect(X, Y, X + Width, Y + Height);
             using var paint = new SKPaint { IsAntialias = true };
             using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var headerFont = new SKFont(SKTypeface.Default, 10) { Embolden = true };
-            using var labelFont = new SKFont(SKTypeface.Default, 9);
+            using var headerFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10) { Embolden = true };
+            using var labelFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
 
             // Surface
             paint.Color = MaterialColors.Surface;

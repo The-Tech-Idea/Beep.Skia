@@ -192,13 +192,13 @@ namespace Beep.Skia.Network
         {
             // inputs
             while (InConnectionPoints.Count < inCount)
-                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "object", IsAvailable = true });
+                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "object" });
             while (InConnectionPoints.Count > inCount)
                 InConnectionPoints.RemoveAt(InConnectionPoints.Count - 1);
 
             // outputs
             while (OutConnectionPoints.Count < outCount)
-                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "object", IsAvailable = true });
+                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "object" });
             while (OutConnectionPoints.Count > outCount)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
@@ -240,7 +240,6 @@ namespace Beep.Skia.Network
                 p.Rect = p.Bounds;
                 p.Index = i;
                 p.Component = this;
-                p.IsAvailable = true;
             }
         }
 

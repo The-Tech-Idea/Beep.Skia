@@ -138,7 +138,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xE8, 0xEA, 0xF6), IsAntialias = true }; // Light indigo
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x3F, 0x51, 0xB5), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Indigo
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 12);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
             using var pathBuilder = new SKPathBuilder();
 
             pathBuilder.MoveTo(points[0]);
@@ -151,7 +151,7 @@ namespace Beep.Skia.Flowchart
             canvas.DrawPath(path, stroke);
 
             // Draw "while" label
-            using var labelFont = new SKFont(SKTypeface.Default, 10);
+            using var labelFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
             canvas.DrawText("while", b.Left + 8, b.Top + indent + 12, SKTextAlign.Left, labelFont, text);
 
             // Draw condition centered

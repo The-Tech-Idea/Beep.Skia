@@ -124,7 +124,7 @@ namespace Beep.Skia.Cloud
 
             if (!string.IsNullOrEmpty(Name))
             {
-                using var font = new SKFont(SKTypeface.Default, 12) { Embolden = true };
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 12) { Embolden = true };
                 using var paint = new SKPaint { Color = TextColor, IsAntialias = true };
                 canvas.DrawText(Name, rect.MidX, rect.MidY + 4, SKTextAlign.Center, font, paint);
             }
@@ -140,12 +140,12 @@ namespace Beep.Skia.Cloud
         protected void EnsurePortCounts(int inCount, int outCount)
         {
             while (InConnectionPoints.Count < inCount)
-                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
+                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius });
             while (InConnectionPoints.Count > inCount)
                 InConnectionPoints.RemoveAt(InConnectionPoints.Count - 1);
 
             while (OutConnectionPoints.Count < outCount)
-                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
+                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius });
             while (OutConnectionPoints.Count > outCount)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
@@ -173,7 +173,6 @@ namespace Beep.Skia.Cloud
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
 
             int nOut = Math.Max(OutConnectionPoints.Count, 1);
@@ -189,7 +188,6 @@ namespace Beep.Skia.Cloud
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
         }
 

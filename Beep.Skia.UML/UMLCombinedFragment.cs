@@ -91,8 +91,8 @@ namespace Beep.Skia.UML
             canvas.DrawPath(tabPath, fill);
             canvas.DrawPath(tabPath, stroke);
 
-            using var operatorFont = new SKFont(SKTypeface.Default, 11) { Embolden = true };
-            using var guardFont = new SKFont(SKTypeface.Default, 10);
+            using var operatorFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
+            using var guardFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
             using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
 
             canvas.DrawText(_operator, X + tabWidth / 2f, Y + 14f, SKTextAlign.Center, operatorFont, textPaint);

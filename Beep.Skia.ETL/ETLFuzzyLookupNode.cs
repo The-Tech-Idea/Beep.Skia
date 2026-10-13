@@ -61,7 +61,7 @@ namespace Beep.Skia.ETL
             using var icon = new SKPaint { Color = new SKColor(0x4C, 0xAF, 0x50), StrokeWidth = 2f, Style = SKPaintStyle.Stroke, IsAntialias = true };
             canvas.DrawCircle(r.MidX - 15, r.MidY - 4, 10, icon);
             canvas.DrawLine(r.MidX - 7, r.MidY - 1, r.MidX + 8, r.MidY + 8, icon);
-            using var font = new SKFont(SKTypeface.Default, 9);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
             using var text = new SKPaint { Color = new SKColor(0x33, 0x33, 0x33), IsAntialias = true };
             canvas.DrawText("Fuzzy", r.MidX + 16, r.MidY, SKTextAlign.Left, font, text);
             canvas.DrawText("Lookup", r.MidX + 16, r.MidY + 12, SKTextAlign.Left, font, text);

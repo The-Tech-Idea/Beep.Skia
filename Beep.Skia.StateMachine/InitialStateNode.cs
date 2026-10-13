@@ -58,7 +58,6 @@ namespace Beep.Skia.StateMachine
                 cp.Rect = cp.Bounds;
                 cp.Index = 0;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
         }
 

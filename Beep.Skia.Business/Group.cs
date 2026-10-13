@@ -79,6 +79,7 @@ namespace Beep.Skia.Business
             Height = 150;
             Name = "Group";
             ComponentType = BusinessComponentType.Task;
+            EnsurePortCounts(0, 0);
             BackgroundColor = MaterialColors.Surface;
             NodeProperties["GroupName"] = new ParameterInfo { ParameterName = "GroupName", ParameterType = typeof(string), DefaultParameterValue = _groupName, ParameterCurrentValue = _groupName, Description = "Group name" };
             NodeProperties["GroupColor"] = new ParameterInfo { ParameterName = "GroupColor", ParameterType = typeof(SKColor), DefaultParameterValue = _groupColor, ParameterCurrentValue = _groupColor, Description = "Group color" };
@@ -154,7 +155,7 @@ namespace Beep.Skia.Business
             if (string.IsNullOrEmpty(GroupName))
                 return;
 
-            using var font = new SKFont(SKTypeface.Default, 10) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 10) { Embolden = true };
             using var paint = new SKPaint
             {
                 Color = GroupColor,
@@ -169,7 +170,7 @@ namespace Beep.Skia.Business
             // Draw component count
             if (GroupedComponents.Count > 0)
             {
-                using var countFont = new SKFont(SKTypeface.Default, 8);
+                using var countFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
                 string countText = $"({GroupedComponents.Count})";
                 canvas.DrawText(countText, textX, textY + 12, SKTextAlign.Left, countFont, paint);
             }
@@ -228,8 +229,8 @@ namespace Beep.Skia.Business
 
         protected override void LayoutPorts()
         {
+            base.LayoutPorts();
             // Group is a container; typically not connected directly. Keep 0 ports by default.
-            EnsurePortCounts(0, 0);
         }
     }
 }

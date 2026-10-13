@@ -63,7 +63,7 @@ namespace Beep.Skia.PM
             var r = Bounds;
             using var stroke = new SKPaint { Color = MaterialColors.Secondary, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 3 };
             using var text = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
 
             // Draw bracketed bar: left and right brackets with a connecting line
             float y = r.MidY;

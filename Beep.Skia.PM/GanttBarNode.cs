@@ -146,7 +146,6 @@ namespace Beep.Skia.PM
                 pt.Bounds = new SKRect(pt.Center.X - PortRadius, pt.Center.Y - PortRadius, pt.Center.X + PortRadius, pt.Center.Y + PortRadius);
                 pt.Rect = pt.Bounds;
                 pt.Component = this;
-                pt.IsAvailable = true;
             }
 
             // Output port on right edge
@@ -158,7 +157,6 @@ namespace Beep.Skia.PM
                 pt.Bounds = new SKRect(pt.Center.X - PortRadius, pt.Center.Y - PortRadius, pt.Center.X + PortRadius, pt.Center.Y + PortRadius);
                 pt.Rect = pt.Bounds;
                 pt.Component = this;
-                pt.IsAvailable = true;
             }
         }
 
@@ -186,21 +184,21 @@ namespace Beep.Skia.PM
             canvas.DrawRoundRect(r, 4f, 4f, stroke);
 
             // Draw task name
-            using var nameFont = new SKFont(SKTypeface.Default, 11);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11);
             using var text = new SKPaint { Color = _percentComplete > 50 ? SKColors.White : MaterialColors.OnSurface, IsAntialias = true };
             canvas.DrawText(TaskName, r.Left + 8, r.Top + 16, SKTextAlign.Left, nameFont, text);
 
             // Draw dates if provided
             if (!string.IsNullOrWhiteSpace(StartDate) || !string.IsNullOrWhiteSpace(EndDate))
             {
-                using var dateFont = new SKFont(SKTypeface.Default, 8);
+                using var dateFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
                 using var dateText = new SKPaint { Color = _percentComplete > 50 ? new SKColor(0xFF, 0xFF, 0xFF, 200) : new SKColor(0x70, 0x70, 0x70), IsAntialias = true };
                 string dates = $"{StartDate} → {EndDate}";
                 canvas.DrawText(dates, r.Left + 8, r.Top + 30, SKTextAlign.Left, dateFont, dateText);
             }
 
             // Draw percentage on right
-            using var percentFont = new SKFont(SKTypeface.Default, 10) { Embolden = true };
+            using var percentFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10) { Embolden = true };
             using var percentText = new SKPaint { Color = _percentComplete > 50 ? SKColors.White : MaterialColors.OnSurface, IsAntialias = true };
             string percentStr = $"{_percentComplete}%";
             canvas.DrawText(percentStr, r.Right - 8, r.MidY + 4, SKTextAlign.Right, percentFont, percentText);

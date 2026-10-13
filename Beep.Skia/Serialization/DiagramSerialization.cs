@@ -16,7 +16,7 @@ namespace Beep.Skia.Serialization
         /// <summary>
         /// Schema version of the serialized payload. Increment when the DTO shape changes.
         /// </summary>
-        public const int CurrentSchemaVersion = 2;
+        public const int CurrentSchemaVersion = 3;
 
         /// <summary>
         /// Gets or sets the schema version of this payload.
@@ -40,6 +40,9 @@ namespace Beep.Skia.Serialization
 
     public class ComponentDto
     {
+        /// <summary>Persisted component identity. Empty for older schemas and templates; copied instances receive new IDs.</summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public Guid Id { get; set; }
         /// <summary>
         /// Gets or sets the type.
         /// </summary>
@@ -236,5 +239,18 @@ namespace Beep.Skia.Serialization
         /// Gets or sets the expected schema json.
         /// </summary>
         public string ExpectedSchemaJson { get; set; }
+        /// <summary>The stroke width of the line; 2 when a file predates it.</summary>
+        public float StrokeWidth { get; set; } = 2f;
+        /// <summary>The shared head at the start (a <see cref="Components.SketchArrowhead"/>); None leaves
+        /// <see cref="ShowStartArrow"/> and the ERD marks in charge.</summary>
+        public int StartArrowhead { get; set; }
+        /// <summary>The shared head at the end (a <see cref="Components.SketchArrowhead"/>).</summary>
+        public int EndArrowhead { get; set; }
+        /// <summary>How the line shows movement along it (a <see cref="LineFlow"/>).</summary>
+        public int Flow { get; set; }
+        /// <summary>How fast the flow moves (a <see cref="LineFlowSpeed"/>); Normal when a file predates it.</summary>
+        public int FlowSpeed { get; set; } = (int)LineFlowSpeed.Normal;
+        /// <summary>Which way the flow moves (a <see cref="LineFlowDirection"/>).</summary>
+        public int FlowMovement { get; set; }
     }
 }

@@ -57,7 +57,6 @@ namespace Beep.Skia.StateMachine
                 cp.Rect = cp.Bounds;
                 cp.Index = 0;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
 
             // Outputs: right for 1, bottom for 2, top for 3
@@ -70,7 +69,6 @@ namespace Beep.Skia.StateMachine
                 cp0.Rect = cp0.Bounds;
                 cp0.Index = 0;
                 cp0.Component = this;
-                cp0.IsAvailable = true;
             }
             if (OutConnectionPoints.Count > 1)
             {
@@ -81,7 +79,6 @@ namespace Beep.Skia.StateMachine
                 cp1.Rect = cp1.Bounds;
                 cp1.Index = 1;
                 cp1.Component = this;
-                cp1.IsAvailable = true;
             }
             if (OutConnectionPoints.Count > 2)
             {
@@ -92,7 +89,6 @@ namespace Beep.Skia.StateMachine
                 cp2.Rect = cp2.Bounds;
                 cp2.Index = 2;
                 cp2.Component = this;
-                cp2.IsAvailable = true;
             }
         }
 
@@ -116,7 +112,7 @@ namespace Beep.Skia.StateMachine
 
             if (!string.IsNullOrWhiteSpace(_title))
             {
-                using var font = new SKFont(SKTypeface.Default, 9);
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
                 using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
                 canvas.DrawText(_title, b.MidX, b.MidY + 3, SKTextAlign.Center, font, textPaint);
             }

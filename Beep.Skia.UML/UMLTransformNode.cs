@@ -52,6 +52,31 @@ namespace Beep.Skia.UML
         /// <param name="context">The drawing context.</param>
         protected override void DrawUMLContent(SKCanvas canvas, DrawingContext context)
         {
+            // The body is laid out in the node's own coordinates, so paint it relative to X/Y.
+            // Connection points and selection are drawn in world coordinates and stay outside.
+            canvas.Save();
+            try
+            {
+                canvas.Translate(X, Y);
+                DrawBody(canvas);
+            }
+            finally
+            {
+                canvas.Restore();
+            }
+
+            // Draw connection points
+            DrawConnectionPoints(canvas, context);
+
+            // Draw selection indicator
+            DrawSelection(canvas, context);
+        }
+
+        /// <summary>
+        /// Draws the node body in local coordinates (origin at the node's top-left corner).
+        /// </summary>
+        private void DrawBody(SKCanvas canvas)
+        {
             // Draw hexagon shape
             using (var paint = new SKPaint())
             {
@@ -71,7 +96,7 @@ namespace Beep.Skia.UML
             // Draw stereotype
             if (!string.IsNullOrEmpty(Stereotype))
             {
-                using var font = new SKFont(SKTypeface.Default, 9);
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 canvas.DrawText(Stereotype, 10, 18, SKTextAlign.Left, font, textPaint);
             }
@@ -84,7 +109,7 @@ namespace Beep.Skia.UML
             // Draw transform description if present
             if (!string.IsNullOrEmpty(TransformDescription))
             {
-                using var descFont = new SKFont(SKTypeface.Default, 8);
+                using var descFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
                 using var descPaint = new SKPaint { IsAntialias = true, Color = TextColor };
 
                 // Truncate long descriptions
@@ -97,21 +122,15 @@ namespace Beep.Skia.UML
 
             // Draw transform arrows
             DrawTransformArrows(canvas);
-
-            // Draw connection points
-            DrawConnectionPoints(canvas, context);
-
-            // Draw selection indicator
-            DrawSelection(canvas, context);
         }
 
         /// <summary>
-        /// Draws connection points positioned at the hexagon's flat sides.
+        /// Draws connection points positioned at the hexagon's flat sides, in world coordinates.
         /// </summary>
         protected override void DrawConnectionPoints(SKCanvas canvas, DrawingContext context)
         {
-            var centerX = Width / 2;
-            var centerY = Height / 2;
+            var centerX = X + Width / 2;
+            var centerY = Y + Height / 2;
             var radius = Width / 2 - 5;
 
             // Position connection points at the midpoints of each hexagon side

@@ -135,7 +135,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xE8, 0xEA, 0xF6), IsAntialias = true }; // Light indigo
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x3F, 0x51, 0xB5), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Indigo
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
             pathBuilder.MoveTo(points[0]);
@@ -148,13 +148,13 @@ namespace Beep.Skia.Flowchart
             canvas.DrawPath(path, stroke);
 
             // Draw "do-while" label at top
-            using var labelFont = new SKFont(SKTypeface.Default, 11) { Embolden = true };
+            using var labelFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
             using var boldText = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
             float labelWidth = labelFont.MeasureText("do-while", boldText);
             canvas.DrawText("do-while", r.MidX - labelWidth / 2, r.Top + 20, SKTextAlign.Left, labelFont, boldText);
 
             // Draw condition at bottom (where it's evaluated)
-            using var condFont = new SKFont(SKTypeface.Default, 12);
+            using var condFont = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
             float condY = r.Bottom - 15;
             
             // Word wrap condition if too long

@@ -3,6 +3,8 @@ using Beep.Skia.Model;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Globalization;
 
 namespace Beep.Skia.Flowchart
 {
@@ -17,6 +19,77 @@ namespace Beep.Skia.Flowchart
         private SKColor? _customFillColor = null;
         private SKColor? _customStrokeColor = null;
         private SKColor? _customTextColor = null;
+        private float _nodeStrokeWidth = 2;
+        private float _labelFontSize = 14;
+
+        /// <summary>Optional required bundled font for portable label rendering. Set before drawing.</summary>
+        public string? RequiredLabelFontFamily { get; set; }
+
+        /// <summary>Border thickness in drawing units.</summary>
+        public float NodeStrokeWidth
+        {
+            get => _nodeStrokeWidth;
+            set
+            {
+                if (!float.IsFinite(value) || value < 1 || value > 12) throw new ArgumentOutOfRangeException(nameof(value));
+                _nodeStrokeWidth = value;
+                UpsertNodeProperty(nameof(NodeStrokeWidth), typeof(string), currentValue: value.ToString("R", CultureInfo.InvariantCulture));
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>Centered label size in drawing units.</summary>
+        public float LabelFontSize
+        {
+            get => _labelFontSize;
+            set
+            {
+                if (!float.IsFinite(value) || value < 8 || value > 120) throw new ArgumentOutOfRangeException(nameof(value));
+                _labelFontSize = value;
+                UpsertNodeProperty(nameof(LabelFontSize), typeof(string), currentValue: value.ToString("R", CultureInfo.InvariantCulture));
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>Restores identities from a reviewed definition during derived construction only.</summary>
+        protected void RestoreDefinitionIdentity(Guid id, IReadOnlyList<Guid> inputs, IReadOnlyList<Guid> outputs)
+        {
+            if (inputs == null || outputs == null || inputs.Count > 64 || outputs.Count > 64)
+                throw new ArgumentException("A definition permits at most 64 ports per direction.");
+            var identities = inputs.Concat(outputs).Prepend(id).ToArray();
+            if (identities.Any(value => value == Guid.Empty) || identities.Distinct().Count() != identities.Length)
+                throw new ArgumentException("Component and port identities must be non-empty and distinct.");
+            if (InConnectionPoints.Concat(OutConnectionPoints).Any(port => port.Connection != null))
+                throw new InvalidOperationException("Restore identities before connecting a component.");
+            var incoming = inputs.Select(value => CreateDefinitionPort(value, ConnectionPointType.In)).ToArray();
+            var outgoing = outputs.Select(value => CreateDefinitionPort(value, ConnectionPointType.Out)).ToArray();
+            RestoreIdentity(id);
+            InConnectionPoints.Clear(); OutConnectionPoints.Clear();
+            foreach (var port in incoming) InConnectionPoints.Add(port);
+            foreach (var port in outgoing) OutConnectionPoints.Add(port);
+            EnsurePortCounts(inputs.Count, outputs.Count);
+        }
+        private ConnectionPoint CreateDefinitionPort(Guid id, ConnectionPointType type) => new(id)
+        { Type = type, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius };
+
+        /// <summary>Shared label renderer. A required font draws outlines without platform substitution.</summary>
+        protected void DrawCenteredLabel(SKCanvas canvas, SKRect bounds, string label)
+        {
+            var portable = RequiredLabelFontFamily != null;
+            using var font = new SKFont(portable ? TypefaceCache.GetRequired(RequiredLabelFontFamily!) : Beep.Skia.TypefaceCache.Default, LabelFontSize)
+            { Hinting = SKFontHinting.None, Subpixel = true, LinearMetrics = true, Edging = SKFontEdging.Antialias };
+            using var paint = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
+            var ty = bounds.MidY - (font.Metrics.Ascent + font.Metrics.Descent) / 2;
+            canvas.Save();
+            try
+            {
+                canvas.ClipRect(bounds); // Long labels never leak outside the node/export crop.
+                // A required family is laid out by its registration: nominal (Kalam) as before, shaped (Arabic) with bidi.
+                if (portable) Beep.Skia.Text.TextLayout.DrawCenteredLine(canvas, RequiredLabelFontFamily!, font, label, new SKPoint(bounds.MidX, ty), paint);
+                else canvas.DrawText(label, bounds.MidX - font.MeasureText(label) / 2, ty, SKTextAlign.Left, font, paint);
+            }
+            finally { canvas.Restore(); }
+        }
 
         /// <summary>
         /// Optional custom fill color (overrides default node color). Set to null to use default.
@@ -74,6 +147,7 @@ namespace Beep.Skia.Flowchart
 
         protected FlowchartControl()
         {
+            NodeStrokeWidth = 2; LabelFontSize = 14; GroupId = Guid.Empty;
             Width = Math.Max(120, Width);
             Height = Math.Max(60, Height);
             ShowDisplayText = true;
@@ -164,12 +238,12 @@ namespace Beep.Skia.Flowchart
         protected void EnsurePortCounts(int inputs, int outputs)
         {
             while (InConnectionPoints.Count < inputs)
-                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
+                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius });
             while (InConnectionPoints.Count > inputs)
                 InConnectionPoints.RemoveAt(InConnectionPoints.Count - 1);
 
             while (OutConnectionPoints.Count < outputs)
-                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
+                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius });
             while (OutConnectionPoints.Count > outputs)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
@@ -208,7 +282,6 @@ namespace Beep.Skia.Flowchart
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
 
             int nOut = Math.Max(OutConnectionPoints.Count, 1);
@@ -224,7 +297,6 @@ namespace Beep.Skia.Flowchart
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
         }
 
@@ -313,18 +385,20 @@ namespace Beep.Skia.Flowchart
             cp.Rect = cp.Bounds;
             cp.Index = index;
             cp.Component = this;
-            cp.IsAvailable = true;
         }
 
         protected override void DrawContent(SKCanvas canvas, DrawingContext context)
         {
             // Ensure ports are laid out before any derived drawing logic uses them
-            EnsurePortLayout(() => LayoutPorts());
+            RefreshPortLayout();
             // Defer actual content to derived controls via a template method
             DrawFlowchartContent(canvas, context);
         }
 
         // Derived flowchart nodes should override this instead of DrawContent
+        /// <summary>Updates port geometry before connection creation, hit testing, or export.</summary>
+        public override void RefreshPortLayout() => EnsurePortLayout(() => LayoutPorts());
+
         protected virtual void DrawFlowchartContent(SKCanvas canvas, DrawingContext context) { }
 
         protected void PlacePortsAcrossTwoSegments(IList<IConnectionPoint> ports, SKPoint a, SKPoint b, SKPoint c, float outwardSign)

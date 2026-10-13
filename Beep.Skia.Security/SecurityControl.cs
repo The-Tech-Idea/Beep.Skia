@@ -65,10 +65,10 @@ namespace Beep.Skia.Security
         protected void EnsurePortCounts(int inCount, int outCount)
         {
             while (InConnectionPoints.Count < inCount)
-                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
+                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius });
             while (InConnectionPoints.Count > inCount) InConnectionPoints.RemoveAt(InConnectionPoints.Count - 1);
             while (OutConnectionPoints.Count < outCount)
-                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
+                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius });
             while (OutConnectionPoints.Count > outCount) OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
             MarkPortsDirty(); SyncCounts();
         }
@@ -94,7 +94,7 @@ namespace Beep.Skia.Security
                 cp.Center = new SKPoint(cx, cy);
                 cp.Position = cp.Center;
                 cp.Bounds = new SKRect(cx - PortRadius, cy - PortRadius, cx + PortRadius, cy + PortRadius);
-                cp.Rect = cp.Bounds; cp.Index = i; cp.Component = this; cp.IsAvailable = true;
+                cp.Rect = cp.Bounds; cp.Index = i; cp.Component = this;
             }
             int nOut = Math.Max(OutConnectionPoints.Count, 1);
             for (int i = 0; i < OutConnectionPoints.Count; i++)
@@ -106,7 +106,7 @@ namespace Beep.Skia.Security
                 cp.Center = new SKPoint(cx, cy);
                 cp.Position = cp.Center;
                 cp.Bounds = new SKRect(cx - PortRadius, cy - PortRadius, cx + PortRadius, cy + PortRadius);
-                cp.Rect = cp.Bounds; cp.Index = i; cp.Component = this; cp.IsAvailable = true;
+                cp.Rect = cp.Bounds; cp.Index = i; cp.Component = this;
             }
         }
 

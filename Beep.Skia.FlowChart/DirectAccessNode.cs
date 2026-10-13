@@ -6,7 +6,7 @@ namespace Beep.Skia.Flowchart
     /// <summary>
     /// Direct Access Storage node: cylinder with flat bottom for random access storage (hard disk).
     /// </summary>
-    public class DirectAccessNode : FlowchartControl
+    public class DirectAccessNode : DirectedFlowchartControl
     {
         private string _label = "Direct Access";
         /// <summary>
@@ -48,9 +48,26 @@ namespace Beep.Skia.Flowchart
             };
         }
 
-        protected override void LayoutPorts()
+        protected override void LayoutSidePorts()
         {
             LayoutPortsVerticalSegments(topInset: 10f, bottomInset: 6f);
+        }
+
+        /// <summary>Half the height of the ellipse that caps the cylinder.</summary>
+        private static float CapHeight(SKRect r) => r.Height * 0.15f;
+
+        /// <summary>Inputs along the curved top of the cap, outputs along the flat bottom.</summary>
+        protected override void LayoutTopBottomPorts()
+        {
+            var r = Bounds;
+            var cap = CapHeight(r);
+            float CapTop(float x)
+            {
+                var across = (x - r.MidX) / (r.Width / 2);
+                return r.Top + cap - cap * MathF.Sqrt(MathF.Max(0, 1 - across * across));
+            }
+            PlaceAlongEdge(InConnectionPoints, r.Left + FlowInset, r.Right - FlowInset, CapTop, -1f);
+            PlaceAlongEdge(OutConnectionPoints, r.Left + FlowInset, r.Right - FlowInset, _ => r.Bottom, +1f);
         }
 
         protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
@@ -58,12 +75,12 @@ namespace Beep.Skia.Flowchart
             if (!context.Bounds.IntersectsWith(Bounds)) return;
 
             var r = Bounds;
-            float ellipseHeight = r.Height * 0.15f;
+            var ellipseHeight = CapHeight(r);
 
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xF3, 0xE5, 0xF5), IsAntialias = true }; // Light purple
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x9C, 0x27, 0xB0), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Purple
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
 
             // Top ellipse
             var topEllipse = new SKRect(r.Left, r.Top, r.Right, r.Top + ellipseHeight * 2);

@@ -111,7 +111,7 @@ namespace Beep.Skia.StateMachine
             canvas.DrawRoundRect(rect, 10, 10, fill);
             canvas.DrawRoundRect(rect, 10, 10, stroke);
 
-            using var font = new SKFont(SKTypeface.Default, 13) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 13) { Embolden = true };
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
             bool hasActivities = !string.IsNullOrWhiteSpace(_entryAction)
                 || !string.IsNullOrWhiteSpace(_exitAction)
@@ -133,7 +133,7 @@ namespace Beep.Skia.StateMachine
                 return;
             }
 
-            using var activityFont = new SKFont(SKTypeface.Default, 8);
+            using var activityFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             using var activityPaint = new SKPaint { Color = TextColor.WithAlpha(180), IsAntialias = true };
 
             float y = Y + Height - 24f;

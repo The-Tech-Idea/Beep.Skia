@@ -120,7 +120,7 @@ namespace Beep.Skia.StateMachine
             canvas.DrawLine(titleRect.Left, titleRect.Bottom, titleRect.Right, titleRect.Bottom, borderSolid);
 
             // Title text
-            using var font = new SKFont(SKTypeface.Default, 12);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
             using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
             canvas.DrawText(_title, X + 12, Y + _titleBarHeight / 2f + 4, SKTextAlign.Left, font, textPaint);
 

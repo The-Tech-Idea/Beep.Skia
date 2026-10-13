@@ -6,7 +6,7 @@ namespace Beep.Skia.Flowchart
     /// <summary>
     /// Merge node: inverted triangle for combining multiple flow paths (no synchronization logic).
     /// </summary>
-    public class MergeNode : FlowchartControl
+    public class MergeNode : DirectedFlowchartControl
     {
         private string _label = "Merge";
         /// <summary>
@@ -48,30 +48,25 @@ namespace Beep.Skia.Flowchart
             };
         }
 
-        protected override void LayoutPorts()
+        /// <summary>The inputs down the left edge, the output on the right; more outputs stack down the right.</summary>
+        protected override void LayoutSidePorts()
         {
             var r = Bounds;
-            
-            // Input ports on left side (vertical distribution)
             if (InConnectionPoints.Count > 0)
             {
                 PlacePortsAlongVerticalEdge(InConnectionPoints, r.Left, r.Top + 10f, r.Bottom - 10f, outwardSign: -1f);
             }
+            PlaceStackBeside(OutConnectionPoints, r.Right, PortRadius, float.MaxValue);
+        }
 
-            // Single output port on right side (center)
-            if (OutConnectionPoints.Count > 0)
-            {
-                var outPt = OutConnectionPoints[0];
-                outPt.Center = new SKPoint(r.Right, r.MidY);
-                outPt.Position = new SKPoint(r.Right + PortRadius, r.MidY);
-                outPt.Bounds = new SKRect(
-                    outPt.Center.X - PortRadius,
-                    outPt.Center.Y - PortRadius,
-                    outPt.Center.X + PortRadius,
-                    outPt.Center.Y + PortRadius
-                );
-                outPt.Rect = outPt.Bounds;
-            }
+        /// <summary>Inputs along the flat top, outputs at the point at the bottom (more spread over the two slanting edges
+        /// either side of it).</summary>
+        protected override void LayoutTopBottomPorts()
+        {
+            var r = Bounds;
+            PlaceAlongEdge(InConnectionPoints, r.Left + FlowInset, r.Right - FlowInset, _ => r.Top, -1f);
+            PlaceAlongEdge(OutConnectionPoints, r.MidX - r.Width * 0.2f, r.MidX + r.Width * 0.2f,
+                x => r.Bottom - r.Height * Math.Abs(x - r.MidX) / (r.Width / 2), +1f);
         }
 
         protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
@@ -87,7 +82,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = new SKColor(0xE1, 0xF5, 0xFE), IsAntialias = true };
             using var stroke = new SKPaint { Color = new SKColor(0x03, 0xA9, 0xF4), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
             using var text = new SKPaint { Color = SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
             pathBuilder.MoveTo(topLeft);

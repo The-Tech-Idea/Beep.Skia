@@ -31,8 +31,9 @@ namespace Beep.Skia.Tests
             var t3 = new TopicNode { Width = 100, Height = 40, Name = "t3" };
             foreach (var c in new SkiaComponent[] { central, t1, t2, t3 }) manager.AddComponent(c);
             manager.ConnectComponents(central, t1, 0, 0);
-            manager.ConnectComponents(central, t2, 0, 0);
-            manager.ConnectComponents(central, t3, 0, 0);
+            // One connection per port: each topic takes its own output of the central node.
+            manager.ConnectComponents(central, t2, 1, 0);
+            manager.ConnectComponents(central, t3, 2, 0);
 
             var center = new SKPoint(400, 300);
             manager.ArrangeDiagram(new MindMapLayout { Center = center, LevelSpacing = 200f });

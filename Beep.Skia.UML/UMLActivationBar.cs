@@ -52,7 +52,7 @@ namespace Beep.Skia.UML
 
             if (!string.IsNullOrWhiteSpace(_label))
             {
-                using var font = new SKFont(SKTypeface.Default, 9);
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
                 using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
                 canvas.Save();
                 canvas.RotateDegrees(-90, rect.MidX, rect.MidY);

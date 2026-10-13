@@ -215,7 +215,6 @@ namespace Beep.Skia.Business
         protected override void LayoutPorts()
         {
             // Default event node: treat as circle (ellipse). One in/one out for generic events.
-            EnsurePortCounts(1, 1);
             LayoutPortsOnEllipse(topInset: 4f, bottomInset: 4f, outwardOffset: 2f);
         }
 
@@ -224,7 +223,7 @@ namespace Beep.Skia.Business
             if (string.IsNullOrEmpty(EventName))
                 return;
 
-            using var font = new SKFont(SKTypeface.Default, 9);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
             using var paint = new SKPaint
             {
                 Color = TextColor,

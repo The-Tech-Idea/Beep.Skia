@@ -170,8 +170,8 @@ namespace Beep.Skia.UML
             DrawBackground(canvas, context);
 
             // Create font for text rendering
-            using var font = new SKFont(SKTypeface.Default, 11);
-            using var boldFont = new SKFont(SKTypeface.Default, 11) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 11);
+            using var boldFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
 
             float currentY = Y + 25; // Start below the 'I' symbol
             const float lineHeight = 16;

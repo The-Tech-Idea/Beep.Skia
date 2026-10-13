@@ -27,6 +27,13 @@ namespace Beep.Skia
 
         }
 
+        /// <summary>Constructs a detached port with a validated persisted identity.</summary>
+        public ConnectionPoint(Guid id)
+        {
+            if (id == Guid.Empty) throw new ArgumentException("Port identity cannot be empty.", nameof(id));
+            Id = id;
+        }
+
         /// <summary>
         /// Assigns a specific identifier to this connection point. Intended for restoring from persistence.
         /// </summary>
@@ -38,9 +45,10 @@ namespace Beep.Skia
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this connection point is available for connection.
+        /// Gets whether this connection point can take a connection: true exactly when it has none. The connection is
+        /// the one owner of that fact, so laying out ports again (which every redraw may do) cannot make a connected port look free.
         /// </summary>
-        public bool IsAvailable { get; set; } = true;
+        public bool IsAvailable => Connection == null;
 
         /// <summary>
         /// Gets or sets the position of this connection point.
@@ -121,8 +129,6 @@ namespace Beep.Skia
         {
             ConnectionMade?.Invoke(this, new ConnectionEventArgs(this, target));
             Connection = target;
-            this.IsAvailable = false;
-            target.IsAvailable = false;
         }
 
         /// <summary>
@@ -130,12 +136,9 @@ namespace Beep.Skia
         /// </summary>
         public void Disconnect()
         {
-            this.IsAvailable = true;
-            if (Connection != null)
-            {
-                Connection.IsAvailable = true;
-                Connection = null;
-            }
+            // Both ends become free, as they did when availability was stored beside the connection.
+            if (Connection is { } partner && partner.Connection == this) partner.Connection = null;
+            Connection = null;
         }
     }
 }

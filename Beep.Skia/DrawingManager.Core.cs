@@ -90,6 +90,29 @@ namespace Beep.Skia
         /// Gets a value indicating whether the grid is visible.
         /// </summary>
         public bool ShowGrid { get; set; } = true;
+        /// <summary>Allows hosts with custom tool handles to suppress the standard selection adorners.</summary>
+        public bool ShowSelectionHandles { get; set; } = true;
+        /// <summary>
+        /// Whether connectors keep their stroke, arrowhead and dash sizes on screen at every zoom (the default). A host whose
+        /// screen must match its exports sets false: connectors then draw at their own size, and zooming magnifies them as
+        /// it does every other object.
+        /// </summary>
+        public bool ConnectorsKeepScreenSize { get; set; } = true;
+        private double _animationTime;
+        /// <summary>
+        /// Seconds on the scene's one animation clock. Flowing lines and connectors draw their flow where it is at this
+        /// moment; the host advances it while it animates, and an export draws the moment it is given (zero, the start of
+        /// the loop, for a still picture).
+        /// </summary>
+        public double AnimationTime
+        {
+            get => _animationTime;
+            set
+            {
+                if (!double.IsFinite(value) || value < 0) throw new ArgumentOutOfRangeException(nameof(value), "The animation time must be a finite number of seconds, not negative.");
+                _animationTime = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the grid spacing.
@@ -390,6 +413,7 @@ namespace Beep.Skia
             {
                 var comp = new Beep.Skia.Serialization.ComponentDto
                 {
+                    Id = c.Id,
                     Type = c.GetType().AssemblyQualifiedName,
                     X = SanitizeCoordinate(c.X),
                     Y = SanitizeCoordinate(c.Y),
@@ -485,7 +509,13 @@ namespace Beep.Skia
 
                     // Schema
                     SchemaJson = (l as ConnectionLine)?.SchemaJson,
-                    ExpectedSchemaJson = (l as ConnectionLine)?.ExpectedSchemaJson
+                    ExpectedSchemaJson = (l as ConnectionLine)?.ExpectedSchemaJson,
+                    StrokeWidth = l.Paint?.StrokeWidth ?? 2f,
+                    StartArrowhead = (int)((l as ConnectionLine)?.StartArrowhead ?? Beep.Skia.Components.SketchArrowhead.None),
+                    EndArrowhead = (int)((l as ConnectionLine)?.EndArrowhead ?? Beep.Skia.Components.SketchArrowhead.None),
+                    Flow = (int)((l as ConnectionLine)?.Flow ?? LineFlow.None),
+                    FlowSpeed = (int)((l as ConnectionLine)?.FlowSpeed ?? LineFlowSpeed.Normal),
+                    FlowMovement = (int)((l as ConnectionLine)?.FlowMovement ?? LineFlowDirection.Forward)
                 };
                 dto.Lines.Add(line);
             }
@@ -522,6 +552,7 @@ namespace Beep.Skia
                     }
                     if (Activator.CreateInstance(type) is SkiaComponent instance)
                     {
+                        if (comp.Id != Guid.Empty) instance.RestoreIdentity(comp.Id);
                         instance.X = comp.X;
                         instance.Y = comp.Y;
                         instance.Width = comp.Width;
@@ -627,6 +658,13 @@ namespace Beep.Skia
                 // Schema
                 if (!string.IsNullOrWhiteSpace(line.SchemaJson)) l.SchemaJson = line.SchemaJson;
                 if (!string.IsNullOrWhiteSpace(line.ExpectedSchemaJson)) l.ExpectedSchemaJson = line.ExpectedSchemaJson;
+                // Width, shared heads and flow
+                l.Paint.StrokeWidth = line.StrokeWidth > 0 ? line.StrokeWidth : 2f;
+                l.StartArrowhead = (Beep.Skia.Components.SketchArrowhead)line.StartArrowhead;
+                l.EndArrowhead = (Beep.Skia.Components.SketchArrowhead)line.EndArrowhead;
+                l.Flow = (LineFlow)line.Flow;
+                l.FlowSpeed = (LineFlowSpeed)line.FlowSpeed;
+                l.FlowMovement = (LineFlowDirection)line.FlowMovement;
                 AddLine(l);
             }
 

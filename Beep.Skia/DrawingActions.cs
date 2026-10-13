@@ -65,15 +65,19 @@ namespace Beep.Skia
         private readonly DrawingManager _manager;
         private readonly SkiaComponent _component;
         private readonly List<IConnectionLine> _lines;
+        private readonly List<SkiaComponent> _order;
+        private readonly List<IConnectionLine> _lineOrder;
 
         /// <summary>
         /// Initializes a new instance of the RemoveComponentAction class.
         /// </summary>
-        public RemoveComponentAction(DrawingManager manager, SkiaComponent component, List<IConnectionLine> lines)
+        public RemoveComponentAction(DrawingManager manager, SkiaComponent component, List<IConnectionLine> lines, List<SkiaComponent> order = null, List<IConnectionLine> lineOrder = null)
         {
             _manager = manager;
             _component = component;
             _lines = lines;
+            _order = order;
+            _lineOrder = lineOrder;
         }
 
         /// <summary>
@@ -94,6 +98,8 @@ namespace Beep.Skia
             {
                 _manager.AddLine(line);
             }
+            if (_order != null) _manager.RestoreComponentOrder(_order);
+            if (_lineOrder != null) _manager.RestoreLineOrder(_lineOrder);
         }
     }
 
@@ -105,6 +111,8 @@ namespace Beep.Skia
         private readonly DrawingManager _manager;
         private readonly List<SkiaComponent> _components;
         private readonly List<IConnectionLine> _lines;
+        private readonly List<SkiaComponent> _order;
+        private readonly List<IConnectionLine> _lineOrder;
 
         /// <summary>
         /// Initializes a new instance of the DeleteComponentsAction class.
@@ -114,6 +122,8 @@ namespace Beep.Skia
             _manager = manager;
             _components = components;
             _lines = lines;
+            _order = manager.GetComponents().ToList();
+            _lineOrder = manager.GetLines().ToList();
         }
 
         /// <summary>
@@ -140,6 +150,8 @@ namespace Beep.Skia
             {
                 _manager.AddLine(line);
             }
+            _manager.RestoreComponentOrder(_order);
+            _manager.RestoreLineOrder(_lineOrder);
         }
     }
 
@@ -196,6 +208,7 @@ namespace Beep.Skia
         private readonly SkiaComponent _component1;
         private readonly SkiaComponent _component2;
         private readonly IConnectionLine _line;
+        private readonly int _index;
 
         /// <summary>
         /// Initializes a new instance of the ConnectComponentsAction class.
@@ -206,6 +219,7 @@ namespace Beep.Skia
             _component1 = component1;
             _component2 = component2;
             _line = line;
+            _index = manager.GetLines().ToList().IndexOf(line);
         }
 
         /// <summary>
@@ -213,7 +227,7 @@ namespace Beep.Skia
         /// </summary>
         public override void Execute()
         {
-            _manager.ConnectComponents(_component1, _component2);
+            _manager.AddLine(_line, _index);
         }
 
         /// <summary>
@@ -221,7 +235,7 @@ namespace Beep.Skia
         /// </summary>
         public override void Undo()
         {
-            _manager.DisconnectComponents(_component1, _component2);
+            _manager.RemoveLine(_line);
         }
     }
 
@@ -234,16 +248,18 @@ namespace Beep.Skia
         private readonly SkiaComponent _component1;
         private readonly SkiaComponent _component2;
         private readonly IConnectionLine _line;
+        private readonly int _index;
 
         /// <summary>
         /// Initializes a new instance of the DisconnectComponentsAction class.
         /// </summary>
-        public DisconnectComponentsAction(DrawingManager manager, SkiaComponent component1, SkiaComponent component2, IConnectionLine line)
+        public DisconnectComponentsAction(DrawingManager manager, SkiaComponent component1, SkiaComponent component2, IConnectionLine line, int index = -1)
         {
             _manager = manager;
             _component1 = component1;
             _component2 = component2;
             _line = line;
+            _index = index;
         }
 
         /// <summary>
@@ -251,7 +267,7 @@ namespace Beep.Skia
         /// </summary>
         public override void Execute()
         {
-            _manager.DisconnectComponents(_component1, _component2);
+            _manager.RemoveLine(_line);
         }
 
         /// <summary>
@@ -259,7 +275,7 @@ namespace Beep.Skia
         /// </summary>
         public override void Undo()
         {
-            _manager.ConnectComponents(_component1, _component2);
+            _manager.AddLine(_line, _index);
         }
     }
 
@@ -433,8 +449,6 @@ namespace Beep.Skia
         /// </summary>
         public override void Execute()
         {
-            _outputPoint.IsAvailable = false;
-            _inputPoint.IsAvailable = false;
             _outputPoint.Connection = _inputPoint;
             _inputPoint.Connection = _outputPoint;
             _manager.AddLine(_line);
@@ -445,8 +459,6 @@ namespace Beep.Skia
         /// </summary>
         public override void Undo()
         {
-            _outputPoint.IsAvailable = true;
-            _inputPoint.IsAvailable = true;
             _outputPoint.Connection = null;
             _inputPoint.Connection = null;
             _manager.RemoveLine(_line);

@@ -87,7 +87,6 @@ namespace Beep.Skia.ETL
                 point.Rect = point.Bounds;
                 point.Index = i;
                 point.Component = this;
-                point.IsAvailable = true;
             }
 
             // Position output at the right point of the triangle
@@ -102,7 +101,6 @@ namespace Beep.Skia.ETL
                 outputPoint.Rect = outputPoint.Bounds;
                 outputPoint.Index = 0;
                 outputPoint.Component = this;
-                outputPoint.IsAvailable = true;
             }
         }
     }

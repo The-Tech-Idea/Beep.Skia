@@ -48,12 +48,12 @@ namespace Beep.Ski.Quantitative
         protected void EnsurePortCounts(int inCount, int outCount)
         {
             while (InConnectionPoints.Count < inCount)
-                InConnectionPoints.Add(new Beep.Skia.ConnectionPoint { Type = ConnectionPointType.In, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "series", IsAvailable = true });
+                InConnectionPoints.Add(new Beep.Skia.ConnectionPoint { Type = ConnectionPointType.In, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "series" });
             while (InConnectionPoints.Count > inCount)
                 InConnectionPoints.RemoveAt(InConnectionPoints.Count - 1);
 
             while (OutConnectionPoints.Count < outCount)
-                OutConnectionPoints.Add(new Beep.Skia.ConnectionPoint { Type = ConnectionPointType.Out, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "series", IsAvailable = true });
+                OutConnectionPoints.Add(new Beep.Skia.ConnectionPoint { Type = ConnectionPointType.Out, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "series" });
             while (OutConnectionPoints.Count > outCount)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
@@ -87,7 +87,6 @@ namespace Beep.Ski.Quantitative
                 p.Rect = p.Bounds;
                 p.Index = i;
                 p.Component = this;
-                p.IsAvailable = true;
             }
         }
 

@@ -49,10 +49,10 @@ namespace Beep.Skia.ETL
             using var stroke = new SKPaint { Color = new SKColor(0x1E, 0x88, 0xE5), StrokeWidth = 2f, Style = SKPaintStyle.Stroke, IsAntialias = true };
             canvas.DrawRoundRect(r, 8, 8, fill);
             canvas.DrawRoundRect(r, 8, 8, stroke);
-            using var font = new SKFont(SKTypeface.Default, 9) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9) { Embolden = true };
             using var text = new SKPaint { Color = new SKColor(0x33, 0x33, 0x33), IsAntialias = true };
             canvas.DrawText("SK", r.MidX, r.MidY - 3, SKTextAlign.Center, font, text);
-            using var subFont = new SKFont(SKTypeface.Default, 7);
+            using var subFont = new SKFont(Beep.Skia.TypefaceCache.Default, 7);
             using var subText = new SKPaint { Color = new SKColor(0x75, 0x75, 0x75), IsAntialias = true };
             canvas.DrawText("1,2,3...", r.MidX, r.MidY + 11, SKTextAlign.Center, subFont, subText);
             DrawPorts(canvas);

@@ -121,7 +121,6 @@ namespace Beep.Skia.ETL
                 );
                 pt.Rect = pt.Bounds;
                 pt.Component = this;
-                pt.IsAvailable = true;
             }
 
             // Multiple output ports along bottom edge
@@ -144,7 +143,6 @@ namespace Beep.Skia.ETL
                     );
                     pt.Rect = pt.Bounds;
                     pt.Component = this;
-                    pt.IsAvailable = true;
                 }
             }
         }

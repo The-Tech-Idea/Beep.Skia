@@ -261,7 +261,6 @@ namespace Beep.Skia.ETL
                 mainIn.Rect = mainIn.Bounds;
                 mainIn.Index = 0;
                 mainIn.Component = this;
-                mainIn.IsAvailable = true;
             }
 
             // Input 1 (reference data): left side, lower
@@ -275,7 +274,6 @@ namespace Beep.Skia.ETL
                 refIn.Rect = refIn.Bounds;
                 refIn.Index = 1;
                 refIn.Component = this;
-                refIn.IsAvailable = true;
             }
 
             // Output: right side, middle
@@ -289,7 +287,6 @@ namespace Beep.Skia.ETL
                 output.Rect = output.Bounds;
                 output.Index = 0;
                 output.Component = this;
-                output.IsAvailable = true;
             }
         }
     }

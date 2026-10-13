@@ -161,7 +161,7 @@ namespace Beep.Skia.Business
                     Color = MaterialColors.OutlineVariant,
                     IsAntialias = true
                 };
-                using var font = new SKFont(SKTypeface.Default, 6);
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 6);
 
                 float dotsX = startX + (maxIndicators * (indicatorSize + 2));
                 canvas.DrawText("...", dotsX, startY + indicatorSize, SKTextAlign.Left, font, textPaint);
@@ -170,8 +170,8 @@ namespace Beep.Skia.Business
 
         protected override void DrawComponentText(SKCanvas canvas)
         {
-            using var nameFont = new SKFont(SKTypeface.Default, 11) { Embolden = true };
-            using var countFont = new SKFont(SKTypeface.Default, 8);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
+            using var countFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             using var paint = new SKPaint
             {
                 Color = TextColor,
@@ -222,7 +222,6 @@ namespace Beep.Skia.Business
         protected override void LayoutPorts()
         {
             // Rounded rectangle: 1 in / 1 out
-            EnsurePortCounts(1, 1);
             LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
         }
     }

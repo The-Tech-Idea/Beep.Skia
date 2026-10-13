@@ -57,8 +57,8 @@ namespace Beep.Skia.Cloud
             for (int i = -1; i <= 1; i++) { canvas.DrawLine(cx + i * 8, cy - 10, cx + i * 8, cy - 6, chip); canvas.DrawLine(cx + i * 8, cy + 6, cx + i * 8, cy + 10, chip); }
 
             using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var nameFont = new SKFont(SKTypeface.Default, 11) { Embolden = true };
-            using var metaFont = new SKFont(SKTypeface.Default, 8);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
+            using var metaFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             canvas.DrawText(VmName, rect.MidX, rect.MidY + 6, SKTextAlign.Center, nameFont, textPaint);
             var meta = $"{Provider} · {CpuCores} vCPU · {MemoryGB} GB";
             canvas.DrawText(meta, rect.MidX, rect.Bottom - 6, SKTextAlign.Center, metaFont, textPaint);

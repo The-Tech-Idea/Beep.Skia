@@ -325,14 +325,14 @@ namespace Beep.Skia.ERD
             {
                 if (!_rowToInCp.ContainsKey(entry.Id))
                 {
-                    var cp = new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius };
+                    var cp = new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius };
                     cp.RowId = entry.Id;
                     _rowToInCp[entry.Id] = cp;
                     InConnectionPoints.Add(cp);
                 }
                 if (!_rowToOutCp.ContainsKey(entry.Id))
                 {
-                    var cp = new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius };
+                    var cp = new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius };
                     cp.RowId = entry.Id;
                     _rowToOutCp[entry.Id] = cp;
                     OutConnectionPoints.Add(cp);
@@ -347,8 +347,8 @@ namespace Beep.Skia.ERD
                 var id = _rowEntries[i].Id;
                 var inCp = _rowToInCp[id];
                 var outCp = _rowToOutCp[id];
-                inCp.Index = i; inCp.Component = this; inCp.IsAvailable = true;
-                outCp.Index = i; outCp.Component = this; outCp.IsAvailable = true;
+                inCp.Index = i; inCp.Component = this;
+                outCp.Index = i; outCp.Component = this;
                 newIn.Add(inCp);
                 newOut.Add(outCp);
             }
@@ -391,7 +391,6 @@ namespace Beep.Skia.ERD
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
 
             for (int i = 0; i < _rowEntries.Count && i < OutConnectionPoints.Count; i++)
@@ -404,7 +403,6 @@ namespace Beep.Skia.ERD
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
         }
 
@@ -420,7 +418,7 @@ namespace Beep.Skia.ERD
             using var titleFill = new SKPaint { Color = MaterialControl.MaterialColors.PrimaryContainer, IsAntialias = true };
             using var titleTextPaint = new SKPaint { Color = MaterialControl.MaterialColors.OnPrimaryContainer, IsAntialias = true };
             using var textPaint = new SKPaint { Color = MaterialControl.MaterialColors.OnSurface, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
 
             // Body and border
             canvas.DrawRoundRect(rect, CornerRadius, CornerRadius, bodyFill);
@@ -542,6 +540,7 @@ namespace Beep.Skia.ERD
                         {
                             e = new RowEntry { Id = c.Id != Guid.Empty ? c.Id : Guid.NewGuid() };
                         }
+                        if (c.Id != Guid.Empty) e.Id = c.Id;
                         e.Text = c.Name ?? string.Empty;
                         e.DataType = c.DataType ?? (e.DataType ?? "string");
                         e.IsPrimaryKey = c.IsPrimaryKey;

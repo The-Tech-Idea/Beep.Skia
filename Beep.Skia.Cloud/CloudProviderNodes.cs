@@ -34,10 +34,10 @@ namespace Beep.Skia.Cloud
             using var fill = new SKPaint { Color = new SKColor(0xE3, 0xF2, 0xFD), IsAntialias = true };
             using var stroke = new SKPaint { Color = new SKColor(0x1E, 0x88, 0xE5), StrokeWidth = 1.5f, Style = SKPaintStyle.Stroke, IsAntialias = true };
             canvas.DrawRoundRect(r, 6, 6, fill); canvas.DrawRoundRect(r, 6, 6, stroke);
-            using var font = new SKFont(SKTypeface.Default, 9) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9) { Embolden = true };
             using var text = new SKPaint { Color = new SKColor(0x33, 0x33, 0x33), IsAntialias = true };
             canvas.DrawText("VM", r.MidX, r.MidY - 4, SKTextAlign.Center, font, text);
-            using var sf = new SKFont(SKTypeface.Default, 7);
+            using var sf = new SKFont(Beep.Skia.TypefaceCache.Default, 7);
             canvas.DrawText(_instanceType, r.MidX, r.MidY + 10, SKTextAlign.Center, sf, text);
         }
         protected override void LayoutPorts() { LayoutPortsVerticalSegments(6, 6); }
@@ -64,7 +64,7 @@ namespace Beep.Skia.Cloud
             using var fill = new SKPaint { Color = new SKColor(0xE8, 0xF5, 0xE9), IsAntialias = true };
             using var stroke = new SKPaint { Color = new SKColor(0x4C, 0xAF, 0x50), StrokeWidth = 1.5f, Style = SKPaintStyle.Stroke, IsAntialias = true };
             canvas.DrawRoundRect(r, 6, 6, fill); canvas.DrawRoundRect(r, 6, 6, stroke);
-            using var font = new SKFont(SKTypeface.Default, 9) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9) { Embolden = true };
             using var text = new SKPaint { Color = new SKColor(0x33, 0x33, 0x33), IsAntialias = true };
             canvas.DrawText(Name, r.MidX, r.MidY, SKTextAlign.Center, font, text);
         }
@@ -97,7 +97,7 @@ namespace Beep.Skia.Cloud
             using var fill = new SKPaint { Color = new SKColor(0xFF, 0xF3, 0xE0), IsAntialias = true };
             using var stroke = new SKPaint { Color = new SKColor(0xFF, 0x98, 0x00), StrokeWidth = 1.5f, Style = SKPaintStyle.Stroke, IsAntialias = true };
             canvas.DrawRoundRect(r, 6, 6, fill); canvas.DrawRoundRect(r, 6, 6, stroke);
-            using var font = new SKFont(SKTypeface.Default, 9) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9) { Embolden = true };
             using var text = new SKPaint { Color = new SKColor(0x33, 0x33, 0x33), IsAntialias = true };
             canvas.DrawText("\u03BB", r.MidX - 8, r.MidY + 6, SKTextAlign.Center, font, text);
             canvas.DrawText(Name, r.MidX + 10, r.MidY + 6, SKTextAlign.Left, font, text);
@@ -138,7 +138,7 @@ namespace Beep.Skia.Cloud
             canvas.DrawLine(cx - 12, cy, cx - 12, cy + 10, icon);
             canvas.DrawLine(cx + 12, cy, cx + 12, cy + 10, icon);
             canvas.DrawOval(new SKRect(cx - 12, cy + 6, cx + 12, cy + 14), icon);
-            using var font = new SKFont(SKTypeface.Default, 8);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             using var text = new SKPaint { Color = new SKColor(0x33, 0x33, 0x33), IsAntialias = true };
             canvas.DrawText($"DB: {_engine}", cx, r.MidY + 18, SKTextAlign.Center, font, text);
         }
@@ -166,7 +166,7 @@ namespace Beep.Skia.Cloud
             using var fill = new SKPaint { Color = new SKColor(0xFD, 0xE0, 0xE0), IsAntialias = true };
             using var stroke = new SKPaint { Color = new SKColor(0xE5, 0x39, 0x35), StrokeWidth = 1.5f, Style = SKPaintStyle.Stroke, IsAntialias = true };
             canvas.DrawRoundRect(r, 6, 6, fill); canvas.DrawRoundRect(r, 6, 6, stroke);
-            using var font = new SKFont(SKTypeface.Default, 9) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9) { Embolden = true };
             using var text = new SKPaint { Color = new SKColor(0x33, 0x33, 0x33), IsAntialias = true };
             canvas.DrawText("API", r.MidX, r.MidY + 4, SKTextAlign.Center, font, text);
         }
@@ -194,7 +194,7 @@ namespace Beep.Skia.Cloud
             using var fill = new SKPaint { Color = new SKColor(0xF5, 0xF5, 0xF5).WithAlpha(80), IsAntialias = true };
             using var stroke = new SKPaint { Color = new SKColor(0x45, 0x55, 0xA0), StrokeWidth = 1.5f, Style = SKPaintStyle.Stroke, IsAntialias = true, PathEffect = SKPathEffect.CreateDash(new[] { 6f, 3f }, 0) };
             canvas.DrawRoundRect(r, 6, 6, fill); canvas.DrawRoundRect(r, 6, 6, stroke);
-            using var font = new SKFont(SKTypeface.Default, 9) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9) { Embolden = true };
             using var text = new SKPaint { Color = new SKColor(0x45, 0x55, 0xA0), IsAntialias = true };
             canvas.DrawText("VPC: " + _cidr, r.Left + 8, r.Top + 16, SKTextAlign.Left, font, text);
         }

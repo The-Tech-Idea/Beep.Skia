@@ -1,9 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0;net8.0;net10.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(BeepSkiaPortableTargetFramework)' != 'net10.0'">net9.0;net8.0;net10.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(BeepSkiaPortableTargetFramework)' == 'net10.0'">net10.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>Latest</LangVersion>
+		<!-- A switch over an enum names every member with no catch-all arm: a member left out (CS8509) fails the build;
+		     a value outside the enum (CS8524) fails at run time with SwitchExpressionException. -->
+		<WarningsAsErrors>$(WarningsAsErrors);CS8509</WarningsAsErrors>
+		<NoWarn>$(NoWarn);CS8524</NoWarn>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>The Tech Idea</Authors>
 		<Company>The Tech Idea</Company>
@@ -20,14 +25,16 @@
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
-	<Target Name="CopyPackage" AfterTargets="Pack">
+	<Target Name="CopyPackage" AfterTargets="Pack" Condition="'$(BeepSkiaLocalBuildCopies)' != 'false'">
 		<Copy SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="..\..\..\LocalNugetFiles" />
 	</Target>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BeepSkiaLocalBuildCopies)' != 'false'">
 		<Copy SourceFiles="$(TargetDir)$(PackageId).dll" DestinationFolder="$(ProjectDir)..\..\outputDLL\$(PackageId)\$(TargetFramework)" SkipUnchangedFiles="false" />
 	</Target>
   <ItemGroup>
     <PackageReference Include="SkiaSharp" Version="4.150.1" />
+    <!-- HarfBuzz shapes complex scripts (Arabic) for bundled fonts registered with GlyphLayout.Shaped. -->
+    <PackageReference Include="HarfBuzzSharp" Version="14.2.1.1" />
     <PackageReference Include="SkiaSharp.Extended" Version="3.0.0" />
     <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
     <PackageReference Include="TheTechIdea.Beep.DataManagementModels" Version="3.1.1" />

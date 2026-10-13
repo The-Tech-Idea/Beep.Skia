@@ -7,7 +7,7 @@ namespace Beep.Skia.Flowchart
     /// Loop Limit node: hexagon with horizontal orientation for loop boundaries.
     /// Used to mark the beginning or end of a loop structure.
     /// </summary>
-    public class LoopLimitNode : FlowchartControl
+    public class LoopLimitNode : DirectedFlowchartControl
     {
         private string _label = "Loop Limit";
         /// <summary>
@@ -83,9 +83,21 @@ namespace Beep.Skia.Flowchart
             };
         }
 
-        protected override void LayoutPorts()
+        protected override void LayoutSidePorts()
         {
             LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
+        }
+
+        /// <summary>How far the top and bottom edges sit in from the pointed left and right ends.</summary>
+        private static float Indent(SKRect r) => r.Width * 0.15f;
+
+        /// <summary>Inputs along the flat top, outputs along the flat bottom, between the pointed ends.</summary>
+        protected override void LayoutTopBottomPorts()
+        {
+            var r = Bounds;
+            var indent = Indent(r);
+            PlaceAlongEdge(InConnectionPoints, r.Left + indent + 8f, r.Right - indent - 8f, _ => r.Top, -1f);
+            PlaceAlongEdge(OutConnectionPoints, r.Left + indent + 8f, r.Right - indent - 8f, _ => r.Bottom, +1f);
         }
 
         protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
@@ -93,7 +105,7 @@ namespace Beep.Skia.Flowchart
             if (!context.Bounds.IntersectsWith(Bounds)) return;
 
             var r = Bounds;
-            float indent = r.Width * 0.15f;
+            var indent = Indent(r);
 
             // Horizontal hexagon (same shape as PreparationNode)
             var points = new SKPoint[]
@@ -109,7 +121,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xFF, 0xF3, 0xE0), IsAntialias = true }; // Light orange
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0xFF, 0x98, 0x00), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Orange
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
             pathBuilder.MoveTo(points[0]);

@@ -160,13 +160,13 @@ namespace Beep.Skia.PM
             canvas.DrawRoundRect(innerRect, CornerRadius - 2, CornerRadius - 2, innerStroke);
 
             // Draw phase name (bold)
-            using var nameFont = new SKFont(SKTypeface.Default, 15) { Embolden = true };
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 15) { Embolden = true };
             canvas.DrawText(PhaseName, r.Left + 12, r.Top + 22, SKTextAlign.Left, nameFont, text);
 
             // Draw dates if provided
             if (!string.IsNullOrWhiteSpace(StartDate) || !string.IsNullOrWhiteSpace(EndDate))
             {
-                using var dateFont = new SKFont(SKTypeface.Default, 10);
+                using var dateFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
                 using var dateText = new SKPaint { Color = MaterialColors.OnPrimaryContainer.WithAlpha(180), IsAntialias = true };
                 string dates = $"{StartDate} - {EndDate}";
                 canvas.DrawText(dates, r.Left + 12, r.Top + 40, SKTextAlign.Left, dateFont, dateText);
@@ -175,7 +175,7 @@ namespace Beep.Skia.PM
             // Draw status badge
             if (!string.IsNullOrWhiteSpace(Status))
             {
-                using var statusFont = new SKFont(SKTypeface.Default, 9);
+                using var statusFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
                 using var statusText = new SKPaint { Color = SKColors.White, IsAntialias = true };
                 
                 SKColor badgeColor = Status switch

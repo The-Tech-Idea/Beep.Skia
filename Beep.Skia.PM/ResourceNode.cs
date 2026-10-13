@@ -170,11 +170,11 @@ namespace Beep.Skia.PM
             canvas.DrawLine(iconX - iconSize / 2, iconY + iconSize / 2, iconX + iconSize / 2, iconY + iconSize / 2, iconPaint); // Arms
 
             // Draw resource name
-            using var nameFont = new SKFont(SKTypeface.Default, 13);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 13);
             canvas.DrawText(ResourceName, r.Left + 30, r.Top + 20, SKTextAlign.Left, nameFont, text);
 
             // Draw resource type
-            using var typeFont = new SKFont(SKTypeface.Default, 10);
+            using var typeFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
             using var grayText = new SKPaint { Color = new SKColor(0x70, 0x70, 0x70), IsAntialias = true };
             canvas.DrawText(ResourceType, r.Left + 8, r.Top + 38, SKTextAlign.Left, typeFont, grayText);
 
@@ -196,7 +196,7 @@ namespace Beep.Skia.PM
                 canvas.DrawRoundRect(fillRect, 4f, 4f, barFill);
 
                 // Draw allocation percentage text
-                using var percentFont = new SKFont(SKTypeface.Default, 9);
+                using var percentFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
                 string percentText = $"{_allocationPercent}%";
                 canvas.DrawText(percentText, r.MidX, barY - 2, SKTextAlign.Center, percentFont, grayText);
             }

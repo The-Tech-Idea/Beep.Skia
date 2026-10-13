@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DirectedFlowchartControl | Beep.Skia Documentation</title>
+<link rel="stylesheet" href="../../sphinx-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>.content{margin-left:0!important}</style>
+</head>
+<body>
+<div class="container">
+<main class="content"><div class="content-wrapper">
+<nav class="breadcrumb-nav"><a href="../../index.html">Home</a><span>&rsaquo;</span> <a href="../api-index.html">API Reference</a><span>&rsaquo;</span> <a href="../beep-skia-flowchart.html">Flowchart family</a><span>&rsaquo;</span> <span>DirectedFlowchartControl</span></nav>
+<div class="page-header"><h1>DirectedFlowchartControl <span style="font-size:0.5em;color:var(--color-foreground-muted)">class</span></h1>
+<p class="page-subtitle">Flowchart family &mdash; class</p></div>
+<p>A flowchart shape whose flow can run left to right (inputs down the left side, outputs down the right side) or top to bottom (inputs along the top, outputs along the bottom). Each shape places its ports on its own outline in both directions, in order across the flow. Process, Decision, Start/End and the catalog shapes that draw a flow derive from it; shapes whose ports are fixed by their meaning (loops, fork, join, off-page reference, tape, connector, annotation, comment) derive from FlowchartControl and have no direction.</p>
+<h2>Members</h2>
+<table class="property-table">
+  <thead><tr><th>Member</th><th>Kind</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>bool ShowTopBottomPorts</code></td><td>Property</td><td>Whether the flow runs top to bottom (inputs along the top edge, outputs along the bottom edge) rather than left to right (inputs down the left side, outputs down the right side).</td></tr>
+    <tr><td><code>void LayoutSidePorts()</code></td><td>Method</td><td>Protected, abstract: places the ports for a flow that runs left to right.</td></tr>
+    <tr><td><code>void LayoutTopBottomPorts()</code></td><td>Method</td><td>Protected, virtual: places the ports for a flow that runs top to bottom; the default suits a shape with flat top and bottom edges.</td></tr>
+  </tbody>
+</table>
+<h2>Related</h2>
+<ul>
+  <li><a href="../beep-skia-flowchart.html">All types in Flowchart family</a></li>
+  <li><a href="../api-index.html">API index</a></li>
+</ul>
+</div></main></div>
+</body></html>

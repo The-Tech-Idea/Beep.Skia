@@ -48,8 +48,8 @@ namespace Beep.Skia.Security
             canvas.DrawRoundRect(r, 6, 6, border);
 
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var nameFont = new SKFont(SKTypeface.Default, 11) { Embolden = true };
-            using var metaFont = new SKFont(SKTypeface.Default, 8);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
+            using var metaFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             canvas.DrawText(AssetName, r.MidX, r.MidY, SKTextAlign.Center, nameFont, text);
             canvas.DrawText($"{Category} · {Criticality}", r.MidX, r.Bottom - 6, SKTextAlign.Center, metaFont, text);
 

@@ -71,13 +71,13 @@ namespace Beep.Skia.MindMap
             canvas.DrawRoundRect(rect, Height / 2f, Height / 2f, fill);
             canvas.DrawRoundRect(rect, Height / 2f, Height / 2f, stroke);
 
-            using var font = new SKFont(SKTypeface.Default, 14) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14) { Embolden = true };
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
             canvas.DrawText(Title ?? Name ?? string.Empty, X + Width / 2f, Y + Height / 2f + 4, SKTextAlign.Center, font, text);
 
             if (!string.IsNullOrWhiteSpace(Notes))
             {
-                using var font2 = new SKFont(SKTypeface.Default, 11);
+                using var font2 = new SKFont(Beep.Skia.TypefaceCache.Default, 11);
                 using var t2 = new SKPaint { Color = MaterialColors.OnSurfaceVariant, IsAntialias = true };
                 var noteText = Notes.Length > 120 ? Notes.Substring(0, 120) + "..." : Notes;
                 canvas.DrawText(noteText, X + 12, Y + Height - 12, SKTextAlign.Left, font2, t2);

@@ -72,6 +72,12 @@ namespace Beep.Skia.Model
     /// </summary>
     public class DrawingContext
     {
+        /// <summary>Whether components may render selection adorners; exports disable them without mutating selection.</summary>
+        public bool IncludeSelection { get; set; } = true;
+        /// <summary>Whether the host shows this drawing with inverted lightness (a dark theme). Display only: exports never set it.</summary>
+        public bool InvertedDisplay { get; set; }
+        /// <summary>Seconds on the scene's animation clock: a flowing line draws its flow where it is at this moment.</summary>
+        public double AnimationTime { get; set; }
         /// <summary>
         /// Gets or sets the current zoom level.
         /// </summary>

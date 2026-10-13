@@ -7,7 +7,7 @@ namespace Beep.Skia.Flowchart
     /// Card node: rectangle with cut corner for punch card or card-based storage.
     /// Legacy flowchart symbol for card-based data processing.
     /// </summary>
-    public class CardNode : FlowchartControl
+    public class CardNode : DirectedFlowchartControl
     {
         private string _label = "Card";
         /// <summary>
@@ -49,9 +49,20 @@ namespace Beep.Skia.Flowchart
             };
         }
 
-        protected override void LayoutPorts()
+        protected override void LayoutSidePorts()
         {
             LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
+        }
+
+        /// <summary>The size of the cut corner at the top right.</summary>
+        private const float CornerCut = 12f;
+
+        /// <summary>Inputs along the top edge up to the cut corner, outputs along the bottom edge.</summary>
+        protected override void LayoutTopBottomPorts()
+        {
+            var r = Bounds;
+            PlaceAlongEdge(InConnectionPoints, r.Left + FlowInset, r.Right - CornerCut - FlowInset, _ => r.Top, -1f);
+            PlaceAlongEdge(OutConnectionPoints, r.Left + FlowInset, r.Right - FlowInset, _ => r.Bottom, +1f);
         }
 
         protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
@@ -59,13 +70,13 @@ namespace Beep.Skia.Flowchart
             if (!context.Bounds.IntersectsWith(Bounds)) return;
 
             var r = Bounds;
-            float cornerCut = 12f;
+            const float cornerCut = CornerCut;
 
             // Rectangle with cut top-right corner
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xFF, 0xF3, 0xE0), IsAntialias = true }; // Light orange
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0xFF, 0x98, 0x00), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Orange
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
             pathBuilder.MoveTo(r.Left, r.Top);

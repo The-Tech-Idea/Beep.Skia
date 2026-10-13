@@ -170,13 +170,13 @@ namespace Beep.Skia.PM
             canvas.DrawLine(arrowX + 20, arrowY, arrowX + 15, arrowY + 4, arrowPaint);
 
             // Draw dependency type
-            using var typeFont = new SKFont(SKTypeface.Default, 14) { Embolden = true };
+            using var typeFont = new SKFont(Beep.Skia.TypefaceCache.Default, 14) { Embolden = true };
             canvas.DrawText(DependencyType, arrowX + 28, r.Top + 20, SKTextAlign.Left, typeFont, text);
 
             // Draw lag/lead indicator
             if (LagDays != 0)
             {
-                using var lagFont = new SKFont(SKTypeface.Default, 10);
+                using var lagFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
                 using var lagText = new SKPaint { Color = LagDays > 0 ? new SKColor(0xE5, 0x39, 0x35) : new SKColor(0x43, 0xA0, 0x47), IsAntialias = true };
                 string lagStr = LagDays > 0 ? $"+{LagDays}d" : $"{LagDays}d";
                 canvas.DrawText(lagStr, r.MidX, r.Bottom - 8, SKTextAlign.Center, lagFont, lagText);

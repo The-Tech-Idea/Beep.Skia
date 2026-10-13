@@ -6,7 +6,7 @@ namespace Beep.Skia.Flowchart
     /// <summary>
     /// Input/Output (parallelogram) node with slanted sides and centered label.
     /// </summary>
-    public class InputOutputNode : FlowchartControl
+    public class InputOutputNode : DirectedFlowchartControl
     {
         private string _label = "Input/Output";
         /// <summary>
@@ -48,10 +48,10 @@ namespace Beep.Skia.Flowchart
             };
         }
 
-        protected override void LayoutPorts()
+        protected override void LayoutSidePorts()
         {
             var b = Bounds;
-            float slant = 16f;
+            const float slant = SlantWidth;
             // Left vertical edge is slanted top-left; right edge slanted bottom-right
             var a = new SKPoint(b.Left + slant, b.Top);
             var b1 = new SKPoint(b.Right, b.Top);
@@ -62,16 +62,27 @@ namespace Beep.Skia.Flowchart
             PlacePortsOnSegment(OutConnectionPoints, b1, c, outwardSign: +1f);
         }
 
+        /// <summary>How far the top edge sits to the right of the bottom one.</summary>
+        private const float SlantWidth = 16f;
+
+        /// <summary>Inputs along the top edge (which starts a slant in), outputs along the bottom edge (which ends one in).</summary>
+        protected override void LayoutTopBottomPorts()
+        {
+            var r = Bounds;
+            PlaceAlongEdge(InConnectionPoints, r.Left + SlantWidth + 8f, r.Right - 8f, _ => r.Top, -1f);
+            PlaceAlongEdge(OutConnectionPoints, r.Left + 8f, r.Right - SlantWidth - 8f, _ => r.Bottom, +1f);
+        }
+
         protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
         {
             if (!context.Bounds.IntersectsWith(Bounds)) return;
 
             var b = Bounds;
-            float slant = 16f;
+            const float slant = SlantWidth;
             using var fill = new SKPaint { Color = new SKColor(0xF3, 0xE5, 0xF5), IsAntialias = true };
             using var stroke = new SKPaint { Color = new SKColor(0x8E, 0x24, 0xAA), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
             using var text = new SKPaint { Color = SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
             pathBuilder.MoveTo(b.Left + slant, b.Top);

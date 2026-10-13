@@ -68,7 +68,6 @@ namespace Beep.Skia.PM
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
             
             // Position output ports on the right point of diamond
@@ -81,7 +80,6 @@ namespace Beep.Skia.PM
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
         }
 
@@ -92,7 +90,7 @@ namespace Beep.Skia.PM
             using var fill = new SKPaint { Color = MaterialColors.Surface, IsAntialias = true };
             using var stroke = new SKPaint { Color = MaterialColors.Primary, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
             using var text = new SKPaint { Color = MaterialColors.OnSurface, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 13);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 13);
 
             // Diamond points
             var top = new SKPoint(cx, r.Top);

@@ -76,12 +76,12 @@ namespace Beep.Skia.PM
         protected void EnsurePortCounts(int inputs, int outputs)
         {
             while (InConnectionPoints.Count < inputs)
-                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
+                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius });
             while (InConnectionPoints.Count > inputs)
                 InConnectionPoints.RemoveAt(InConnectionPoints.Count - 1);
 
             while (OutConnectionPoints.Count < outputs)
-                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
+                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius });
             while (OutConnectionPoints.Count > outputs)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
@@ -120,7 +120,6 @@ namespace Beep.Skia.PM
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
 
             int nOut = Math.Max(OutConnectionPoints.Count, 1);
@@ -136,7 +135,6 @@ namespace Beep.Skia.PM
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
         }
 

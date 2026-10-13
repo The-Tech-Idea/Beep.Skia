@@ -6,7 +6,7 @@ namespace Beep.Skia.Flowchart
     /// <summary>
     /// Manual operation node: trapezoid shape (top wider than bottom) for human-performed tasks.
     /// </summary>
-    public class ManualOperationNode : FlowchartControl
+    public class ManualOperationNode : DirectedFlowchartControl
     {
         private string _label = "Manual Operation";
         /// <summary>
@@ -48,9 +48,21 @@ namespace Beep.Skia.Flowchart
             };
         }
 
-        protected override void LayoutPorts()
+        protected override void LayoutSidePorts()
         {
             LayoutPortsVerticalSegments(topInset: 6f, bottomInset: 6f);
+        }
+
+        /// <summary>How far the bottom corners sit in from the top ones.</summary>
+        private static float Slant(SKRect r) => r.Width * 0.15f;
+
+        /// <summary>Inputs along the wide top edge, outputs along the narrow bottom edge.</summary>
+        protected override void LayoutTopBottomPorts()
+        {
+            var r = Bounds;
+            var slant = Slant(r);
+            PlaceAlongEdge(InConnectionPoints, r.Left + 8f, r.Right - 8f, _ => r.Top, -1f);
+            PlaceAlongEdge(OutConnectionPoints, r.Left + slant + 8f, r.Right - slant - 8f, _ => r.Bottom, +1f);
         }
 
         protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
@@ -58,7 +70,7 @@ namespace Beep.Skia.Flowchart
             if (!context.Bounds.IntersectsWith(Bounds)) return;
 
             var r = Bounds;
-            float slant = r.Width * 0.15f; // 15% slant inward at bottom
+            var slant = Slant(r); // inward at the bottom
 
             // Trapezoid: top-left → top-right → bottom-right-inner → bottom-left-inner
             var topLeft = new SKPoint(r.Left, r.Top);
@@ -69,7 +81,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = new SKColor(0xFF, 0xEB, 0xEE), IsAntialias = true }; // Light pink
             using var stroke = new SKPaint { Color = new SKColor(0xE5, 0x39, 0x35), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Red
             using var text = new SKPaint { Color = SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
             pathBuilder.MoveTo(topLeft);

@@ -113,7 +113,7 @@ namespace Beep.Skia.Flowchart
                 PathEffect = SKPathEffect.CreateDash(new float[] { 6, 3 }, 0)
             };
             using var text = new SKPaint { Color = new SKColor(0x42, 0x42, 0x42), IsAntialias = true }; // Dark gray text
-            using var font = new SKFont(SKTypeface.Default, 12);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
 
             canvas.DrawRoundRect(r, 4f, 4f, fill);
             canvas.DrawRoundRect(r, 4f, 4f, stroke);

@@ -6,7 +6,7 @@ namespace Beep.Skia.Flowchart
     /// <summary>
     /// Manual Input node: parallelogram with top slanted (wider at top) for manual data entry.
     /// </summary>
-    public class ManualInputNode : FlowchartControl
+    public class ManualInputNode : DirectedFlowchartControl
     {
         private string _label = "Manual Input";
         /// <summary>
@@ -48,9 +48,21 @@ namespace Beep.Skia.Flowchart
             };
         }
 
-        protected override void LayoutPorts()
+        protected override void LayoutSidePorts()
         {
             LayoutPortsVerticalSegments(topInset: 12f, bottomInset: 6f);
+        }
+
+        /// <summary>How much lower the top edge starts at the left than it ends at the right.</summary>
+        private static float TopRise(SKRect r) => r.Height * 0.25f;
+
+        /// <summary>Inputs along the sloping top edge, outputs along the flat bottom edge.</summary>
+        protected override void LayoutTopBottomPorts()
+        {
+            var r = Bounds;
+            var rise = TopRise(r);
+            PlaceAlongEdge(InConnectionPoints, r.Left + FlowInset, r.Right - FlowInset, x => r.Top + rise * (1 - (x - r.Left) / r.Width), -1f);
+            PlaceAlongEdge(OutConnectionPoints, r.Left + FlowInset, r.Right - FlowInset, _ => r.Bottom, +1f);
         }
 
         protected override void DrawFlowchartContent(SKCanvas canvas, DrawingContext context)
@@ -58,7 +70,7 @@ namespace Beep.Skia.Flowchart
             if (!context.Bounds.IntersectsWith(Bounds)) return;
 
             var r = Bounds;
-            float topSlant = r.Height * 0.25f;
+            var topSlant = TopRise(r);
 
             // Parallelogram: top edge slants down from left to right
             var points = new SKPoint[]
@@ -72,7 +84,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = CustomFillColor ?? new SKColor(0xE1, 0xBE, 0xE7), IsAntialias = true }; // Light purple
             using var stroke = new SKPaint { Color = CustomStrokeColor ?? new SKColor(0x8E, 0x24, 0xAA), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 }; // Purple
             using var text = new SKPaint { Color = CustomTextColor ?? SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
             using var pathBuilder = new SKPathBuilder();
 
             pathBuilder.MoveTo(points[0]);

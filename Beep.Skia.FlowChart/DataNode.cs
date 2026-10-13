@@ -65,7 +65,7 @@ namespace Beep.Skia.Flowchart
             using var fill = new SKPaint { Color = new SKColor(0xE8, 0xEA, 0xF6), IsAntialias = true };
             using var stroke = new SKPaint { Color = new SKColor(0x3F, 0x51, 0xB5), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2 };
             using var text = new SKPaint { Color = SKColors.Black, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 14);
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 14);
 
             float rx = (b.Width) / 2f;
             float ry = 14f;

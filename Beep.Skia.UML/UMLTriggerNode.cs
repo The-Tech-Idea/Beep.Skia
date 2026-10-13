@@ -43,6 +43,31 @@ namespace Beep.Skia.UML
         /// <param name="context">The drawing context.</param>
         protected override void DrawUMLContent(SKCanvas canvas, DrawingContext context)
         {
+            // The body is laid out in the node's own coordinates, so paint it relative to X/Y.
+            // Connection points and selection are already in world coordinates and stay outside.
+            canvas.Save();
+            try
+            {
+                canvas.Translate(X, Y);
+                DrawBody(canvas);
+            }
+            finally
+            {
+                canvas.Restore();
+            }
+
+            // Draw connection points
+            DrawConnectionPoints(canvas, context);
+
+            // Draw selection indicator
+            DrawSelection(canvas, context);
+        }
+
+        /// <summary>
+        /// Draws the node body in local coordinates (origin at the node's top-left corner).
+        /// </summary>
+        private void DrawBody(SKCanvas canvas)
+        {
             // Draw rounded rectangle background
             using (var paint = new SKPaint())
             {
@@ -62,7 +87,7 @@ namespace Beep.Skia.UML
             // Draw stereotype
             if (!string.IsNullOrEmpty(Stereotype))
             {
-                using var font = new SKFont(SKTypeface.Default, 10);
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 var stereotypeWidth = font.MeasureText(Stereotype);
                 canvas.DrawText(Stereotype, (Width - stereotypeWidth) / 2, 18, SKTextAlign.Left, font, textPaint);
@@ -76,19 +101,13 @@ namespace Beep.Skia.UML
             // Draw trigger condition if present
             if (!string.IsNullOrEmpty(TriggerCondition))
             {
-                using var condFont = new SKFont(SKTypeface.Default, 10);
+                using var condFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10);
                 using var condPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 canvas.DrawText(TriggerCondition, 8, 55, SKTextAlign.Left, condFont, condPaint);
             }
 
             // Draw lightning bolt icon to represent trigger
             DrawLightningBolt(canvas, Width - 25, 10);
-
-            // Draw connection points
-            DrawConnectionPoints(canvas, context);
-
-            // Draw selection indicator
-            DrawSelection(canvas, context);
         }
 
         /// <summary>

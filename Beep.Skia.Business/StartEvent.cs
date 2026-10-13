@@ -70,7 +70,6 @@ namespace Beep.Skia.Business
         protected override void LayoutPorts()
         {
             // Place the single output on the ellipse perimeter to the right; no inputs.
-            EnsurePortCounts(0, 1);
             LayoutPortsOnEllipse(topInset: 4f, bottomInset: 4f, outwardOffset: 2f);
         }
     }

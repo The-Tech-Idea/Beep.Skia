@@ -71,13 +71,13 @@ namespace Beep.Skia.ECAD
 
             // +/- symbols
             using var text = new SKPaint { Color = BorderColor, IsAntialias = true };
-            using var symbolFont = new SKFont(SKTypeface.Default, 12);
+            using var symbolFont = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
             canvas.DrawText("+", cx + 20, cy + 5, SKTextAlign.Left, symbolFont, text);
             canvas.DrawText("-", cx - 30, cy + 5, SKTextAlign.Left, symbolFont, text);
 
             // Label
             using var label = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var labelFont = new SKFont(SKTypeface.Default, 9);
+            using var labelFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
             string info = $"{_voltage * _cells}V {_capacity}mAh";
             canvas.DrawText(info, r.MidX - labelFont.MeasureText(info) / 2, r.Bottom - 4, SKTextAlign.Left, labelFont, label);
 

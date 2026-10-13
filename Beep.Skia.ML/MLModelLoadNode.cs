@@ -46,9 +46,9 @@ namespace Beep.Skia.ML
             base.DrawMLContent(canvas, context);
             var r = new SKRect(X, Y, X + Width, Y + Height);
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var font = new SKFont(SKTypeface.Default, 11) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
             canvas.DrawText("Model Load", r.MidX, r.Top + 18, SKTextAlign.Center, font, text);
-            using var small = new SKFont(SKTypeface.Default, 9);
+            using var small = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
             canvas.DrawText($"{_framework} ({_device})", r.MidX, r.MidY + 5, SKTextAlign.Center, small, text);
             DrawPorts(canvas);
         }

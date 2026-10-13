@@ -211,7 +211,6 @@ namespace Beep.Skia.ETL
                 inputPoint.Rect = inputPoint.Bounds;
                 inputPoint.Index = 0;
                 inputPoint.Component = this;
-                inputPoint.IsAvailable = true;
             }
 
             if (InConnectionPoints.Count > 1)
@@ -224,7 +223,6 @@ namespace Beep.Skia.ETL
                 inputPoint2.Rect = inputPoint2.Bounds;
                 inputPoint2.Index = 1;
                 inputPoint2.Component = this;
-                inputPoint2.IsAvailable = true;
             }
 
             if (OutConnectionPoints.Count > 0)
@@ -237,7 +235,6 @@ namespace Beep.Skia.ETL
                 outputPoint.Rect = outputPoint.Bounds;
                 outputPoint.Index = 0;
                 outputPoint.Component = this;
-                outputPoint.IsAvailable = true;
             }
         }
 

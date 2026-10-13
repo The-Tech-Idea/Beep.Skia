@@ -75,11 +75,11 @@ namespace Beep.Skia.ECAD
 
             // Label
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var textFont = new SKFont(SKTypeface.Default, 11);
+            using var textFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11);
             canvas.DrawText(_model, r.MidX, r.MidY - 5, SKTextAlign.Center, textFont, text);
             
             using var small = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var smallFont = new SKFont(SKTypeface.Default, 8);
+            using var smallFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             canvas.DrawText($"{_clockSpeed}MHz", r.MidX, r.MidY + 8, SKTextAlign.Center, smallFont, small);
 
             DrawPorts(canvas);

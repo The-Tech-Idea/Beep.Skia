@@ -47,9 +47,9 @@ namespace Beep.Skia.Security
             canvas.DrawRoundRect(r, 6, 6, border);
 
             using var namePaint = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var nameFont = new SKFont(SKTypeface.Default, 11) { Edging = SKFontEdging.SubpixelAntialias, Embolden = true };
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Edging = SKFontEdging.SubpixelAntialias, Embolden = true };
             using var metaPaint = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var metaFont = new SKFont(SKTypeface.Default, 8) { Edging = SKFontEdging.SubpixelAntialias };
+            using var metaFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8) { Edging = SKFontEdging.SubpixelAntialias };
             canvas.DrawText(Title, r.MidX, r.MidY, SKTextAlign.Center, nameFont, namePaint);
             canvas.DrawText($"{Type} · {Confidence}", r.MidX, r.Bottom - 6, SKTextAlign.Center, metaFont, metaPaint);
 

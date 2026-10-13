@@ -228,12 +228,12 @@ namespace Beep.Skia.MindMap
         protected void EnsurePortCounts(int inputs, int outputs)
         {
             while (InConnectionPoints.Count < inputs)
-                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
+                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius });
             while (InConnectionPoints.Count > inputs)
                 InConnectionPoints.RemoveAt(InConnectionPoints.Count - 1);
 
             while (OutConnectionPoints.Count < outputs)
-                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", IsAvailable = true, Component = this, Radius = (int)PortRadius });
+                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Shape = ComponentShape.Circle, DataType = "link", Component = this, Radius = (int)PortRadius });
             while (OutConnectionPoints.Count > outputs)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
@@ -277,7 +277,6 @@ namespace Beep.Skia.MindMap
                 cp.Rect = cp.Bounds;
                 cp.Index = 0;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
 
             // Outputs along right edge between insets
@@ -298,7 +297,6 @@ namespace Beep.Skia.MindMap
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
         }
 
@@ -325,7 +323,6 @@ namespace Beep.Skia.MindMap
                 inp.Rect = inp.Bounds;
                 inp.Index = 0;
                 inp.Component = this;
-                inp.IsAvailable = true;
             }
 
             int n = Math.Max(OutConnectionPoints.Count, 1);
@@ -353,7 +350,6 @@ namespace Beep.Skia.MindMap
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
         }
 
@@ -390,7 +386,7 @@ namespace Beep.Skia.MindMap
         {
             if (!string.IsNullOrWhiteSpace(_icon))
             {
-                using var iconFont = new SKFont(SKTypeface.Default, 12);
+                using var iconFont = new SKFont(Beep.Skia.TypefaceCache.Default, 12);
                 using var iconPaint = new SKPaint { Color = TextColor, IsAntialias = true };
                 canvas.DrawText(_icon, X + 6f, Y + 16f, SKTextAlign.Left, iconFont, iconPaint);
             }
@@ -402,7 +398,7 @@ namespace Beep.Skia.MindMap
             float cy = Y + Height - 8f;
             using var badgePaint = new SKPaint { Color = MaterialColors.Primary, Style = SKPaintStyle.Fill, IsAntialias = true };
             using var badgeTextPaint = new SKPaint { Color = SKColors.White, IsAntialias = true };
-            using var badgeFont = new SKFont(SKTypeface.Default, 10) { Embolden = true };
+            using var badgeFont = new SKFont(Beep.Skia.TypefaceCache.Default, 10) { Embolden = true };
             canvas.DrawCircle(cx, cy, 7f, badgePaint);
             canvas.DrawText(_isCollapsed ? "+" : "−", cx, cy + 4f, SKTextAlign.Center, badgeFont, badgeTextPaint);
         }

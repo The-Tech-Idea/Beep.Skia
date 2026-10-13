@@ -40,6 +40,31 @@ namespace Beep.Skia.UML
         /// <param name="context">The drawing context.</param>
         protected override void DrawUMLContent(SKCanvas canvas, DrawingContext context)
         {
+            // The body is laid out in the node's own coordinates, so paint it relative to X/Y.
+            // Connection points and selection are drawn in world coordinates and stay outside.
+            canvas.Save();
+            try
+            {
+                canvas.Translate(X, Y);
+                DrawBody(canvas);
+            }
+            finally
+            {
+                canvas.Restore();
+            }
+
+            // Draw connection points
+            DrawConnectionPoints(canvas, context);
+
+            // Draw selection indicator
+            DrawSelection(canvas, context);
+        }
+
+        /// <summary>
+        /// Draws the node body in local coordinates (origin at the node's top-left corner).
+        /// </summary>
+        private void DrawBody(SKCanvas canvas)
+        {
             // Draw diamond shape
             using (var paint = new SKPaint())
             {
@@ -66,7 +91,7 @@ namespace Beep.Skia.UML
             // Draw stereotype
             if (!string.IsNullOrEmpty(Stereotype))
             {
-                using var font = new SKFont(SKTypeface.Default, 9);
+                using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 9);
                 using var textPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 canvas.DrawText(Stereotype, Width / 2 - 25, 18, SKTextAlign.Left, font, textPaint);
             }
@@ -80,7 +105,7 @@ namespace Beep.Skia.UML
             // Draw condition expression if present
             if (!string.IsNullOrEmpty(ConditionExpression))
             {
-                using var exprFont = new SKFont(SKTypeface.Default, 8);
+                using var exprFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
                 using var exprPaint = new SKPaint { IsAntialias = true, Color = TextColor };
                 var exprWidth = exprFont.MeasureText(ConditionExpression);
                 if (exprWidth > Width - 10)
@@ -96,12 +121,6 @@ namespace Beep.Skia.UML
                     canvas.DrawText(ConditionExpression, (Width - exprWidth) / 2, Height / 2 + 10, SKTextAlign.Left, exprFont, exprPaint);
                 }
             }
-
-            // Draw connection points
-            DrawConnectionPoints(canvas, context);
-
-            // Draw selection indicator
-            DrawSelection(canvas, context);
         }
 
         /// <summary>
@@ -109,13 +128,13 @@ namespace Beep.Skia.UML
         /// </summary>
         protected override void DrawConnectionPoints(SKCanvas canvas, DrawingContext context)
         {
-            // Position connection points at the diamond's corners
+            // Position connection points at the diamond's corners, in world coordinates
             var points = new List<(SKPoint position, SKColor color)>
             {
-                (new SKPoint(Width / 2, 2), SKColors.Blue),      // Top point (input)
-                (new SKPoint(Width - 2, Height / 2), SKColors.Green), // Right point (output)
-                (new SKPoint(Width / 2, Height - 2), SKColors.Blue),  // Bottom point (input)
-                (new SKPoint(2, Height / 2), SKColors.Green)     // Left point (output)
+                (new SKPoint(X + Width / 2, Y + 2), SKColors.Blue),      // Top point (input)
+                (new SKPoint(X + Width - 2, Y + Height / 2), SKColors.Green), // Right point (output)
+                (new SKPoint(X + Width / 2, Y + Height - 2), SKColors.Blue),  // Bottom point (input)
+                (new SKPoint(X + 2, Y + Height / 2), SKColors.Green)     // Left point (output)
             };
 
             foreach (var (position, color) in points)

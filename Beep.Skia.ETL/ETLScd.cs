@@ -346,7 +346,6 @@ namespace Beep.Skia.ETL
                 inputPoint.Rect = inputPoint.Bounds;
                 inputPoint.Index = 0;
                 inputPoint.Component = this;
-                inputPoint.IsAvailable = true;
             }
 
             // Output at right middle
@@ -361,7 +360,6 @@ namespace Beep.Skia.ETL
                 outputPoint.Rect = outputPoint.Bounds;
                 outputPoint.Index = 0;
                 outputPoint.Component = this;
-                outputPoint.IsAvailable = true;
             }
         }
     }

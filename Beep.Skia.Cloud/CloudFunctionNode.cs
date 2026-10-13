@@ -47,9 +47,9 @@ namespace Beep.Skia.Cloud
             canvas.DrawRoundRect(r, 8, 8, border);
 
             using var namePaint = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var nameFont = new SKFont(SKTypeface.Default, 12) { Embolden = true };
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 12) { Embolden = true };
             using var metaPaint = new SKPaint { Color = TextColor, IsAntialias = true };
-            using var metaFont = new SKFont(SKTypeface.Default, 8);
+            using var metaFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             canvas.DrawText(FunctionName, r.MidX, r.MidY - 6, SKTextAlign.Center, nameFont, namePaint);
             canvas.DrawText($"{Runtime} · {MemoryMB} MB", r.MidX, r.Bottom - 6, SKTextAlign.Center, metaFont, metaPaint);
 

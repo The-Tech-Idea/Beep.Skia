@@ -71,7 +71,7 @@ namespace Beep.Skia.MindMap
             canvas.DrawRoundRect(rect, 10, 10, fill);
             canvas.DrawRoundRect(rect, 10, 10, stroke);
 
-            using var font = new SKFont(SKTypeface.Default, 13) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 13) { Embolden = true };
             using var text = new SKPaint { Color = TextColor, IsAntialias = true };
             canvas.DrawText(Title ?? Name ?? string.Empty, X + Width / 2f, Y + Height / 2f + 4, SKTextAlign.Center, font, text);
 

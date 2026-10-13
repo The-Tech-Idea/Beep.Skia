@@ -58,7 +58,7 @@ namespace Beep.Skia.Business
             canvas.DrawRect(bar, barFill);
             canvas.DrawLine(bar.Right, bar.Top, bar.Right, bar.Bottom, stroke);
 
-            using var font = new SKFont(SKTypeface.Default, 12) { Embolden = true };
+            using var font = new SKFont(Beep.Skia.TypefaceCache.Default, 12) { Embolden = true };
             using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
             canvas.Save();
             canvas.RotateDegrees(-90, X + barWidth / 2f, Y + Height / 2f);

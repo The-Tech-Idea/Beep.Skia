@@ -162,13 +162,13 @@ namespace Beep.Skia.ETL
         {
             // Grow/shrink input ports
             while (InConnectionPoints.Count < inCount)
-                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "object", IsAvailable = true });
+                InConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.In, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "object" });
             while (InConnectionPoints.Count > inCount)
                 InConnectionPoints.RemoveAt(InConnectionPoints.Count - 1);
 
             // Grow/shrink output ports
             while (OutConnectionPoints.Count < outCount)
-                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "object", IsAvailable = true });
+                OutConnectionPoints.Add(new ConnectionPoint { Type = ConnectionPointType.Out, Radius = (int)PortRadius, Component = this, Shape = ComponentShape.Circle, DataType = "object" });
             while (OutConnectionPoints.Count > outCount)
                 OutConnectionPoints.RemoveAt(OutConnectionPoints.Count - 1);
 
@@ -215,7 +215,6 @@ namespace Beep.Skia.ETL
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
 
             int nOut = Math.Max(OutConnectionPoints.Count, 1);
@@ -231,7 +230,6 @@ namespace Beep.Skia.ETL
                 cp.Rect = cp.Bounds;
                 cp.Index = i;
                 cp.Component = this;
-                cp.IsAvailable = true;
             }
         }
 
@@ -252,7 +250,6 @@ namespace Beep.Skia.ETL
                 p.Rect = p.Bounds;
                 p.Index = i;
                 p.Component = this;
-                p.IsAvailable = true;
             }
         }
 

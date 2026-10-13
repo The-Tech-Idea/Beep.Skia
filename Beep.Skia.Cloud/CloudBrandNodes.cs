@@ -69,13 +69,13 @@ namespace Beep.Skia.Cloud
             using var badgeFill = new SKPaint { Color = BrandColor, Style = SKPaintStyle.Fill, IsAntialias = true };
             canvas.DrawRoundRect(badge, 7, 7, badgeFill);
 
-            using var glyphFont = new SKFont(SKTypeface.Default, 9) { Embolden = true };
+            using var glyphFont = new SKFont(Beep.Skia.TypefaceCache.Default, 9) { Embolden = true };
             using var white = new SKPaint { Color = SKColors.White, IsAntialias = true };
             canvas.DrawText(IconGlyph, badge.MidX, badge.MidY + 3f, SKTextAlign.Center, glyphFont, white);
 
             // Service + provider labels.
-            using var nameFont = new SKFont(SKTypeface.Default, 11) { Embolden = true };
-            using var providerFont = new SKFont(SKTypeface.Default, 8);
+            using var nameFont = new SKFont(Beep.Skia.TypefaceCache.Default, 11) { Embolden = true };
+            using var providerFont = new SKFont(Beep.Skia.TypefaceCache.Default, 8);
             using var textPaint = new SKPaint { Color = TextColor, IsAntialias = true };
 
             canvas.DrawText(ServiceName, badge.Right + 8f, rect.Top + 30f, SKTextAlign.Left, nameFont, textPaint);
